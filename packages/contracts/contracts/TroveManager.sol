@@ -76,6 +76,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         uint stake;
         Status status;
         uint128 arrayIndex;
+        address frontEndTag;
     }
 
     mapping (address => Trove) public Troves;
@@ -1525,8 +1526,17 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         return Troves[_borrower].coll;
     }
 
+    function getTroveFrontEnd(address _borrower) external view override returns (address) {
+        return Troves[_borrower].frontEndTag;
+    }
+
     // --- Trove property setters, called by BorrowerOperations ---
 
+    function setTroveFrontEndTag(address _borrower, address _frontEndTag) external override {
+        _requireCallerIsBorrowerOperations();
+        Troves[_borrower].frontEndTag = _frontEndTag;
+    }
+    
     function setTroveStatus(address _borrower, uint _num) external override {
         _requireCallerIsBorrowerOperations();
         Troves[_borrower].status = Status(_num);

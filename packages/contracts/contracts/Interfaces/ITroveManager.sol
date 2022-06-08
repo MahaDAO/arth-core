@@ -141,4 +141,8 @@ interface ITroveManager is ILiquityBase {
     function getTCR(uint _price) external view returns (uint);
 
     function checkRecoveryMode(uint _price) external view returns (bool);
+
+    function getTroveFrontEnd(address _borrower) external view returns (address);
+
+    function setTroveFrontEndTag(address _borrower, address _frontEndTag) external;
 }
