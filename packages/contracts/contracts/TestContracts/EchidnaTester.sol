@@ -71,7 +71,7 @@ contract EchidnaTester {
             address(activePool), address(defaultPool), 
             address(stabilityPool), address(gasPool), address(collSurplusPool),
             address(priceFeedTestnet), address(sortedTroves), 
-            address(lusdToken), address(0));
+            address(lusdToken));
 
         activePool.setAddresses(address(borrowerOperations), 
             address(troveManager), address(stabilityPool), address(defaultPool));
@@ -167,7 +167,7 @@ contract EchidnaTester {
         //console.log('ETH', ETH);
         //console.log('LUSDAmount', LUSDAmount);
 
-        echidnaProxy.openTrovePrx(ETH, LUSDAmount, address(0), address(0), 0);
+        echidnaProxy.openTrovePrx(ETH, LUSDAmount, address(0), address(0), 0, address(0));
 
         numberOfTroves = troveManager.getTroveOwnersCount();
         assert(numberOfTroves > 0);
@@ -175,9 +175,9 @@ contract EchidnaTester {
         //assert(numberOfTroves == 0);
     }
 
-    function openTroveRawExt(uint _i, uint _ETH, uint _LUSDAmount, address _upperHint, address _lowerHint, uint _maxFee) public payable {
+    function openTroveRawExt(uint _i, uint _ETH, uint _LUSDAmount, address _upperHint, address _lowerHint, uint _maxFee, address _frontEndTag) public payable {
         uint actor = _i % NUMBER_OF_ACTORS;
-        echidnaProxies[actor].openTrovePrx(_ETH, _LUSDAmount, _upperHint, _lowerHint, _maxFee);
+        echidnaProxies[actor].openTrovePrx(_ETH, _LUSDAmount, _upperHint, _lowerHint, _maxFee, _frontEndTag);
     }
 
     function addCollExt(uint _i, uint _ETH) external payable {

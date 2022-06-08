@@ -16,12 +16,12 @@ interface IBorrowerOperations {
     event GovernanceAddressChanged(address  _newGovernanceAddress);
     event SortedTrovesAddressChanged(address _sortedTrovesAddress);
     event LUSDTokenAddressChanged(address _lusdTokenAddress);
-    event LQTYStakingAddressChanged(address _lqtyStakingAddress);
 
     event TroveCreated(address indexed _borrower, uint arrayIndex);
     event TroveUpdated(address indexed _borrower, uint _debt, uint _coll, uint stake, uint8 operation);
     event LUSDBorrowingFeePaid(address indexed _borrower, uint _LUSDFee);
-
+    event FrontEndRegistered(address indexed _frontend, uint256 timestamp);
+    
     // --- Functions ---
 
     function setAddresses(
@@ -33,11 +33,12 @@ interface IBorrowerOperations {
         address _collSurplusPoolAddress,
         address _governanceAddress,
         address _sortedTrovesAddress,
-        address _lusdTokenAddress,
-        address _lqtyStakingAddress
+        address _lusdTokenAddress
     ) external;
 
-    function openTrove(uint _maxFee, uint _LUSDAmount, address _upperHint, address _lowerHint) external payable;
+    function registerFrontEnd() external;
+    
+    function openTrove(uint _maxFee, uint _LUSDAmount, address _upperHint, address _lowerHint, address _frontEndTag) external payable;
 
     function addColl(address _upperHint, address _lowerHint) external payable;
 
