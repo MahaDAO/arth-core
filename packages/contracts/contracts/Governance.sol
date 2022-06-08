@@ -10,7 +10,7 @@ import "./Interfaces/IGovernance.sol";
 import "./Dependencies/LiquityMath.sol";
 import "./Dependencies/IEcosystemFund.sol";
 
-contract Governance is IGovernance, BaseMath, Ownable {
+contract Governance is BaseMath, Ownable, IGovernance {
     using SafeMath for uint256;
 
     string public constant NAME = "Governance";
