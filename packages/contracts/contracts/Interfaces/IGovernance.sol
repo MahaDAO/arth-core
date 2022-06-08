@@ -7,6 +7,12 @@ import "../Dependencies/IERC20.sol";
 import "../Dependencies/IOracle.sol";
 import "../Dependencies/IEcosystemFund.sol";
 
+interface IBurnableERC20 is IERC20 {
+    function burn(uint256 amount) external;
+
+    function burnFrom(address account, uint256 amount) external;
+}
+
 interface IGovernance {
     // --- Events ---
 
@@ -24,7 +30,7 @@ interface IGovernance {
 
     function getStabilityFeePercentage() external view returns (uint256);
 
-    function getStabilityFeeToken() external view returns (IERC20);
+    function getStabilityFeeToken() external view returns (IBurnableERC20);
 
     function getStabilityTokenOracle() external view returns (IOracle);
 
@@ -40,5 +46,5 @@ interface IGovernance {
 
     function setStabilityFeePercentage(uint256 _stabilityFeePercentage) external;
 
-    function setStabilityFeeToken(address _token, IOracle _oracle) external;
+    function setStabilityFeeToken(address _token, address _oracle) external;
 }

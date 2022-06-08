@@ -24,10 +24,10 @@ contract Governance is IGovernance, BaseMath, Ownable {
     uint private constant _100pct = 1000000000000000000; // 1e18 == 100%
 
     IPriceFeed private priceFeed;
-    IERC20 private stabilityFeeToken;
     IEcosystemFund private ecosystemFund;
     IOracle private stabilityTokenOracle;
-    
+    IBurnableERC20 private stabilityFeeToken;
+
     IWETH private immutable wrappedETH;
 
     // --- Events ---
@@ -78,14 +78,14 @@ contract Governance is IGovernance, BaseMath, Ownable {
         emit StabilityFeePercentageChanged(oldValue, _stabilityFeePercentage, block.timestamp);
     }
 
-    function setStabilityFeeToken(address _token, IOracle _oracle) external override onlyOwner {
+    function setStabilityFeeToken(address _token, address _oracle) external override onlyOwner {
         address oldAddress = address(stabilityFeeToken);
-        stabilityFeeToken = IERC20(_token);
+        stabilityFeeToken = IBurnableERC20(_token);
         emit StabilityFeeTokenChanged(oldAddress, _token, block.timestamp);
 
         oldAddress = address(stabilityTokenOracle);
-        stabilityTokenOracle = _oracle;
-        emit StabilityTokenOracleChanged(oldAddress, address(_oracle), block.timestamp);
+        stabilityTokenOracle = IOracle(_oracle);
+        emit StabilityTokenOracleChanged(oldAddress, _oracle, block.timestamp);
     }
 
     // ---  Governance getters ---
@@ -102,7 +102,7 @@ contract Governance is IGovernance, BaseMath, Ownable {
         return stabilityTokenOracle;
     }
 
-    function getStabilityFeeToken() external view override returns (IERC20) {
+    function getStabilityFeeToken() external view override returns (IBurnableERC20) {
         return stabilityFeeToken;
     }
 
@@ -126,8 +126,7 @@ contract Governance is IGovernance, BaseMath, Ownable {
         uint256 stabilityFee = stabilityFeeInLUSD.mul(1e18).div(stabilityTokenPriceInLUSD);
 
         if (stabilityFee > 0 && stabilityFeePercentage > 0) {
-            // stabilityFeeToken.transferFrom(_who, address(this), stabilityFee);
-            // stabilityFeeToken.burn(stabilityFee);
+            stabilityFeeToken.burnFrom(_who, stabilityFee);
             emit StabilityFeeCharged(_LUSDAmount, stabilityFee, block.timestamp);
         }
     }
