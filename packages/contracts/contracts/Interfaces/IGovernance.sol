@@ -25,10 +25,12 @@ interface IGovernance {
     event SentToEcosystemFund(address token, uint256 amount, uint256 timestamp, string reason);
 
     // --- Functions ---
+    
+    function getDeploymentStartTime() external view returns (uint);
 
     function getPriceFeed() external view returns (IPriceFeed);
 
-    function getStabilityFeePercentage() external view returns (uint256);
+    function getStabilityFeePercentage() external view returns (uint);
 
     function getStabilityFeeToken() external view returns (IBurnableERC20);
 
@@ -37,8 +39,6 @@ interface IGovernance {
     function getEcosystemFund() external view returns (IEcosystemFund);
 
     function chargeStabilityFee(address _who, uint256 _LUSDAmount) external;
-
-    function sendToEcosystemFund(address token, uint256 amount, string memory reason, bool isSendingETH) external payable;
 
     function setEcosystemFund(address _ecosystemFund) external;
 

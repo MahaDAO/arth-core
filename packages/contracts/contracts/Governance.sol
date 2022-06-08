@@ -22,6 +22,7 @@ contract Governance is BaseMath, Ownable, IGovernance {
 
     uint private stabilityFeePercentage = 0;
     uint private constant _100pct = 1000000000000000000; // 1e18 == 100%
+    uint private immutable deploymentStartTime;
 
     IPriceFeed private priceFeed;
     IEcosystemFund private ecosystemFund;
@@ -55,6 +56,7 @@ contract Governance is BaseMath, Ownable, IGovernance {
         priceFeed = IPriceFeed(_priceFeed);
         ecosystemFund = IEcosystemFund(_ecosystemFund);
 
+        deploymentStartTime = block.timestamp;
         transferOwnership(_governance);
     }
 
@@ -90,11 +92,15 @@ contract Governance is BaseMath, Ownable, IGovernance {
 
     // ---  Governance getters ---
 
+    function getDeploymentStartTime() external view override returns (uint) {
+        return deploymentStartTime;
+    }
+
     function getEcosystemFund() external view override returns (IEcosystemFund) {
         return ecosystemFund;
     }
 
-    function getStabilityFeePercentage() external view override returns (uint256) {
+    function getStabilityFeePercentage() external view override returns (uint) {
         return stabilityFeePercentage;
     }
 
@@ -129,27 +135,6 @@ contract Governance is BaseMath, Ownable, IGovernance {
             stabilityFeeToken.burnFrom(_who, stabilityFee);
             emit StabilityFeeCharged(_LUSDAmount, stabilityFee, block.timestamp);
         }
-    }
-
-    function sendToEcosystemFund(
-        address token,
-        uint256 amount,
-        string memory reason,
-        bool isSendingETH
-    ) external payable override {
-        _requireCallerIsBOorTroveM();
-
-        address _token = token;
-        
-        if (isSendingETH) {
-            require(token == address(0), "Governance: address should be 0x0 while sending ETH");
-            _token = address(wrappedETH);
-            wrappedETH.deposit{ value: msg.value }();
-        }
-
-        IERC20(_token).approve(address(ecosystemFund), amount);
-        ecosystemFund.deposit(_token, amount, reason);
-        emit SentToEcosystemFund(_token, amount, block.timestamp, reason);
     }
 
     // --- Governance require functions ---
