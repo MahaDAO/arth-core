@@ -83,9 +83,34 @@ module.exports = {
             gas: 10000000,  // tx gas limit
             accounts: [getSecret('RINKEBY_DEPLOYER_PRIVATEKEY', '0x60ddfe7f579ab6867cbe7a2dc03853dc141d7a4ab6dbefc0dae2d2b1bd4e487f')]
         },
+        polygon: {
+            url: "https://speedy-nodes-nyc.moralis.io/a134b32bcf89c622864fd416/polygon/mainnet",
+            accounts: [getSecret("POLYGON_DEPLOYER_PRIVATEKEY"), getSecret("ACCOUNT2_PRIVATEKEY")],
+            gasPrice: 50 * 1000000000 // 5.1 gwei
+        },
+        polygonMumbai: {
+            url: "https://matic-mumbai.chainstacklabs.com",
+            accounts: [getSecret("POLYGON_DEPLOYER_PRIVATEKEY"), getSecret("ACCOUNT2_PRIVATEKEY")],
+            gasPrice: 50 * 1000000000 // 5.1 gwei
+        },
+        bscTestnet: {
+            url: "https://data-seed-prebsc-1-s1.binance.org:8545/",
+            accounts: [getSecret("BSC_DEPLOYER_PRIVATEKEY")]
+        },
+        bsc: {
+            url: "https://bsc-dataseed.binance.org/",
+            accounts: [getSecret("BSC_DEPLOYER_PRIVATEKEY")]
+        },
     },
     etherscan: {
-        apiKey: getSecret("ETHERSCAN_API_KEY")
+        apiKey: {
+            bsc: getSecret("BSCSCAN_API_KEY"),
+            mainnet: getSecret("ETHERSCAN_API_KEY"),
+            polygon: getSecret("POLYGONSCAN_API_KEY"),
+            bscTestnet: getSecret("BSCSCAN_API_KEY"),
+            rinkeby: getSecret("ETHERSCAN_API_KEY"),
+            polygonMumbai: getSecret("POLYGONSCAN_API_KEY"),
+        }
     },
     mocha: { timeout: 12000000 },
     rpc: {
