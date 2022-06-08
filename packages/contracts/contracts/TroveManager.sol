@@ -217,6 +217,8 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
     event LTermsUpdated(uint _L_ETH, uint _L_LUSDDebt);
     event TroveSnapshotsUpdated(uint _L_ETH, uint _L_LUSDDebt);
     event TroveIndexUpdated(address _borrower, uint _newIndex);
+    event PaidETHFeeToEcosystemFund(address indexed _ecosystemFund, uint _ETHFee);
+    event StabilityFeeCharged(address indexed _borrower, uint _LUSDamount);
 
      enum TroveManagerOperation {
         applyPendingRewards,
@@ -1013,6 +1015,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         contractsCache.activePool.decreaseLUSDDebt(totals.totalLUSDToRedeem);
         contractsCache.activePool.sendETH(msg.sender, totals.ETHToSendToRedeemer);
         // Charge stability fee.
+        emit StabilityFeeCharged(msg.sender, _LUSDamount);
         contractsCache.governance.chargeStabilityFee(msg.sender, _LUSDamount);
     }
 
@@ -1027,6 +1030,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         wrappedETHCached.deposit{ value: _ETHFee }();
         // Approve and deposit WETH in the Ecosystem Fund.
         wrappedETHCached.approve(address(ecosystemFund), _ETHFee);
+        emit PaidETHFeeToEcosystemFund(address(ecosystemFund), _ETHFee);
         ecosystemFund.deposit(address(wrappedETHCached), _ETHFee, "Redeem fee triggered");
     }
 

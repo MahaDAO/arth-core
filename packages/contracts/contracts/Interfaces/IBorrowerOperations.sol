@@ -21,6 +21,8 @@ interface IBorrowerOperations {
     event TroveUpdated(address indexed _borrower, uint _debt, uint _coll, uint stake, uint8 operation);
     event LUSDBorrowingFeePaid(address indexed _borrower, uint _LUSDFee);
     event FrontEndRegistered(address indexed _frontend, uint256 timestamp);
+    event PaidLUSDBorrowingFeeToEcosystemFund(address indexed _ecosystemFund, uint _LUSDFee);
+    event PaidLUSDBorrowingFeeToFrontEnd(address indexed _frontEndTag, uint _LUSDFee);
     
     // --- Functions ---
 

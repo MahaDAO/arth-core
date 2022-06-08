@@ -91,7 +91,9 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
     event TroveUpdated(address indexed _borrower, uint _debt, uint _coll, uint stake, BorrowerOperation operation);
     event LUSDBorrowingFeePaid(address indexed _borrower, uint _LUSDFee);
     event FrontEndRegistered(address indexed _frontend, uint256 timestamp);
-
+    event PaidLUSDBorrowingFeeToEcosystemFund(address indexed _ecosystemFund, uint _LUSDFee);
+    event PaidLUSDBorrowingFeeToFrontEnd(address indexed _frontEndTag, uint _LUSDFee);
+    
     // --- Dependency setters ---
 
     function setAddresses(
@@ -377,7 +379,9 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
             
             if (_frontEndTag != address(0)) {
                 feeForEcosystemFund = LUSDFee.mul(50).div(100);
-                _lusdToken.mint(_frontEndTag, LUSDFee.sub(feeForEcosystemFund));
+                uint _fee = LUSDFee.sub(feeForEcosystemFund);
+                emit PaidLUSDBorrowingFeeToFrontEnd(_frontEndTag, _fee);
+                _lusdToken.mint(_frontEndTag, _fee);
             }
 
             _sendFeeToEcosystemFund(_lusdToken, feeForEcosystemFund);
@@ -391,6 +395,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
 
         _lusdToken.mint(address(this), _LUSDFee);
         _lusdToken.approve(address(ecosystemFund), _LUSDFee);
+        emit PaidLUSDBorrowingFeeToEcosystemFund(address(ecosystemFund), _LUSDFee);
         ecosystemFund.deposit(address(_lusdToken), _LUSDFee, "Borrowing fee triggered");
     }
 
