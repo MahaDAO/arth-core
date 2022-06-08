@@ -5,8 +5,6 @@ pragma solidity 0.6.11;
 import "./ILiquityBase.sol";
 import "./IStabilityPool.sol";
 import "./ILUSDToken.sol";
-import "./ILQTYToken.sol";
-import "./ILQTYStaking.sol";
 
 
 // Common interface for the Trove Manager.
