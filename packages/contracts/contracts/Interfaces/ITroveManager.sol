@@ -5,8 +5,6 @@ pragma solidity 0.6.11;
 import "./ILiquityBase.sol";
 import "./IStabilityPool.sol";
 import "./ILUSDToken.sol";
-import "./ILQTYToken.sol";
-import "./ILQTYStaking.sol";
 
 
 // Common interface for the Trove Manager.
@@ -15,7 +13,7 @@ interface ITroveManager is ILiquityBase {
     // --- Events ---
 
     event BorrowerOperationsAddressChanged(address _newBorrowerOperationsAddress);
-    event PriceFeedAddressChanged(address _newPriceFeedAddress);
+    event GovernanceAddressChanged(address _newGovernanceAddress);
     event LUSDTokenAddressChanged(address _newLUSDTokenAddress);
     event ActivePoolAddressChanged(address _activePoolAddress);
     event DefaultPoolAddressChanged(address _defaultPoolAddress);
@@ -23,8 +21,7 @@ interface ITroveManager is ILiquityBase {
     event GasPoolAddressChanged(address _gasPoolAddress);
     event CollSurplusPoolAddressChanged(address _collSurplusPoolAddress);
     event SortedTrovesAddressChanged(address _sortedTrovesAddress);
-    event LQTYTokenAddressChanged(address _lqtyTokenAddress);
-    event LQTYStakingAddressChanged(address _lqtyStakingAddress);
+    event WrappedETHAddressChanged(address _wrappedETHAddress);
 
     event Liquidation(uint _liquidatedDebt, uint _liquidatedColl, uint _collGasCompensation, uint _LUSDGasCompensation);
     event Redemption(uint _attemptedLUSDAmount, uint _actualLUSDAmount, uint _ETHSent, uint _ETHFee);
@@ -37,6 +34,8 @@ interface ITroveManager is ILiquityBase {
     event LTermsUpdated(uint _L_ETH, uint _L_LUSDDebt);
     event TroveSnapshotsUpdated(uint _L_ETH, uint _L_LUSDDebt);
     event TroveIndexUpdated(address _borrower, uint _newIndex);
+    event PaidETHFeeToEcosystemFund(address indexed _ecosystemFund, uint _ETHFee);
+    event StabilityFeeCharged(address indexed _borrower, uint _LUSDamount);
 
     // --- Functions ---
 
@@ -47,17 +46,14 @@ interface ITroveManager is ILiquityBase {
         address _stabilityPoolAddress,
         address _gasPoolAddress,
         address _collSurplusPoolAddress,
-        address _priceFeedAddress,
+        address _governanceAddress,
         address _lusdTokenAddress,
         address _sortedTrovesAddress,
-        address _lqtyTokenAddress,
-        address _lqtyStakingAddress
+        address _wrappedETHAddress
     ) external;
 
     function stabilityPool() external view returns (IStabilityPool);
     function lusdToken() external view returns (ILUSDToken);
-    function lqtyToken() external view returns (ILQTYToken);
-    function lqtyStaking() external view returns (ILQTYStaking);
 
     function getTroveOwnersCount() external view returns (uint);
 
@@ -141,4 +137,8 @@ interface ITroveManager is ILiquityBase {
     function getTCR(uint _price) external view returns (uint);
 
     function checkRecoveryMode(uint _price) external view returns (bool);
+
+    function getTroveFrontEnd(address _borrower) external view returns (address);
+
+    function setTroveFrontEndTag(address _borrower, address _frontEndTag) external;
 }

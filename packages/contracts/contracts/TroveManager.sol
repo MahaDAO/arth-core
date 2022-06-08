@@ -7,12 +7,11 @@ import "./Interfaces/IStabilityPool.sol";
 import "./Interfaces/ICollSurplusPool.sol";
 import "./Interfaces/ILUSDToken.sol";
 import "./Interfaces/ISortedTroves.sol";
-import "./Interfaces/ILQTYToken.sol";
-import "./Interfaces/ILQTYStaking.sol";
 import "./Dependencies/LiquityBase.sol";
 import "./Dependencies/Ownable.sol";
 import "./Dependencies/CheckContract.sol";
 import "./Dependencies/console.sol";
+import "./Dependencies/IWETH.sol";
 
 contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
     string constant public NAME = "TroveManager";
@@ -29,12 +28,10 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
 
     ILUSDToken public override lusdToken;
 
-    ILQTYToken public override lqtyToken;
-
-    ILQTYStaking public override lqtyStaking;
-
     // A doubly linked list of Troves, sorted by their sorted by their collateral ratios
     ISortedTroves public sortedTroves;
+
+    IWETH public wrappedETH;
 
     // --- Data structures ---
 
@@ -48,7 +45,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
     uint constant public MAX_BORROWING_FEE = DECIMAL_PRECISION / 100 * 5; // 5%
 
     // During bootsrap period redemptions are not allowed
-    uint constant public BOOTSTRAP_PERIOD = 14 days;
+    uint constant public BOOTSTRAP_PERIOD = 7 days;
 
     /*
     * BETA: 18 digit decimal. Parameter by which to divide the redeemed fraction, in order to calc the new base rate from a redemption.
@@ -76,6 +73,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         uint stake;
         Status status;
         uint128 arrayIndex;
+        address frontEndTag;
     }
 
     mapping (address => Trove) public Troves;
@@ -171,7 +169,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         IActivePool activePool;
         IDefaultPool defaultPool;
         ILUSDToken lusdToken;
-        ILQTYStaking lqtyStaking;
+        IGovernance governance;
         ISortedTroves sortedTroves;
         ICollSurplusPool collSurplusPool;
         address gasPoolAddress;
@@ -198,7 +196,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
     // --- Events ---
 
     event BorrowerOperationsAddressChanged(address _newBorrowerOperationsAddress);
-    event PriceFeedAddressChanged(address _newPriceFeedAddress);
+    event GovernanceAddressChanged(address _newGovernanceAddress);
     event LUSDTokenAddressChanged(address _newLUSDTokenAddress);
     event ActivePoolAddressChanged(address _activePoolAddress);
     event DefaultPoolAddressChanged(address _defaultPoolAddress);
@@ -206,8 +204,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
     event GasPoolAddressChanged(address _gasPoolAddress);
     event CollSurplusPoolAddressChanged(address _collSurplusPoolAddress);
     event SortedTrovesAddressChanged(address _sortedTrovesAddress);
-    event LQTYTokenAddressChanged(address _lqtyTokenAddress);
-    event LQTYStakingAddressChanged(address _lqtyStakingAddress);
+    event WrappedETHAddressChanged(address _wrappedETHAddress);
 
     event Liquidation(uint _liquidatedDebt, uint _liquidatedColl, uint _collGasCompensation, uint _LUSDGasCompensation);
     event Redemption(uint _attemptedLUSDAmount, uint _actualLUSDAmount, uint _ETHSent, uint _ETHFee);
@@ -220,6 +217,8 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
     event LTermsUpdated(uint _L_ETH, uint _L_LUSDDebt);
     event TroveSnapshotsUpdated(uint _L_ETH, uint _L_LUSDDebt);
     event TroveIndexUpdated(address _borrower, uint _newIndex);
+    event PaidETHFeeToEcosystemFund(address indexed _ecosystemFund, uint _ETHFee);
+    event StabilityFeeCharged(address indexed _borrower, uint _LUSDamount);
 
      enum TroveManagerOperation {
         applyPendingRewards,
@@ -238,11 +237,10 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         address _stabilityPoolAddress,
         address _gasPoolAddress,
         address _collSurplusPoolAddress,
-        address _priceFeedAddress,
+        address _governanceAddress,
         address _lusdTokenAddress,
         address _sortedTrovesAddress,
-        address _lqtyTokenAddress,
-        address _lqtyStakingAddress
+        address _wrappedETHAddress
     )
         external
         override
@@ -254,11 +252,10 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         checkContract(_stabilityPoolAddress);
         checkContract(_gasPoolAddress);
         checkContract(_collSurplusPoolAddress);
-        checkContract(_priceFeedAddress);
+        checkContract(_governanceAddress);
         checkContract(_lusdTokenAddress);
         checkContract(_sortedTrovesAddress);
-        checkContract(_lqtyTokenAddress);
-        checkContract(_lqtyStakingAddress);
+        checkContract(_wrappedETHAddress);
 
         borrowerOperationsAddress = _borrowerOperationsAddress;
         activePool = IActivePool(_activePoolAddress);
@@ -266,11 +263,10 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         stabilityPool = IStabilityPool(_stabilityPoolAddress);
         gasPoolAddress = _gasPoolAddress;
         collSurplusPool = ICollSurplusPool(_collSurplusPoolAddress);
-        priceFeed = IPriceFeed(_priceFeedAddress);
+        governance = IGovernance(_governanceAddress);
         lusdToken = ILUSDToken(_lusdTokenAddress);
         sortedTroves = ISortedTroves(_sortedTrovesAddress);
-        lqtyToken = ILQTYToken(_lqtyTokenAddress);
-        lqtyStaking = ILQTYStaking(_lqtyStakingAddress);
+        wrappedETH = IWETH(_wrappedETHAddress);
 
         emit BorrowerOperationsAddressChanged(_borrowerOperationsAddress);
         emit ActivePoolAddressChanged(_activePoolAddress);
@@ -278,11 +274,10 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         emit StabilityPoolAddressChanged(_stabilityPoolAddress);
         emit GasPoolAddressChanged(_gasPoolAddress);
         emit CollSurplusPoolAddressChanged(_collSurplusPoolAddress);
-        emit PriceFeedAddressChanged(_priceFeedAddress);
+        emit GovernanceAddressChanged(_governanceAddress);
         emit LUSDTokenAddressChanged(_lusdTokenAddress);
         emit SortedTrovesAddressChanged(_sortedTrovesAddress);
-        emit LQTYTokenAddressChanged(_lqtyTokenAddress);
-        emit LQTYStakingAddressChanged(_lqtyStakingAddress);
+        emit WrappedETHAddressChanged(_wrappedETHAddress);
 
         _renounceOwnership();
     }
@@ -497,7 +492,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
             activePool,
             defaultPool,
             ILUSDToken(address(0)),
-            ILQTYStaking(address(0)),
+            IGovernance(address(0)),
             sortedTroves,
             ICollSurplusPool(address(0)),
             address(0)
@@ -508,7 +503,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
 
         LiquidationTotals memory totals;
 
-        vars.price = priceFeed.fetchPrice();
+        vars.price = getPriceFeed().fetchPrice();
         vars.LUSDInStabPool = stabilityPoolCached.getTotalLUSDDeposits();
         vars.recoveryModeAtStart = _checkRecoveryMode(vars.price);
 
@@ -650,7 +645,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         LocalVariables_OuterLiquidationFunction memory vars;
         LiquidationTotals memory totals;
 
-        vars.price = priceFeed.fetchPrice();
+        vars.price = getPriceFeed().fetchPrice();
         vars.LUSDInStabPool = stabilityPoolCached.getTotalLUSDDeposits();
         vars.recoveryModeAtStart = _checkRecoveryMode(vars.price);
 
@@ -938,7 +933,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
             activePool,
             defaultPool,
             lusdToken,
-            lqtyStaking,
+            governance,
             sortedTroves,
             collSurplusPool,
             gasPoolAddress
@@ -947,7 +942,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
 
         _requireValidMaxFeePercentage(_maxFeePercentage);
         _requireAfterBootstrapPeriod();
-        totals.price = priceFeed.fetchPrice();
+        totals.price = getPriceFeed().fetchPrice();
         _requireTCRoverMCR(totals.price);
         _requireAmountGreaterThanZero(_LUSDamount);
         _requireLUSDBalanceCoversRedemption(contractsCache.lusdToken, msg.sender, _LUSDamount);
@@ -1007,9 +1002,8 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
 
         _requireUserAcceptsFee(totals.ETHFee, totals.totalETHDrawn, _maxFeePercentage);
 
-        // Send the ETH fee to the LQTY staking contract
-        contractsCache.activePool.sendETH(address(contractsCache.lqtyStaking), totals.ETHFee);
-        contractsCache.lqtyStaking.increaseF_ETH(totals.ETHFee);
+        // Send the ETH fee to the Ecosytem fund contract.
+        _sendETHFeeToEcosystemFund(contractsCache.activePool, contractsCache.governance, totals.ETHFee);
 
         totals.ETHToSendToRedeemer = totals.totalETHDrawn.sub(totals.ETHFee);
 
@@ -1020,9 +1014,25 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         // Update Active Pool LUSD, and send ETH to account
         contractsCache.activePool.decreaseLUSDDebt(totals.totalLUSDToRedeem);
         contractsCache.activePool.sendETH(msg.sender, totals.ETHToSendToRedeemer);
+        // Charge stability fee.
+        emit StabilityFeeCharged(msg.sender, _LUSDamount);
+        contractsCache.governance.chargeStabilityFee(msg.sender, _LUSDamount);
     }
 
     // --- Helper functions ---
+
+    function _sendETHFeeToEcosystemFund(IActivePool _activePool, IGovernance _governance, uint _ETHFee) internal {
+        IEcosystemFund ecosystemFund = _governance.getEcosystemFund();
+        IWETH wrappedETHCached = wrappedETH;
+        // Get ETH from active pool to this contract.
+        _activePool.sendETH(address(this), _ETHFee);
+        // Deposit ETH to WETH.
+        wrappedETHCached.deposit{ value: _ETHFee }();
+        // Approve and deposit WETH in the Ecosystem Fund.
+        wrappedETHCached.approve(address(ecosystemFund), _ETHFee);
+        emit PaidETHFeeToEcosystemFund(address(ecosystemFund), _ETHFee);
+        ecosystemFund.deposit(address(wrappedETHCached), _ETHFee, "Redeem fee triggered");
+    }
 
     // Return the nominal collateral ratio (ICR) of a given Trove, without the price. Takes a trove's pending coll and debt rewards from redistributions into account.
     function getNominalICR(address _borrower) public view override returns (uint) {
@@ -1473,6 +1483,10 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
 
     // --- 'require' wrapper functions ---
 
+    function _requireCallerIsActivePool() internal view {
+        require(msg.sender == address(activePool), "TroveManager: Caller is not ActivePool");
+    }
+
     function _requireCallerIsBorrowerOperations() internal view {
         require(msg.sender == borrowerOperationsAddress, "TroveManager: Caller is not the BorrowerOperations contract");
     }
@@ -1498,7 +1512,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
     }
 
     function _requireAfterBootstrapPeriod() internal view {
-        uint systemDeploymentTime = lqtyToken.getDeploymentStartTime();
+        uint systemDeploymentTime = governance.getDeploymentStartTime();
         require(block.timestamp >= systemDeploymentTime.add(BOOTSTRAP_PERIOD), "TroveManager: Redemptions are not allowed during bootstrap phase");
     }
 
@@ -1525,8 +1539,17 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         return Troves[_borrower].coll;
     }
 
+    function getTroveFrontEnd(address _borrower) external view override returns (address) {
+        return Troves[_borrower].frontEndTag;
+    }
+
     // --- Trove property setters, called by BorrowerOperations ---
 
+    function setTroveFrontEndTag(address _borrower, address _frontEndTag) external override {
+        _requireCallerIsBorrowerOperations();
+        Troves[_borrower].frontEndTag = _frontEndTag;
+    }
+    
     function setTroveStatus(address _borrower, uint _num) external override {
         _requireCallerIsBorrowerOperations();
         Troves[_borrower].status = Status(_num);
@@ -1558,5 +1581,11 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         uint newDebt = Troves[_borrower].debt.sub(_debtDecrease);
         Troves[_borrower].debt = newDebt;
         return newDebt;
+    }
+
+    // --- Fallback function ---
+
+    receive() external payable {
+        _requireCallerIsActivePool();
     }
 }

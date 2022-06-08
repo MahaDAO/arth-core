@@ -8,6 +8,7 @@ import "../Interfaces/IActivePool.sol";
 import "../Interfaces/IDefaultPool.sol";
 import "../Interfaces/IPriceFeed.sol";
 import "../Interfaces/ILiquityBase.sol";
+import "../Interfaces/IGovernance.sol";
 
 /* 
 * Base contract for TroveManager, BorrowerOperations and StabilityPool. Contains global system constants and
@@ -25,10 +26,10 @@ contract LiquityBase is BaseMath, ILiquityBase {
     uint constant public CCR = 1500000000000000000; // 150%
 
     // Amount of LUSD to be locked in gas pool on opening troves
-    uint constant public LUSD_GAS_COMPENSATION = 200e18;
+    uint constant public LUSD_GAS_COMPENSATION = 5e18;
 
     // Minimum amount of net LUSD debt a trove must have
-    uint constant public MIN_NET_DEBT = 1800e18;
+    uint constant public MIN_NET_DEBT = 50e18;
     // uint constant public MIN_NET_DEBT = 0; 
 
     uint constant public PERCENT_DIVISOR = 200; // dividing by 200 yields 0.5%
@@ -39,7 +40,7 @@ contract LiquityBase is BaseMath, ILiquityBase {
 
     IDefaultPool public defaultPool;
 
-    IPriceFeed public override priceFeed;
+    IGovernance public override governance;
 
     // --- Gas compensation functions ---
 
@@ -62,6 +63,10 @@ contract LiquityBase is BaseMath, ILiquityBase {
         uint liquidatedColl = defaultPool.getETH();
 
         return activeColl.add(liquidatedColl);
+    }
+
+    function getPriceFeed() public view returns (IPriceFeed priceFeed) {
+        return governance.getPriceFeed();
     }
 
     function getEntireSystemDebt() public view returns (uint entireSystemDebt) {

@@ -7,11 +7,11 @@ import "./Interfaces/ITroveManager.sol";
 import "./Interfaces/ILUSDToken.sol";
 import "./Interfaces/ICollSurplusPool.sol";
 import "./Interfaces/ISortedTroves.sol";
-import "./Interfaces/ILQTYStaking.sol";
 import "./Dependencies/LiquityBase.sol";
 import "./Dependencies/Ownable.sol";
 import "./Dependencies/CheckContract.sol";
 import "./Dependencies/console.sol";
+import "./Dependencies/IEcosystemFund.sol";
 
 contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOperations {
     string constant public NAME = "BorrowerOperations";
@@ -25,9 +25,6 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
     address gasPoolAddress;
 
     ICollSurplusPool collSurplusPool;
-
-    ILQTYStaking public lqtyStaking;
-    address public lqtyStakingAddress;
 
     ILUSDToken public lusdToken;
 
@@ -78,20 +75,24 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         adjustTrove
     }
 
+    mapping(address => bool) public frontEnds;
+
     event TroveManagerAddressChanged(address _newTroveManagerAddress);
     event ActivePoolAddressChanged(address _activePoolAddress);
     event DefaultPoolAddressChanged(address _defaultPoolAddress);
     event StabilityPoolAddressChanged(address _stabilityPoolAddress);
     event GasPoolAddressChanged(address _gasPoolAddress);
     event CollSurplusPoolAddressChanged(address _collSurplusPoolAddress);
-    event PriceFeedAddressChanged(address  _newPriceFeedAddress);
+    event GovernanceAddressChanged(address  _newGovernancedAddress);
     event SortedTrovesAddressChanged(address _sortedTrovesAddress);
     event LUSDTokenAddressChanged(address _lusdTokenAddress);
-    event LQTYStakingAddressChanged(address _lqtyStakingAddress);
 
     event TroveCreated(address indexed _borrower, uint arrayIndex);
     event TroveUpdated(address indexed _borrower, uint _debt, uint _coll, uint stake, BorrowerOperation operation);
     event LUSDBorrowingFeePaid(address indexed _borrower, uint _LUSDFee);
+    event FrontEndRegistered(address indexed _frontend, uint256 timestamp);
+    event PaidLUSDBorrowingFeeToEcosystemFund(address indexed _ecosystemFund, uint _LUSDFee);
+    event PaidLUSDBorrowingFeeToFrontEnd(address indexed _frontEndTag, uint _LUSDFee);
     
     // --- Dependency setters ---
 
@@ -102,10 +103,9 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         address _stabilityPoolAddress,
         address _gasPoolAddress,
         address _collSurplusPoolAddress,
-        address _priceFeedAddress,
+        address _governanceAddress,
         address _sortedTrovesAddress,
-        address _lusdTokenAddress,
-        address _lqtyStakingAddress
+        address _lusdTokenAddress
     )
         external
         override
@@ -120,10 +120,9 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         checkContract(_stabilityPoolAddress);
         checkContract(_gasPoolAddress);
         checkContract(_collSurplusPoolAddress);
-        checkContract(_priceFeedAddress);
+        checkContract(_governanceAddress);
         checkContract(_sortedTrovesAddress);
         checkContract(_lusdTokenAddress);
-        checkContract(_lqtyStakingAddress);
 
         troveManager = ITroveManager(_troveManagerAddress);
         activePool = IActivePool(_activePoolAddress);
@@ -131,11 +130,9 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         stabilityPoolAddress = _stabilityPoolAddress;
         gasPoolAddress = _gasPoolAddress;
         collSurplusPool = ICollSurplusPool(_collSurplusPoolAddress);
-        priceFeed = IPriceFeed(_priceFeedAddress);
+        governance = IGovernance(_governanceAddress);
         sortedTroves = ISortedTroves(_sortedTrovesAddress);
         lusdToken = ILUSDToken(_lusdTokenAddress);
-        lqtyStakingAddress = _lqtyStakingAddress;
-        lqtyStaking = ILQTYStaking(_lqtyStakingAddress);
 
         emit TroveManagerAddressChanged(_troveManagerAddress);
         emit ActivePoolAddressChanged(_activePoolAddress);
@@ -143,21 +140,30 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         emit StabilityPoolAddressChanged(_stabilityPoolAddress);
         emit GasPoolAddressChanged(_gasPoolAddress);
         emit CollSurplusPoolAddressChanged(_collSurplusPoolAddress);
-        emit PriceFeedAddressChanged(_priceFeedAddress);
+        emit GovernanceAddressChanged(_governanceAddress);
         emit SortedTrovesAddressChanged(_sortedTrovesAddress);
         emit LUSDTokenAddressChanged(_lusdTokenAddress);
-        emit LQTYStakingAddressChanged(_lqtyStakingAddress);
 
         _renounceOwnership();
     }
 
     // --- Borrower Trove Operations ---
 
-    function openTrove(uint _maxFeePercentage, uint _LUSDAmount, address _upperHint, address _lowerHint) external payable override {
+    function registerFrontEnd() external override {
+        _requireFrontEndNotRegistered(msg.sender);
+        _requireTroveisNotActive(troveManager, msg.sender);
+        frontEnds[msg.sender] = true;
+        emit FrontEndRegistered(msg.sender, block.timestamp);
+    }
+
+    function openTrove(uint _maxFeePercentage, uint _LUSDAmount, address _upperHint, address _lowerHint, address _frontEndTag) external payable override {
+        _requireFrontEndIsRegisteredOrZero(_frontEndTag);
+        _requireFrontEndNotRegistered(msg.sender);
+
         ContractsCache memory contractsCache = ContractsCache(troveManager, activePool, lusdToken);
         LocalVariables_openTrove memory vars;
 
-        vars.price = priceFeed.fetchPrice();
+        vars.price = getPriceFeed().fetchPrice();
         bool isRecoveryMode = _checkRecoveryMode(vars.price);
 
         _requireValidMaxFeePercentage(_maxFeePercentage, isRecoveryMode);
@@ -167,7 +173,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         vars.netDebt = _LUSDAmount;
 
         if (!isRecoveryMode) {
-            vars.LUSDFee = _triggerBorrowingFee(contractsCache.troveManager, contractsCache.lusdToken, _LUSDAmount, _maxFeePercentage);
+            vars.LUSDFee = _triggerBorrowingFee(contractsCache.troveManager, contractsCache.lusdToken, _LUSDAmount, _maxFeePercentage, _frontEndTag);
             vars.netDebt = vars.netDebt.add(vars.LUSDFee);
         }
         _requireAtLeastMinNetDebt(vars.netDebt);
@@ -188,6 +194,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         }
 
         // Set the trove struct's properties
+        contractsCache.troveManager.setTroveFrontEndTag(msg.sender, _frontEndTag);
         contractsCache.troveManager.setTroveStatus(msg.sender, 1);
         contractsCache.troveManager.increaseTroveColl(msg.sender, msg.value);
         contractsCache.troveManager.increaseTroveDebt(msg.sender, vars.compositeDebt);
@@ -250,7 +257,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         ContractsCache memory contractsCache = ContractsCache(troveManager, activePool, lusdToken);
         LocalVariables_adjustTrove memory vars;
 
-        vars.price = priceFeed.fetchPrice();
+        vars.price = getPriceFeed().fetchPrice();
         bool isRecoveryMode = _checkRecoveryMode(vars.price);
 
         if (_isDebtIncrease) {
@@ -272,8 +279,9 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         vars.netDebtChange = _LUSDChange;
 
         // If the adjustment incorporates a debt increase and system is in Normal Mode, then trigger a borrowing fee
-        if (_isDebtIncrease && !isRecoveryMode) { 
-            vars.LUSDFee = _triggerBorrowingFee(contractsCache.troveManager, contractsCache.lusdToken, _LUSDChange, _maxFeePercentage);
+        if (_isDebtIncrease && !isRecoveryMode) {
+            address frontEndTag = contractsCache.troveManager.getTroveFrontEnd(_borrower);
+            vars.LUSDFee = _triggerBorrowingFee(contractsCache.troveManager, contractsCache.lusdToken, _LUSDChange, _maxFeePercentage, frontEndTag);
             vars.netDebtChange = vars.netDebtChange.add(vars.LUSDFee); // The raw debt change includes the fee
         }
 
@@ -324,7 +332,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         ILUSDToken lusdTokenCached = lusdToken;
 
         _requireTroveisActive(troveManagerCached, msg.sender);
-        uint price = priceFeed.fetchPrice();
+        uint price = getPriceFeed().fetchPrice();
         _requireNotInRecoveryMode(price);
 
         troveManagerCached.applyPendingRewards(msg.sender);
@@ -360,17 +368,35 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
 
     // --- Helper functions ---
 
-    function _triggerBorrowingFee(ITroveManager _troveManager, ILUSDToken _lusdToken, uint _LUSDAmount, uint _maxFeePercentage) internal returns (uint) {
+    function _triggerBorrowingFee(ITroveManager _troveManager, ILUSDToken _lusdToken, uint _LUSDAmount, uint _maxFeePercentage, address _frontEndTag) internal returns (uint) {
         _troveManager.decayBaseRateFromBorrowing(); // decay the baseRate state variable
         uint LUSDFee = _troveManager.getBorrowingFee(_LUSDAmount);
 
         _requireUserAcceptsFee(LUSDFee, _LUSDAmount, _maxFeePercentage);
-        
-        // Send fee to LQTY staking contract
-        lqtyStaking.increaseF_LUSD(LUSDFee);
-        _lusdToken.mint(lqtyStakingAddress, LUSDFee);
+
+        if (LUSDFee > 0) {
+            uint feeForEcosystemFund = LUSDFee;
+            
+            if (_frontEndTag != address(0)) {
+                feeForEcosystemFund = LUSDFee.mul(50).div(100);
+                uint _fee = LUSDFee.sub(feeForEcosystemFund);
+                emit PaidLUSDBorrowingFeeToFrontEnd(_frontEndTag, _fee);
+                _lusdToken.mint(_frontEndTag, _fee);
+            }
+
+            _sendFeeToEcosystemFund(_lusdToken, feeForEcosystemFund);
+        }
 
         return LUSDFee;
+    }
+
+    function _sendFeeToEcosystemFund(ILUSDToken _lusdToken, uint _LUSDFee) internal {
+        IEcosystemFund ecosystemFund = governance.getEcosystemFund();
+
+        _lusdToken.mint(address(this), _LUSDFee);
+        _lusdToken.approve(address(ecosystemFund), _LUSDFee);
+        emit PaidLUSDBorrowingFeeToEcosystemFund(address(ecosystemFund), _LUSDFee);
+        ecosystemFund.deposit(address(_lusdToken), _LUSDFee, "Borrowing fee triggered");
     }
 
     function _getUSDValue(uint _coll, uint _price) internal pure returns (uint) {
@@ -530,6 +556,20 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
             _vars.newTCR = _getNewTCRFromTroveChange(_vars.collChange, _vars.isCollIncrease, _vars.netDebtChange, _isDebtIncrease, _vars.price);
             _requireNewTCRisAboveCCR(_vars.newTCR);  
         }
+    }
+
+    function _requireFrontEndNotRegistered(address _address) internal view {
+        require(
+            !frontEnds[_address],
+            "BorrowerOperations: Must not already be a registered front end"
+        );
+    }
+
+    function _requireFrontEndIsRegisteredOrZero(address _address) internal view {
+        require(
+            frontEnds[_address] || _address == address(0),
+            "BorrowerOperations: Tag must be a registered front end, or the 0x0"
+        );
     }
 
     function _requireICRisAboveMCR(uint _newICR) internal pure {
