@@ -13,7 +13,7 @@ interface IBorrowerOperations {
     event StabilityPoolAddressChanged(address _stabilityPoolAddress);
     event GasPoolAddressChanged(address _gasPoolAddress);
     event CollSurplusPoolAddressChanged(address _collSurplusPoolAddress);
-    event PriceFeedAddressChanged(address  _newPriceFeedAddress);
+    event GovernanceAddressChanged(address  _newGovernanceAddress);
     event SortedTrovesAddressChanged(address _sortedTrovesAddress);
     event LUSDTokenAddressChanged(address _lusdTokenAddress);
     event LQTYStakingAddressChanged(address _lqtyStakingAddress);
@@ -31,7 +31,7 @@ interface IBorrowerOperations {
         address _stabilityPoolAddress,
         address _gasPoolAddress,
         address _collSurplusPoolAddress,
-        address _priceFeedAddress,
+        address _governanceAddress,
         address _sortedTrovesAddress,
         address _lusdTokenAddress,
         address _lqtyStakingAddress

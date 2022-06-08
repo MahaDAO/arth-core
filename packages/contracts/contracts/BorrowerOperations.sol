@@ -84,7 +84,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
     event StabilityPoolAddressChanged(address _stabilityPoolAddress);
     event GasPoolAddressChanged(address _gasPoolAddress);
     event CollSurplusPoolAddressChanged(address _collSurplusPoolAddress);
-    event PriceFeedAddressChanged(address  _newPriceFeedAddress);
+    event GovernanceAddressChanged(address  _newGovernancedAddress);
     event SortedTrovesAddressChanged(address _sortedTrovesAddress);
     event LUSDTokenAddressChanged(address _lusdTokenAddress);
     event LQTYStakingAddressChanged(address _lqtyStakingAddress);
@@ -102,7 +102,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         address _stabilityPoolAddress,
         address _gasPoolAddress,
         address _collSurplusPoolAddress,
-        address _priceFeedAddress,
+        address _governanceAddress,
         address _sortedTrovesAddress,
         address _lusdTokenAddress,
         address _lqtyStakingAddress
@@ -120,7 +120,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         checkContract(_stabilityPoolAddress);
         checkContract(_gasPoolAddress);
         checkContract(_collSurplusPoolAddress);
-        checkContract(_priceFeedAddress);
+        checkContract(_governanceAddress);
         checkContract(_sortedTrovesAddress);
         checkContract(_lusdTokenAddress);
         checkContract(_lqtyStakingAddress);
@@ -131,7 +131,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         stabilityPoolAddress = _stabilityPoolAddress;
         gasPoolAddress = _gasPoolAddress;
         collSurplusPool = ICollSurplusPool(_collSurplusPoolAddress);
-        priceFeed = IPriceFeed(_priceFeedAddress);
+        governance = IGovernance(_governanceAddress);
         sortedTroves = ISortedTroves(_sortedTrovesAddress);
         lusdToken = ILUSDToken(_lusdTokenAddress);
         lqtyStakingAddress = _lqtyStakingAddress;
@@ -143,7 +143,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         emit StabilityPoolAddressChanged(_stabilityPoolAddress);
         emit GasPoolAddressChanged(_gasPoolAddress);
         emit CollSurplusPoolAddressChanged(_collSurplusPoolAddress);
-        emit PriceFeedAddressChanged(_priceFeedAddress);
+        emit GovernanceAddressChanged(_governanceAddress);
         emit SortedTrovesAddressChanged(_sortedTrovesAddress);
         emit LUSDTokenAddressChanged(_lusdTokenAddress);
         emit LQTYStakingAddressChanged(_lqtyStakingAddress);
@@ -157,7 +157,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         ContractsCache memory contractsCache = ContractsCache(troveManager, activePool, lusdToken);
         LocalVariables_openTrove memory vars;
 
-        vars.price = priceFeed.fetchPrice();
+        vars.price = getPriceFeed().fetchPrice();
         bool isRecoveryMode = _checkRecoveryMode(vars.price);
 
         _requireValidMaxFeePercentage(_maxFeePercentage, isRecoveryMode);
@@ -250,7 +250,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         ContractsCache memory contractsCache = ContractsCache(troveManager, activePool, lusdToken);
         LocalVariables_adjustTrove memory vars;
 
-        vars.price = priceFeed.fetchPrice();
+        vars.price = getPriceFeed().fetchPrice();
         bool isRecoveryMode = _checkRecoveryMode(vars.price);
 
         if (_isDebtIncrease) {
@@ -324,7 +324,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         ILUSDToken lusdTokenCached = lusdToken;
 
         _requireTroveisActive(troveManagerCached, msg.sender);
-        uint price = priceFeed.fetchPrice();
+        uint price = getPriceFeed().fetchPrice();
         _requireNotInRecoveryMode(price);
 
         troveManagerCached.applyPendingRewards(msg.sender);

@@ -14,7 +14,7 @@ import "./BorrowerOperationsScript.sol";
 import "./ETHTransferScript.sol";
 import "./LQTYStakingScript.sol";
 import "../Dependencies/console.sol";
-
+import "../Interfaces/IGovernance.sol";
 
 contract BorrowerWrappersScript is BorrowerOperationsScript, ETHTransferScript, LQTYStakingScript {
     using SafeMath for uint;
@@ -23,7 +23,6 @@ contract BorrowerWrappersScript is BorrowerOperationsScript, ETHTransferScript, 
 
     ITroveManager immutable troveManager;
     IStabilityPool immutable stabilityPool;
-    IPriceFeed immutable priceFeed;
     IERC20 immutable lusdToken;
     IERC20 immutable lqtyToken;
     ILQTYStaking immutable lqtyStaking;
@@ -44,10 +43,6 @@ contract BorrowerWrappersScript is BorrowerOperationsScript, ETHTransferScript, 
         IStabilityPool stabilityPoolCached = troveManagerCached.stabilityPool();
         checkContract(address(stabilityPoolCached));
         stabilityPool = stabilityPoolCached;
-
-        IPriceFeed priceFeedCached = troveManagerCached.priceFeed();
-        checkContract(address(priceFeedCached));
-        priceFeed = priceFeedCached;
 
         address lusdTokenCached = address(troveManagerCached.lusdToken());
         checkContract(lusdTokenCached);
@@ -142,6 +137,8 @@ contract BorrowerWrappersScript is BorrowerOperationsScript, ETHTransferScript, 
     }
 
     function _getNetLUSDAmount(uint _collateral) internal returns (uint) {
+        IGovernance governance = troveManager.governance();
+        IPriceFeed priceFeed = governance.getPriceFeed();
         uint price = priceFeed.fetchPrice();
         uint ICR = troveManager.getCurrentICR(address(this), price);
 

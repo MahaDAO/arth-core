@@ -8,6 +8,7 @@ import "../Interfaces/IActivePool.sol";
 import "../Interfaces/IDefaultPool.sol";
 import "../Interfaces/IPriceFeed.sol";
 import "../Interfaces/ILiquityBase.sol";
+import "../Interfaces/IGovernance.sol";
 
 /* 
 * Base contract for TroveManager, BorrowerOperations and StabilityPool. Contains global system constants and
@@ -39,7 +40,7 @@ contract LiquityBase is BaseMath, ILiquityBase {
 
     IDefaultPool public defaultPool;
 
-    IPriceFeed public override priceFeed;
+    IGovernance public override governance;
 
     // --- Gas compensation functions ---
 
@@ -62,6 +63,10 @@ contract LiquityBase is BaseMath, ILiquityBase {
         uint liquidatedColl = defaultPool.getETH();
 
         return activeColl.add(liquidatedColl);
+    }
+
+    function getPriceFeed() public view returns (IPriceFeed priceFeed) {
+        return governance.getPriceFeed();
     }
 
     function getEntireSystemDebt() public view returns (uint entireSystemDebt) {
