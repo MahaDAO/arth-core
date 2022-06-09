@@ -15,7 +15,7 @@ const waitFunction = async () => {
     return delay(90000) // wait 90s
 }
 
-const GAS_PRICE = 100 * 1000000000 // 6 Gwei
+const GAS_PRICE = 5 * 1000000000 // 5 Gwei
 const TX_CONFIRMATIONS = 1
 
 const EXPLORER_BASE_URL = "https://testnet.bscscan.com/address"
