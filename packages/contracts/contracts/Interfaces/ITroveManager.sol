@@ -21,7 +21,6 @@ interface ITroveManager is ILiquityBase {
     event GasPoolAddressChanged(address _gasPoolAddress);
     event CollSurplusPoolAddressChanged(address _collSurplusPoolAddress);
     event SortedTrovesAddressChanged(address _sortedTrovesAddress);
-    event WrappedETHAddressChanged(address _wrappedETHAddress);
 
     event Liquidation(uint _liquidatedDebt, uint _liquidatedColl, uint _collGasCompensation, uint _LUSDGasCompensation);
     event Redemption(uint _attemptedLUSDAmount, uint _actualLUSDAmount, uint _ETHSent, uint _ETHFee);
@@ -48,8 +47,7 @@ interface ITroveManager is ILiquityBase {
         address _collSurplusPoolAddress,
         address _governanceAddress,
         address _lusdTokenAddress,
-        address _sortedTrovesAddress,
-        address _wrappedETHAddress
+        address _sortedTrovesAddress
     ) external;
 
     function stabilityPool() external view returns (IStabilityPool);

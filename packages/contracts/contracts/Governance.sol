@@ -2,6 +2,7 @@
 
 pragma solidity 0.6.11;
 
+import "./Dependencies/IWETH.sol";
 import "./Dependencies/IERC20.sol";
 import "./Dependencies/Ownable.sol";
 import "./Dependencies/BaseMath.sol";
@@ -16,6 +17,7 @@ contract Governance is BaseMath, Ownable, IGovernance {
 
     // --- Data ---
 
+    address public immutable activePoolAddress;
     address public immutable troveManagerAddress;
 
     uint private stabilityFeePercentage = 0;
@@ -27,6 +29,8 @@ contract Governance is BaseMath, Ownable, IGovernance {
     IOracle private stabilityTokenOracle;
     IBurnableERC20 private stabilityFeeToken;
 
+    IWETH private immutable wrappedETH;
+
     // --- Events ---
 
     event StabilityFeePercentageChanged(uint256 oldValue, uint256 newValue, uint256 timestamp);
@@ -35,15 +39,20 @@ contract Governance is BaseMath, Ownable, IGovernance {
     event StabilityTokenOracleChanged(address oldAddress, address newAddress, uint256 timestamp);
     event StabilityFeeCharged(uint256 LUSDAmount, uint256 feeAmount, uint256 timestamp);
     event EcosystemFundAddressChanged(address oldAddress, address newAddress, uint256 timestamp);
+    event SentToEcosystemFund(uint256 amount, uint256 timestamp, string reason);
 
     constructor(
-        address _governance, 
-        address _troveManagerAddress, 
+        address _governance,
+        address _activePoolAddress,
+        address _troveManagerAddress,
         address _priceFeed, 
-        address _ecosystemFund
+        address _ecosystemFund,
+        address _wrappedETHAddress
     ) public {
+        activePoolAddress = _activePoolAddress;
         troveManagerAddress = _troveManagerAddress;
-        
+
+        wrappedETH = IWETH(_wrappedETHAddress);
         priceFeed = IPriceFeed(_priceFeed);
         ecosystemFund = IEcosystemFund(_ecosystemFund);
 
@@ -128,9 +137,32 @@ contract Governance is BaseMath, Ownable, IGovernance {
         }
     }
 
+    function sendRedeemFeeToEcosystemFund(uint256 _ETHFee) external override {
+        _requireCallerIsTroveManager();
+        require(
+            address(this).balance >= _ETHFee,
+            "Governance: not enough ETH fee balance"
+        ); // TroveManager should already send ETH via active pool to this contract.
+
+        wrappedETH.deposit{ value: _ETHFee }();
+        wrappedETH.approve(address(ecosystemFund), _ETHFee);
+        ecosystemFund.deposit(address(wrappedETH), _ETHFee, "Redeem fee triggered");
+        emit SentToEcosystemFund(_ETHFee, block.timestamp, "Redeem fee triggered");
+    }
+
     // --- Governance require functions ---
 
     function _requireCallerIsTroveManager() internal view {
         require(msg.sender == troveManagerAddress, "Governance: Caller is not TroveManager");
+    }
+
+    function _requireCallerIsActivePool() internal view {
+        require(msg.sender == activePoolAddress, "Governance: Caller is not ActivePool");
+    }
+
+    // --- Fallback function ---
+
+    receive() external payable {
+        _requireCallerIsActivePool();
     }
 }

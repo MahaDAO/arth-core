@@ -11,7 +11,6 @@ import "./Dependencies/LiquityBase.sol";
 import "./Dependencies/Ownable.sol";
 import "./Dependencies/CheckContract.sol";
 import "./Dependencies/console.sol";
-import "./Dependencies/IWETH.sol";
 
 contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
     string constant public NAME = "TroveManager";
@@ -30,8 +29,6 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
 
     // A doubly linked list of Troves, sorted by their sorted by their collateral ratios
     ISortedTroves public sortedTroves;
-
-    IWETH public wrappedETH;
 
     // --- Data structures ---
 
@@ -204,7 +201,6 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
     event GasPoolAddressChanged(address _gasPoolAddress);
     event CollSurplusPoolAddressChanged(address _collSurplusPoolAddress);
     event SortedTrovesAddressChanged(address _sortedTrovesAddress);
-    event WrappedETHAddressChanged(address _wrappedETHAddress);
 
     event Liquidation(uint _liquidatedDebt, uint _liquidatedColl, uint _collGasCompensation, uint _LUSDGasCompensation);
     event Redemption(uint _attemptedLUSDAmount, uint _actualLUSDAmount, uint _ETHSent, uint _ETHFee);
@@ -239,8 +235,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         address _collSurplusPoolAddress,
         address _governanceAddress,
         address _lusdTokenAddress,
-        address _sortedTrovesAddress,
-        address _wrappedETHAddress
+        address _sortedTrovesAddress
     )
         external
         override
@@ -255,7 +250,6 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         checkContract(_governanceAddress);
         checkContract(_lusdTokenAddress);
         checkContract(_sortedTrovesAddress);
-        checkContract(_wrappedETHAddress);
 
         borrowerOperationsAddress = _borrowerOperationsAddress;
         activePool = IActivePool(_activePoolAddress);
@@ -266,7 +260,6 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         governance = IGovernance(_governanceAddress);
         lusdToken = ILUSDToken(_lusdTokenAddress);
         sortedTroves = ISortedTroves(_sortedTrovesAddress);
-        wrappedETH = IWETH(_wrappedETHAddress);
 
         emit BorrowerOperationsAddressChanged(_borrowerOperationsAddress);
         emit ActivePoolAddressChanged(_activePoolAddress);
@@ -277,7 +270,6 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         emit GovernanceAddressChanged(_governanceAddress);
         emit LUSDTokenAddressChanged(_lusdTokenAddress);
         emit SortedTrovesAddressChanged(_sortedTrovesAddress);
-        emit WrappedETHAddressChanged(_wrappedETHAddress);
 
         _renounceOwnership();
     }
@@ -1002,8 +994,9 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
 
         _requireUserAcceptsFee(totals.ETHFee, totals.totalETHDrawn, _maxFeePercentage);
 
-        // Send the ETH fee to the Ecosytem fund contract.
-        _sendETHFeeToEcosystemFund(contractsCache.activePool, contractsCache.governance, totals.ETHFee);
+        // Send the ETH fee to the Governance contract, which will then forward it to Ecosystem Fund.
+        contractsCache.activePool.sendETH(address(contractsCache.governance), totals.ETHFee);
+        contractsCache.governance.sendRedeemFeeToEcosystemFund(totals.ETHFee);
 
         totals.ETHToSendToRedeemer = totals.totalETHDrawn.sub(totals.ETHFee);
 
@@ -1020,19 +1013,6 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
     }
 
     // --- Helper functions ---
-
-    function _sendETHFeeToEcosystemFund(IActivePool _activePool, IGovernance _governance, uint _ETHFee) internal {
-        IEcosystemFund ecosystemFund = _governance.getEcosystemFund();
-        IWETH wrappedETHCached = wrappedETH;
-        // Get ETH from active pool to this contract.
-        _activePool.sendETH(address(this), _ETHFee);
-        // Deposit ETH to WETH.
-        wrappedETHCached.deposit{ value: _ETHFee }();
-        // Approve and deposit WETH in the Ecosystem Fund.
-        wrappedETHCached.approve(address(ecosystemFund), _ETHFee);
-        emit PaidETHFeeToEcosystemFund(address(ecosystemFund), _ETHFee);
-        ecosystemFund.deposit(address(wrappedETHCached), _ETHFee, "Redeem fee triggered");
-    }
 
     // Return the nominal collateral ratio (ICR) of a given Trove, without the price. Takes a trove's pending coll and debt rewards from redistributions into account.
     function getNominalICR(address _borrower) public view override returns (uint) {
@@ -1483,10 +1463,6 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
 
     // --- 'require' wrapper functions ---
 
-    function _requireCallerIsActivePool() internal view {
-        require(msg.sender == address(activePool), "TroveManager: Caller is not ActivePool");
-    }
-
     function _requireCallerIsBorrowerOperations() internal view {
         require(msg.sender == borrowerOperationsAddress, "TroveManager: Caller is not the BorrowerOperations contract");
     }
@@ -1581,11 +1557,5 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         uint newDebt = Troves[_borrower].debt.sub(_debtDecrease);
         Troves[_borrower].debt = newDebt;
         return newDebt;
-    }
-
-    // --- Fallback function ---
-
-    receive() external payable {
-        _requireCallerIsActivePool();
     }
 }

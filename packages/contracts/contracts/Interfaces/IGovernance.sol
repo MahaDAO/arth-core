@@ -22,6 +22,7 @@ interface IGovernance {
     event StabilityTokenOracleChanged(address oldAddress, address newAddress, uint256 timestamp);
     event StabilityFeeCharged(uint256 LUSDAmount, uint256 feeAmount, uint256 timestamp);
     event EcosystemFundAddressChanged(address oldAddress, address newAddress, uint256 timestamp);
+    event SentRedeemFeeToEcosystemFund(uint256 amount, uint256 timestamp, string reason);
 
     // --- Functions ---
     
@@ -46,4 +47,6 @@ interface IGovernance {
     function setStabilityFeePercentage(uint256 _stabilityFeePercentage) external;
 
     function setStabilityFeeToken(address _token, address _oracle) external;
+
+    function sendRedeemFeeToEcosystemFund(uint256 amount) external;
 }
