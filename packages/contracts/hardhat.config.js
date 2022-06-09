@@ -95,11 +95,11 @@ module.exports = {
         },
         bscTestnet: {
             url: "https://data-seed-prebsc-1-s1.binance.org:8545/",
-            accounts: [getSecret("BSC_DEPLOYER_PRIVATEKEY")]
+            accounts: [getSecret("BSC_DEPLOYER_PRIVATEKEY"), getSecret("ACCOUNT2_PRIVATEKEY")]
         },
         bsc: {
             url: "https://bsc-dataseed.binance.org/",
-            accounts: [getSecret("BSC_DEPLOYER_PRIVATEKEY")]
+            accounts: [getSecret("BSC_DEPLOYER_PRIVATEKEY"), getSecret("ACCOUNT2_PRIVATEKEY")]
         },
     },
     etherscan: {
