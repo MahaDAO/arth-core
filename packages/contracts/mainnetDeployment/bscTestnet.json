@@ -1,0 +1,10 @@
+{
+  "PriceFeed": {
+    "address": "0xcd8ec6471FD255f87c8B3c2231930b658c43449B",
+    "txHash": "0xf7c884e58b507065670dd9454a46be467dd76d495e3a33f728e86b6bdd066cbc"
+  },
+  "SortedTroves": {
+    "address": "0x479286FE10F0232b26f9b2d36af4a79a2E98ECDe",
+    "txHash": "0xddc107b561ea132e84e80bbcbe7e5307a5b1a545ca6981f61d39b49cba1e1b40"
+  }
+}
