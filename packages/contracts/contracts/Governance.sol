@@ -2,7 +2,6 @@
 
 pragma solidity 0.6.11;
 
-import "./Dependencies/IWETH.sol";
 import "./Dependencies/IERC20.sol";
 import "./Dependencies/Ownable.sol";
 import "./Dependencies/BaseMath.sol";
@@ -18,7 +17,6 @@ contract Governance is BaseMath, Ownable, IGovernance {
     // --- Data ---
 
     address public immutable troveManagerAddress;
-    address public immutable borrowerOperationAddress;
 
     uint private stabilityFeePercentage = 0;
     uint private constant _100pct = 1000000000000000000; // 1e18 == 100%
@@ -29,8 +27,6 @@ contract Governance is BaseMath, Ownable, IGovernance {
     IOracle private stabilityTokenOracle;
     IBurnableERC20 private stabilityFeeToken;
 
-    IWETH private immutable wrappedETH;
-
     // --- Events ---
 
     event StabilityFeePercentageChanged(uint256 oldValue, uint256 newValue, uint256 timestamp);
@@ -39,20 +35,15 @@ contract Governance is BaseMath, Ownable, IGovernance {
     event StabilityTokenOracleChanged(address oldAddress, address newAddress, uint256 timestamp);
     event StabilityFeeCharged(uint256 LUSDAmount, uint256 feeAmount, uint256 timestamp);
     event EcosystemFundAddressChanged(address oldAddress, address newAddress, uint256 timestamp);
-    event SentToEcosystemFund(address token, uint256 amount, uint256 timestamp, string reason);
 
     constructor(
         address _governance, 
         address _troveManagerAddress, 
-        address _borrowerOperationAddress, 
         address _priceFeed, 
-        address _ecosystemFund,
-        address _wrappedETH
+        address _ecosystemFund
     ) public {
         troveManagerAddress = _troveManagerAddress;
-        borrowerOperationAddress = _borrowerOperationAddress;
         
-        wrappedETH = IWETH(_wrappedETH);
         priceFeed = IPriceFeed(_priceFeed);
         ecosystemFund = IEcosystemFund(_ecosystemFund);
 
@@ -142,15 +133,4 @@ contract Governance is BaseMath, Ownable, IGovernance {
     function _requireCallerIsTroveManager() internal view {
         require(msg.sender == troveManagerAddress, "Governance: Caller is not TroveManager");
     }
-
-    function _requireCallerIsBOorTroveM() internal view {
-        require(
-            msg.sender == borrowerOperationAddress || msg.sender == troveManagerAddress,
-            "Governance: Caller is neither BorrowerOperations nor TroveManager"
-        );
-    }
-
-    // --- Fallback functions ---
-
-    receive() external payable {}
 }
