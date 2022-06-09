@@ -19,7 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@openzeppelin/contracts": "4.6.0",
+    "@openzeppelin/contracts": "3.4.1",
     "decimal.js": "^10.2.0",
     "eth-mutants": "^0.1.1",
     "ethereumjs-util": "^7.0.9",
