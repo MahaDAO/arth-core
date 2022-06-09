@@ -33,7 +33,7 @@ interface ITroveManager is ILiquityBase {
     event LTermsUpdated(uint _L_ETH, uint _L_LUSDDebt);
     event TroveSnapshotsUpdated(uint _L_ETH, uint _L_LUSDDebt);
     event TroveIndexUpdated(address _borrower, uint _newIndex);
-    event PaidETHFeeToEcosystemFund(address indexed _ecosystemFund, uint _ETHFee);
+    event PaidETHFeeToEcosystemFund(uint _ETHFee);
     event StabilityFeeCharged(address indexed _borrower, uint _LUSDamount);
 
     // --- Functions ---
