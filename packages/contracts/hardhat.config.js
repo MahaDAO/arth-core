@@ -3,6 +3,7 @@ require("@nomiclabs/hardhat-ethers");
 require("@nomiclabs/hardhat-etherscan");
 require("solidity-coverage");
 require("hardhat-gas-reporter");
+require('hardhat-abi-exporter');
 
 const accounts = require("./hardhatAccountsList2k.js");
 const accountsList = accounts.accountsList
@@ -95,11 +96,11 @@ module.exports = {
         },
         bscTestnet: {
             url: "https://data-seed-prebsc-1-s1.binance.org:8545/",
-            accounts: [getSecret("BSC_DEPLOYER_PRIVATEKEY")]
+            accounts: [getSecret("BSC_DEPLOYER_PRIVATEKEY"), getSecret("ACCOUNT2_PRIVATEKEY")]
         },
         bsc: {
             url: "https://bsc-dataseed.binance.org/",
-            accounts: [getSecret("BSC_DEPLOYER_PRIVATEKEY")]
+            accounts: [getSecret("BSC_DEPLOYER_PRIVATEKEY"), getSecret("ACCOUNT2_PRIVATEKEY")]
         },
     },
     etherscan: {
@@ -119,5 +120,12 @@ module.exports = {
     },
     gasReporter: {
         enabled: (process.env.REPORT_GAS) ? true : false
+    },
+    abiExporter: {
+        path: './mainnetDeployment/jsonAbis/',
+        runOnCompile: true,
+        clear: true,
+        spacing: 2,
+        pretty: true
     }
 };
