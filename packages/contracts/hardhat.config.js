@@ -122,11 +122,10 @@ module.exports = {
         enabled: (process.env.REPORT_GAS) ? true : false
     },
     abiExporter: {
-        path: './mainnetDeployment/jsonAbis',
+        path: './mainnetDeployment/jsonAbis/',
         runOnCompile: true,
         clear: true,
-        flat: true,
         spacing: 2,
-        pretty: true,
+        pretty: true
     }
 };

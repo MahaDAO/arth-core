@@ -20,7 +20,7 @@ import "../Dependencies/console.sol";
 * switching oracles based on oracle failures, timeouts, and conditions for returning to the primary
 * Chainlink oracle.
 */
-contract PriceFeed is Ownable, CheckContract, BaseMath, IPriceFeed {
+contract LinkTellorPriceFeed is Ownable, CheckContract, BaseMath, IPriceFeed {
     using SafeMath for uint256;
 
     string constant public NAME = "PriceFeed";
