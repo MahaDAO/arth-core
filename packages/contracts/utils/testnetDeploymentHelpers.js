@@ -161,7 +161,7 @@ class TestDeploymentHelper {
         governanceParams
     )
 
-    if (!this.configParams.ETHERSCAN_BASE_URL) {
+    if (!this.configParams.EXPLORER_BASE_URL) {
       console.log('No Etherscan Url defined, skipping verification')
     } else {
       await this.verifyContract('PriceFeed', deploymentState)
@@ -195,7 +195,6 @@ class TestDeploymentHelper {
       collSurplusPool,
       borrowerOperations,
       hintHelpers,
-      tellorCaller,
       communityIssuance,
       multiTroveGetter,
       governance,
@@ -303,7 +302,7 @@ class TestDeploymentHelper {
     await this.sendAndWaitForTransaction(contracts.communityIssuance.setAddresses(
         contracts.mahaToken.address,
         contracts.stabilityPool.address,
-        1 * 24 * 60 * 60,
+        5 * 24 * 60 * 60,
 	{gasPrice}
       ))
   }
@@ -334,7 +333,7 @@ class TestDeploymentHelper {
       }
     }
 
-    deploymentState[name].verification = `${this.configParams.ETHERSCAN_BASE_URL}/${deploymentState[name].address}#code`
+    deploymentState[name].verification = `${this.configParams.EXPLORER_BASE_URL}/${deploymentState[name].address}#code`
 
     this.saveDeployment(deploymentState)
   }  

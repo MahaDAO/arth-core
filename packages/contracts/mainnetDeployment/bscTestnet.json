@@ -1,0 +1,66 @@
+{
+  "PriceFeed": {
+    "address": "0xAEBA459192163c73930fF167aa278317A6C05069",
+    "txHash": "0x73ca4cb272d1a6f1c71311c5da789bc5eb0f71548fcf05ffa98d9273ca668ee7"
+  },
+  "SortedTroves": {
+    "address": "0xfb1fd577afF2D5aAa894601556117D22fE6bE8ff",
+    "txHash": "0x1aaca714fc05a982ba2e2dad670d2dbe69bd8d2756426b77f4058735e594b784"
+  },
+  "TroveManager": {
+    "address": "0xA534B055cE06686a8B4A4aB0dcdD2b50896Fe960",
+    "txHash": "0x6f6c23213005665e590e9c731105ca5e969850cb9f662a74bd6e89bda1a43650"
+  },
+  "ActivePool": {
+    "address": "0xE45177B154A461f9c984b5CdF0EB3DA78C5E0F91",
+    "txHash": "0xaf88ca5bb2036ac56423ab91ec2235b3811d6aa58fff854f0d6a8a33796b8841"
+  },
+  "StabilityPool": {
+    "address": "0x6625f475793d3FA509f4bB7E1F2E124d575681a1",
+    "txHash": "0x1348c9229fa37af49da416b7e183dc8dfddfc54d05fd640d5a83f2aee7412fa8"
+  },
+  "GasPool": {
+    "address": "0x97e1CE64F91Da2ad2b938De468ab4F05d2Ed5298",
+    "txHash": "0x3249ec7f0a01dee04491b89dc0bf988b52894be7f43cd01caf94c4cd6264ff95"
+  },
+  "DefaultPool": {
+    "address": "0x8Ca724B94FfC890b413150B3cf5205B211c1244d",
+    "txHash": "0x2f20d30d16ca568450326902b37ace75504684437b018b56ab8216dedd4a71c0"
+  },
+  "CollSurplusPool": {
+    "address": "0x05897F08FFd3caAFc5fa806e39569cb006aEBCa2",
+    "txHash": "0x73ea9795817ad4bfee145efdd765c7b692edaa21b2b41bbebeca9ae4f1c33590"
+  },
+  "BorrowerOperations": {
+    "address": "0x8bF62bb71f707312FDc9Dc5C097EA1949b143500",
+    "txHash": "0x1ed4b1aa9d12258f2f754fbb4ef059ebc3ad25ddb248c7eb822625507f7b3e89"
+  },
+  "HintHelpers": {
+    "address": "0x804459092A763b9ab6a22a81b0FbB3ee6816c7E5",
+    "txHash": "0x9c0b5704cbe1310417a89e612332c6ee5b64fafb0787d839a1dba38486fe1004"
+  },
+  "CommunityIssuance": {
+    "address": "0x771BA563c100dca7c8F6DEBF45dC3661db57e451",
+    "txHash": "0x38c204d6a34d40f146a652e46a411941c04da7d477727be451a74d416fffc4c7"
+  },
+  "MAHA": {
+    "address": "0x120da5c69E7B00618AC648Da5ea33ec60aA210ed",
+    "txHash": "0x5fae0d548e603e0111860c1ad27a6f89b904303496ce7a249a748c459e6f9ba2"
+  },
+  "WrappedETH": {
+    "address": "0xdc47c7E8eF5268e1E4f0D55861b84D40040399fF",
+    "txHash": "0x6f51ad4b4e311dd8045c851caea675c312f38214d7917790c09c0716d7bc44d9"
+  },
+  "ARTH": {
+    "address": "0x7a9b68aa324dBA55049047FDC41A68EFBd956842",
+    "txHash": "0x7389c708a71b0d66a2fc936e12208e31a84f0bc11d621c46862f4904560205b7"
+  },
+  "MultiTroveGetter": {
+    "address": "0x11F705d44F66B7F3378CBb3D982F3f4856500aA7",
+    "txHash": "0x00998c18e35f152f7b213a9a9da00914ea46d5f57a3fcbb61bf137bafea26c30"
+  },
+  "Governance": {
+    "address": "0x6D4440c835995D28f6B9E699e53cA0520E803359",
+    "txHash": "0x4937da6208b97bbc8af264bdda0bb95b56d03196328e85f56cdfe1847eeafefd"
+  }
+}
