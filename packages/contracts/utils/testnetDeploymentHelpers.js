@@ -148,9 +148,11 @@ class TestDeploymentHelper {
 
     const governanceParams = [
         this.governanceWallet.address,
+        activePool.address,
         troveManager.address,
         priceFeed.address,
-        this.configParams.externalAddrs.ECOSYSTEM_FUND
+        this.configParams.externalAddrs.ECOSYSTEM_FUND,
+        wrappedETH.address
     ]
     const governance = await this.loadOrDeploy(
         governanceFactory,
@@ -229,7 +231,6 @@ class TestDeploymentHelper {
         contracts.governance.address,
         contracts.lusdToken.address,
         contracts.sortedTroves.address,
-        contracts.wrappedETH.address,
 	{gasPrice}
       ))
 
