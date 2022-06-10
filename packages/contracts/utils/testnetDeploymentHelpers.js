@@ -56,7 +56,7 @@ class TestDeploymentHelper {
     return minedTx
   }
 
-  async loadOrDeploy(factory, name, deploymentState, params=[]) {
+  async loadOrDeploy(factory, name, abiName, deploymentState, params=[]) {
     if (deploymentState[name] && deploymentState[name].address) {
       console.log(`Using previously deployed ${name} contract at address ${deploymentState[name].address}`)
       return new ethers.Contract(
@@ -70,6 +70,7 @@ class TestDeploymentHelper {
     await this.deployerWallet.provider.waitForTransaction(contract.deployTransaction.hash, this.configParams.TX_CONFIRMATIONS)
 
     deploymentState[name] = {
+      abi: abiName,
       address: contract.address,
       txHash: contract.deployTransaction.hash
     }
@@ -99,29 +100,29 @@ class TestDeploymentHelper {
     const mockWETHFactory = await this.getFactory("MockWETH")
 
     // Deploy txs.
-    const priceFeed = await this.loadOrDeploy(priceFeedFactory, 'PriceFeed', deploymentState)
-    const sortedTroves = await this.loadOrDeploy(sortedTrovesFactory, 'SortedTroves', deploymentState)
-    const troveManager = await this.loadOrDeploy(troveManagerFactory, 'TroveManager', deploymentState)
-    const activePool = await this.loadOrDeploy(activePoolFactory, 'ActivePool', deploymentState)
-    const stabilityPool = await this.loadOrDeploy(stabilityPoolFactory, 'StabilityPool', deploymentState)
-    const gasPool = await this.loadOrDeploy(gasPoolFactory, 'GasPool', deploymentState)
-    const defaultPool = await this.loadOrDeploy(defaultPoolFactory, 'DefaultPool', deploymentState)
-    const collSurplusPool = await this.loadOrDeploy(collSurplusPoolFactory, 'CollSurplusPool', deploymentState)
-    const borrowerOperations = await this.loadOrDeploy(borrowerOperationsFactory, 'BorrowerOperations', deploymentState)
-    const hintHelpers = await this.loadOrDeploy(hintHelpersFactory, 'HintHelpers', deploymentState)
-    const communityIssuance = await this.loadOrDeploy(communityIssuanceFactory, 'CommunityIssuance', deploymentState)
+    const priceFeed = await this.loadOrDeploy(priceFeedFactory, `${this.configParams.NATIVE_TOKEN_SYMBOL}PriceFeed`, 'PriceFeed', deploymentState)
+    const sortedTroves = await this.loadOrDeploy(sortedTrovesFactory, `${this.configParams.NATIVE_TOKEN_SYMBOL}SortedTroves`, 'SortedTroves', deploymentState)
+    const troveManager = await this.loadOrDeploy(troveManagerFactory,  `${this.configParams.NATIVE_TOKEN_SYMBOL}TroveManager`, 'TroveManager', deploymentState)
+    const activePool = await this.loadOrDeploy(activePoolFactory,  `${this.configParams.NATIVE_TOKEN_SYMBOL}ActivePool`, 'ActivePool', deploymentState)
+    const stabilityPool = await this.loadOrDeploy(stabilityPoolFactory, `${this.configParams.NATIVE_TOKEN_SYMBOL}StabilityPool`, 'StabilityPool', deploymentState)
+    const gasPool = await this.loadOrDeploy(gasPoolFactory, `${this.configParams.NATIVE_TOKEN_SYMBOL}GasPool`, 'GasPool', deploymentState)
+    const defaultPool = await this.loadOrDeploy(defaultPoolFactory, `${this.configParams.NATIVE_TOKEN_SYMBOL}DefaultPool`, 'DefaultPool', deploymentState)
+    const collSurplusPool = await this.loadOrDeploy(collSurplusPoolFactory, `${this.configParams.NATIVE_TOKEN_SYMBOL}CollSurplusPool`, 'CollSurplusPool', deploymentState)
+    const borrowerOperations = await this.loadOrDeploy(borrowerOperationsFactory, `${this.configParams.NATIVE_TOKEN_SYMBOL}BorrowerOperations`, 'BorrowerOperations', deploymentState)
+    const hintHelpers = await this.loadOrDeploy(hintHelpersFactory, `${this.configParams.NATIVE_TOKEN_SYMBOL}HintHelpers`, 'HintHelpers', deploymentState)
+    const communityIssuance = await this.loadOrDeploy(communityIssuanceFactory, `${this.configParams.NATIVE_TOKEN_SYMBOL}CommunityIssuance`, 'CommunityIssuance', deploymentState)
     
     const mahaTokenParams = [
       "MahaDAO",
       "MAHA"
     ]
-    const mahaToken = await this.loadOrDeploy(mockERC20Factory, "MAHA", deploymentState, mahaTokenParams);
+    const mahaToken = await this.loadOrDeploy(mockERC20Factory, "MAHA", "IERC20", deploymentState, mahaTokenParams);
 
     const wrappedETHParams = [
       this.configParams.WRAPPED_ETH.NAME,
       this.configParams.WRAPPED_ETH.SYMBOL
     ]
-    const wrappedETH = await this.loadOrDeploy(mockWETHFactory, "WrappedETH", deploymentState, wrappedETHParams);
+    const wrappedETH = await this.loadOrDeploy(mockWETHFactory, "WrappedETH", "IWETH", deploymentState, wrappedETHParams);
 
     const lusdTokenParams = [
       troveManager.address,
@@ -131,6 +132,7 @@ class TestDeploymentHelper {
     const lusdToken = await this.loadOrDeploy(
       lusdTokenFactory,
       'ARTH',
+      "LUSDToken",
       deploymentState,
       lusdTokenParams
     )
@@ -141,6 +143,7 @@ class TestDeploymentHelper {
     ]
     const multiTroveGetter = await this.loadOrDeploy(
         multiTroveGetterFactory,
+        `${this.configParams.NATIVE_TOKEN_SYMBOL}MultiTroveGetter`,
         'MultiTroveGetter',
         deploymentState,
         multiTroveGetterParams
@@ -156,6 +159,7 @@ class TestDeploymentHelper {
     ]
     const governance = await this.loadOrDeploy(
         governanceFactory,
+        `${this.configParams.NATIVE_TOKEN_SYMBOL}Governance`,
         "Governance",
         deploymentState,
         governanceParams
@@ -164,20 +168,20 @@ class TestDeploymentHelper {
     if (!this.configParams.EXPLORER_BASE_URL) {
       console.log('No Etherscan Url defined, skipping verification')
     } else {
-      await this.verifyContract('PriceFeed', deploymentState)
-      await this.verifyContract('SortedTroves', deploymentState)
-      await this.verifyContract('TroveManager', deploymentState)
-      await this.verifyContract('ActivePool', deploymentState)
-      await this.verifyContract('StabilityPool', deploymentState)
-      await this.verifyContract('GasPool', deploymentState)
-      await this.verifyContract('DefaultPool', deploymentState)
-      await this.verifyContract('CollSurplusPool', deploymentState)
-      await this.verifyContract('BorrowerOperations', deploymentState)
-      await this.verifyContract('HintHelpers', deploymentState)
+      await this.verifyContract(`${this.configParams.NATIVE_TOKEN_SYMBOL}PriceFeed`, deploymentState)
+      await this.verifyContract(`${this.configParams.NATIVE_TOKEN_SYMBOL}SortedTroves`, deploymentState)
+      await this.verifyContract(`${this.configParams.NATIVE_TOKEN_SYMBOL}TroveManager`, deploymentState)
+      await this.verifyContract(`${this.configParams.NATIVE_TOKEN_SYMBOL}ActivePool`, deploymentState)
+      await this.verifyContract(`${this.configParams.NATIVE_TOKEN_SYMBOL}StabilityPool`, deploymentState)
+      await this.verifyContract(`${this.configParams.NATIVE_TOKEN_SYMBOL}GasPool`, deploymentState)
+      await this.verifyContract(`${this.configParams.NATIVE_TOKEN_SYMBOL}DefaultPool`, deploymentState)
+      await this.verifyContract(`${this.configParams.NATIVE_TOKEN_SYMBOL}CollSurplusPool`, deploymentState)
+      await this.verifyContract(`${this.configParams.NATIVE_TOKEN_SYMBOL}BorrowerOperations`, deploymentState)
+      await this.verifyContract(`${this.configParams.NATIVE_TOKEN_SYMBOL}HintHelpers`, deploymentState)
       await this.verifyContract('ARTH', deploymentState, lusdTokenParams)
-      await this.verifyContract('CommunityIssuance', deploymentState)
-      await this.verifyContract('MultiTroveGetter', deploymentState, multiTroveGetterParams)
-      await this.verifyContract('Governance', deploymentState, governanceParams)
+      await this.verifyContract(`${this.configParams.NATIVE_TOKEN_SYMBOL}CommunityIssuance`, deploymentState)
+      await this.verifyContract(`${this.configParams.NATIVE_TOKEN_SYMBOL}MultiTroveGetter`, deploymentState, multiTroveGetterParams)
+      await this.verifyContract(`${this.configParams.NATIVE_TOKEN_SYMBOL}Governance`, deploymentState, governanceParams)
       await this.verifyContract('MAHA', deploymentState, mahaTokenParams)
       await this.verifyContract("WrappedETH", deploymentState, wrappedETHParams)
     }

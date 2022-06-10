@@ -15,10 +15,12 @@ const waitFunction = async () => {
     return delay(90000) // wait 90s
 }
 
-const GAS_PRICE = 5 * 1000000000 // 5 Gwei
+const GAS_PRICE = 50 * 1000000000 // 5 Gwei
 const TX_CONFIRMATIONS = 1
 
 const EXPLORER_BASE_URL = "https://testnet.bscscan.com/address"
+
+const NATIVE_TOKEN_SYMBOL = "BNB"
 
 const WRAPPED_ETH = {
     NAME: "Wrapped BNB",
@@ -33,5 +35,6 @@ module.exports = {
     GAS_PRICE,
     TX_CONFIRMATIONS,
     EXPLORER_BASE_URL,
-    WRAPPED_ETH
+    WRAPPED_ETH,
+    NATIVE_TOKEN_SYMBOL
 }
