@@ -28,8 +28,8 @@ contract LUSDToken is CheckContract, ILUSDToken {
     using SafeMath for uint256;
     
     uint256 private _totalSupply;
-    string constant internal _NAME = "LUSD Stablecoin";
-    string constant internal _SYMBOL = "LUSD";
+    string constant internal _NAME = "ARTH Valuecoin";
+    string constant internal _SYMBOL = "ARTH.bsc";
     string constant internal _VERSION = "1";
     uint8 constant internal _DECIMALS = 18;
     
@@ -181,13 +181,13 @@ contract LUSDToken is CheckContract, ILUSDToken {
         external 
         override 
     {            
-        require(deadline >= now, 'LUSD: expired deadline');
+        require(deadline >= now, 'ARTH: expired deadline');
         bytes32 digest = keccak256(abi.encodePacked('\x19\x01', 
                          domainSeparator(), keccak256(abi.encode(
                          _PERMIT_TYPEHASH, owner, spender, amount, 
                          _nonces[owner]++, deadline))));
         address recoveredAddress = ecrecover(digest, v, r, s);
-        require(recoveredAddress == owner, 'LUSD: invalid signature');
+        require(recoveredAddress == owner, 'ARTH: invalid signature');
         _approve(owner, spender, amount);
     }
 
@@ -249,18 +249,18 @@ contract LUSDToken is CheckContract, ILUSDToken {
         require(
             _recipient != address(0) && 
             _recipient != address(this),
-            "LUSD: Cannot transfer tokens directly to the LUSD token contract or the zero address"
+            "ARTH: Cannot transfer tokens directly to the LUSD token contract or the zero address"
         );
         require(
             _recipient != stabilityPoolAddress && 
             _recipient != troveManagerAddress && 
             _recipient != borrowerOperationsAddress, 
-            "LUSD: Cannot transfer tokens directly to the StabilityPool, TroveManager or BorrowerOps"
+            "ARTH: Cannot transfer tokens directly to the StabilityPool, TroveManager or BorrowerOps"
         );
     }
 
     function _requireCallerIsBorrowerOperations() internal view {
-        require(msg.sender == borrowerOperationsAddress, "LUSDToken: Caller is not BorrowerOperations");
+        require(msg.sender == borrowerOperationsAddress, "ARTH: Caller is not BorrowerOperations");
     }
 
     function _requireCallerIsBOorTroveMorSP() internal view {
@@ -268,7 +268,7 @@ contract LUSDToken is CheckContract, ILUSDToken {
             msg.sender == borrowerOperationsAddress ||
             msg.sender == troveManagerAddress ||
             msg.sender == stabilityPoolAddress,
-            "LUSD: Caller is neither BorrowerOperations nor TroveManager nor StabilityPool"
+            "ARTH: Caller is neither BorrowerOperations nor TroveManager nor StabilityPool"
         );
     }
 
@@ -279,7 +279,7 @@ contract LUSDToken is CheckContract, ILUSDToken {
     function _requireCallerIsTroveMorSP() internal view {
         require(
             msg.sender == troveManagerAddress || msg.sender == stabilityPoolAddress,
-            "LUSD: Caller is neither TroveManager nor StabilityPool");
+            "ARTH: Caller is neither TroveManager nor StabilityPool");
     }
 
     // --- Optional functions ---
