@@ -10,10 +10,12 @@
 /cache
 
 # Ethereum accounts for testing
-/accountsList.js 
+/accountsList.js
 
 # Exported function gas costs and test outputs
 /gasTest/outputs
+/deployment/outputs
+!/deployment/outputs/.gitkeep
 
 /secrets.js
 

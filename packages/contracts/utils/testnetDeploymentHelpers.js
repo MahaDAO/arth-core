@@ -316,7 +316,7 @@ class TestDeploymentHelper {
 
   // --- Connector methods ---
 
-  async connectCoreContractsMainnet(contracts, LQTYContracts, chainlinkProxyAddress) {
+  async connectCoreContractsMainnet(contracts, MAHAContracts, chainlinkProxyAddress) {
     const gasPrice = this.configParams.GAS_PRICE;
 
     // Set TroveManager addr in SortedTroves.

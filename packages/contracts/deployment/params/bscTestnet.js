@@ -9,7 +9,7 @@ const liquityAddrs = {
   DEPLOYER: "0x67c569F960C1Cc0B9a7979A851f5a67018c5A3b0"
 };
 
-const OUTPUT_FILE = "./mainnetDeployment/bscTestnet.json";
+const OUTPUT_FILE = "./deployment/output/bscTestnet.json";
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 const waitFunction = async () => {

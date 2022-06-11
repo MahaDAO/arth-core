@@ -9,13 +9,13 @@ const StabilityPool = artifacts.require("./StabilityPool.sol");
 const FunctionCaller = artifacts.require("./FunctionCaller.sol");
 const BorrowerOperations = artifacts.require("./BorrowerOperations.sol");
 
-const LQTYStaking = artifacts.require("./LQTY/LQTYStaking.sol");
-const LQTYToken = artifacts.require("./LQTY/LQTYToken.sol");
-const LockupContractFactory = artifacts.require("./LQTY/LockupContractFactory.sol");
-const CommunityIssuance = artifacts.require("./LQTY/CommunityIssuance.sol");
+const MAHAStaking = artifacts.require("./MAHA/MAHAStaking.sol");
+const MAHAToken = artifacts.require("./MAHA/MAHAToken.sol");
+const LockupContractFactory = artifacts.require("./MAHA/LockupContractFactory.sol");
+const CommunityIssuance = artifacts.require("./MAHA/CommunityIssuance.sol");
 const HintHelpers = artifacts.require("./HintHelpers.sol");
 
-const CommunityIssuanceTester = artifacts.require("./LQTY/CommunityIssuanceTester.sol");
+const CommunityIssuanceTester = artifacts.require("./MAHA/CommunityIssuanceTester.sol");
 const ActivePoolTester = artifacts.require("./ActivePoolTester.sol");
 const DefaultPoolTester = artifacts.require("./DefaultPoolTester.sol");
 const LiquityMathTester = artifacts.require("./LiquityMathTester.sol");
@@ -41,7 +41,7 @@ const coreContractABIs = [
   HintHelpers
 ];
 
-const LQTYContractABIs = [LQTYStaking, LQTYToken, LockupContractFactory, CommunityIssuance];
+const MAHAContractABIs = [MAHAStaking, MAHAToken, LockupContractFactory, CommunityIssuance];
 
 const TesterContractABIs = [
   CommunityIssuanceTester,
@@ -106,18 +106,18 @@ const logContractBytecodeLengths = contractABIs => {
 // Run script: log deployment gas costs and bytecode lengths for all contracts
 async function main() {
   const coreContracts = await dh.deployLiquityCoreHardhat();
-  const LQTYContracts = await dh.deployLQTYContractsHardhat(ARBITRARY_ADDRESS, ARBITRARY_ADDRESS);
+  const MAHAContracts = await dh.deployMAHAContractsHardhat(ARBITRARY_ADDRESS, ARBITRARY_ADDRESS);
   const testerContracts = await dh.deployTesterContractsHardhat();
 
-  await dh.connectCoreContracts(coreContracts, LQTYContracts);
-  await dh.connectLQTYContracts(LQTYContracts);
-  await dh.connectLQTYContractsToCore(LQTYContracts, coreContracts);
+  await dh.connectCoreContracts(coreContracts, MAHAContracts);
+  await dh.connectMAHAContracts(MAHAContracts);
+  await dh.connectMAHAContractsToCore(MAHAContracts, coreContracts);
 
   console.log(`\n`);
-  console.log(`LQTY CONTRACTS`);
-  await logContractDeploymentCosts(LQTYContracts);
+  console.log(`MAHA CONTRACTS`);
+  await logContractDeploymentCosts(MAHAContracts);
   console.log(`\n`);
-  logContractBytecodeLengths(LQTYContractABIs);
+  logContractBytecodeLengths(MAHAContractABIs);
   console.log(`\n`);
 
   console.log(`CORE CONTRACTS`);
