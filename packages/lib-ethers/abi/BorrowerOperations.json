@@ -42,6 +42,25 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_frontend",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "FrontEndRegistered",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": false,
         "internalType": "address",
         "name": "_gasPoolAddress",
@@ -57,11 +76,11 @@
       {
         "indexed": false,
         "internalType": "address",
-        "name": "_lqtyStakingAddress",
+        "name": "_newGovernanceAddress",
         "type": "address"
       }
     ],
-    "name": "LQTYStakingAddressChanged",
+    "name": "GovernanceAddressChanged",
     "type": "event"
   },
   {
@@ -119,13 +138,38 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
-        "name": "_newPriceFeedAddress",
+        "name": "_ecosystemFund",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_LUSDFee",
+        "type": "uint256"
       }
     ],
-    "name": "PriceFeedAddressChanged",
+    "name": "PaidLUSDBorrowingFeeToEcosystemFund",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_frontEndTag",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_LUSDFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "PaidLUSDBorrowingFeeToFrontEnd",
     "type": "event"
   },
   {
@@ -215,7 +259,7 @@
       },
       {
         "indexed": false,
-        "internalType": "enum BorrowerOperations.BorrowerOperation",
+        "internalType": "enum IBorrowerOperations.BorrowerOperation",
         "name": "operation",
         "type": "uint8"
       }
@@ -439,6 +483,25 @@
   {
     "inputs": [
       {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "frontEnds",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "uint256",
         "name": "_debt",
         "type": "uint256"
@@ -483,38 +546,38 @@
   },
   {
     "inputs": [],
+    "name": "getPriceFeed",
+    "outputs": [
+      {
+        "internalType": "contract IPriceFeed",
+        "name": "priceFeed",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "governance",
+    "outputs": [
+      {
+        "internalType": "contract IGovernance",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "isOwner",
     "outputs": [
       {
         "internalType": "bool",
         "name": "",
         "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "lqtyStaking",
-    "outputs": [
-      {
-        "internalType": "contract ILQTYStaking",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "lqtyStakingAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -577,6 +640,11 @@
         "internalType": "address",
         "name": "_lowerHint",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_frontEndTag",
+        "type": "address"
       }
     ],
     "name": "openTrove",
@@ -599,15 +667,9 @@
   },
   {
     "inputs": [],
-    "name": "priceFeed",
-    "outputs": [
-      {
-        "internalType": "contract IPriceFeed",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
+    "name": "registerFrontEnd",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -667,7 +729,7 @@
       },
       {
         "internalType": "address",
-        "name": "_priceFeedAddress",
+        "name": "_governanceAddress",
         "type": "address"
       },
       {
@@ -678,11 +740,6 @@
       {
         "internalType": "address",
         "name": "_lusdTokenAddress",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_lqtyStakingAddress",
         "type": "address"
       }
     ],
@@ -702,6 +759,19 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
