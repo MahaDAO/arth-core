@@ -1,6 +1,6 @@
 const { TestHelper: th } = require("../utils/testHelpers.js");
 const { ethers } = require("hardhat");
-const MainnetDeploymentHelper = require("../utils/mainnetDeploymentHelpers.js");
+const deploymentHelper = require("./deploymentHelpers.js");
 const hre = require("hardhat");
 
 const bscTestnetParams = require("./params/bscTestnet");
@@ -11,7 +11,7 @@ async function deploy(configParams) {
   console.log("now", date.toUTCString());
 
   const deployerWallet = (await ethers.getSigners())[0];
-  const mdh = new MainnetDeploymentHelper(configParams, deployerWallet);
+  const mdh = new deploymentHelper(configParams, deployerWallet);
 
   const deploymentState = mdh.loadPreviousDeployment();
 
