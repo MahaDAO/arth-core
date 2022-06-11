@@ -87,7 +87,7 @@ module.exports = {
       gasPrice: 50 * 1000000000 // 5.1 gwei
     },
     bscTestnet: {
-      url: "https://data-seed-prebsc-1-s1.binance.org:8545/",
+      url: "https://data-seed-prebsc-1-s3.binance.org:8545",
       accounts: [getSecret("DEPLOYER_PRIVATEKEY")]
     },
     bsc: {

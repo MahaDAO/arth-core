@@ -47,11 +47,13 @@ class MainnetDeploymentHelper {
       );
     }
 
+    console.log("deploying", name);
     const contract = await factory.deploy(...params, { gasPrice: this.configParams.GAS_PRICE });
     await this.deployerWallet.provider.waitForTransaction(
       contract.deployTransaction.hash,
       this.configParams.TX_CONFIRMATIONS
     );
+    console.log("deployed", name, "to", contract.address);
 
     deploymentState[name] = {
       abi: abiName,
