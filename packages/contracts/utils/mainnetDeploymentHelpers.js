@@ -27,21 +27,15 @@ class MainnetDeploymentHelper {
   // --- Deployer methods ---
 
   async getFactory(name) {
-    const factory = await ethers.getContractFactory(name, this.deployerWallet);
-    return factory;
+    return await ethers.getContractFactory(name, this.deployerWallet);
   }
 
   async sendAndWaitForTransaction(txPromise) {
     const tx = await txPromise;
-    const minedTx = await ethers.provider.waitForTransaction(
-      tx.hash,
-      this.configParams.TX_CONFIRMATIONS
-    );
-
-    return minedTx;
+    return await ethers.provider.waitForTransaction(tx.hash, this.configParams.TX_CONFIRMATIONS);
   }
 
-  async loadOrDeploy(factory, name, deploymentState, params = []) {
+  async loadOrDeploy(factory, name, abiName, deploymentState, params = []) {
     if (deploymentState[name] && deploymentState[name].address) {
       console.log(
         `Using previously deployed ${name} contract at address ${deploymentState[name].address}`
@@ -60,6 +54,7 @@ class MainnetDeploymentHelper {
     );
 
     deploymentState[name] = {
+      abi: abiName,
       address: contract.address,
       txHash: contract.deployTransaction.hash
     };
@@ -69,9 +64,10 @@ class MainnetDeploymentHelper {
     return contract;
   }
 
-  async deployLiquityCoreMainnet(tellorMasterAddr, deploymentState) {
+  async deployLiquityCoreMainnet(deploymentState) {
     // Get contract factories
-    const priceFeedFactory = await this.getFactory("PriceFeed");
+    const mockOracleFactory = await this.getFactory("MockOracle");
+    const mockERC20Factory = await this.getFactory("MockERC20");
     const sortedTrovesFactory = await this.getFactory("SortedTroves");
     const troveManagerFactory = await this.getFactory("TroveManager");
     const activePoolFactory = await this.getFactory("ActivePool");
@@ -81,79 +77,193 @@ class MainnetDeploymentHelper {
     const collSurplusPoolFactory = await this.getFactory("CollSurplusPool");
     const borrowerOperationsFactory = await this.getFactory("BorrowerOperations");
     const hintHelpersFactory = await this.getFactory("HintHelpers");
-    const lusdTokenFactory = await this.getFactory("ARTHValuecoin");
-    const tellorCallerFactory = await this.getFactory("TellorCaller");
+    const communityIssuanceFactory = await this.getFactory("CommunityIssuance");
+    const multiTroveGetterFactory = await this.getFactory("MultiTroveGetter");
+    const governanceFactory = await this.getFactory("Governance");
+    const arthTokenFactory = await this.getFactory("ARTHValuecoin");
 
-    // Deploy txs
-    const priceFeed = await this.loadOrDeploy(priceFeedFactory, "priceFeed", deploymentState);
+    // Deploy txs.
     const sortedTroves = await this.loadOrDeploy(
       sortedTrovesFactory,
-      "sortedTroves",
+      `${this.configParams.NATIVE_TOKEN_SYMBOL}SortedTroves`,
+      "SortedTroves",
       deploymentState
     );
     const troveManager = await this.loadOrDeploy(
       troveManagerFactory,
-      "troveManager",
+      `${this.configParams.NATIVE_TOKEN_SYMBOL}TroveManager`,
+      "TroveManager",
       deploymentState
     );
-    const activePool = await this.loadOrDeploy(activePoolFactory, "activePool", deploymentState);
+    const activePool = await this.loadOrDeploy(
+      activePoolFactory,
+      `${this.configParams.NATIVE_TOKEN_SYMBOL}ActivePool`,
+      "ActivePool",
+      deploymentState
+    );
     const stabilityPool = await this.loadOrDeploy(
       stabilityPoolFactory,
-      "stabilityPool",
+      `${this.configParams.NATIVE_TOKEN_SYMBOL}StabilityPool`,
+      "StabilityPool",
       deploymentState
     );
-    const gasPool = await this.loadOrDeploy(gasPoolFactory, "gasPool", deploymentState);
-    const defaultPool = await this.loadOrDeploy(defaultPoolFactory, "defaultPool", deploymentState);
+    const gasPool = await this.loadOrDeploy(
+      gasPoolFactory,
+      `${this.configParams.NATIVE_TOKEN_SYMBOL}GasPool`,
+      "GasPool",
+      deploymentState
+    );
+    const defaultPool = await this.loadOrDeploy(
+      defaultPoolFactory,
+      `${this.configParams.NATIVE_TOKEN_SYMBOL}DefaultPool`,
+      "DefaultPool",
+      deploymentState
+    );
     const collSurplusPool = await this.loadOrDeploy(
       collSurplusPoolFactory,
-      "collSurplusPool",
+      `${this.configParams.NATIVE_TOKEN_SYMBOL}CollSurplusPool`,
+      "CollSurplusPool",
       deploymentState
     );
     const borrowerOperations = await this.loadOrDeploy(
       borrowerOperationsFactory,
-      "borrowerOperations",
+      `${this.configParams.NATIVE_TOKEN_SYMBOL}BorrowerOperations`,
+      "BorrowerOperations",
       deploymentState
     );
-    const hintHelpers = await this.loadOrDeploy(hintHelpersFactory, "hintHelpers", deploymentState);
-    const tellorCaller = await this.loadOrDeploy(
-      tellorCallerFactory,
-      "tellorCaller",
-      deploymentState,
-      [tellorMasterAddr]
+    const hintHelpers = await this.loadOrDeploy(
+      hintHelpersFactory,
+      `${this.configParams.NATIVE_TOKEN_SYMBOL}HintHelpers`,
+      "HintHelpers",
+      deploymentState
     );
 
-    const lusdTokenParams = [
+    const mahaTokenParams = ["MahaDAO", "MAHA"];
+    const mahaToken = await this.loadOrDeploy(
+      mockERC20Factory,
+      "MAHA",
+      "MockERC20",
+      deploymentState,
+      mahaTokenParams
+    );
+
+    const arthTokenParams = [this.configParams.externalAddrs.TIMELOCK];
+    const arthToken = await this.loadOrDeploy(
+      arthTokenFactory,
+      "ARTH",
+      "ARTHValuecoin",
+      deploymentState,
+      arthTokenParams
+    );
+
+    const multiTroveGetterParams = [troveManager.address, sortedTroves.address];
+    const multiTroveGetter = await this.loadOrDeploy(
+      multiTroveGetterFactory,
+      `${this.configParams.NATIVE_TOKEN_SYMBOL}MultiTroveGetter`,
+      "MultiTroveGetter",
+      deploymentState,
+      multiTroveGetterParams
+    );
+
+    const priceFeed = await this.loadOrDeploy(
+      mockOracleFactory,
+      `${this.configParams.NATIVE_TOKEN_SYMBOL}PriceFeed`,
+      "PriceFeed",
+      deploymentState
+    );
+
+    const governanceParams = [
+      this.configParams.externalAddrs.TIMELOCK,
+      activePool.address,
       troveManager.address,
-      stabilityPool.address,
-      borrowerOperations.address
+      priceFeed.address,
+      this.configParams.externalAddrs.ECOSYSTEM_FUND
     ];
-    const lusdToken = await this.loadOrDeploy(
-      lusdTokenFactory,
-      "lusdToken",
+
+    const governance = await this.loadOrDeploy(
+      governanceFactory,
+      `${this.configParams.NATIVE_TOKEN_SYMBOL}Governance`,
+      "Governance",
       deploymentState,
-      lusdTokenParams
+      governanceParams
     );
 
-    if (!this.configParams.ETHERSCAN_BASE_URL) {
+    const communityIssuanceParams = [
+      mahaToken.address,
+      stabilityPool.address,
+      this.configParams.COMMUNITY_ISSUANCE_REWARDS_DURATION
+    ];
+    const communityIssuance = await this.loadOrDeploy(
+      communityIssuanceFactory,
+      `${this.configParams.NATIVE_TOKEN_SYMBOL}CommunityIssuance`,
+      "CommunityIssuance",
+      deploymentState,
+      communityIssuanceParams
+    );
+
+    if (!this.configParams.EXPLORER_BASE_URL) {
       console.log("No Etherscan Url defined, skipping verification");
     } else {
-      await this.verifyContract("priceFeed", deploymentState);
-      await this.verifyContract("sortedTroves", deploymentState);
-      await this.verifyContract("troveManager", deploymentState);
-      await this.verifyContract("activePool", deploymentState);
-      await this.verifyContract("stabilityPool", deploymentState);
-      await this.verifyContract("gasPool", deploymentState);
-      await this.verifyContract("defaultPool", deploymentState);
-      await this.verifyContract("collSurplusPool", deploymentState);
-      await this.verifyContract("borrowerOperations", deploymentState);
-      await this.verifyContract("hintHelpers", deploymentState);
-      await this.verifyContract("tellorCaller", deploymentState, [tellorMasterAddr]);
-      await this.verifyContract("lusdToken", deploymentState, lusdTokenParams);
+      await this.verifyContract(
+        `${this.configParams.NATIVE_TOKEN_SYMBOL}PriceFeed`,
+        deploymentState
+      );
+      await this.verifyContract(
+        `${this.configParams.NATIVE_TOKEN_SYMBOL}SortedTroves`,
+        deploymentState
+      );
+      await this.verifyContract(
+        `${this.configParams.NATIVE_TOKEN_SYMBOL}TroveManager`,
+        deploymentState
+      );
+      await this.verifyContract(
+        `${this.configParams.NATIVE_TOKEN_SYMBOL}ActivePool`,
+        deploymentState
+      );
+      await this.verifyContract(
+        `${this.configParams.NATIVE_TOKEN_SYMBOL}StabilityPool`,
+        deploymentState
+      );
+      await this.verifyContract(`${this.configParams.NATIVE_TOKEN_SYMBOL}GasPool`, deploymentState);
+      await this.verifyContract(
+        `${this.configParams.NATIVE_TOKEN_SYMBOL}DefaultPool`,
+        deploymentState
+      );
+      await this.verifyContract(
+        `${this.configParams.NATIVE_TOKEN_SYMBOL}CollSurplusPool`,
+        deploymentState
+      );
+      await this.verifyContract(
+        `${this.configParams.NATIVE_TOKEN_SYMBOL}BorrowerOperations`,
+        deploymentState
+      );
+      await this.verifyContract(
+        `${this.configParams.NATIVE_TOKEN_SYMBOL}HintHelpers`,
+        deploymentState
+      );
+      await this.verifyContract("ARTH", deploymentState, arthTokenParams);
+      await this.verifyContract(
+        `${this.configParams.NATIVE_TOKEN_SYMBOL}CommunityIssuance`,
+        deploymentState,
+        communityIssuanceParams
+      );
+      await this.verifyContract(
+        `${this.configParams.NATIVE_TOKEN_SYMBOL}MultiTroveGetter`,
+        deploymentState,
+        multiTroveGetterParams
+      );
+      await this.verifyContract(
+        `${this.configParams.NATIVE_TOKEN_SYMBOL}Governance`,
+        deploymentState,
+        governanceParams
+      );
+      await this.verifyContract("MAHA", deploymentState, mahaTokenParams);
     }
 
     const coreContracts = {
+      mahaToken,
       priceFeed,
-      lusdToken,
+      arthToken,
       sortedTroves,
       troveManager,
       activePool,
@@ -163,102 +273,14 @@ class MainnetDeploymentHelper {
       collSurplusPool,
       borrowerOperations,
       hintHelpers,
-      tellorCaller
+      communityIssuance,
+      multiTroveGetter,
+      governance
     };
+
     return coreContracts;
   }
 
-  async deployMAHAContractsMainnet(
-    bountyAddress,
-    lpRewardsAddress,
-    multisigAddress,
-    deploymentState
-  ) {
-    const lqtyStakingFactory = await this.getFactory("MAHAStaking");
-    const lockupContractFactory_Factory = await this.getFactory("LockupContractFactory");
-    const communityIssuanceFactory = await this.getFactory("CommunityIssuance");
-    const lqtyTokenFactory = await this.getFactory("MAHAToken");
-
-    const lqtyStaking = await this.loadOrDeploy(lqtyStakingFactory, "lqtyStaking", deploymentState);
-    const lockupContractFactory = await this.loadOrDeploy(
-      lockupContractFactory_Factory,
-      "lockupContractFactory",
-      deploymentState
-    );
-    const communityIssuance = await this.loadOrDeploy(
-      communityIssuanceFactory,
-      "communityIssuance",
-      deploymentState
-    );
-
-    // Deploy MAHA Token, passing Community Issuance and Factory addresses to the constructor
-    const lqtyTokenParams = [
-      communityIssuance.address,
-      lqtyStaking.address,
-      lockupContractFactory.address,
-      bountyAddress,
-      lpRewardsAddress,
-      multisigAddress
-    ];
-    const lqtyToken = await this.loadOrDeploy(
-      lqtyTokenFactory,
-      "lqtyToken",
-      deploymentState,
-      lqtyTokenParams
-    );
-
-    if (!this.configParams.ETHERSCAN_BASE_URL) {
-      console.log("No Etherscan Url defined, skipping verification");
-    } else {
-      await this.verifyContract("lqtyStaking", deploymentState);
-      await this.verifyContract("lockupContractFactory", deploymentState);
-      await this.verifyContract("communityIssuance", deploymentState);
-      await this.verifyContract("lqtyToken", deploymentState, lqtyTokenParams);
-    }
-
-    const MAHAContracts = {
-      lqtyStaking,
-      lockupContractFactory,
-      communityIssuance,
-      lqtyToken
-    };
-    return MAHAContracts;
-  }
-
-  async deployUnipoolMainnet(deploymentState) {
-    const unipoolFactory = await this.getFactory("Unipool");
-    const unipool = await this.loadOrDeploy(unipoolFactory, "unipool", deploymentState);
-
-    if (!this.configParams.ETHERSCAN_BASE_URL) {
-      console.log("No Etherscan Url defined, skipping verification");
-    } else {
-      await this.verifyContract("unipool", deploymentState);
-    }
-
-    return unipool;
-  }
-
-  async deployMultiTroveGetterMainnet(liquityCore, deploymentState) {
-    const multiTroveGetterFactory = await this.getFactory("MultiTroveGetter");
-    const multiTroveGetterParams = [
-      liquityCore.troveManager.address,
-      liquityCore.sortedTroves.address
-    ];
-    const multiTroveGetter = await this.loadOrDeploy(
-      multiTroveGetterFactory,
-      "multiTroveGetter",
-      deploymentState,
-      multiTroveGetterParams
-    );
-
-    if (!this.configParams.ETHERSCAN_BASE_URL) {
-      console.log("No Etherscan Url defined, skipping verification");
-    } else {
-      await this.verifyContract("multiTroveGetter", deploymentState, multiTroveGetterParams);
-    }
-
-    return multiTroveGetter;
-  }
   // --- Connector methods ---
 
   async isOwnershipRenounced(contract) {
@@ -266,17 +288,11 @@ class MainnetDeploymentHelper {
     return owner == ZERO_ADDRESS;
   }
   // Connect contracts to their dependencies
-  async connectCoreContractsMainnet(contracts, MAHAContracts, chainlinkProxyAddress) {
+  async connectCoreContractsMainnet(contracts) {
     const gasPrice = this.configParams.GAS_PRICE;
-    // Set ChainlinkAggregatorProxy and TellorCaller in the PriceFeed
-    (await this.isOwnershipRenounced(contracts.priceFeed)) ||
-      (await this.sendAndWaitForTransaction(
-        contracts.priceFeed.setAddresses(chainlinkProxyAddress, contracts.tellorCaller.address, {
-          gasPrice
-        })
-      ));
 
     // set TroveManager addr in SortedTroves
+    console.log("set address for sortedTroves");
     (await this.isOwnershipRenounced(contracts.sortedTroves)) ||
       (await this.sendAndWaitForTransaction(
         contracts.sortedTroves.setParams(
@@ -288,6 +304,7 @@ class MainnetDeploymentHelper {
       ));
 
     // set contracts in the Trove Manager
+    console.log("set address for troveManager");
     (await this.isOwnershipRenounced(contracts.troveManager)) ||
       (await this.sendAndWaitForTransaction(
         contracts.troveManager.setAddresses(
@@ -297,16 +314,15 @@ class MainnetDeploymentHelper {
           contracts.stabilityPool.address,
           contracts.gasPool.address,
           contracts.collSurplusPool.address,
-          contracts.priceFeed.address,
-          contracts.lusdToken.address,
+          contracts.governance.address,
+          contracts.arthToken.address,
           contracts.sortedTroves.address,
-          MAHAContracts.lqtyToken.address,
-          MAHAContracts.lqtyStaking.address,
           { gasPrice }
         )
       ));
 
     // set contracts in BorrowerOperations
+    console.log("set address for borrowerOperations");
     (await this.isOwnershipRenounced(contracts.borrowerOperations)) ||
       (await this.sendAndWaitForTransaction(
         contracts.borrowerOperations.setAddresses(
@@ -318,27 +334,28 @@ class MainnetDeploymentHelper {
           contracts.collSurplusPool.address,
           contracts.priceFeed.address,
           contracts.sortedTroves.address,
-          contracts.lusdToken.address,
-          MAHAContracts.lqtyStaking.address,
+          contracts.arthToken.address,
           { gasPrice }
         )
       ));
 
     // set contracts in the Pools
+    console.log("set address for stabilityPool");
     (await this.isOwnershipRenounced(contracts.stabilityPool)) ||
       (await this.sendAndWaitForTransaction(
         contracts.stabilityPool.setAddresses(
           contracts.borrowerOperations.address,
           contracts.troveManager.address,
           contracts.activePool.address,
-          contracts.lusdToken.address,
+          contracts.arthToken.address,
           contracts.sortedTroves.address,
           contracts.priceFeed.address,
-          MAHAContracts.communityIssuance.address,
+          contracts.communityIssuance.address,
           { gasPrice }
         )
       ));
 
+    console.log("set address for activePool");
     (await this.isOwnershipRenounced(contracts.activePool)) ||
       (await this.sendAndWaitForTransaction(
         contracts.activePool.setAddresses(
@@ -350,6 +367,7 @@ class MainnetDeploymentHelper {
         )
       ));
 
+    console.log("set address for defaultPool");
     (await this.isOwnershipRenounced(contracts.defaultPool)) ||
       (await this.sendAndWaitForTransaction(
         contracts.defaultPool.setAddresses(
@@ -359,6 +377,7 @@ class MainnetDeploymentHelper {
         )
       ));
 
+    console.log("set address for collSurplusPool");
     (await this.isOwnershipRenounced(contracts.collSurplusPool)) ||
       (await this.sendAndWaitForTransaction(
         contracts.collSurplusPool.setAddresses(
@@ -370,6 +389,7 @@ class MainnetDeploymentHelper {
       ));
 
     // set contracts in HintHelpers
+    console.log("set address for hintHelpers");
     (await this.isOwnershipRenounced(contracts.hintHelpers)) ||
       (await this.sendAndWaitForTransaction(
         contracts.hintHelpers.setAddresses(
@@ -377,49 +397,6 @@ class MainnetDeploymentHelper {
           contracts.troveManager.address,
           { gasPrice }
         )
-      ));
-  }
-
-  async connectMAHAContractsMainnet(MAHAContracts) {
-    const gasPrice = this.configParams.GAS_PRICE;
-    // Set MAHAToken address in LCF
-    (await this.isOwnershipRenounced(MAHAContracts.lqtyStaking)) ||
-      (await this.sendAndWaitForTransaction(
-        MAHAContracts.lockupContractFactory.setMAHATokenAddress(MAHAContracts.lqtyToken.address, {
-          gasPrice
-        })
-      ));
-  }
-
-  async connectMAHAContractsToCoreMainnet(MAHAContracts, coreContracts) {
-    const gasPrice = this.configParams.GAS_PRICE;
-    (await this.isOwnershipRenounced(MAHAContracts.lqtyStaking)) ||
-      (await this.sendAndWaitForTransaction(
-        MAHAContracts.lqtyStaking.setAddresses(
-          MAHAContracts.lqtyToken.address,
-          coreContracts.lusdToken.address,
-          coreContracts.troveManager.address,
-          coreContracts.borrowerOperations.address,
-          coreContracts.activePool.address,
-          { gasPrice }
-        )
-      ));
-
-    (await this.isOwnershipRenounced(MAHAContracts.communityIssuance)) ||
-      (await this.sendAndWaitForTransaction(
-        MAHAContracts.communityIssuance.setAddresses(
-          MAHAContracts.lqtyToken.address,
-          coreContracts.stabilityPool.address,
-          { gasPrice }
-        )
-      ));
-  }
-
-  async connectUnipoolMainnet(uniPool, MAHAContracts, LUSDWETHPairAddr, duration) {
-    const gasPrice = this.configParams.GAS_PRICE;
-    (await this.isOwnershipRenounced(uniPool)) ||
-      (await this.sendAndWaitForTransaction(
-        uniPool.setParams(MAHAContracts.lqtyToken.address, LUSDWETHPairAddr, duration, { gasPrice })
       ));
   }
 

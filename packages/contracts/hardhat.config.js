@@ -55,6 +55,11 @@ module.exports = {
       gasPrice: 20000000000,
       initialBaseFeePerGas: 0
     },
+    local: {
+      url: "http://127.0.0.1:8545/",
+      // gasPrice: process.env.GAS_PRICE ? parseInt(process.env.GAS_PRICE) : 20000000000,
+      accounts: [getSecret("DEPLOYER_PRIVATEKEY")]
+    },
     mainnet: {
       url: alchemyUrl(),
       gasPrice: process.env.GAS_PRICE ? parseInt(process.env.GAS_PRICE) : 20000000000,

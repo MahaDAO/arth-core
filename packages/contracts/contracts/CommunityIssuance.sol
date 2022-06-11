@@ -31,31 +31,22 @@ contract CommunityIssuance is ICommunityIssuance, Ownable, CheckContract, BaseMa
 
     // --- Functions ---
 
-    constructor() {
-        deploymentTime = block.timestamp;
-    }
-
-    function setAddresses(
+    constructor(
         address _mahaTokenAddress,
         address _stabilityPoolAddress,
         uint256 _rewardsDuration
-    ) external override onlyOwner {
+    ) {
         checkContract(_mahaTokenAddress);
         checkContract(_stabilityPoolAddress);
+
+        deploymentTime = block.timestamp;
+        rewardsDuration = _rewardsDuration;
 
         mahaToken = IERC20(_mahaTokenAddress);
         stabilityPoolAddress = _stabilityPoolAddress;
 
-        uint256 MAHABalance = mahaToken.balanceOf(address(this));
-        assert(MAHABalance > 0);
-
-        emit MAHATokenAddressSet(_mahaTokenAddress);
-        emit StabilityPoolAddressSet(_stabilityPoolAddress);
-
-        lastUpdateTime = block.timestamp;
-        rewardsDuration = _rewardsDuration;
         periodFinish = block.timestamp.add(rewardsDuration);
-        rewardRate = mahaToken.balanceOf(address(this)).div(rewardsDuration);
+        lastUpdateTime = block.timestamp;
     }
 
     function issueMAHA() external override returns (uint256) {
@@ -104,7 +95,6 @@ contract CommunityIssuance is ICommunityIssuance, Ownable, CheckContract, BaseMa
 
     function sendMAHA(address _account, uint256 _MAHAamount) external override {
         _requireCallerIsStabilityPool();
-
         mahaToken.transfer(_account, _MAHAamount);
     }
 
