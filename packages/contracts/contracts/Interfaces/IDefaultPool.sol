@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.6.11;
+pragma solidity 0.8.0;
 
 import "./IPool.sol";
-
 
 interface IDefaultPool is IPool {
     // --- Events ---
     event TroveManagerAddressChanged(address _newTroveManagerAddress);
-    event DefaultPoolLUSDDebtUpdated(uint _LUSDDebt);
-    event DefaultPoolETHBalanceUpdated(uint _ETH);
+    event DefaultPoolLUSDDebtUpdated(uint256 _LUSDDebt);
+    event DefaultPoolETHBalanceUpdated(uint256 _ETH);
 
     // --- Functions ---
-    function sendETHToActivePool(uint _amount) external;
+    function sendETHToActivePool(uint256 _amount) external;
 }

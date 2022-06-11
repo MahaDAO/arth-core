@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.6.11;
+pragma solidity 0.8.0;
 
-import { MockERC20 } from "./MockERC20.sol";
+import {MockERC20} from "./MockERC20.sol";
 
 interface IWETHFeatures {
     function deposit() external payable;
@@ -15,7 +15,7 @@ contract MockWETH is IWETHFeatures, MockERC20 {
     event Deposit(address indexed dst, uint256 wad);
     event Withdrawal(address indexed src, uint256 wad);
 
-    constructor(string memory name, string memory symbol) MockERC20(name, symbol) public {}
+    constructor(string memory name, string memory symbol) MockERC20(name, symbol) {}
 
     fallback() external payable {
         deposit();

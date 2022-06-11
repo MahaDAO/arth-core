@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.6.11;
+pragma solidity 0.8.0;
 
-import "./Dependencies/IWETH.sol";
-import "./Dependencies/IERC20.sol";
+import "./Interfaces/IWETH.sol";
+import "./Interfaces/IERC20.sol";
 import "./Dependencies/Ownable.sol";
 import "./Dependencies/BaseMath.sol";
 import "./Interfaces/IGovernance.sol";
 import "./Dependencies/LiquityMath.sol";
-import "./Dependencies/IEcosystemFund.sol";
+import "./Interfaces/IEcosystemFund.sol";
 
 contract Governance is BaseMath, Ownable, IGovernance {
     using SafeMath for uint256;
@@ -20,9 +20,9 @@ contract Governance is BaseMath, Ownable, IGovernance {
     address public immutable activePoolAddress;
     address public immutable troveManagerAddress;
 
-    uint private stabilityFeePercentage = 0;
-    uint private constant _100pct = 1000000000000000000; // 1e18 == 100%
-    uint private immutable deploymentStartTime;
+    uint256 private stabilityFeePercentage = 0;
+    uint256 private constant _100pct = 1000000000000000000; // 1e18 == 100%
+    uint256 private immutable deploymentStartTime;
 
     IPriceFeed private priceFeed;
     IEcosystemFund private ecosystemFund;
@@ -31,24 +31,14 @@ contract Governance is BaseMath, Ownable, IGovernance {
 
     IWETH private immutable wrappedETH;
 
-    // --- Events ---
-
-    event StabilityFeePercentageChanged(uint256 oldValue, uint256 newValue, uint256 timestamp);
-    event PriceFeedChanged(address oldAddress, address newAddress, uint256 timestamp);
-    event StabilityFeeTokenChanged(address oldAddress, address newAddress, uint256 timestamp);
-    event StabilityTokenOracleChanged(address oldAddress, address newAddress, uint256 timestamp);
-    event StabilityFeeCharged(uint256 LUSDAmount, uint256 feeAmount, uint256 timestamp);
-    event EcosystemFundAddressChanged(address oldAddress, address newAddress, uint256 timestamp);
-    event SentToEcosystemFund(uint256 amount, uint256 timestamp, string reason);
-
     constructor(
         address _governance,
         address _activePoolAddress,
         address _troveManagerAddress,
-        address _priceFeed, 
+        address _priceFeed,
         address _ecosystemFund,
         address _wrappedETHAddress
-    ) public {
+    ) {
         activePoolAddress = _activePoolAddress;
         troveManagerAddress = _troveManagerAddress;
 
@@ -92,7 +82,7 @@ contract Governance is BaseMath, Ownable, IGovernance {
 
     // ---  Governance getters ---
 
-    function getDeploymentStartTime() external view override returns (uint) {
+    function getDeploymentStartTime() external view override returns (uint256) {
         return deploymentStartTime;
     }
 
@@ -100,7 +90,7 @@ contract Governance is BaseMath, Ownable, IGovernance {
         return ecosystemFund;
     }
 
-    function getStabilityFeePercentage() external view override returns (uint) {
+    function getStabilityFeePercentage() external view override returns (uint256) {
         return stabilityFeePercentage;
     }
 
@@ -125,7 +115,9 @@ contract Governance is BaseMath, Ownable, IGovernance {
             address(stabilityTokenOracle) == address(0) ||
             address(stabilityFeeToken) == address(0) ||
             stabilityFeePercentage == 0
-        ) { return; }
+        ) {
+            return;
+        }
 
         uint256 stabilityFeeInLUSD = _LUSDAmount.mul(stabilityFeePercentage).div(_100pct);
         uint256 stabilityTokenPriceInLUSD = stabilityTokenOracle.getPrice();
@@ -139,12 +131,9 @@ contract Governance is BaseMath, Ownable, IGovernance {
 
     function sendRedeemFeeToEcosystemFund(uint256 _ETHFee) external override {
         _requireCallerIsTroveManager();
-        require(
-            address(this).balance >= _ETHFee,
-            "Governance: not enough ETH fee balance"
-        ); // TroveManager should already send ETH via active pool to this contract.
+        require(address(this).balance >= _ETHFee, "Governance: not enough ETH fee balance"); // TroveManager should already send ETH via active pool to this contract.
 
-        wrappedETH.deposit{ value: _ETHFee }();
+        wrappedETH.deposit{value: _ETHFee}();
         wrappedETH.approve(address(ecosystemFund), _ETHFee);
         ecosystemFund.deposit(address(wrappedETH), _ETHFee, "Redeem fee triggered");
         emit SentToEcosystemFund(_ETHFee, block.timestamp, "Redeem fee triggered");

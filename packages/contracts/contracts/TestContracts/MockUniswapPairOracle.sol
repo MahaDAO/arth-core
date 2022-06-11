@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.6.11;
+pragma solidity 0.8.0;
 
 import {SafeMath} from "../Dependencies/SafeMath.sol";
 
@@ -17,7 +17,7 @@ contract MockUniswapOracle {
         return price;
     }
 
-    function canUpdate() external pure returns(bool) {
+    function canUpdate() external pure returns (bool) {
         return true;
     }
 
@@ -25,11 +25,7 @@ contract MockUniswapOracle {
         emit Updated(price, price);
     }
 
-    function consult(address, uint256 amountIn)
-        external
-        view
-        returns (uint256)
-    {
+    function consult(address, uint256 amountIn) external view returns (uint256) {
         return price.mul(amountIn).div(1e18);
     }
 

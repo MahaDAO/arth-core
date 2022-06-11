@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.6.11;
+pragma solidity 0.8.0;
 
 import "./IPriceFeed.sol";
-import "../Dependencies/IERC20.sol";
-import "../Dependencies/IOracle.sol";
-import "../Dependencies/IEcosystemFund.sol";
+import "../Interfaces/IERC20.sol";
+import "../Interfaces/IOracle.sol";
+import "../Interfaces/IEcosystemFund.sol";
 
 interface IBurnableERC20 is IERC20 {
     function burn(uint256 amount) external;
@@ -22,15 +22,15 @@ interface IGovernance {
     event StabilityTokenOracleChanged(address oldAddress, address newAddress, uint256 timestamp);
     event StabilityFeeCharged(uint256 LUSDAmount, uint256 feeAmount, uint256 timestamp);
     event EcosystemFundAddressChanged(address oldAddress, address newAddress, uint256 timestamp);
-    event SentRedeemFeeToEcosystemFund(uint256 amount, uint256 timestamp, string reason);
+    event SentToEcosystemFund(uint256 amount, uint256 timestamp, string reason);
 
     // --- Functions ---
-    
-    function getDeploymentStartTime() external view returns (uint);
+
+    function getDeploymentStartTime() external view returns (uint256);
 
     function getPriceFeed() external view returns (IPriceFeed);
 
-    function getStabilityFeePercentage() external view returns (uint);
+    function getStabilityFeePercentage() external view returns (uint256);
 
     function getStabilityFeeToken() external view returns (IBurnableERC20);
 

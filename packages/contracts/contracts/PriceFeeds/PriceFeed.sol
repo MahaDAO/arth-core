@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.6.11;
+pragma solidity 0.8.0;
 
 import "../Interfaces/IPriceFeed.sol";
-import "../Dependencies/IOracle.sol";
+import "../Interfaces/IOracle.sol";
 import "../Dependencies/AggregatorV3Interface.sol";
 import "../Dependencies/SafeMath.sol";
 import "../Dependencies/Ownable.sol";
@@ -38,10 +38,10 @@ contract PriceFeed is Ownable, CheckContract, BaseMath, IPriceFeed {
 
     // --- Dependency setters ---
 
-    function setAddresses(
-        address _priceAggregatorAddress,
-        address _gmuOracleAddress
-    ) external onlyOwner {
+    function setAddresses(address _priceAggregatorAddress, address _gmuOracleAddress)
+        external
+        onlyOwner
+    {
         checkContract(_priceAggregatorAddress);
         checkContract(_gmuOracleAddress);
 
@@ -64,7 +64,7 @@ contract PriceFeed is Ownable, CheckContract, BaseMath, IPriceFeed {
      * Uses a Chainlink.
      *
      */
-    function fetchPrice() external override returns (uint256) {
+    function fetchPrice() external view override returns (uint256) {
         return _fetchPrice();
     }
 
@@ -78,11 +78,7 @@ contract PriceFeed is Ownable, CheckContract, BaseMath, IPriceFeed {
         uint256 gmuPrice = _fetchGMUPrice();
         uint256 chainlinkPrice = _fetchChainlinkPrice();
 
-        return (
-            chainlinkPrice
-                .mul(10 ** TARGET_DIGITS)
-                .div(gmuPrice)
-        );
+        return (chainlinkPrice.mul(10**TARGET_DIGITS).div(gmuPrice));
     }
 
     function _scalePriceByDigits(uint256 _price, uint256 _answerDigits)
@@ -106,10 +102,7 @@ contract PriceFeed is Ownable, CheckContract, BaseMath, IPriceFeed {
         uint256 gmuPrice = gmuOracle.getPrice();
         uint256 gmuPricePrecision = gmuOracle.getDecimalPercision();
 
-        return _scalePriceByDigits(
-            gmuPrice,
-            gmuPricePrecision
-        );
+        return _scalePriceByDigits(gmuPrice, gmuPricePrecision);
     }
 
     function _fetchChainlinkPrice() internal view returns (uint256) {
