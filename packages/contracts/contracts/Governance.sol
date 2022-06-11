@@ -52,7 +52,7 @@ contract Governance is BaseMath, Ownable, IGovernance {
     uint256 private immutable DEPLOYMENT_START_TIME;
 
     constructor(
-        address _governance,
+        address _timelock,
         address _troveManagerAddress,
         address _borrowerOperationAddress,
         address _priceFeed,
@@ -67,7 +67,7 @@ contract Governance is BaseMath, Ownable, IGovernance {
         fund = address(_fund);
         if (_maxDebtCeiling > 0) maxDebtCeiling = _maxDebtCeiling;
 
-        transferOwnership(_governance);
+        transferOwnership(_timelock);
     }
 
     function setMaxDebtCeiling(uint256 _value) public onlyOwner {

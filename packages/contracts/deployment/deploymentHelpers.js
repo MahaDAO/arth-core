@@ -181,10 +181,11 @@ class MainnetDeploymentHelper {
 
     const governanceParams = [
       this.configParams.externalAddrs.TIMELOCK,
-      activePool.address,
       troveManager.address,
+      borrowerOperations.address,
       priceFeed.address,
-      this.configParams.externalAddrs.ECOSYSTEM_FUND
+      this.configParams.externalAddrs.ECOSYSTEM_FUND,
+      "0"
     ];
 
     const governance = await this.loadOrDeploy(
@@ -378,7 +379,7 @@ class MainnetDeploymentHelper {
           contracts.activePool.address,
           contracts.arthToken.address,
           contracts.sortedTroves.address,
-          contracts.priceFeed.address,
+          contracts.governance.address,
           contracts.communityIssuance.address,
           { gasPrice }
         )
