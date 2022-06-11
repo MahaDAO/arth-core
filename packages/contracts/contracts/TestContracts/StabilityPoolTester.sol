@@ -15,7 +15,7 @@ contract StabilityPoolTester is StabilityPool {
         currentScale = _currentScale;
     }
 
-    function setTotalDeposits(uint256 _totalLUSDDeposits) external {
-        totalLUSDDeposits = _totalLUSDDeposits;
+    function setTotalDeposits(uint256 _totalARTHDeposits) external {
+        totalARTHDeposits = _totalARTHDeposits;
     }
 }

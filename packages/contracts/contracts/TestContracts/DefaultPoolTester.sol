@@ -7,8 +7,8 @@ import "../DefaultPool.sol";
 contract DefaultPoolTester is DefaultPool {
     using SafeMath for uint256;
 
-    function unprotectedIncreaseLUSDDebt(uint256 _amount) external {
-        LUSDDebt = LUSDDebt.add(_amount);
+    function unprotectedIncreaseARTHDebt(uint256 _amount) external {
+        ARTHDebt = ARTHDebt.add(_amount);
     }
 
     function unprotectedPayable() external payable {

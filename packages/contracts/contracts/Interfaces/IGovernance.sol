@@ -20,7 +20,7 @@ interface IGovernance {
     event PriceFeedChanged(address oldAddress, address newAddress, uint256 timestamp);
     event StabilityFeeTokenChanged(address oldAddress, address newAddress, uint256 timestamp);
     event StabilityTokenOracleChanged(address oldAddress, address newAddress, uint256 timestamp);
-    event StabilityFeeCharged(uint256 LUSDAmount, uint256 feeAmount, uint256 timestamp);
+    event StabilityFeeCharged(uint256 ARTHAmount, uint256 feeAmount, uint256 timestamp);
     event EcosystemFundAddressChanged(address oldAddress, address newAddress, uint256 timestamp);
     event SentToEcosystemFund(uint256 amount, uint256 timestamp, string reason);
 
@@ -38,7 +38,7 @@ interface IGovernance {
 
     function getEcosystemFund() external view returns (IEcosystemFund);
 
-    function chargeStabilityFee(address _who, uint256 _LUSDAmount) external;
+    function chargeStabilityFee(address _who, uint256 _ARTHAmount) external;
 
     function setEcosystemFund(address _ecosystemFund) external;
 

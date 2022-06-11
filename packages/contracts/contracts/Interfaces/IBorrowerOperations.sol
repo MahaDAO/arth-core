@@ -14,7 +14,7 @@ interface IBorrowerOperations {
     event CollSurplusPoolAddressChanged(address _collSurplusPoolAddress);
     event GovernanceAddressChanged(address _newGovernanceAddress);
     event SortedTrovesAddressChanged(address _sortedTrovesAddress);
-    event LUSDTokenAddressChanged(address _lusdTokenAddress);
+    event ARTHTokenAddressChanged(address _arthTokenAddress);
 
     event TroveCreated(address indexed _borrower, uint256 arrayIndex);
     event TroveUpdated(
@@ -24,10 +24,10 @@ interface IBorrowerOperations {
         uint256 stake,
         BorrowerOperation operation
     );
-    event LUSDBorrowingFeePaid(address indexed _borrower, uint256 _LUSDFee);
+    event ARTHBorrowingFeePaid(address indexed _borrower, uint256 _ARTHFee);
     event FrontEndRegistered(address indexed _frontend, uint256 timestamp);
-    event PaidLUSDBorrowingFeeToEcosystemFund(address indexed _ecosystemFund, uint256 _LUSDFee);
-    event PaidLUSDBorrowingFeeToFrontEnd(address indexed _frontEndTag, uint256 _LUSDFee);
+    event PaidARTHBorrowingFeeToEcosystemFund(address indexed _ecosystemFund, uint256 _ARTHFee);
+    event PaidARTHBorrowingFeeToFrontEnd(address indexed _frontEndTag, uint256 _ARTHFee);
 
     enum BorrowerOperation {
         openTrove,
@@ -46,14 +46,14 @@ interface IBorrowerOperations {
         address _collSurplusPoolAddress,
         address _governanceAddress,
         address _sortedTrovesAddress,
-        address _lusdTokenAddress
+        address _arthTokenAddress
     ) external;
 
     function registerFrontEnd() external;
 
     function openTrove(
         uint256 _maxFee,
-        uint256 _LUSDAmount,
+        uint256 _ARTHAmount,
         address _upperHint,
         address _lowerHint,
         address _frontEndTag
@@ -73,14 +73,14 @@ interface IBorrowerOperations {
         address _lowerHint
     ) external;
 
-    function withdrawLUSD(
+    function withdrawARTH(
         uint256 _maxFee,
         uint256 _amount,
         address _upperHint,
         address _lowerHint
     ) external;
 
-    function repayLUSD(
+    function repayARTH(
         uint256 _amount,
         address _upperHint,
         address _lowerHint

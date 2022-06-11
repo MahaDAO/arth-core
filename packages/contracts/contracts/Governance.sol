@@ -108,7 +108,7 @@ contract Governance is BaseMath, Ownable, IGovernance {
 
     // --- Governance fee charging functions ---
 
-    function chargeStabilityFee(address _who, uint256 _LUSDAmount) external override {
+    function chargeStabilityFee(address _who, uint256 _ARTHAmount) external override {
         _requireCallerIsTroveManager();
 
         if (
@@ -119,13 +119,13 @@ contract Governance is BaseMath, Ownable, IGovernance {
             return;
         }
 
-        uint256 stabilityFeeInLUSD = _LUSDAmount.mul(stabilityFeePercentage).div(_100pct);
-        uint256 stabilityTokenPriceInLUSD = stabilityTokenOracle.getPrice();
-        uint256 stabilityFee = stabilityFeeInLUSD.mul(1e18).div(stabilityTokenPriceInLUSD);
+        uint256 stabilityFeeInARTH = _ARTHAmount.mul(stabilityFeePercentage).div(_100pct);
+        uint256 stabilityTokenPriceInARTH = stabilityTokenOracle.getPrice();
+        uint256 stabilityFee = stabilityFeeInARTH.mul(1e18).div(stabilityTokenPriceInARTH);
 
         if (stabilityFee > 0 && stabilityFeePercentage > 0) {
             stabilityFeeToken.burnFrom(_who, stabilityFee);
-            emit StabilityFeeCharged(_LUSDAmount, stabilityFee, block.timestamp);
+            emit StabilityFeeCharged(_ARTHAmount, stabilityFee, block.timestamp);
         }
     }
 

@@ -18,7 +18,7 @@ interface IARTHValuecoin is IERC20, IERC2612 {
     event TroveManagerAddressChanged(address _troveManagerAddress);
     event StabilityPoolAddressChanged(address _newStabilityPoolAddress);
     event BorrowerOperationsAddressChanged(address _newBorrowerOperationsAddress);
-    event LUSDTokenBalanceUpdated(address _user, uint256 _amount);
+    event ARTHTokenBalanceUpdated(address _user, uint256 _amount);
 
     // --- Functions ---
 

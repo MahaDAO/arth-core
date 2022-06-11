@@ -11,18 +11,18 @@ contract EchidnaProxy {
     TroveManager troveManager;
     BorrowerOperations borrowerOperations;
     StabilityPool stabilityPool;
-    ARTHValuecoin lusdToken;
+    ARTHValuecoin arthToken;
 
     constructor(
         TroveManager _troveManager,
         BorrowerOperations _borrowerOperations,
         StabilityPool _stabilityPool,
-        ARTHValuecoin _lusdToken
+        ARTHValuecoin _arthToken
     ) {
         troveManager = _troveManager;
         borrowerOperations = _borrowerOperations;
         stabilityPool = _stabilityPool;
-        lusdToken = _lusdToken;
+        arthToken = _arthToken;
     }
 
     receive() external payable {
@@ -44,7 +44,7 @@ contract EchidnaProxy {
     }
 
     function redeemCollateralPrx(
-        uint256 _LUSDAmount,
+        uint256 _ARTHAmount,
         address _firstRedemptionHint,
         address _upperPartialRedemptionHint,
         address _lowerPartialRedemptionHint,
@@ -53,7 +53,7 @@ contract EchidnaProxy {
         uint256 _maxFee
     ) external {
         troveManager.redeemCollateral(
-            _LUSDAmount,
+            _ARTHAmount,
             _firstRedemptionHint,
             _upperPartialRedemptionHint,
             _lowerPartialRedemptionHint,
@@ -66,7 +66,7 @@ contract EchidnaProxy {
     // Borrower Operations
     function openTrovePrx(
         uint256 _ETH,
-        uint256 _LUSDAmount,
+        uint256 _ARTHAmount,
         address _upperHint,
         address _lowerHint,
         uint256 _maxFee,
@@ -74,7 +74,7 @@ contract EchidnaProxy {
     ) external payable {
         borrowerOperations.openTrove{value: _ETH}(
             _maxFee,
-            _LUSDAmount,
+            _ARTHAmount,
             _upperHint,
             _lowerHint,
             _frontEndTag
@@ -97,21 +97,21 @@ contract EchidnaProxy {
         borrowerOperations.withdrawColl(_amount, _upperHint, _lowerHint);
     }
 
-    function withdrawLUSDPrx(
+    function withdrawARTHPrx(
         uint256 _amount,
         address _upperHint,
         address _lowerHint,
         uint256 _maxFee
     ) external {
-        borrowerOperations.withdrawLUSD(_maxFee, _amount, _upperHint, _lowerHint);
+        borrowerOperations.withdrawARTH(_maxFee, _amount, _upperHint, _lowerHint);
     }
 
-    function repayLUSDPrx(
+    function repayARTHPrx(
         uint256 _amount,
         address _upperHint,
         address _lowerHint
     ) external {
-        borrowerOperations.repayLUSD(_amount, _upperHint, _lowerHint);
+        borrowerOperations.repayARTH(_amount, _upperHint, _lowerHint);
     }
 
     function closeTrovePrx() external {
@@ -146,14 +146,14 @@ contract EchidnaProxy {
         stabilityPool.withdrawFromSP(_amount);
     }
 
-    // LUSD Token
+    // ARTH Token
 
     function transferPrx(address recipient, uint256 amount) external returns (bool) {
-        return lusdToken.transfer(recipient, amount);
+        return arthToken.transfer(recipient, amount);
     }
 
     function approvePrx(address spender, uint256 amount) external returns (bool) {
-        return lusdToken.approve(spender, amount);
+        return arthToken.approve(spender, amount);
     }
 
     function transferFromPrx(
@@ -161,14 +161,14 @@ contract EchidnaProxy {
         address recipient,
         uint256 amount
     ) external returns (bool) {
-        return lusdToken.transferFrom(sender, recipient, amount);
+        return arthToken.transferFrom(sender, recipient, amount);
     }
 
     function increaseAllowancePrx(address spender, uint256 addedValue) external returns (bool) {
-        return lusdToken.increaseAllowance(spender, addedValue);
+        return arthToken.increaseAllowance(spender, addedValue);
     }
 
     function decreaseAllowancePrx(address spender, uint256 subtractedValue) external returns (bool) {
-        return lusdToken.decreaseAllowance(spender, subtractedValue);
+        return arthToken.decreaseAllowance(spender, subtractedValue);
     }
 }

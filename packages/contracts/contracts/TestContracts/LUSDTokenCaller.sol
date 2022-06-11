@@ -4,34 +4,34 @@ pragma solidity 0.8.0;
 
 import "../Interfaces/IARTHValuecoin.sol";
 
-contract LUSDTokenCaller {
-    IARTHValuecoin LUSD;
+contract ARTHTokenCaller {
+    IARTHValuecoin ARTH;
 
-    function setLUSD(IARTHValuecoin _LUSD) external {
-        LUSD = _LUSD;
+    function setARTH(IARTHValuecoin _ARTH) external {
+        ARTH = _ARTH;
     }
 
-    function lusdMint(address _account, uint256 _amount) external {
-        LUSD.mint(_account, _amount);
+    function arthMint(address _account, uint256 _amount) external {
+        ARTH.mint(_account, _amount);
     }
 
-    function lusdBurn(address _account, uint256 _amount) external {
-        LUSD.burn(_account, _amount);
+    function arthBurn(address _account, uint256 _amount) external {
+        ARTH.burn(_account, _amount);
     }
 
-    function lusdSendToPool(
+    function arthSendToPool(
         address _sender,
         address _poolAddress,
         uint256 _amount
     ) external {
-        LUSD.sendToPool(_sender, _poolAddress, _amount);
+        ARTH.sendToPool(_sender, _poolAddress, _amount);
     }
 
-    function lusdReturnFromPool(
+    function arthReturnFromPool(
         address _poolAddress,
         address _receiver,
         uint256 _amount
     ) external {
-        LUSD.returnFromPool(_poolAddress, _receiver, _amount);
+        ARTH.returnFromPool(_poolAddress, _receiver, _amount);
     }
 }

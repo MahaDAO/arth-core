@@ -16,7 +16,7 @@ contract TroveManagerScript is CheckContract {
     }
 
     function redeemCollateral(
-        uint256 _LUSDAmount,
+        uint256 _ARTHAmount,
         address _firstRedemptionHint,
         address _upperPartialRedemptionHint,
         address _lowerPartialRedemptionHint,
@@ -25,7 +25,7 @@ contract TroveManagerScript is CheckContract {
         uint256 _maxFee
     ) external {
         troveManager.redeemCollateral(
-            _LUSDAmount,
+            _ARTHAmount,
             _firstRedemptionHint,
             _upperPartialRedemptionHint,
             _lowerPartialRedemptionHint,

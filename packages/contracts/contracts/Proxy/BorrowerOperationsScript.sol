@@ -15,14 +15,14 @@ contract BorrowerOperationsScript is CheckContract {
 
     function openTrove(
         uint256 _maxFee,
-        uint256 _LUSDAmount,
+        uint256 _ARTHAmount,
         address _upperHint,
         address _lowerHint,
         address _frontEndTag
     ) external payable {
         borrowerOperations.openTrove{value: msg.value}(
             _maxFee,
-            _LUSDAmount,
+            _ARTHAmount,
             _upperHint,
             _lowerHint,
             _frontEndTag
@@ -41,21 +41,21 @@ contract BorrowerOperationsScript is CheckContract {
         borrowerOperations.withdrawColl(_amount, _upperHint, _lowerHint);
     }
 
-    function withdrawLUSD(
+    function withdrawARTH(
         uint256 _maxFee,
         uint256 _amount,
         address _upperHint,
         address _lowerHint
     ) external {
-        borrowerOperations.withdrawLUSD(_maxFee, _amount, _upperHint, _lowerHint);
+        borrowerOperations.withdrawARTH(_maxFee, _amount, _upperHint, _lowerHint);
     }
 
-    function repayLUSD(
+    function repayARTH(
         uint256 _amount,
         address _upperHint,
         address _lowerHint
     ) external {
-        borrowerOperations.repayLUSD(_amount, _upperHint, _lowerHint);
+        borrowerOperations.repayARTH(_amount, _upperHint, _lowerHint);
     }
 
     function closeTrove() external {

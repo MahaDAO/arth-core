@@ -42,15 +42,15 @@ contract HintHelpers is LiquityBase, Ownable, CheckContract {
 
     /* getRedemptionHints() - Helper function for finding the right hints to pass to redeemCollateral().
      *
-     * It simulates a redemption of `_LUSDamount` to figure out where the redemption sequence will start and what state the final Trove
+     * It simulates a redemption of `_ARTHamount` to figure out where the redemption sequence will start and what state the final Trove
      * of the sequence will end up in.
      *
      * Returns three hints:
      *  - `firstRedemptionHint` is the address of the first Trove with ICR >= MCR (i.e. the first Trove that will be redeemed).
      *  - `partialRedemptionHintNICR` is the final nominal ICR of the last Trove of the sequence after being hit by partial redemption,
      *     or zero in case of no partial redemption.
-     *  - `truncatedLUSDamount` is the maximum amount that can be redeemed out of the the provided `_LUSDamount`. This can be lower than
-     *    `_LUSDamount` when redeeming the full amount would leave the last Trove of the redemption sequence with less net debt than the
+     *  - `truncatedARTHamount` is the maximum amount that can be redeemed out of the the provided `_ARTHamount`. This can be lower than
+     *    `_ARTHamount` when redeeming the full amount would leave the last Trove of the redemption sequence with less net debt than the
      *    minimum allowed value (i.e. MIN_NET_DEBT).
      *
      * The number of Troves to consider for redemption can be capped by passing a non-zero value as `_maxIterations`, while passing zero
@@ -58,7 +58,7 @@ contract HintHelpers is LiquityBase, Ownable, CheckContract {
      */
 
     function getRedemptionHints(
-        uint256 _LUSDamount,
+        uint256 _ARTHamount,
         uint256 _price,
         uint256 _maxIterations
     )
@@ -67,12 +67,12 @@ contract HintHelpers is LiquityBase, Ownable, CheckContract {
         returns (
             address firstRedemptionHint,
             uint256 partialRedemptionHintNICR,
-            uint256 truncatedLUSDamount
+            uint256 truncatedARTHamount
         )
     {
         ISortedTroves sortedTrovesCached = sortedTroves;
 
-        uint256 remainingLUSD = _LUSDamount;
+        uint256 remainingARTH = _ARTHamount;
         address currentTroveuser = sortedTrovesCached.getLast();
 
         while (
@@ -88,24 +88,24 @@ contract HintHelpers is LiquityBase, Ownable, CheckContract {
             _maxIterations = MAX_INT;
         }
 
-        while (currentTroveuser != address(0) && remainingLUSD > 0 && _maxIterations-- > 0) {
-            uint256 netLUSDDebt = _getNetDebt(troveManager.getTroveDebt(currentTroveuser)).add(
-                troveManager.getPendingLUSDDebtReward(currentTroveuser)
+        while (currentTroveuser != address(0) && remainingARTH > 0 && _maxIterations-- > 0) {
+            uint256 netARTHDebt = _getNetDebt(troveManager.getTroveDebt(currentTroveuser)).add(
+                troveManager.getPendingARTHDebtReward(currentTroveuser)
             );
 
-            if (netLUSDDebt > remainingLUSD) {
-                if (netLUSDDebt > MIN_NET_DEBT) {
-                    uint256 maxRedeemableLUSD = LiquityMath._min(
-                        remainingLUSD,
-                        netLUSDDebt.sub(MIN_NET_DEBT)
+            if (netARTHDebt > remainingARTH) {
+                if (netARTHDebt > MIN_NET_DEBT) {
+                    uint256 maxRedeemableARTH = LiquityMath._min(
+                        remainingARTH,
+                        netARTHDebt.sub(MIN_NET_DEBT)
                     );
 
                     uint256 ETH = troveManager.getTroveColl(currentTroveuser).add(
                         troveManager.getPendingETHReward(currentTroveuser)
                     );
 
-                    uint256 newColl = ETH.sub(maxRedeemableLUSD.mul(DECIMAL_PRECISION).div(_price));
-                    uint256 newDebt = netLUSDDebt.sub(maxRedeemableLUSD);
+                    uint256 newColl = ETH.sub(maxRedeemableARTH.mul(DECIMAL_PRECISION).div(_price));
+                    uint256 newDebt = netARTHDebt.sub(maxRedeemableARTH);
 
                     uint256 compositeDebt = _getCompositeDebt(newDebt);
                     partialRedemptionHintNICR = LiquityMath._computeNominalCR(
@@ -113,17 +113,17 @@ contract HintHelpers is LiquityBase, Ownable, CheckContract {
                         compositeDebt
                     );
 
-                    remainingLUSD = remainingLUSD.sub(maxRedeemableLUSD);
+                    remainingARTH = remainingARTH.sub(maxRedeemableARTH);
                 }
                 break;
             } else {
-                remainingLUSD = remainingLUSD.sub(netLUSDDebt);
+                remainingARTH = remainingARTH.sub(netARTHDebt);
             }
 
             currentTroveuser = sortedTrovesCached.getPrev(currentTroveuser);
         }
 
-        truncatedLUSDamount = _LUSDamount.sub(remainingLUSD);
+        truncatedARTHamount = _ARTHamount.sub(remainingARTH);
     }
 
     /* getApproxHint() - return address of a Trove that is, on average, (length / numTrials) positions away in the

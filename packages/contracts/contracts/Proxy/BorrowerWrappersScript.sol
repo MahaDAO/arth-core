@@ -21,7 +21,7 @@ contract BorrowerWrappersScript is BorrowerOperationsScript, ETHTransferScript {
 
     ITroveManager immutable troveManager;
     IStabilityPool immutable stabilityPool;
-    IERC20 immutable lusdToken;
+    IERC20 immutable arthToken;
 
     constructor(address _borrowerOperationsAddress, address _troveManagerAddress)
         BorrowerOperationsScript(IBorrowerOperations(_borrowerOperationsAddress))
@@ -34,14 +34,14 @@ contract BorrowerWrappersScript is BorrowerOperationsScript, ETHTransferScript {
         checkContract(address(stabilityPoolCached));
         stabilityPool = stabilityPoolCached;
 
-        address lusdTokenCached = address(troveManagerCached.lusdToken());
-        checkContract(lusdTokenCached);
-        lusdToken = IERC20(lusdTokenCached);
+        address arthTokenCached = address(troveManagerCached.arthToken());
+        checkContract(arthTokenCached);
+        arthToken = IERC20(arthTokenCached);
     }
 
     function claimCollateralAndOpenTrove(
         uint256 _maxFee,
-        uint256 _LUSDAmount,
+        uint256 _ARTHAmount,
         address _upperHint,
         address _lowerHint,
         address _frontEndTag
@@ -61,22 +61,22 @@ contract BorrowerWrappersScript is BorrowerOperationsScript, ETHTransferScript {
         // Open trove with obtained collateral, plus collateral sent by user
         borrowerOperations.openTrove{value: totalCollateral}(
             _maxFee,
-            _LUSDAmount,
+            _ARTHAmount,
             _upperHint,
             _lowerHint,
             _frontEndTag
         );
     }
 
-    function _getNetLUSDAmount(uint256 _collateral) internal returns (uint256) {
+    function _getNetARTHAmount(uint256 _collateral) internal returns (uint256) {
         IGovernance governance = troveManager.governance();
         IPriceFeed priceFeed = governance.getPriceFeed();
         uint256 price = priceFeed.fetchPrice();
         uint256 ICR = troveManager.getCurrentICR(address(this), price);
 
-        uint256 LUSDAmount = _collateral.mul(price).div(ICR);
+        uint256 ARTHAmount = _collateral.mul(price).div(ICR);
         uint256 borrowingRate = troveManager.getBorrowingRateWithDecay();
-        uint256 netDebt = LUSDAmount.mul(LiquityMath.DECIMAL_PRECISION).div(
+        uint256 netDebt = ARTHAmount.mul(LiquityMath.DECIMAL_PRECISION).div(
             LiquityMath.DECIMAL_PRECISION.add(borrowingRate)
         );
 
