@@ -22,11 +22,11 @@ contract CommunityIssuance is ICommunityIssuance, Ownable, CheckContract, BaseMa
     uint256 public rewardsDuration;
     uint256 public periodFinish = 0;
 
-    IERC20 public lqtyToken;
+    IERC20 public mahaToken;
 
     address public stabilityPoolAddress;
 
-    uint256 public totalLQTYIssued;
+    uint256 public totalMAHAIssued;
     uint256 public immutable deploymentTime;
 
     // --- Functions ---
@@ -36,35 +36,35 @@ contract CommunityIssuance is ICommunityIssuance, Ownable, CheckContract, BaseMa
     }
 
     function setAddresses(
-        address _lqtyTokenAddress,
+        address _mahaTokenAddress,
         address _stabilityPoolAddress,
         uint256 _rewardsDuration
     ) external override onlyOwner {
-        checkContract(_lqtyTokenAddress);
+        checkContract(_mahaTokenAddress);
         checkContract(_stabilityPoolAddress);
 
-        lqtyToken = IERC20(_lqtyTokenAddress);
+        mahaToken = IERC20(_mahaTokenAddress);
         stabilityPoolAddress = _stabilityPoolAddress;
 
-        uint256 LQTYBalance = lqtyToken.balanceOf(address(this));
-        assert(LQTYBalance > 0);
+        uint256 MAHABalance = mahaToken.balanceOf(address(this));
+        assert(MAHABalance > 0);
 
-        emit LQTYTokenAddressSet(_lqtyTokenAddress);
+        emit MAHATokenAddressSet(_mahaTokenAddress);
         emit StabilityPoolAddressSet(_stabilityPoolAddress);
 
         lastUpdateTime = block.timestamp;
         rewardsDuration = _rewardsDuration;
         periodFinish = block.timestamp.add(rewardsDuration);
-        rewardRate = lqtyToken.balanceOf(address(this)).div(rewardsDuration);
+        rewardRate = mahaToken.balanceOf(address(this)).div(rewardsDuration);
     }
 
-    function issueLQTY() external override returns (uint256) {
+    function issueMAHA() external override returns (uint256) {
         _requireCallerIsStabilityPool();
 
         uint256 issuance = _getCumulativeIssuance();
 
-        totalLQTYIssued = totalLQTYIssued.add(issuance);
-        emit TotalLQTYIssuedUpdated(totalLQTYIssued);
+        totalMAHAIssued = totalMAHAIssued.add(issuance);
+        emit TotalMAHAIssuedUpdated(totalMAHAIssued);
 
         lastUpdateTime = block.timestamp;
 
@@ -84,7 +84,7 @@ contract CommunityIssuance is ICommunityIssuance, Ownable, CheckContract, BaseMa
         // This keeps the reward rate in the right range, preventing overflows due to
         // very high values of rewardRate in the earned and rewardsPerToken functions;
         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
-        uint256 balance = lqtyToken.balanceOf(address(this));
+        uint256 balance = mahaToken.balanceOf(address(this));
         require(rewardRate <= balance.div(rewardsDuration), "Provided reward too high");
 
         lastUpdateTime = block.timestamp;
@@ -99,13 +99,13 @@ contract CommunityIssuance is ICommunityIssuance, Ownable, CheckContract, BaseMa
     function _getCumulativeIssuance() internal view returns (uint256) {
         uint256 rewards = rewardRate.mul(lastTimeRewardApplicable().sub(lastUpdateTime));
 
-        return LiquityMath._min(rewards, lqtyToken.balanceOf(address(this)));
+        return LiquityMath._min(rewards, mahaToken.balanceOf(address(this)));
     }
 
-    function sendLQTY(address _account, uint256 _LQTYamount) external override {
+    function sendMAHA(address _account, uint256 _MAHAamount) external override {
         _requireCallerIsStabilityPool();
 
-        lqtyToken.transfer(_account, _LQTYamount);
+        mahaToken.transfer(_account, _MAHAamount);
     }
 
     // --- 'require' functions ---

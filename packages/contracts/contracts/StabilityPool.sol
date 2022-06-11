@@ -129,19 +129,19 @@ import "./Dependencies/console.sol";
  * https://github.com/liquity/liquity/blob/master/papers/Scalable_Reward_Distribution_with_Compounding_Stakes.pdf
  *
  *
- * --- LQTY ISSUANCE TO STABILITY POOL DEPOSITORS ---
+ * --- MAHA ISSUANCE TO STABILITY POOL DEPOSITORS ---
  *
- * An LQTY issuance event occurs at every deposit operation, and every liquidation.
+ * An MAHA issuance event occurs at every deposit operation, and every liquidation.
  *
  * Each deposit is tagged with the address of the front end through which it was made.
  *
- * All deposits earn a share of the issued LQTY in proportion to the deposit as a share of total deposits. The LQTY earned
+ * All deposits earn a share of the issued MAHA in proportion to the deposit as a share of total deposits. The MAHA earned
  * by a given deposit, is split between the depositor and the front end through which the deposit was made, based on the front end's kickbackRate.
  *
  * Please see the system Readme for an overview:
- * https://github.com/liquity/dev/blob/main/README.md#lqty-issuance-to-stability-providers
+ * https://github.com/liquity/dev/blob/main/README.md#maha-issuance-to-stability-providers
  *
- * We use the same mathematical product-sum approach to track LQTY gains for depositors, where 'G' is the sum corresponding to LQTY gains.
+ * We use the same mathematical product-sum approach to track MAHA gains for depositors, where 'G' is the sum corresponding to MAHA gains.
  * The product P (and snapshot P_t) is re-used, as the ratio P/P_t tracks a deposit's depletion due to liquidations.
  *
  */
@@ -221,16 +221,16 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
     mapping(uint128 => mapping(uint128 => uint256)) public epochToScaleToSum;
 
     /*
-     * Similarly, the sum 'G' is used to calculate LQTY gains. During it's lifetime, each deposit d_t earns a LQTY gain of
+     * Similarly, the sum 'G' is used to calculate MAHA gains. During it's lifetime, each deposit d_t earns a MAHA gain of
      *  ( d_t * [G - G_t] )/P_t, where G_t is the depositor's snapshot of G taken at time t when  the deposit was made.
      *
-     *  LQTY reward events occur are triggered by depositor operations (new deposit, topup, withdrawal), and liquidations.
-     *  In each case, the LQTY reward is issued (i.e. G is updated), before other state changes are made.
+     *  MAHA reward events occur are triggered by depositor operations (new deposit, topup, withdrawal), and liquidations.
+     *  In each case, the MAHA reward is issued (i.e. G is updated), before other state changes are made.
      */
     mapping(uint128 => mapping(uint128 => uint256)) public epochToScaleToG;
 
-    // Error tracker for the error correction in the LQTY issuance calculation
-    uint256 public lastLQTYError;
+    // Error tracker for the error correction in the MAHA issuance calculation
+    uint256 public lastMAHAError;
     // Error trackers for the error correction in the offset calculation
     uint256 public lastETHError_Offset;
     uint256 public lastLUSDLossError_Offset;
@@ -287,10 +287,10 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
 
     /*  provideToSP():
      *
-     * - Triggers a LQTY issuance, based on time passed since the last issuance. The LQTY issuance is shared between *all* depositors and front ends
+     * - Triggers a MAHA issuance, based on time passed since the last issuance. The MAHA issuance is shared between *all* depositors and front ends
      * - Tags the deposit with the provided front end tag param, if it's a new deposit
-     * - Sends depositor's accumulated gains (LQTY, ETH) to depositor
-     * - Sends the tagged front end's accumulated LQTY gains to the tagged front end
+     * - Sends depositor's accumulated gains (MAHA, ETH) to depositor
+     * - Sends the tagged front end's accumulated MAHA gains to the tagged front end
      * - Increases deposit and tagged front end's stake, and takes new snapshots for each.
      */
     function provideToSP(uint256 _amount, address _frontEndTag) external override {
@@ -302,7 +302,7 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
 
         ICommunityIssuance communityIssuanceCached = communityIssuance;
 
-        _triggerLQTYIssuance(communityIssuanceCached);
+        _triggerMAHAIssuance(communityIssuanceCached);
 
         if (initialDeposit == 0) {
             _setFrontEndTag(msg.sender, _frontEndTag);
@@ -311,9 +311,9 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
         uint256 compoundedLUSDDeposit = getCompoundedLUSDDeposit(msg.sender);
         uint256 LUSDLoss = initialDeposit.sub(compoundedLUSDDeposit); // Needed only for event log
 
-        // First pay out any LQTY gains
+        // First pay out any MAHA gains
         address frontEnd = deposits[msg.sender].frontEndTag;
-        _payOutLQTYGains(communityIssuanceCached, msg.sender, frontEnd);
+        _payOutMAHAGains(communityIssuanceCached, msg.sender, frontEnd);
 
         // Update front end stake
         uint256 compoundedFrontEndStake = getCompoundedFrontEndStake(frontEnd);
@@ -334,10 +334,10 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
 
     /*  withdrawFromSP():
      *
-     * - Triggers a LQTY issuance, based on time passed since the last issuance. The LQTY issuance is shared between *all* depositors and front ends
+     * - Triggers a MAHA issuance, based on time passed since the last issuance. The MAHA issuance is shared between *all* depositors and front ends
      * - Removes the deposit's front end tag if it is a full withdrawal
-     * - Sends all depositor's accumulated gains (LQTY, ETH) to depositor
-     * - Sends the tagged front end's accumulated LQTY gains to the tagged front end
+     * - Sends all depositor's accumulated gains (MAHA, ETH) to depositor
+     * - Sends the tagged front end's accumulated MAHA gains to the tagged front end
      * - Decreases deposit and tagged front end's stake, and takes new snapshots for each.
      *
      * If _amount > userDeposit, the user withdraws all of their compounded deposit.
@@ -351,7 +351,7 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
 
         ICommunityIssuance communityIssuanceCached = communityIssuance;
 
-        _triggerLQTYIssuance(communityIssuanceCached);
+        _triggerMAHAIssuance(communityIssuanceCached);
 
         uint256 depositorETHGain = getDepositorETHGain(msg.sender);
 
@@ -359,9 +359,9 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
         uint256 LUSDtoWithdraw = LiquityMath._min(_amount, compoundedLUSDDeposit);
         uint256 LUSDLoss = initialDeposit.sub(compoundedLUSDDeposit); // Needed only for event log
 
-        // First pay out any LQTY gains
+        // First pay out any MAHA gains
         address frontEnd = deposits[msg.sender].frontEndTag;
-        _payOutLQTYGains(communityIssuanceCached, msg.sender, frontEnd);
+        _payOutMAHAGains(communityIssuanceCached, msg.sender, frontEnd);
 
         // Update front end stake
         uint256 compoundedFrontEndStake = getCompoundedFrontEndStake(frontEnd);
@@ -382,9 +382,9 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
     }
 
     /* withdrawETHGainToTrove:
-     * - Triggers a LQTY issuance, based on time passed since the last issuance. The LQTY issuance is shared between *all* depositors and front ends
-     * - Sends all depositor's LQTY gain to  depositor
-     * - Sends all tagged front end's LQTY gain to the tagged front end
+     * - Triggers a MAHA issuance, based on time passed since the last issuance. The MAHA issuance is shared between *all* depositors and front ends
+     * - Sends all depositor's MAHA gain to  depositor
+     * - Sends all tagged front end's MAHA gain to the tagged front end
      * - Transfers the depositor's entire ETH gain from the Stability Pool to the caller's trove
      * - Leaves their compounded deposit in the Stability Pool
      * - Updates snapshots for deposit and tagged front end stake */
@@ -396,16 +396,16 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
 
         ICommunityIssuance communityIssuanceCached = communityIssuance;
 
-        _triggerLQTYIssuance(communityIssuanceCached);
+        _triggerMAHAIssuance(communityIssuanceCached);
 
         uint256 depositorETHGain = getDepositorETHGain(msg.sender);
 
         uint256 compoundedLUSDDeposit = getCompoundedLUSDDeposit(msg.sender);
         uint256 LUSDLoss = initialDeposit.sub(compoundedLUSDDeposit); // Needed only for event log
 
-        // First pay out any LQTY gains
+        // First pay out any MAHA gains
         address frontEnd = deposits[msg.sender].frontEndTag;
-        _payOutLQTYGains(communityIssuanceCached, msg.sender, frontEnd);
+        _payOutMAHAGains(communityIssuanceCached, msg.sender, frontEnd);
 
         // Update front end stake
         uint256 compoundedFrontEndStake = getCompoundedFrontEndStake(frontEnd);
@@ -432,40 +432,40 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
         );
     }
 
-    // --- LQTY issuance functions ---
+    // --- MAHA issuance functions ---
 
-    function _triggerLQTYIssuance(ICommunityIssuance _communityIssuance) internal {
-        uint256 LQTYIssuance = _communityIssuance.issueLQTY();
-        _updateG(LQTYIssuance);
+    function _triggerMAHAIssuance(ICommunityIssuance _communityIssuance) internal {
+        uint256 MAHAIssuance = _communityIssuance.issueMAHA();
+        _updateG(MAHAIssuance);
     }
 
-    function _updateG(uint256 _LQTYIssuance) internal {
+    function _updateG(uint256 _MAHAIssuance) internal {
         uint256 totalLUSD = totalLUSDDeposits; // cached to save an SLOAD
         /*
-         * When total deposits is 0, G is not updated. In this case, the LQTY issued can not be obtained by later
+         * When total deposits is 0, G is not updated. In this case, the MAHA issued can not be obtained by later
          * depositors - it is missed out on, and remains in the balanceof the CommunityIssuance contract.
          *
          */
-        if (totalLUSD == 0 || _LQTYIssuance == 0) {
+        if (totalLUSD == 0 || _MAHAIssuance == 0) {
             return;
         }
 
-        uint256 LQTYPerUnitStaked;
-        LQTYPerUnitStaked = _computeLQTYPerUnitStaked(_LQTYIssuance, totalLUSD);
+        uint256 MAHAPerUnitStaked;
+        MAHAPerUnitStaked = _computeMAHAPerUnitStaked(_MAHAIssuance, totalLUSD);
 
-        uint256 marginalLQTYGain = LQTYPerUnitStaked.mul(P);
+        uint256 marginalMAHAGain = MAHAPerUnitStaked.mul(P);
         epochToScaleToG[currentEpoch][currentScale] = epochToScaleToG[currentEpoch][currentScale]
-            .add(marginalLQTYGain);
+            .add(marginalMAHAGain);
 
         emit G_Updated(epochToScaleToG[currentEpoch][currentScale], currentEpoch, currentScale);
     }
 
-    function _computeLQTYPerUnitStaked(uint256 _LQTYIssuance, uint256 _totalLUSDDeposits)
+    function _computeMAHAPerUnitStaked(uint256 _MAHAIssuance, uint256 _totalLUSDDeposits)
         internal
         returns (uint256)
     {
         /*
-         * Calculate the LQTY-per-unit staked.  Division uses a "feedback" error correction, to keep the
+         * Calculate the MAHA-per-unit staked.  Division uses a "feedback" error correction, to keep the
          * cumulative error low in the running total G:
          *
          * 1) Form a numerator which compensates for the floor division error that occurred the last time this
@@ -475,12 +475,12 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
          * 4) Store this error for use in the next correction when this function is called.
          * 5) Note: static analysis tools complain about this "division before multiplication", however, it is intended.
          */
-        uint256 LQTYNumerator = _LQTYIssuance.mul(DECIMAL_PRECISION).add(lastLQTYError);
+        uint256 MAHANumerator = _MAHAIssuance.mul(DECIMAL_PRECISION).add(lastMAHAError);
 
-        uint256 LQTYPerUnitStaked = LQTYNumerator.div(_totalLUSDDeposits);
-        lastLQTYError = LQTYNumerator.sub(LQTYPerUnitStaked.mul(_totalLUSDDeposits));
+        uint256 MAHAPerUnitStaked = MAHANumerator.div(_totalLUSDDeposits);
+        lastMAHAError = MAHANumerator.sub(MAHAPerUnitStaked.mul(_totalLUSDDeposits));
 
-        return LQTYPerUnitStaked;
+        return MAHAPerUnitStaked;
     }
 
     // --- Liquidation functions ---
@@ -497,7 +497,7 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
             return;
         }
 
-        _triggerLQTYIssuance(communityIssuance);
+        _triggerMAHAIssuance(communityIssuance);
 
         (uint256 ETHGainPerUnitStaked, uint256 LUSDLossPerUnitStaked) = _computeRewardsPerUnitStaked(
             _collToAdd,
@@ -675,12 +675,12 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
     }
 
     /*
-     * Calculate the LQTY gain earned by a deposit since its last snapshots were taken.
-     * Given by the formula:  LQTY = d0 * (G - G(0))/P(0)
+     * Calculate the MAHA gain earned by a deposit since its last snapshots were taken.
+     * Given by the formula:  MAHA = d0 * (G - G(0))/P(0)
      * where G(0) and P(0) are the depositor's snapshots of the sum G and product P, respectively.
      * d0 is the last recorded deposit value.
      */
-    function getDepositorLQTYGain(address _depositor) public view override returns (uint256) {
+    function getDepositorMAHAGain(address _depositor) public view override returns (uint256) {
         uint256 initialDeposit = deposits[_depositor].initialValue;
         if (initialDeposit == 0) {
             return 0;
@@ -699,20 +699,20 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
 
         Snapshots memory snapshots = depositSnapshots[_depositor];
 
-        uint256 LQTYGain = kickbackRate
-            .mul(_getLQTYGainFromSnapshots(initialDeposit, snapshots))
+        uint256 MAHAGain = kickbackRate
+            .mul(_getMAHAGainFromSnapshots(initialDeposit, snapshots))
             .div(DECIMAL_PRECISION);
 
-        return LQTYGain;
+        return MAHAGain;
     }
 
     /*
-     * Return the LQTY gain earned by the front end. Given by the formula:  E = D0 * (G - G(0))/P(0)
+     * Return the MAHA gain earned by the front end. Given by the formula:  E = D0 * (G - G(0))/P(0)
      * where G(0) and P(0) are the depositor's snapshots of the sum G and product P, respectively.
      *
      * D0 is the last recorded value of the front end's total tagged deposits.
      */
-    function getFrontEndLQTYGain(address _frontEnd) public view override returns (uint256) {
+    function getFrontEndMAHAGain(address _frontEnd) public view override returns (uint256) {
         uint256 frontEndStake = frontEndStakes[_frontEnd];
         if (frontEndStake == 0) {
             return 0;
@@ -723,20 +723,20 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
 
         Snapshots memory snapshots = frontEndSnapshots[_frontEnd];
 
-        uint256 LQTYGain = frontEndShare
-            .mul(_getLQTYGainFromSnapshots(frontEndStake, snapshots))
+        uint256 MAHAGain = frontEndShare
+            .mul(_getMAHAGainFromSnapshots(frontEndStake, snapshots))
             .div(DECIMAL_PRECISION);
-        return LQTYGain;
+        return MAHAGain;
     }
 
-    function _getLQTYGainFromSnapshots(uint256 initialStake, Snapshots memory snapshots)
+    function _getMAHAGainFromSnapshots(uint256 initialStake, Snapshots memory snapshots)
         internal
         view
         returns (uint256)
     {
         /*
-         * Grab the sum 'G' from the epoch at which the stake was made. The LQTY gain may span up to one scale change.
-         * If it does, the second portion of the LQTY gain is scaled by 1e9.
+         * Grab the sum 'G' from the epoch at which the stake was made. The MAHA gain may span up to one scale change.
+         * If it does, the second portion of the MAHA gain is scaled by 1e9.
          * If the gain spans no scale change, the second portion will be 0.
          */
         uint128 epochSnapshot = snapshots.epoch;
@@ -749,11 +749,11 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
             SCALE_FACTOR
         );
 
-        uint256 LQTYGain = initialStake.mul(firstPortion.add(secondPortion)).div(P_Snapshot).div(
+        uint256 MAHAGain = initialStake.mul(firstPortion.add(secondPortion)).div(P_Snapshot).div(
             DECIMAL_PRECISION
         );
 
-        return LQTYGain;
+        return MAHAGain;
     }
 
     // --- Compounded deposit and compounded front end stake ---
@@ -840,7 +840,7 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
         return compoundedStake;
     }
 
-    // --- Sender functions for LUSD deposit, ETH gains and LQTY gains ---
+    // --- Sender functions for LUSD deposit, ETH gains and MAHA gains ---
 
     // Transfer the LUSD tokens from the user to the Stability Pool's address, and update its recorded LUSD
     function _sendLUSDtoStabilityPool(address _address, uint256 _amount) internal {
@@ -946,22 +946,22 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
         emit FrontEndSnapshotUpdated(_frontEnd, currentP, currentG);
     }
 
-    function _payOutLQTYGains(
+    function _payOutMAHAGains(
         ICommunityIssuance _communityIssuance,
         address _depositor,
         address _frontEnd
     ) internal {
-        // Pay out front end's LQTY gain
+        // Pay out front end's MAHA gain
         if (_frontEnd != address(0)) {
-            uint256 frontEndLQTYGain = getFrontEndLQTYGain(_frontEnd);
-            _communityIssuance.sendLQTY(_frontEnd, frontEndLQTYGain);
-            emit LQTYPaidToFrontEnd(_frontEnd, frontEndLQTYGain);
+            uint256 frontEndMAHAGain = getFrontEndMAHAGain(_frontEnd);
+            _communityIssuance.sendMAHA(_frontEnd, frontEndMAHAGain);
+            emit MAHAPaidToFrontEnd(_frontEnd, frontEndMAHAGain);
         }
 
-        // Pay out depositor's LQTY gain
-        uint256 depositorLQTYGain = getDepositorLQTYGain(_depositor);
-        _communityIssuance.sendLQTY(_depositor, depositorLQTYGain);
-        emit LQTYPaidToDepositor(_depositor, depositorLQTYGain);
+        // Pay out depositor's MAHA gain
+        uint256 depositorMAHAGain = getDepositorMAHAGain(_depositor);
+        _communityIssuance.sendMAHA(_depositor, depositorMAHAGain);
+        emit MAHAPaidToDepositor(_depositor, depositorMAHAGain);
     }
 
     // --- 'require' functions ---
