@@ -14,8 +14,8 @@
 
 # Exported function gas costs and test outputs
 /gasTest/outputs
-/deployment/outputs
-!/deployment/outputs/.gitkeep
+/deployment/output
+!/deployment/output/.gitkeep
 
 /secrets.js
 
