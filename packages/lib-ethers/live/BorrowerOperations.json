@@ -529,7 +529,7 @@
       "name": "lusdToken",
       "outputs": [
         {
-          "internalType": "contract ILUSDToken",
+          "internalType": "contract IARTHValuecoin",
           "name": "",
           "type": "address"
         }

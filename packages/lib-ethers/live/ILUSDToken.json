@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "ILUSDToken",
-  "sourceName": "contracts/Interfaces/ILUSDToken.sol",
+  "contractName": "IARTHValuecoin",
+  "sourceName": "contracts/Interfaces/IARTHValuecoin.sol",
   "abi": [
     {
       "anonymous": false,

@@ -1,6 +1,7 @@
 # Test coverage
 
 To check test coverage you can run:
+
 ```
 yarn coverage
 ```
@@ -12,6 +13,7 @@ You can see the coverage status at mainnet deployment [here](https://codecov.io/
 There’s also a [pull request](https://github.com/liquity/dev/pull/515) to increase the coverage, but it hasn’t been merged yet because it modifies some smart contracts (mostly removing unnecessary checks).
 
 # Test output
+
 The following is the output of a complete test run, made on commit [`a1824dd8`](https://github.com/liquity/dev/tree/a1824dd88f4928b424cae372d59c4455d5c9a2c2), from April 16th, 2021.
 
 ```
@@ -47,7 +49,7 @@ $ hardhat test
     StabilityPool
       ✓ offset(): reverts when called by an account that is not TroveManager
       ✓ fallback(): reverts when called by an account that is not the Active Pool
-    LUSDToken
+    ARTHValuecoin
       ✓ mint(): reverts when called by an account that is not BorrowerOperations
       ✓ burn(): reverts when called by an account that is not BO nor TroveM nor SP
       ✓ sendToPool(): reverts when called by an account that is not StabilityPool
@@ -112,7 +114,7 @@ $ hardhat test
       ✓ withdrawLUSD(): reverts if system is in Recovery Mode (312ms)
       ✓ withdrawLUSD(): increases the Trove's LUSD debt by the correct amount (208ms)
       ✓ withdrawLUSD(): increases LUSD debt in ActivePool by correct amount (230ms)
-      ✓ withdrawLUSD(): increases user LUSDToken balance by correct amount (243ms)
+      ✓ withdrawLUSD(): increases user ARTHValuecoin balance by correct amount (243ms)
       ✓ repayLUSD(): reverts when repayment would leave trove with ICR < MCR (392ms)
       ✓ repayLUSD(): Succeeds when it would leave trove with net debt >= minimum net debt (435ms)
       ✓ repayLUSD(): reverts when it would leave trove with net debt < minimum net debt (256ms)
@@ -120,7 +122,7 @@ $ hardhat test
       ✓ repayLUSD(): reverts when attempted repayment is > the debt of the trove (418ms)
       ✓ repayLUSD(): reduces the Trove's LUSD debt by the correct amount (403ms)
       ✓ repayLUSD(): decreases LUSD debt in ActivePool by correct amount (406ms)
-      ✓ repayLUSD(): decreases user LUSDToken balance by correct amount (404ms)
+      ✓ repayLUSD(): decreases user ARTHValuecoin balance by correct amount (404ms)
       ✓ repayLUSD(): can repay debt in Recovery Mode (557ms)
       ✓ repayLUSD(): Reverts if borrower has insufficient LUSD balance to cover his debt repayment (1122ms)
       ✓ adjustTrove(): reverts when adjustment would leave trove with ICR < MCR (572ms)
@@ -158,8 +160,8 @@ $ hardhat test
       ✓ adjustTrove(): updates borrower's debt and coll with coll decrease, debt increase (346ms)
       ✓ adjustTrove(): updates borrower's stake and totalStakes with a coll increase (385ms)
       ✓ adjustTrove():  updates borrower's stake and totalStakes with a coll decrease (553ms)
-      ✓ adjustTrove(): changes LUSDToken balance by the requested decrease (529ms)
-      ✓ adjustTrove(): changes LUSDToken balance by the requested increase (577ms)
+      ✓ adjustTrove(): changes ARTHValuecoin balance by the requested decrease (529ms)
+      ✓ adjustTrove(): changes ARTHValuecoin balance by the requested increase (577ms)
       ✓ adjustTrove(): Changes the activePool ETH and raw ether balance by the requested decrease (1371ms)
       ✓ adjustTrove(): Changes the activePool ETH and raw ether balance by the amount of ETH sent (548ms)
       ✓ adjustTrove(): Changes the LUSD debt in ActivePool by requested decrease (541ms)
@@ -184,7 +186,7 @@ $ hardhat test
       ✓ closeTrove(): reduces ActivePool debt by correct amount (522ms)
       ✓ closeTrove(): updates the the total stakes (790ms)
       ✓ closeTrove(): sends the correct amount of ETH to the user (390ms)
-      ✓ closeTrove(): subtracts the debt of the closed Trove from the Borrower's LUSDToken balance (405ms)
+      ✓ closeTrove(): subtracts the debt of the closed Trove from the Borrower's ARTHValuecoin balance (405ms)
       ✓ closeTrove(): applies pending rewards (1267ms)
       ✓ closeTrove(): reverts if borrower has insufficient LUSD balance to repay his entire debt (347ms)
       ✓ openTrove(): emits a TroveUpdated event with the correct collateral and debt (820ms)
@@ -220,7 +222,7 @@ $ hardhat test
       ✓ openTrove(): allows a user to open a Trove, then close it, then re-open it (687ms)
       ✓ openTrove(): increases the Trove's LUSD debt by the correct amount (129ms)
       ✓ openTrove(): increases LUSD debt in ActivePool by the debt of the trove (162ms)
-      ✓ openTrove(): increases user LUSDToken balance by correct amount (85ms)
+      ✓ openTrove(): increases user ARTHValuecoin balance by correct amount (85ms)
       ✓ getCompositeDebt(): returns debt + gas comp
       ✓ closeTrove(): fails if owner cannot receive ETH (440ms)
       getNewICRFromTroveChange() returns the correct ICR
@@ -254,7 +256,7 @@ $ hardhat test
 
   Contract: Deployment script - Sets correct contract addresses dependencies after deployment
     ✓ Sets the correct PriceFeed address in TroveManager
-    ✓ Sets the correct LUSDToken address in TroveManager
+    ✓ Sets the correct ARTHValuecoin address in TroveManager
     ✓ Sets the correct SortedTroves address in TroveManager
     ✓ Sets the correct BorrowerOperations address in TroveManager
     ✓ Sets the correct ActivePool address in TroveManager
@@ -267,7 +269,7 @@ $ hardhat test
     ✓ Sets the correct TroveManager address in ActivePool
     ✓ Sets the correct ActivePool address in StabilityPool
     ✓ Sets the correct BorrowerOperations address in StabilityPool
-    ✓ Sets the correct LUSDToken address in StabilityPool
+    ✓ Sets the correct ARTHValuecoin address in StabilityPool
     ✓ Sets the correct TroveManager address in StabilityPool
     ✓ Sets the correct TroveManager address in DefaultPool
     ✓ Sets the correct ActivePool address in DefaultPool
@@ -400,7 +402,7 @@ TCR: 11.892415157517211309
       ✓ LQTY multisig can't withraw from a LC which it funded (271ms)
       ✓ No one can withraw from a LC (78ms)
 
-  Contract: Deploying the LQTY contracts: LCF, CI, LQTYStaking, and LQTYToken 
+  Contract: Deploying the LQTY contracts: LCF, CI, LQTYStaking, and LQTYToken
     CommunityIssuance deployment
       ✓ Stores the deployer's address
     LQTYStaking deployment
@@ -455,7 +457,7 @@ TCR: 11.892415157517211309
       ✓ Anyone can deploy LCs with unlockTime = one year from deployment, directly and through factory (102ms)
       ✓ Anyone can deploy LCs with unlockTime > one year from deployment, directly and through factory (187ms)
       ✓ No one can deploy LCs with unlockTime < one year from deployment, directly or through factory (100ms)
-      Withdrawal Attempts on LCs before unlockTime has passed 
+      Withdrawal Attempts on LCs before unlockTime has passed
         ✓ Liquity multisig can't withdraw from a funded LC they deployed for another beneficiary through the Factory before the unlockTime
         ✓ Liquity multisig can't withdraw from a funded LC that someone else deployed before the unlockTime (52ms)
         ✓ Beneficiary can't withdraw from their funded LC before the unlockTime (219ms)
@@ -559,7 +561,7 @@ issuance fraction after: 949066037374286
     ✓ unstake(): reverts if user has no stake
     ✓ Test requireCallerIsTroveManager
 
-  Contract: LUSDToken
+  Contract: ARTHValuecoin
     Basic token functions, without Proxy
       ✓ balanceOf(): gets the balance of the account
       ✓ totalSupply(): gets the total supply
@@ -1175,7 +1177,7 @@ gasUsed:  636956
     ✓ redeemCollateral(): reverts if fee exceeds max fee percentage (2899ms)
     ✓ redeemCollateral(): succeeds if fee is less than max fee percentage (3127ms)
     ✓ redeemCollateral(): doesn't affect the Stability Pool deposits or ETH gain of redeemed-from troves (2311ms)
-    ✓ redeemCollateral(): caller can redeem their entire LUSDToken balance (1086ms)
+    ✓ redeemCollateral(): caller can redeem their entire ARTHValuecoin balance (1086ms)
     ✓ redeemCollateral(): reverts when requested redemption amount exceeds caller's LUSD token balance (1320ms)
     ✓ redeemCollateral(): value of issued ETH == face value of redeemed LUSD (assuming 1 LUSD has value of $1) (1353ms)
     ✓ redeemCollateral(): reverts if there is zero outstanding system debt (66ms)

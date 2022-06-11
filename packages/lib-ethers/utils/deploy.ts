@@ -112,7 +112,7 @@ const deployContracts = async (
       lusdToken: await deployContract(
         deployer,
         getContractFactory,
-        "LUSDToken",
+        "ARTHValuecoin",
         addresses.troveManager,
         addresses.stabilityPool,
         addresses.borrowerOperations,

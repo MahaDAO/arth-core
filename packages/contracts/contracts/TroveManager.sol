@@ -5,7 +5,7 @@ pragma solidity 0.6.11;
 import "./Interfaces/ITroveManager.sol";
 import "./Interfaces/IStabilityPool.sol";
 import "./Interfaces/ICollSurplusPool.sol";
-import "./Interfaces/ILUSDToken.sol";
+import "./Interfaces/IARTHValuecoin.sol";
 import "./Interfaces/ISortedTroves.sol";
 import "./Dependencies/LiquityBase.sol";
 import "./Dependencies/Ownable.sol";
@@ -25,7 +25,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
 
     ICollSurplusPool collSurplusPool;
 
-    ILUSDToken public override lusdToken;
+    IARTHValuecoin public override lusdToken;
 
     // A doubly linked list of Troves, sorted by their sorted by their collateral ratios
     ISortedTroves public sortedTroves;
@@ -165,7 +165,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
     struct ContractsCache {
         IActivePool activePool;
         IDefaultPool defaultPool;
-        ILUSDToken lusdToken;
+        IARTHValuecoin lusdToken;
         IGovernance governance;
         ISortedTroves sortedTroves;
         ICollSurplusPool collSurplusPool;
@@ -258,7 +258,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         gasPoolAddress = _gasPoolAddress;
         collSurplusPool = ICollSurplusPool(_collSurplusPoolAddress);
         governance = IGovernance(_governanceAddress);
-        lusdToken = ILUSDToken(_lusdTokenAddress);
+        lusdToken = IARTHValuecoin(_lusdTokenAddress);
         sortedTroves = ISortedTroves(_sortedTrovesAddress);
 
         emit BorrowerOperationsAddressChanged(_borrowerOperationsAddress);
@@ -360,7 +360,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         if (_ICR <= _100pct) {
             _movePendingTroveRewardsToActivePool(_activePool, _defaultPool, vars.pendingDebtReward, vars.pendingCollReward);
             _removeStake(_borrower);
-           
+
             singleLiquidation.debtToOffset = 0;
             singleLiquidation.collToSendToSP = 0;
             singleLiquidation.debtToRedistribute = singleLiquidation.entireTroveDebt;
@@ -369,7 +369,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
             _closeTrove(_borrower, Status.closedByLiquidation);
             emit TroveLiquidated(_borrower, singleLiquidation.entireTroveDebt, singleLiquidation.entireTroveColl, TroveManagerOperation.liquidateInRecoveryMode);
             emit TroveUpdated(_borrower, 0, 0, 0, TroveManagerOperation.liquidateInRecoveryMode);
-            
+
         // If 100% < ICR < MCR, offset as much as possible, and redistribute the remainder
         } else if ((_ICR > _100pct) && (_ICR < MCR)) {
              _movePendingTroveRewardsToActivePool(_activePool, _defaultPool, vars.pendingDebtReward, vars.pendingCollReward);
@@ -483,7 +483,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         ContractsCache memory contractsCache = ContractsCache(
             activePool,
             defaultPool,
-            ILUSDToken(address(0)),
+            IARTHValuecoin(address(0)),
             IGovernance(address(0)),
             sortedTroves,
             ICollSurplusPool(address(0)),
@@ -833,7 +833,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
 
             /*
             * If the provided hint is out of date, we bail since trying to reinsert without a good hint will almost
-            * certainly result in running out of gas. 
+            * certainly result in running out of gas.
             *
             * If the resultant net debt of the partial is less than the minimum, net debt we bail.
             */
@@ -1099,7 +1099,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
 
         return pendingETHReward;
     }
-    
+
     // Get the borrower's pending accumulated LUSD reward, earned by their stake
     function getPendingLUSDDebtReward(address _borrower) public view override returns (uint) {
         uint snapshotLUSDDebt = rewardSnapshots[_borrower].LUSDDebt;
@@ -1121,7 +1121,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         * pending rewards
         */
         if (Troves[_borrower].status != Status.active) {return false;}
-       
+
         return (rewardSnapshots[_borrower].ETH < L_ETH);
     }
 
@@ -1361,7 +1361,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         // Update the baseRate state variable
         baseRate = newBaseRate;
         emit BaseRateUpdated(newBaseRate);
-        
+
         _updateLastFeeOpTime();
 
         return newBaseRate;
@@ -1472,7 +1472,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         require(Troves[_borrower].status == Status.active, "TroveManager: Trove does not exist or is closed");
     }
 
-    function _requireLUSDBalanceCoversRedemption(ILUSDToken _lusdToken, address _redeemer, uint _amount) internal view {
+    function _requireLUSDBalanceCoversRedemption(IARTHValuecoin _lusdToken, address _redeemer, uint _amount) internal view {
         require(_lusdToken.balanceOf(_redeemer) >= _amount, "TroveManager: Requested redemption amount must be <= user's LUSD token balance");
     }
 
@@ -1526,7 +1526,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         _requireCallerIsBorrowerOperations();
         Troves[_borrower].frontEndTag = _frontEndTag;
     }
-    
+
     function setTroveStatus(address _borrower, uint _num) external override {
         _requireCallerIsBorrowerOperations();
         Troves[_borrower].status = Status(_num);

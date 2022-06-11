@@ -187,7 +187,7 @@ dataSources:
         - event: StakingGainsWithdrawn(indexed address,uint256,uint256)
           handler: handleStakeGainsWithdrawn
 ${[
-  ["LUSDToken", addresses.lusdToken],
+  ["ARTHValuecoin", addresses.lusdToken],
   ["LQTYToken", addresses.lqtyToken]
 ].map(
   ([name, address]) => yaml`

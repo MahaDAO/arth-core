@@ -2,8 +2,7 @@
   "_format": "hh-sol-artifact-1",
   "contractName": "EchidnaTester",
   "sourceName": "contracts/TestContracts/EchidnaTester.sol",
-  "abi": [
-    {
+  "abi": [{
       "inputs": [],
       "stateMutability": "payable",
       "type": "constructor"
@@ -11,19 +10,16 @@
     {
       "inputs": [],
       "name": "activePool",
-      "outputs": [
-        {
-          "internalType": "contract ActivePool",
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "outputs": [{
+        "internalType": "contract ActivePool",
+        "name": "",
+        "type": "address"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -40,8 +36,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -68,8 +63,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -101,8 +95,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -149,8 +142,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -167,19 +159,16 @@
         }
       ],
       "name": "approveExt",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -198,24 +187,20 @@
     {
       "inputs": [],
       "name": "borrowerOperations",
-      "outputs": [
-        {
-          "internalType": "contract BorrowerOperations",
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "outputs": [{
+        "internalType": "contract BorrowerOperations",
+        "name": "",
+        "type": "address"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_i",
-          "type": "uint256"
-        }
-      ],
+      "inputs": [{
+        "internalType": "uint256",
+        "name": "_i",
+        "type": "uint256"
+      }],
       "name": "closeTroveExt",
       "outputs": [],
       "stateMutability": "nonpayable",
@@ -224,19 +209,16 @@
     {
       "inputs": [],
       "name": "collSurplusPool",
-      "outputs": [
-        {
-          "internalType": "contract CollSurplusPool",
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "outputs": [{
+        "internalType": "contract CollSurplusPool",
+        "name": "",
+        "type": "address"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -253,155 +235,130 @@
         }
       ],
       "name": "decreaseAllowanceExt",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "defaultPool",
-      "outputs": [
-        {
-          "internalType": "contract DefaultPool",
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "outputs": [{
+        "internalType": "contract DefaultPool",
+        "name": "",
+        "type": "address"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
+      "inputs": [{
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }],
       "name": "echidnaProxies",
-      "outputs": [
-        {
-          "internalType": "contract EchidnaProxy",
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "outputs": [{
+        "internalType": "contract EchidnaProxy",
+        "name": "",
+        "type": "address"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "echidna_ETH_balances",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "echidna_LUSD_global_balances",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "echidna_canary_active_pool_balance",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "echidna_canary_number_of_troves",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "echidna_price",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "echidna_trove_properties",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "echidna_troves_order",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "gasPool",
-      "outputs": [
-        {
-          "internalType": "contract GasPool",
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "outputs": [{
+        "internalType": "contract GasPool",
+        "name": "",
+        "type": "address"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -418,19 +375,16 @@
         }
       ],
       "name": "increaseAllowanceExt",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -447,8 +401,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -467,19 +420,16 @@
     {
       "inputs": [],
       "name": "lusdToken",
-      "outputs": [
-        {
-          "internalType": "contract LUSDToken",
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "outputs": [{
+        "internalType": "contract ARTHValuecoin",
+        "name": "",
+        "type": "address"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -501,8 +451,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -539,8 +488,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -562,8 +510,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -600,8 +547,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -628,13 +574,11 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_price",
-          "type": "uint256"
-        }
-      ],
+      "inputs": [{
+        "internalType": "uint256",
+        "name": "_price",
+        "type": "uint256"
+      }],
       "name": "setPriceExt",
       "outputs": [],
       "stateMutability": "nonpayable",
@@ -643,19 +587,16 @@
     {
       "inputs": [],
       "name": "stabilityPool",
-      "outputs": [
-        {
-          "internalType": "contract StabilityPool",
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "outputs": [{
+        "internalType": "contract StabilityPool",
+        "name": "",
+        "type": "address"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -672,19 +613,16 @@
         }
       ],
       "name": "transferExt",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -706,32 +644,27 @@
         }
       ],
       "name": "transferFromExt",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "troveManager",
-      "outputs": [
-        {
-          "internalType": "contract TroveManager",
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "outputs": [{
+        "internalType": "contract TroveManager",
+        "name": "",
+        "type": "address"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -758,8 +691,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"
@@ -776,8 +708,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_i",
           "type": "uint256"

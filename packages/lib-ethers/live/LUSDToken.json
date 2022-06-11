@@ -1,11 +1,9 @@
 {
   "_format": "hh-sol-artifact-1",
-  "contractName": "LUSDToken",
-  "sourceName": "contracts/LUSDToken.sol",
-  "abi": [
-    {
-      "inputs": [
-        {
+  "contractName": "ARTHValuecoin",
+  "sourceName": "contracts/ARTHValuecoin.sol",
+  "abi": [{
+      "inputs": [{
           "internalType": "address",
           "name": "_troveManagerAddress",
           "type": "address"
@@ -26,8 +24,7 @@
     },
     {
       "anonymous": false,
-      "inputs": [
-        {
+      "inputs": [{
           "indexed": true,
           "internalType": "address",
           "name": "owner",
@@ -51,21 +48,18 @@
     },
     {
       "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "_newBorrowerOperationsAddress",
-          "type": "address"
-        }
-      ],
+      "inputs": [{
+        "indexed": false,
+        "internalType": "address",
+        "name": "_newBorrowerOperationsAddress",
+        "type": "address"
+      }],
       "name": "BorrowerOperationsAddressChanged",
       "type": "event"
     },
     {
       "anonymous": false,
-      "inputs": [
-        {
+      "inputs": [{
           "indexed": false,
           "internalType": "address",
           "name": "_user",
@@ -83,21 +77,18 @@
     },
     {
       "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "_newStabilityPoolAddress",
-          "type": "address"
-        }
-      ],
+      "inputs": [{
+        "indexed": false,
+        "internalType": "address",
+        "name": "_newStabilityPoolAddress",
+        "type": "address"
+      }],
       "name": "StabilityPoolAddressChanged",
       "type": "event"
     },
     {
       "anonymous": false,
-      "inputs": [
-        {
+      "inputs": [{
           "indexed": true,
           "internalType": "address",
           "name": "from",
@@ -121,20 +112,17 @@
     },
     {
       "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "_troveManagerAddress",
-          "type": "address"
-        }
-      ],
+      "inputs": [{
+        "indexed": false,
+        "internalType": "address",
+        "name": "_troveManagerAddress",
+        "type": "address"
+      }],
       "name": "TroveManagerAddressChanged",
       "type": "event"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "address",
           "name": "owner",
           "type": "address"
@@ -146,19 +134,16 @@
         }
       ],
       "name": "allowance",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
+      "outputs": [{
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "address",
           "name": "spender",
           "type": "address"
@@ -170,51 +155,42 @@
         }
       ],
       "name": "approve",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "account",
-          "type": "address"
-        }
-      ],
+      "inputs": [{
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }],
       "name": "balanceOf",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
+      "outputs": [{
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "borrowerOperationsAddress",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "outputs": [{
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "address",
           "name": "_account",
           "type": "address"
@@ -233,19 +209,16 @@
     {
       "inputs": [],
       "name": "decimals",
-      "outputs": [
-        {
-          "internalType": "uint8",
-          "name": "",
-          "type": "uint8"
-        }
-      ],
+      "outputs": [{
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "address",
           "name": "spender",
           "type": "address"
@@ -257,32 +230,27 @@
         }
       ],
       "name": "decreaseAllowance",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "domainSeparator",
-      "outputs": [
-        {
-          "internalType": "bytes32",
-          "name": "",
-          "type": "bytes32"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "address",
           "name": "spender",
           "type": "address"
@@ -294,19 +262,16 @@
         }
       ],
       "name": "increaseAllowance",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "address",
           "name": "_account",
           "type": "address"
@@ -325,38 +290,31 @@
     {
       "inputs": [],
       "name": "name",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
+      "outputs": [{
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        }
-      ],
+      "inputs": [{
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      }],
       "name": "nonces",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
+      "outputs": [{
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "address",
           "name": "owner",
           "type": "address"
@@ -400,19 +358,16 @@
     {
       "inputs": [],
       "name": "permitTypeHash",
-      "outputs": [
-        {
-          "internalType": "bytes32",
-          "name": "",
-          "type": "bytes32"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "address",
           "name": "_poolAddress",
           "type": "address"
@@ -434,8 +389,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "address",
           "name": "_sender",
           "type": "address"
@@ -459,45 +413,38 @@
     {
       "inputs": [],
       "name": "stabilityPoolAddress",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "outputs": [{
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "symbol",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
+      "outputs": [{
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "totalSupply",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
+      "outputs": [{
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "address",
           "name": "recipient",
           "type": "address"
@@ -509,19 +456,16 @@
         }
       ],
       "name": "transfer",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "address",
           "name": "sender",
           "type": "address"
@@ -538,39 +482,33 @@
         }
       ],
       "name": "transferFrom",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "troveManagerAddress",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "outputs": [{
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "version",
-      "outputs": [
-        {
-          "internalType": "string",
-          "name": "",
-          "type": "string"
-        }
-      ],
+      "outputs": [{
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }],
       "stateMutability": "view",
       "type": "function"
     }

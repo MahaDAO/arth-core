@@ -13,9 +13,8 @@ contract CommunityIssuanceTester is CommunityIssuance {
        return _getCumulativeIssuance();
     }
 
-    function unprotectedIssueLQTY() external returns (uint) {
+    function unprotectedIssueLQTY() external view returns (uint) {
         // No checks on caller address
-       
         return _getCumulativeIssuance();
     }
 }

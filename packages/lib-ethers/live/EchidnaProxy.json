@@ -2,10 +2,8 @@
   "_format": "hh-sol-artifact-1",
   "contractName": "EchidnaProxy",
   "sourceName": "contracts/TestContracts/EchidnaProxy.sol",
-  "abi": [
-    {
-      "inputs": [
-        {
+  "abi": [{
+      "inputs": [{
           "internalType": "contract TroveManager",
           "name": "_troveManager",
           "type": "address"
@@ -21,7 +19,7 @@
           "type": "address"
         },
         {
-          "internalType": "contract LUSDToken",
+          "internalType": "contract ARTHValuecoin",
           "name": "_lusdToken",
           "type": "address"
         }
@@ -30,8 +28,7 @@
       "type": "constructor"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_ETH",
           "type": "uint256"
@@ -53,8 +50,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_ETH",
           "type": "uint256"
@@ -96,8 +92,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "address",
           "name": "spender",
           "type": "address"
@@ -109,24 +104,20 @@
         }
       ],
       "name": "approvePrx",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address[]",
-          "name": "_troveArray",
-          "type": "address[]"
-        }
-      ],
+      "inputs": [{
+        "internalType": "address[]",
+        "name": "_troveArray",
+        "type": "address[]"
+      }],
       "name": "batchLiquidateTrovesPrx",
       "outputs": [],
       "stateMutability": "nonpayable",
@@ -140,8 +131,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "address",
           "name": "spender",
           "type": "address"
@@ -153,19 +143,16 @@
         }
       ],
       "name": "decreaseAllowancePrx",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "address",
           "name": "spender",
           "type": "address"
@@ -177,45 +164,38 @@
         }
       ],
       "name": "increaseAllowancePrx",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_user",
-          "type": "address"
-        }
-      ],
+      "inputs": [{
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }],
       "name": "liquidatePrx",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_n",
-          "type": "uint256"
-        }
-      ],
+      "inputs": [{
+        "internalType": "uint256",
+        "name": "_n",
+        "type": "uint256"
+      }],
       "name": "liquidateTrovesPrx",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_ETH",
           "type": "uint256"
@@ -247,8 +227,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_amount",
           "type": "uint256"
@@ -265,8 +244,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_LUSDAmount",
           "type": "uint256"
@@ -308,8 +286,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_amount",
           "type": "uint256"
@@ -331,8 +308,7 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "address",
           "name": "sender",
           "type": "address"
@@ -349,19 +325,16 @@
         }
       ],
       "name": "transferFromPrx",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "address",
           "name": "recipient",
           "type": "address"
@@ -373,19 +346,16 @@
         }
       ],
       "name": "transferPrx",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
+      "outputs": [{
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_amount",
           "type": "uint256"
@@ -407,21 +377,18 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_amount",
-          "type": "uint256"
-        }
-      ],
+      "inputs": [{
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }],
       "name": "withdrawFromSPPrx",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "uint256",
           "name": "_amount",
           "type": "uint256"
