@@ -7,7 +7,7 @@ const externalAddrs = {
   DEPLOYER: "0x67c569F960C1Cc0B9a7979A851f5a67018c5A3b0"
 };
 
-const OUTPUT_FILE = "./deployment/output/local.json";
+const OUTPUT_FILE = "./deployment/output/polygon.json";
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 const waitFunction = async () => {
@@ -18,7 +18,7 @@ const COMMUNITY_ISSUANCE_REWARDS_DURATION = 5 * 24 * 60 * 60;
 const BOOTSTRAP_PERIOD = 0;
 const GAS_PRICE = 50 * 1000000000; // 50 Gwei
 const TX_CONFIRMATIONS = 1;
-const EXPLORER_BASE_URL = "https://mumbai.polygonscan.com/address";
+const EXPLORER_BASE_URL = "https://polygonscan.com/address";
 
 const NATIVE_TOKEN_SYMBOL = "MATIC";
 
