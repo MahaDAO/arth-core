@@ -3,6 +3,7 @@ const { ethers } = require("hardhat");
 const deploymentHelper = require("./deploymentHelpers.js");
 const hre = require("hardhat");
 
+const polygonParams = require("./params/polygon");
 const bscTestnetParams = require("./params/bscTestnet");
 const localParams = require("./params/local");
 
@@ -71,6 +72,7 @@ async function main() {
 
   if (networkName === "bscTestnet") params = bscTestnetParams;
   if (networkName === "local") params = localParams;
+  if (networkName === "polygon") params = polygonParams;
   await deploy(params);
 }
 
