@@ -2,98 +2,169 @@
 
 pragma solidity 0.8.0;
 
-import "./Interfaces/IWETH.sol";
 import "./Interfaces/IERC20.sol";
-import "./Dependencies/Ownable.sol";
-import "./Dependencies/BaseMath.sol";
-import "./Interfaces/IGovernance.sol";
 import "./Dependencies/LiquityMath.sol";
+import "./Dependencies/BaseMath.sol";
+import "./Dependencies/Ownable.sol";
+import "./Interfaces/IOracle.sol";
+import "./Interfaces/IBurnableERC20.sol";
+import "./Interfaces/IGovernance.sol";
 
+/*
+ * The Default Pool holds the ETH and LUSD debt (but not LUSD tokens) from liquidations that have been redistributed
+ * to active troves but not yet "applied", i.e. not yet recorded on a recipient active trove's struct.
+ *
+ * When a trove makes an operation that applies its pending ETH and LUSD debt, its pending ETH and LUSD debt is moved
+ * from the Default Pool to the Active Pool.
+ */
 contract Governance is BaseMath, Ownable, IGovernance {
     using SafeMath for uint256;
 
     string public constant NAME = "Governance";
+    uint256 public constant _100pct = 1000000000000000000; // 1e18 == 100%
 
-    // --- Data ---
+    uint256 private BORROWING_FEE_FLOOR = (DECIMAL_PRECISION / 1000) * 0; // 0%
+    uint256 private REDEMPTION_FEE_FLOOR = (DECIMAL_PRECISION / 1000) * 1; // 0.1%
+    uint256 private MAX_BORROWING_FEE = (DECIMAL_PRECISION / 100) * 0; // 0%
 
-    address public immutable activePoolAddress;
     address public immutable troveManagerAddress;
+    address public immutable borrowerOperationAddress;
 
-    uint256 private stabilityFeePercentage = 0;
-    uint256 private constant _100pct = 1000000000000000000; // 1e18 == 100%
-    uint256 private immutable deploymentStartTime;
+    // Maximum amount of debt that this deployment can have (used to limit exposure to volatile assets)
+    // set this according to how much ever debt we'd like to accumulate; default is infinity
+    bool private allowMinting = true;
 
-    IPriceFeed private priceFeed;
-    address public ecosystemFund;
-    IOracle private stabilityTokenOracle;
+    // MAHA; the governance token used for charging stability fees
     IBurnableERC20 private stabilityFeeToken;
+
+    // price feed
+    IPriceFeed private priceFeed;
+
+    // The fund which recieves all the fees.
+    address private fund;
+
+    IOracle private stabilityTokenPairOracle;
+
+    uint256 private maxDebtCeiling =
+        0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff; // infinity
+    uint256 private stabilityFee = 0; // 0%
+
+    uint256 private immutable DEPLOYMENT_START_TIME;
 
     constructor(
         address _governance,
-        address _activePoolAddress,
         address _troveManagerAddress,
+        address _borrowerOperationAddress,
         address _priceFeed,
-        address _ecosystemFund
+        address _fund,
+        uint256 _maxDebtCeiling
     ) {
-        activePoolAddress = _activePoolAddress;
         troveManagerAddress = _troveManagerAddress;
+        borrowerOperationAddress = _borrowerOperationAddress;
+        DEPLOYMENT_START_TIME = block.timestamp;
 
         priceFeed = IPriceFeed(_priceFeed);
-        ecosystemFund = _ecosystemFund;
+        fund = address(_fund);
+        if (_maxDebtCeiling > 0) maxDebtCeiling = _maxDebtCeiling;
 
-        deploymentStartTime = block.timestamp;
         transferOwnership(_governance);
     }
 
-    // --- Governance setters ---
-
-    function setEcosystemFund(address _ecosystemFund) external override onlyOwner {
-        address oldAddress = ecosystemFund;
-        ecosystemFund = _ecosystemFund;
-        emit EcosystemFundAddressChanged(oldAddress, _ecosystemFund, block.timestamp);
+    function setMaxDebtCeiling(uint256 _value) public onlyOwner {
+        uint256 oldValue = maxDebtCeiling;
+        maxDebtCeiling = _value;
+        emit MaxDebtCeilingChanged(oldValue, _value, block.timestamp);
     }
 
-    function setPriceFeed(address _priceFeed) external override onlyOwner {
+    function setRedemptionFeeFloor(uint256 _value) public onlyOwner {
+        uint256 oldValue = REDEMPTION_FEE_FLOOR;
+        REDEMPTION_FEE_FLOOR = _value;
+        emit RedemptionFeeFloorChanged(oldValue, _value, block.timestamp);
+    }
+
+    function setBorrowingFeeFloor(uint256 _value) public onlyOwner {
+        uint256 oldValue = BORROWING_FEE_FLOOR;
+        BORROWING_FEE_FLOOR = _value;
+        emit BorrowingFeeFloorChanged(oldValue, _value, block.timestamp);
+    }
+
+    function setMaxBorrowingFee(uint256 _value) public onlyOwner {
+        uint256 oldValue = MAX_BORROWING_FEE;
+        MAX_BORROWING_FEE = _value;
+        emit MaxBorrowingFeeChanged(oldValue, _value, block.timestamp);
+    }
+
+    function setFund(address _newFund) public onlyOwner {
+        address oldAddress = address(fund);
+        fund = address(_newFund);
+        emit FundAddressChanged(oldAddress, _newFund, block.timestamp);
+    }
+
+    function setPriceFeed(address _feed) public onlyOwner {
         address oldAddress = address(priceFeed);
-        priceFeed = IPriceFeed(_priceFeed);
-        emit PriceFeedChanged(oldAddress, _priceFeed, block.timestamp);
+        priceFeed = IPriceFeed(_feed);
+        emit PriceFeedChanged(oldAddress, _feed, block.timestamp);
     }
 
-    function setStabilityFeePercentage(uint256 _stabilityFeePercentage) external override onlyOwner {
-        uint256 oldValue = stabilityFeePercentage;
-        stabilityFeePercentage = _stabilityFeePercentage;
-        emit StabilityFeePercentageChanged(oldValue, _stabilityFeePercentage, block.timestamp);
+    function setAllowMinting(bool _value) public onlyOwner {
+        bool oldFlag = allowMinting;
+        allowMinting = _value;
+        emit AllowMintingChanged(oldFlag, _value, block.timestamp);
     }
 
-    function setStabilityFeeToken(address _token, address _oracle) external override onlyOwner {
+    function setStabilityFee(uint256 _value) public onlyOwner {
+        uint256 oldValue = stabilityFee;
+        stabilityFee = _value;
+        emit StabilityFeeChanged(oldValue, _value, block.timestamp);
+    }
+
+    function setStabilityFeeToken(address token, IOracle oracle) public onlyOwner {
         address oldAddress = address(stabilityFeeToken);
-        stabilityFeeToken = IBurnableERC20(_token);
-        emit StabilityFeeTokenChanged(oldAddress, _token, block.timestamp);
+        stabilityFeeToken = IBurnableERC20(token);
+        emit StabilityFeeTokenChanged(oldAddress, address(token), block.timestamp);
 
-        oldAddress = address(stabilityTokenOracle);
-        stabilityTokenOracle = IOracle(_oracle);
-        emit StabilityTokenOracleChanged(oldAddress, _oracle, block.timestamp);
+        oldAddress = address(stabilityTokenPairOracle);
+        stabilityTokenPairOracle = oracle;
+        emit StabilityTokenPairOracleChanged(oldAddress, address(oracle), block.timestamp);
     }
-
-    // ---  Governance getters ---
 
     function getDeploymentStartTime() external view override returns (uint256) {
-        return deploymentStartTime;
+        return DEPLOYMENT_START_TIME;
     }
 
-    function getEcosystemFund() external view override returns (address) {
-        return ecosystemFund;
+    function getBorrowingFeeFloor() external view override returns (uint256) {
+        return BORROWING_FEE_FLOOR;
     }
 
-    function getStabilityFeePercentage() external view override returns (uint256) {
-        return stabilityFeePercentage;
+    function getRedemptionFeeFloor() external view override returns (uint256) {
+        return REDEMPTION_FEE_FLOOR;
     }
 
-    function getStabilityTokenOracle() external view override returns (IOracle) {
-        return stabilityTokenOracle;
+    function getMaxBorrowingFee() external view override returns (uint256) {
+        return MAX_BORROWING_FEE;
     }
 
-    function getStabilityFeeToken() external view override returns (IBurnableERC20) {
+    function getMaxDebtCeiling() external view override returns (uint256) {
+        return maxDebtCeiling;
+    }
+
+    function getFund() external view override returns (address) {
+        return fund;
+    }
+
+    function getStabilityFee() external view override returns (uint256) {
+        return stabilityFee;
+    }
+
+    function getStabilityTokenPairOracle() external view override returns (IOracle) {
+        return stabilityTokenPairOracle;
+    }
+
+    function getAllowMinting() external view override returns (bool) {
+        return allowMinting;
+    }
+
+    function getStabilityFeeToken() external view override returns (IERC20) {
         return stabilityFeeToken;
     }
 
@@ -101,49 +172,32 @@ contract Governance is BaseMath, Ownable, IGovernance {
         return priceFeed;
     }
 
-    // --- Governance fee charging functions ---
-
-    function chargeStabilityFee(address _who, uint256 _ARTHAmount) external override {
+    function chargeStabilityFee(address who, uint256 LUSDAmount) external override {
         _requireCallerIsTroveManager();
 
         if (
-            address(stabilityTokenOracle) == address(0) ||
-            address(stabilityFeeToken) == address(0) ||
-            stabilityFeePercentage == 0
-        ) {
-            return;
-        }
+            address(stabilityTokenPairOracle) == address(0) ||
+            address(stabilityFeeToken) == address(0)
+        ) return;
 
-        uint256 stabilityFeeInARTH = _ARTHAmount.mul(stabilityFeePercentage).div(_100pct);
-        uint256 stabilityTokenPriceInARTH = stabilityTokenOracle.getPrice();
-        uint256 stabilityFee = stabilityFeeInARTH.mul(1e18).div(stabilityTokenPriceInARTH);
+        uint256 stabilityFeeInLUSD = LUSDAmount.mul(stabilityFee).div(_100pct);
+        uint256 stabilityTokenPriceInLUSD = stabilityTokenPairOracle.getPrice();
+        uint256 _stabilityFee = stabilityFeeInLUSD.mul(1e18).div(stabilityTokenPriceInLUSD);
 
-        if (stabilityFee > 0 && stabilityFeePercentage > 0) {
-            stabilityFeeToken.burnFrom(_who, stabilityFee);
-            emit StabilityFeeCharged(_ARTHAmount, stabilityFee, block.timestamp);
+        if (stabilityFee > 0) {
+            stabilityFeeToken.burnFrom(who, _stabilityFee);
+            emit StabilityFeeCharged(LUSDAmount, _stabilityFee, block.timestamp);
         }
     }
-
-    function sendRedeemFeeToEcosystemFund(uint256 _ETHFee) external payable override {
-        _requireCallerIsTroveManager();
-        require(address(this).balance >= _ETHFee, "Governance: not enough ETH fee balance"); // TroveManager should already send ETH via active pool to this contract.
-        payable(address(this)).transfer(_ETHFee);
-        emit SentToEcosystemFund(_ETHFee, block.timestamp, "Redeem fee triggered");
-    }
-
-    // --- Governance require functions ---
 
     function _requireCallerIsTroveManager() internal view {
         require(msg.sender == troveManagerAddress, "Governance: Caller is not TroveManager");
     }
 
-    function _requireCallerIsActivePool() internal view {
-        require(msg.sender == activePoolAddress, "Governance: Caller is not ActivePool");
-    }
-
-    // --- Fallback function ---
-
-    receive() external payable {
-        _requireCallerIsActivePool();
+    function _requireCallerIsBOorTroveM() internal view {
+        require(
+            msg.sender == borrowerOperationAddress || msg.sender == troveManagerAddress,
+            "Governance: Caller is neither BorrowerOperations nor TroveManager"
+        );
     }
 }

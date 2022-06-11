@@ -49,7 +49,13 @@ module.exports = {
   },
   networks: {
     hardhat: {
-      accounts: accountsList,
+      chainId: 1337,
+      accounts: [
+        {
+          balance: "100000000000000000000",
+          privateKey: getSecret("DEPLOYER_PRIVATEKEY")
+        }
+      ],
       gas: 10000000, // tx gas limit
       blockGasLimit: 15000000,
       gasPrice: 20000000000,
@@ -108,10 +114,12 @@ module.exports = {
     enabled: process.env.REPORT_GAS ? true : false
   },
   abiExporter: {
-    path: "./mainnetDeployment/jsonAbis/",
+    path: "./deployment/output/abis/",
     runOnCompile: true,
-    clear: true,
-    spacing: 2,
-    pretty: true
+    // only: ["TroveManager"],
+    clear: true
+    // spacing: 2,
+    // flat: true,
+    // pretty: true
   }
 };

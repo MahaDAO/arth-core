@@ -169,14 +169,14 @@ export interface SendableLiquity<R = unknown, S = unknown>
     amount: Decimalish
   ): Promise<SentLiquityTransaction<S, LiquityReceipt<R, TroveAdjustmentDetails>>>;
 
-  /** {@inheritDoc TransactableLiquity.borrowLUSD} */
-  borrowLUSD(
+  /** {@inheritDoc TransactableLiquity.borrowARTH} */
+  borrowARTH(
     amount: Decimalish,
     maxBorrowingRate?: Decimalish
   ): Promise<SentLiquityTransaction<S, LiquityReceipt<R, TroveAdjustmentDetails>>>;
 
-  /** {@inheritDoc TransactableLiquity.repayLUSD} */
-  repayLUSD(
+  /** {@inheritDoc TransactableLiquity.repayARTH} */
+  repayARTH(
     amount: Decimalish
   ): Promise<SentLiquityTransaction<S, LiquityReceipt<R, TroveAdjustmentDetails>>>;
 
@@ -193,14 +193,14 @@ export interface SendableLiquity<R = unknown, S = unknown>
     maximumNumberOfTrovesToLiquidate: number
   ): Promise<SentLiquityTransaction<S, LiquityReceipt<R, LiquidationDetails>>>;
 
-  /** {@inheritDoc TransactableLiquity.depositLUSDInStabilityPool} */
-  depositLUSDInStabilityPool(
+  /** {@inheritDoc TransactableLiquity.depositARTHInStabilityPool} */
+  depositARTHInStabilityPool(
     amount: Decimalish,
     frontendTag?: string
   ): Promise<SentLiquityTransaction<S, LiquityReceipt<R, StabilityDepositChangeDetails>>>;
 
-  /** {@inheritDoc TransactableLiquity.withdrawLUSDFromStabilityPool} */
-  withdrawLUSDFromStabilityPool(
+  /** {@inheritDoc TransactableLiquity.withdrawARTHFromStabilityPool} */
+  withdrawARTHFromStabilityPool(
     amount: Decimalish
   ): Promise<SentLiquityTransaction<S, LiquityReceipt<R, StabilityDepositChangeDetails>>>;
 
@@ -214,20 +214,20 @@ export interface SendableLiquity<R = unknown, S = unknown>
     SentLiquityTransaction<S, LiquityReceipt<R, CollateralGainTransferDetails>>
   >;
 
-  /** {@inheritDoc TransactableLiquity.sendLUSD} */
-  sendLUSD(
+  /** {@inheritDoc TransactableLiquity.sendARTH} */
+  sendARTH(
     toAddress: string,
     amount: Decimalish
   ): Promise<SentLiquityTransaction<S, LiquityReceipt<R, void>>>;
 
-  /** {@inheritDoc TransactableLiquity.sendLQTY} */
-  sendLQTY(
+  /** {@inheritDoc TransactableLiquity.sendMAHA} */
+  sendMAHA(
     toAddress: string,
     amount: Decimalish
   ): Promise<SentLiquityTransaction<S, LiquityReceipt<R, void>>>;
 
-  /** {@inheritDoc TransactableLiquity.redeemLUSD} */
-  redeemLUSD(
+  /** {@inheritDoc TransactableLiquity.redeemARTH} */
+  redeemARTH(
     amount: Decimalish,
     maxRedemptionRate?: Decimalish
   ): Promise<SentLiquityTransaction<S, LiquityReceipt<R, RedemptionDetails>>>;
@@ -235,11 +235,11 @@ export interface SendableLiquity<R = unknown, S = unknown>
   /** {@inheritDoc TransactableLiquity.claimCollateralSurplus} */
   claimCollateralSurplus(): Promise<SentLiquityTransaction<S, LiquityReceipt<R, void>>>;
 
-  /** {@inheritDoc TransactableLiquity.stakeLQTY} */
-  stakeLQTY(amount: Decimalish): Promise<SentLiquityTransaction<S, LiquityReceipt<R, void>>>;
+  /** {@inheritDoc TransactableLiquity.stakeMAHA} */
+  stakeMAHA(amount: Decimalish): Promise<SentLiquityTransaction<S, LiquityReceipt<R, void>>>;
 
-  /** {@inheritDoc TransactableLiquity.unstakeLQTY} */
-  unstakeLQTY(amount: Decimalish): Promise<SentLiquityTransaction<S, LiquityReceipt<R, void>>>;
+  /** {@inheritDoc TransactableLiquity.unstakeMAHA} */
+  unstakeMAHA(amount: Decimalish): Promise<SentLiquityTransaction<S, LiquityReceipt<R, void>>>;
 
   /** {@inheritDoc TransactableLiquity.withdrawGainsFromStaking} */
   withdrawGainsFromStaking(): Promise<SentLiquityTransaction<S, LiquityReceipt<R, void>>>;
@@ -255,8 +255,8 @@ export interface SendableLiquity<R = unknown, S = unknown>
   /** {@inheritDoc TransactableLiquity.unstakeUniTokens} */
   unstakeUniTokens(amount: Decimalish): Promise<SentLiquityTransaction<S, LiquityReceipt<R, void>>>;
 
-  /** {@inheritDoc TransactableLiquity.withdrawLQTYRewardFromLiquidityMining} */
-  withdrawLQTYRewardFromLiquidityMining(): Promise<
+  /** {@inheritDoc TransactableLiquity.withdrawMAHARewardFromLiquidityMining} */
+  withdrawMAHARewardFromLiquidityMining(): Promise<
     SentLiquityTransaction<S, LiquityReceipt<R, void>>
   >;
 

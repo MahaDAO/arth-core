@@ -484,7 +484,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
     }
 
     function _sendFeeToEcosystemFund(IARTHValuecoin _arthToken, uint256 _ARTHFee) internal {
-        address ecosystemFund = governance.getEcosystemFund();
+        address ecosystemFund = governance.getFund();
         _arthToken.mint(ecosystemFund, _ARTHFee);
         emit PaidARTHBorrowingFeeToEcosystemFund(ecosystemFund, _ARTHFee);
     }
@@ -739,7 +739,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
 
     function _requireValidMaxFeePercentage(uint256 _maxFeePercentage, bool _isRecoveryMode)
         internal
-        pure
+        view
     {
         if (_isRecoveryMode) {
             require(
@@ -748,7 +748,8 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
             );
         } else {
             require(
-                _maxFeePercentage >= BORROWING_FEE_FLOOR && _maxFeePercentage <= DECIMAL_PRECISION,
+                _maxFeePercentage >= getBorrowingFeeFloor() &&
+                    _maxFeePercentage <= DECIMAL_PRECISION,
                 "Max fee percentage must be between 0.5% and 100%"
             );
         }

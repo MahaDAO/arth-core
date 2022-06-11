@@ -106,16 +106,16 @@ export interface ReadableLiquity {
   getRemainingStabilityPoolMAHAReward(): Promise<Decimal>;
 
   /**
-   * Get the total amount of LUSD currently deposited in the Stability Pool.
+   * Get the total amount of ARTH currently deposited in the Stability Pool.
    */
-  getLUSDInStabilityPool(): Promise<Decimal>;
+  getARTHInStabilityPool(): Promise<Decimal>;
 
   /**
-   * Get the amount of LUSD held by an address.
+   * Get the amount of ARTH held by an address.
    *
    * @param address - Address whose balance should be retrieved.
    */
-  getLUSDBalance(address?: string): Promise<Decimal>;
+  getARTHBalance(address?: string): Promise<Decimal>;
 
   /**
    * Get the amount of MAHA held by an address.

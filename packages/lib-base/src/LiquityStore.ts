@@ -4,7 +4,7 @@ import { Decimal } from "./Decimal";
 import { StabilityDeposit } from "./StabilityDeposit";
 import { Trove, TroveWithPendingRedistribution, UserTrove } from "./Trove";
 import { Fees } from "./Fees";
-import { LQTYStake } from "./LQTYStake";
+import { MAHAStake } from "./MAHAStake";
 import { FrontendStatus } from "./ReadableLiquity";
 
 /**
@@ -25,29 +25,29 @@ export interface LiquityStoreBaseState {
   /** User's native currency balance (e.g. Ether). */
   accountBalance: Decimal;
 
-  /** User's LUSD token balance. */
-  lusdBalance: Decimal;
+  /** User's ARTH token balance. */
+  arthBalance: Decimal;
 
-  /** User's LQTY token balance. */
-  lqtyBalance: Decimal;
+  /** User's MAHA token balance. */
+  mahaBalance: Decimal;
 
-  /** User's Uniswap ETH/LUSD LP token balance. */
+  /** User's Uniswap ETH/ARTH LP token balance. */
   uniTokenBalance: Decimal;
 
-  /** The liquidity mining contract's allowance of user's Uniswap ETH/LUSD LP tokens. */
+  /** The liquidity mining contract's allowance of user's Uniswap ETH/ARTH LP tokens. */
   uniTokenAllowance: Decimal;
 
-  /** Remaining LQTY that will be collectively rewarded to liquidity miners. */
-  remainingLiquidityMiningLQTYReward: Decimal;
+  /** Remaining MAHA that will be collectively rewarded to liquidity miners. */
+  remainingLiquidityMiningMAHAReward: Decimal;
 
-  /** Amount of Uniswap ETH/LUSD LP tokens the user has staked in liquidity mining. */
+  /** Amount of Uniswap ETH/ARTH LP tokens the user has staked in liquidity mining. */
   liquidityMiningStake: Decimal;
 
-  /** Total amount of Uniswap ETH/LUSD LP tokens currently staked in liquidity mining. */
+  /** Total amount of Uniswap ETH/ARTH LP tokens currently staked in liquidity mining. */
   totalStakedUniTokens: Decimal;
 
-  /** Amount of LQTY the user has earned through mining liquidity. */
-  liquidityMiningLQTYReward: Decimal;
+  /** Amount of MAHA the user has earned through mining liquidity. */
+  liquidityMiningMAHAReward: Decimal;
 
   /**
    * Amount of leftover collateral available for withdrawal to the user.
@@ -61,8 +61,8 @@ export interface LiquityStoreBaseState {
   /** Current price of the native currency (e.g. Ether) in USD. */
   price: Decimal;
 
-  /** Total amount of LUSD currently deposited in the Stability Pool. */
-  lusdInStabilityPool: Decimal;
+  /** Total amount of ARTH currently deposited in the Stability Pool. */
+  arthInStabilityPool: Decimal;
 
   /** Total collateral and debt in the Liquity system. */
   total: Trove;
@@ -87,17 +87,17 @@ export interface LiquityStoreBaseState {
   /** User's stability deposit. */
   stabilityDeposit: StabilityDeposit;
 
-  /** Remaining LQTY that will be collectively rewarded to stability depositors. */
-  remainingStabilityPoolLQTYReward: Decimal;
+  /** Remaining MAHA that will be collectively rewarded to stability depositors. */
+  remainingStabilityPoolMAHAReward: Decimal;
 
   /** @internal */
   _feesInNormalMode: Fees;
 
-  /** User's LQTY stake. */
-  lqtyStake: LQTYStake;
+  /** User's MAHA stake. */
+  mahaStake: MAHAStake;
 
-  /** Total amount of LQTY currently staked. */
-  totalStakedLQTY: Decimal;
+  /** Total amount of MAHA currently staked. */
+  totalStakedMAHA: Decimal;
 
   /** @internal */
   _riskiestTroveBeforeRedistribution: TroveWithPendingRedistribution;
@@ -130,7 +130,7 @@ export interface LiquityStoreDerivedState {
    * Current redemption rate.
    *
    * @remarks
-   * Note that the actual rate paid by a redemption transaction will depend on the amount of LUSD
+   * Note that the actual rate paid by a redemption transaction will depend on the amount of ARTH
    * being redeemed.
    *
    * Use {@link Fees.redemptionRate} to calculate a precise redemption rate.
@@ -352,18 +352,18 @@ export abstract class LiquityStore<T = unknown> {
         baseStateUpdate.accountBalance
       ),
 
-      lusdBalance: this._updateIfChanged(
+      arthBalance: this._updateIfChanged(
         eq,
-        "lusdBalance",
-        baseState.lusdBalance,
-        baseStateUpdate.lusdBalance
+        "arthBalance",
+        baseState.arthBalance,
+        baseStateUpdate.arthBalance
       ),
 
-      lqtyBalance: this._updateIfChanged(
+      mahaBalance: this._updateIfChanged(
         eq,
-        "lqtyBalance",
-        baseState.lqtyBalance,
-        baseStateUpdate.lqtyBalance
+        "mahaBalance",
+        baseState.mahaBalance,
+        baseStateUpdate.mahaBalance
       ),
 
       uniTokenBalance: this._updateIfChanged(
@@ -380,10 +380,10 @@ export abstract class LiquityStore<T = unknown> {
         baseStateUpdate.uniTokenAllowance
       ),
 
-      remainingLiquidityMiningLQTYReward: this._silentlyUpdateIfChanged(
+      remainingLiquidityMiningMAHAReward: this._silentlyUpdateIfChanged(
         eq,
-        baseState.remainingLiquidityMiningLQTYReward,
-        baseStateUpdate.remainingLiquidityMiningLQTYReward
+        baseState.remainingLiquidityMiningMAHAReward,
+        baseStateUpdate.remainingLiquidityMiningMAHAReward
       ),
 
       liquidityMiningStake: this._updateIfChanged(
@@ -400,10 +400,10 @@ export abstract class LiquityStore<T = unknown> {
         baseStateUpdate.totalStakedUniTokens
       ),
 
-      liquidityMiningLQTYReward: this._silentlyUpdateIfChanged(
+      liquidityMiningMAHAReward: this._silentlyUpdateIfChanged(
         eq,
-        baseState.liquidityMiningLQTYReward,
-        baseStateUpdate.liquidityMiningLQTYReward
+        baseState.liquidityMiningMAHAReward,
+        baseStateUpdate.liquidityMiningMAHAReward
       ),
 
       collateralSurplusBalance: this._updateIfChanged(
@@ -415,11 +415,11 @@ export abstract class LiquityStore<T = unknown> {
 
       price: this._updateIfChanged(eq, "price", baseState.price, baseStateUpdate.price),
 
-      lusdInStabilityPool: this._updateIfChanged(
+      arthInStabilityPool: this._updateIfChanged(
         eq,
-        "lusdInStabilityPool",
-        baseState.lusdInStabilityPool,
-        baseStateUpdate.lusdInStabilityPool
+        "arthInStabilityPool",
+        baseState.arthInStabilityPool,
+        baseStateUpdate.arthInStabilityPool
       ),
 
       total: this._updateIfChanged(equals, "total", baseState.total, baseStateUpdate.total),
@@ -445,10 +445,10 @@ export abstract class LiquityStore<T = unknown> {
         baseStateUpdate.stabilityDeposit
       ),
 
-      remainingStabilityPoolLQTYReward: this._silentlyUpdateIfChanged(
+      remainingStabilityPoolMAHAReward: this._silentlyUpdateIfChanged(
         eq,
-        baseState.remainingStabilityPoolLQTYReward,
-        baseStateUpdate.remainingStabilityPoolLQTYReward
+        baseState.remainingStabilityPoolMAHAReward,
+        baseStateUpdate.remainingStabilityPoolMAHAReward
       ),
 
       _feesInNormalMode: this._silentlyUpdateIfChanged(
@@ -457,18 +457,18 @@ export abstract class LiquityStore<T = unknown> {
         baseStateUpdate._feesInNormalMode
       ),
 
-      lqtyStake: this._updateIfChanged(
+      mahaStake: this._updateIfChanged(
         equals,
-        "lqtyStake",
-        baseState.lqtyStake,
-        baseStateUpdate.lqtyStake
+        "mahaStake",
+        baseState.mahaStake,
+        baseStateUpdate.mahaStake
       ),
 
-      totalStakedLQTY: this._updateIfChanged(
+      totalStakedMAHA: this._updateIfChanged(
         eq,
-        "totalStakedLQTY",
-        baseState.totalStakedLQTY,
-        baseStateUpdate.totalStakedLQTY
+        "totalStakedMAHA",
+        baseState.totalStakedMAHA,
+        baseStateUpdate.totalStakedMAHA
       ),
 
       _riskiestTroveBeforeRedistribution: this._silentlyUpdateIfChanged(

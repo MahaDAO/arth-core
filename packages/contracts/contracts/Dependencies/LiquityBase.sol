@@ -20,10 +20,10 @@ contract LiquityBase is BaseMath, ILiquityBase {
     uint256 public constant _100pct = 1000000000000000000; // 1e18 == 100%
 
     // Minimum collateral ratio for individual troves
-    uint256 public constant MCR = 1100000000000000000; // 110%
+    uint256 public constant MCR = 1050000000000000000; // 105%
 
     // Critical system collateral ratio. If the system's total collateral ratio (TCR) falls below the CCR, Recovery Mode is triggered.
-    uint256 public constant CCR = 1500000000000000000; // 150%
+    uint256 public constant CCR = 1100000000000000000; // 110%
 
     // Amount of ARTH to be locked in gas pool on opening troves
     uint256 public constant ARTH_GAS_COMPENSATION = 5e18;
@@ -32,19 +32,35 @@ contract LiquityBase is BaseMath, ILiquityBase {
     uint256 public constant MIN_NET_DEBT = 50e18;
     // uint constant public MIN_NET_DEBT = 0;
 
-    uint256 public constant PERCENT_DIVISOR = 200; // dividing by 200 yields 0.5%
-
-    uint256 public constant BORROWING_FEE_FLOOR = (DECIMAL_PRECISION / 1000) * 5; // 0.5%
-
     uint256 MAX_INT = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
+    uint256 public PERCENT_DIVISOR = 200; // dividing by 200 yields 0.5%
+
     IActivePool public activePool;
-
     IDefaultPool public defaultPool;
-
-    IGovernance public override governance;
+    IGovernance public governance;
 
     // --- Gas compensation functions ---
+
+    // function governance() external view override returns (IGovernance) {
+    //     return governance;
+    // }
+
+    function getBorrowingFeeFloor() public view returns (uint256) {
+        return governance.getBorrowingFeeFloor();
+    }
+
+    function getRedemptionFeeFloor() public view returns (uint256) {
+        return governance.getRedemptionFeeFloor();
+    }
+
+    function getMaxBorrowingFee() public view returns (uint256) {
+        return governance.getMaxBorrowingFee();
+    }
+
+    function getPriceFeed() public view override returns (IPriceFeed) {
+        return governance.getPriceFeed();
+    }
 
     // Returns the composite debt (drawn debt + gas compensation) of a trove, for the purpose of ICR calculation
     function _getCompositeDebt(uint256 _debt) internal pure returns (uint256) {
@@ -56,40 +72,31 @@ contract LiquityBase is BaseMath, ILiquityBase {
     }
 
     // Return the amount of ETH to be drawn from a trove's collateral and sent as gas compensation.
-    function _getCollGasCompensation(uint256 _entireColl) internal pure returns (uint256) {
+    function _getCollGasCompensation(uint256 _entireColl) internal view returns (uint256) {
         return _entireColl / PERCENT_DIVISOR;
     }
 
     function getEntireSystemColl() public view returns (uint256 entireSystemColl) {
         uint256 activeColl = activePool.getETH();
         uint256 liquidatedColl = defaultPool.getETH();
-
         return activeColl.add(liquidatedColl);
-    }
-
-    function getPriceFeed() public view returns (IPriceFeed priceFeed) {
-        return governance.getPriceFeed();
     }
 
     function getEntireSystemDebt() public view returns (uint256 entireSystemDebt) {
         uint256 activeDebt = activePool.getARTHDebt();
         uint256 closedDebt = defaultPool.getARTHDebt();
-
         return activeDebt.add(closedDebt);
     }
 
     function _getTCR(uint256 _price) internal view returns (uint256 TCR) {
         uint256 entireSystemColl = getEntireSystemColl();
         uint256 entireSystemDebt = getEntireSystemDebt();
-
         TCR = LiquityMath._computeCR(entireSystemColl, entireSystemDebt, _price);
-
         return TCR;
     }
 
     function _checkRecoveryMode(uint256 _price) internal view returns (bool) {
         uint256 TCR = _getTCR(_price);
-
         return TCR < CCR;
     }
 

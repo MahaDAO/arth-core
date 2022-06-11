@@ -317,6 +317,11 @@ class MainnetDeploymentHelper {
     console.log("set address for troveManager");
     (await this.isOwnershipRenounced(contracts.troveManager)) ||
       (await this.sendAndWaitForTransaction(
+        contracts.arthToken.toggleTroveManager(contracts.troveManager.address, { gasPrice })
+      ));
+
+    (await this.isOwnershipRenounced(contracts.troveManager)) ||
+      (await this.sendAndWaitForTransaction(
         contracts.troveManager.setAddresses(
           contracts.borrowerOperations.address,
           contracts.activePool.address,
@@ -335,6 +340,13 @@ class MainnetDeploymentHelper {
     console.log("set address for borrowerOperations");
     (await this.isOwnershipRenounced(contracts.borrowerOperations)) ||
       (await this.sendAndWaitForTransaction(
+        contracts.arthToken.toggleBorrowerOperations(contracts.borrowerOperations.address, {
+          gasPrice
+        })
+      ));
+
+    (await this.isOwnershipRenounced(contracts.borrowerOperations)) ||
+      (await this.sendAndWaitForTransaction(
         contracts.borrowerOperations.setAddresses(
           contracts.troveManager.address,
           contracts.activePool.address,
@@ -342,7 +354,7 @@ class MainnetDeploymentHelper {
           contracts.stabilityPool.address,
           contracts.gasPool.address,
           contracts.collSurplusPool.address,
-          contracts.priceFeed.address,
+          contracts.governance.address,
           contracts.sortedTroves.address,
           contracts.arthToken.address,
           { gasPrice }
@@ -351,6 +363,13 @@ class MainnetDeploymentHelper {
 
     // set contracts in the Pools
     console.log("set address for stabilityPool");
+    (await this.isOwnershipRenounced(contracts.stabilityPool)) ||
+      (await this.sendAndWaitForTransaction(
+        contracts.arthToken.toggleStabilityPool(contracts.stabilityPool.address, {
+          gasPrice
+        })
+      ));
+
     (await this.isOwnershipRenounced(contracts.stabilityPool)) ||
       (await this.sendAndWaitForTransaction(
         contracts.stabilityPool.setAddresses(

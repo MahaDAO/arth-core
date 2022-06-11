@@ -1,6 +1,6 @@
 const externalAddrs = {
   PRICE_FEED: undefined,
-  TIMELOCK: "0xecce08c2636820a81fc0c805dbdc7d846636bbc4",
+  TIMELOCK: "0xd731A01464ec12D2667EDB1d26458D9d8593354a",
   ECOSYSTEM_FUND: "0xecce08c2636820a81fc0c805dbdc7d846636bbc4",
   MAHA: undefined,
   ARTH: undefined,
@@ -15,6 +15,7 @@ const waitFunction = async () => {
 };
 
 const COMMUNITY_ISSUANCE_REWARDS_DURATION = 5 * 24 * 60 * 60;
+const BOOTSTRAP_PERIOD = 0;
 const GAS_PRICE = 5 * 1000000000; // 5 Gwei
 const TX_CONFIRMATIONS = 1;
 const EXPLORER_BASE_URL = "https://testnet.bscscan.com/address";
@@ -27,6 +28,7 @@ module.exports = {
   waitFunction,
   GAS_PRICE,
   TX_CONFIRMATIONS,
+  BOOTSTRAP_PERIOD,
   EXPLORER_BASE_URL,
   COMMUNITY_ISSUANCE_REWARDS_DURATION,
   NATIVE_TOKEN_SYMBOL

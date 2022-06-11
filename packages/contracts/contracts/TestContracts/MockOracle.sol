@@ -3,11 +3,12 @@
 pragma solidity 0.8.0;
 
 import {SafeMath} from "../Dependencies/SafeMath.sol";
+import {IPriceFeed} from "../Interfaces/IPriceFeed.sol";
 
-contract MockOracle {
+contract MockOracle is IPriceFeed {
     using SafeMath for uint256;
 
-    uint256 public price = 1e18;
+    uint256 public price = 1000e18;
 
     function setPrice(uint256 _price) public {
         price = _price;
@@ -17,7 +18,7 @@ contract MockOracle {
         return price;
     }
 
-    function fetchPrice() external view returns (uint256) {
+    function fetchPrice() external override returns (uint256) {
         return price;
     }
 
