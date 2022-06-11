@@ -17,10 +17,9 @@ const waitFunction = async () => {
 const COMMUNITY_ISSUANCE_REWARDS_DURATION = 5 * 24 * 60 * 60;
 const GAS_PRICE = 5 * 1000000000; // 5 Gwei
 const TX_CONFIRMATIONS = 1;
-
 const EXPLORER_BASE_URL = "https://testnet.bscscan.com/address";
 
-const NATIVE_TOKEN_SYMBOL = "BNB";
+const NATIVE_TOKEN_SYMBOL = "ETH";
 
 module.exports = {
   externalAddrs,

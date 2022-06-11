@@ -17,6 +17,10 @@ contract MockOracle {
         return price;
     }
 
+    function fetchPrice() external view returns (uint256) {
+        return price;
+    }
+
     function canUpdate() external pure returns (bool) {
         return true;
     }
