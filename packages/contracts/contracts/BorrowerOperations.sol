@@ -12,7 +12,6 @@ import "./Dependencies/SafeMath.sol";
 import "./Dependencies/Ownable.sol";
 import "./Dependencies/CheckContract.sol";
 import "./Dependencies/console.sol";
-import "./Interfaces/IEcosystemFund.sol";
 
 contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOperations {
     using SafeMath for uint256;
@@ -485,12 +484,9 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
     }
 
     function _sendFeeToEcosystemFund(IARTHValuecoin _arthToken, uint256 _ARTHFee) internal {
-        IEcosystemFund ecosystemFund = governance.getEcosystemFund();
-
-        _arthToken.mint(address(this), _ARTHFee);
-        _arthToken.approve(address(ecosystemFund), _ARTHFee);
-        emit PaidARTHBorrowingFeeToEcosystemFund(address(ecosystemFund), _ARTHFee);
-        ecosystemFund.deposit(address(_arthToken), _ARTHFee, "Borrowing fee triggered");
+        address ecosystemFund = governance.getEcosystemFund();
+        _arthToken.mint(ecosystemFund, _ARTHFee);
+        emit PaidARTHBorrowingFeeToEcosystemFund(ecosystemFund, _ARTHFee);
     }
 
     function _getUSDValue(uint256 _coll, uint256 _price) internal pure returns (uint256) {

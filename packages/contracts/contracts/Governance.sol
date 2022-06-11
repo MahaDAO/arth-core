@@ -8,7 +8,6 @@ import "./Dependencies/Ownable.sol";
 import "./Dependencies/BaseMath.sol";
 import "./Interfaces/IGovernance.sol";
 import "./Dependencies/LiquityMath.sol";
-import "./Interfaces/IEcosystemFund.sol";
 
 contract Governance is BaseMath, Ownable, IGovernance {
     using SafeMath for uint256;
@@ -25,26 +24,22 @@ contract Governance is BaseMath, Ownable, IGovernance {
     uint256 private immutable deploymentStartTime;
 
     IPriceFeed private priceFeed;
-    IEcosystemFund private ecosystemFund;
+    address public ecosystemFund;
     IOracle private stabilityTokenOracle;
     IBurnableERC20 private stabilityFeeToken;
-
-    IWETH private immutable wrappedETH;
 
     constructor(
         address _governance,
         address _activePoolAddress,
         address _troveManagerAddress,
         address _priceFeed,
-        address _ecosystemFund,
-        address _wrappedETHAddress
+        address _ecosystemFund
     ) {
         activePoolAddress = _activePoolAddress;
         troveManagerAddress = _troveManagerAddress;
 
-        wrappedETH = IWETH(_wrappedETHAddress);
         priceFeed = IPriceFeed(_priceFeed);
-        ecosystemFund = IEcosystemFund(_ecosystemFund);
+        ecosystemFund = _ecosystemFund;
 
         deploymentStartTime = block.timestamp;
         transferOwnership(_governance);
@@ -53,8 +48,8 @@ contract Governance is BaseMath, Ownable, IGovernance {
     // --- Governance setters ---
 
     function setEcosystemFund(address _ecosystemFund) external override onlyOwner {
-        address oldAddress = address(ecosystemFund);
-        ecosystemFund = IEcosystemFund(_ecosystemFund);
+        address oldAddress = ecosystemFund;
+        ecosystemFund = _ecosystemFund;
         emit EcosystemFundAddressChanged(oldAddress, _ecosystemFund, block.timestamp);
     }
 
@@ -86,7 +81,7 @@ contract Governance is BaseMath, Ownable, IGovernance {
         return deploymentStartTime;
     }
 
-    function getEcosystemFund() external view override returns (IEcosystemFund) {
+    function getEcosystemFund() external view override returns (address) {
         return ecosystemFund;
     }
 
@@ -129,13 +124,10 @@ contract Governance is BaseMath, Ownable, IGovernance {
         }
     }
 
-    function sendRedeemFeeToEcosystemFund(uint256 _ETHFee) external override {
+    function sendRedeemFeeToEcosystemFund(uint256 _ETHFee) external payable override {
         _requireCallerIsTroveManager();
         require(address(this).balance >= _ETHFee, "Governance: not enough ETH fee balance"); // TroveManager should already send ETH via active pool to this contract.
-
-        wrappedETH.deposit{value: _ETHFee}();
-        wrappedETH.approve(address(ecosystemFund), _ETHFee);
-        ecosystemFund.deposit(address(wrappedETH), _ETHFee, "Redeem fee triggered");
+        payable(address(this)).transfer(_ETHFee);
         emit SentToEcosystemFund(_ETHFee, block.timestamp, "Redeem fee triggered");
     }
 

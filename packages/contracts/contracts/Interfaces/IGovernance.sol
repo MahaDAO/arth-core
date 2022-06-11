@@ -5,7 +5,6 @@ pragma solidity 0.8.0;
 import "./IPriceFeed.sol";
 import "../Interfaces/IERC20.sol";
 import "../Interfaces/IOracle.sol";
-import "../Interfaces/IEcosystemFund.sol";
 
 interface IBurnableERC20 is IERC20 {
     function burn(uint256 amount) external;
@@ -36,7 +35,7 @@ interface IGovernance {
 
     function getStabilityTokenOracle() external view returns (IOracle);
 
-    function getEcosystemFund() external view returns (IEcosystemFund);
+    function getEcosystemFund() external view returns (address);
 
     function chargeStabilityFee(address _who, uint256 _ARTHAmount) external;
 
@@ -48,5 +47,5 @@ interface IGovernance {
 
     function setStabilityFeeToken(address _token, address _oracle) external;
 
-    function sendRedeemFeeToEcosystemFund(uint256 amount) external;
+    function sendRedeemFeeToEcosystemFund(uint256 amount) external payable;
 }
