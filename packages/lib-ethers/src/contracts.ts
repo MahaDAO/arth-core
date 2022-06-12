@@ -20,7 +20,7 @@ import defaultPoolAbi from "../abi/DefaultPool.json";
 import erc20Abi from "../abi/IERC20.json";
 import gasPoolAbi from "../abi/GasPool.json";
 import hintHelpersAbi from "../abi/HintHelpers.json";
-import lusdTokenAbi from "../abi/ARTHValuecoin.json";
+import arthTokenAbi from "../abi/ARTHValuecoin.json";
 import multiTroveGetterAbi from "../abi/MultiTroveGetter.json";
 import priceFeedAbi from "../abi/PriceFeed.json";
 import priceFeedTestnetAbi from "../abi/PriceFeedTestnet.json";
@@ -159,7 +159,7 @@ export interface _LiquityContracts {
   activePool: ActivePool;
   borrowerOperations: BorrowerOperations;
   troveManager: TroveManager;
-  lusdToken: ARTHValuecoin;
+  arthToken: ARTHValuecoin;
   mahaToken: ARTHValuecoin;
   collSurplusPool: CollSurplusPool;
   communityIssuance: CommunityIssuance;
@@ -192,7 +192,7 @@ const getAbi = (priceFeedIsTestnet: boolean): LiquityContractAbis => ({
   activePool: activePoolAbi,
   borrowerOperations: borrowerOperationsAbi,
   troveManager: troveManagerAbi,
-  lusdToken: lusdTokenAbi,
+  arthToken: arthTokenAbi,
   collSurplusPool: collSurplusPoolAbi,
   mahaToken: erc20Abi,
   communityIssuance: communityIssuanceAbi,
@@ -221,8 +221,8 @@ export interface _LiquityDeploymentJSON {
   readonly deploymentDate: number;
   readonly startBlock: number;
   readonly bootstrapPeriod: number;
-  readonly totalStabilityPoolLQTYReward: string;
-  readonly liquidityMiningLQTYRewardRate: string;
+  readonly totalStabilityPoolMAHAReward: string;
+  readonly liquidityMiningMAHARewardRate: string;
   readonly _priceFeedIsTestnet: boolean;
   readonly _uniTokenIsMock: boolean;
   readonly _isDev: boolean;

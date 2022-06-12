@@ -27,27 +27,6 @@ export interface LiquityStoreBaseState {
   /** User's ARTH token balance. */
   arthBalance: Decimal;
 
-  /** User's MAHA token balance. */
-  mahaBalance: Decimal;
-
-  /** User's Uniswap ETH/ARTH LP token balance. */
-  uniTokenBalance: Decimal;
-
-  /** The liquidity mining contract's allowance of user's Uniswap ETH/ARTH LP tokens. */
-  uniTokenAllowance: Decimal;
-
-  /** Remaining MAHA that will be collectively rewarded to liquidity miners. */
-  remainingLiquidityMiningMAHAReward: Decimal;
-
-  /** Amount of Uniswap ETH/ARTH LP tokens the user has staked in liquidity mining. */
-  liquidityMiningStake: Decimal;
-
-  /** Total amount of Uniswap ETH/ARTH LP tokens currently staked in liquidity mining. */
-  totalStakedUniTokens: Decimal;
-
-  /** Amount of MAHA the user has earned through mining liquidity. */
-  liquidityMiningMAHAReward: Decimal;
-
   /**
    * Amount of leftover collateral available for withdrawal to the user.
    *
@@ -350,53 +329,6 @@ export abstract class LiquityStore<T = unknown> {
         "arthBalance",
         baseState.arthBalance,
         baseStateUpdate.arthBalance
-      ),
-
-      mahaBalance: this._updateIfChanged(
-        eq,
-        "mahaBalance",
-        baseState.mahaBalance,
-        baseStateUpdate.mahaBalance
-      ),
-
-      uniTokenBalance: this._updateIfChanged(
-        eq,
-        "uniTokenBalance",
-        baseState.uniTokenBalance,
-        baseStateUpdate.uniTokenBalance
-      ),
-
-      uniTokenAllowance: this._updateIfChanged(
-        eq,
-        "uniTokenAllowance",
-        baseState.uniTokenAllowance,
-        baseStateUpdate.uniTokenAllowance
-      ),
-
-      remainingLiquidityMiningMAHAReward: this._silentlyUpdateIfChanged(
-        eq,
-        baseState.remainingLiquidityMiningMAHAReward,
-        baseStateUpdate.remainingLiquidityMiningMAHAReward
-      ),
-
-      liquidityMiningStake: this._updateIfChanged(
-        eq,
-        "liquidityMiningStake",
-        baseState.liquidityMiningStake,
-        baseStateUpdate.liquidityMiningStake
-      ),
-
-      totalStakedUniTokens: this._updateIfChanged(
-        eq,
-        "totalStakedUniTokens",
-        baseState.totalStakedUniTokens,
-        baseStateUpdate.totalStakedUniTokens
-      ),
-
-      liquidityMiningMAHAReward: this._silentlyUpdateIfChanged(
-        eq,
-        baseState.liquidityMiningMAHAReward,
-        baseStateUpdate.liquidityMiningMAHAReward
       ),
 
       collateralSurplusBalance: this._updateIfChanged(

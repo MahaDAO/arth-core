@@ -118,13 +118,6 @@ export interface ReadableLiquity {
   getARTHBalance(address?: string): Promise<Decimal>;
 
   /**
-   * Get the amount of MAHA held by an address.
-   *
-   * @param address - Address whose balance should be retrieved.
-   */
-  getMAHABalance(address?: string): Promise<Decimal>;
-
-  /**
    * Get the amount of leftover collateral available for withdrawal by an address.
    *
    * @remarks

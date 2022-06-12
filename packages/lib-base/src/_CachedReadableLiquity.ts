@@ -121,13 +121,6 @@ export class _CachedReadableLiquity<T extends unknown[]>
     );
   }
 
-  async getMAHABalance(address?: string, ...extraParams: T): Promise<Decimal> {
-    return (
-      this._cache.getMAHABalance(address, ...extraParams) ??
-      this._readable.getMAHABalance(address, ...extraParams)
-    );
-  }
-
   async getCollateralSurplusBalance(address?: string, ...extraParams: T): Promise<Decimal> {
     return (
       this._cache.getCollateralSurplusBalance(address, ...extraParams) ??
