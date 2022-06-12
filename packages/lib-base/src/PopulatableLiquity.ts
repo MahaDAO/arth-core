@@ -258,46 +258,6 @@ export interface PopulatableLiquity<R = unknown, S = unknown, P = unknown>
     PopulatedLiquityTransaction<P, SentLiquityTransaction<S, LiquityReceipt<R, void>>>
   >;
 
-  /** {@inheritDoc TransactableLiquity.stakeMAHA} */
-  stakeMAHA(
-    amount: Decimalish
-  ): Promise<PopulatedLiquityTransaction<P, SentLiquityTransaction<S, LiquityReceipt<R, void>>>>;
-
-  /** {@inheritDoc TransactableLiquity.unstakeMAHA} */
-  unstakeMAHA(
-    amount: Decimalish
-  ): Promise<PopulatedLiquityTransaction<P, SentLiquityTransaction<S, LiquityReceipt<R, void>>>>;
-
-  /** {@inheritDoc TransactableLiquity.withdrawGainsFromStaking} */
-  withdrawGainsFromStaking(): Promise<
-    PopulatedLiquityTransaction<P, SentLiquityTransaction<S, LiquityReceipt<R, void>>>
-  >;
-
-  /** {@inheritDoc TransactableLiquity.approveUniTokens} */
-  approveUniTokens(
-    allowance?: Decimalish
-  ): Promise<PopulatedLiquityTransaction<P, SentLiquityTransaction<S, LiquityReceipt<R, void>>>>;
-
-  /** {@inheritDoc TransactableLiquity.stakeUniTokens} */
-  stakeUniTokens(
-    amount: Decimalish
-  ): Promise<PopulatedLiquityTransaction<P, SentLiquityTransaction<S, LiquityReceipt<R, void>>>>;
-
-  /** {@inheritDoc TransactableLiquity.unstakeUniTokens} */
-  unstakeUniTokens(
-    amount: Decimalish
-  ): Promise<PopulatedLiquityTransaction<P, SentLiquityTransaction<S, LiquityReceipt<R, void>>>>;
-
-  /** {@inheritDoc TransactableLiquity.withdrawMAHARewardFromLiquidityMining} */
-  withdrawMAHARewardFromLiquidityMining(): Promise<
-    PopulatedLiquityTransaction<P, SentLiquityTransaction<S, LiquityReceipt<R, void>>>
-  >;
-
-  /** {@inheritDoc TransactableLiquity.exitLiquidityMining} */
-  exitLiquidityMining(): Promise<
-    PopulatedLiquityTransaction<P, SentLiquityTransaction<S, LiquityReceipt<R, void>>>
-  >;
-
   /** {@inheritDoc TransactableLiquity.registerFrontend} */
   registerFrontend(
     kickbackRate: Decimalish

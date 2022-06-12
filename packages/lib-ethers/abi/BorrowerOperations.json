@@ -3,6 +3,38 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
+        "internalType": "address",
+        "name": "_borrower",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_ARTHFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "ARTHBorrowingFeePaid",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "_arthTokenAddress",
+        "type": "address"
+      }
+    ],
+    "name": "ARTHTokenAddressChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": false,
         "internalType": "address",
         "name": "_activePoolAddress",
@@ -89,38 +121,6 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "_borrower",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "_LUSDFee",
-        "type": "uint256"
-      }
-    ],
-    "name": "LUSDBorrowingFeePaid",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "_lusdTokenAddress",
-        "type": "address"
-      }
-    ],
-    "name": "LUSDTokenAddressChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
         "name": "previousOwner",
         "type": "address"
       },
@@ -146,11 +146,11 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "_LUSDFee",
+        "name": "_ARTHFee",
         "type": "uint256"
       }
     ],
-    "name": "PaidLUSDBorrowingFeeToEcosystemFund",
+    "name": "PaidARTHBorrowingFeeToEcosystemFund",
     "type": "event"
   },
   {
@@ -165,11 +165,11 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "_LUSDFee",
+        "name": "_ARTHFee",
         "type": "uint256"
       }
     ],
-    "name": "PaidLUSDBorrowingFeeToFrontEnd",
+    "name": "PaidARTHBorrowingFeeToFrontEnd",
     "type": "event"
   },
   {
@@ -269,7 +269,7 @@
   },
   {
     "inputs": [],
-    "name": "BORROWING_FEE_FLOOR",
+    "name": "ARTH_GAS_COMPENSATION",
     "outputs": [
       {
         "internalType": "uint256",
@@ -296,19 +296,6 @@
   {
     "inputs": [],
     "name": "DECIMAL_PRECISION",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "LUSD_GAS_COMPENSATION",
     "outputs": [
       {
         "internalType": "uint256",
@@ -429,7 +416,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "_LUSDChange",
+        "name": "_ARTHChange",
         "type": "uint256"
       },
       {
@@ -451,6 +438,19 @@
     "name": "adjustTrove",
     "outputs": [],
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "arthToken",
+    "outputs": [
+      {
+        "internalType": "contract IARTHValuecoin",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -494,6 +494,19 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getBorrowingFeeFloor",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -546,12 +559,38 @@
   },
   {
     "inputs": [],
+    "name": "getMaxBorrowingFee",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getPriceFeed",
     "outputs": [
       {
         "internalType": "contract IPriceFeed",
-        "name": "priceFeed",
+        "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getRedemptionFeeFloor",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -578,19 +617,6 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "lusdToken",
-    "outputs": [
-      {
-        "internalType": "contract IARTHValuecoin",
-        "name": "",
-        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -628,7 +654,7 @@
       },
       {
         "internalType": "uint256",
-        "name": "_LUSDAmount",
+        "name": "_ARTHAmount",
         "type": "uint256"
       },
       {
@@ -676,7 +702,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_LUSDAmount",
+        "name": "_ARTHAmount",
         "type": "uint256"
       },
       {
@@ -690,7 +716,7 @@
         "type": "address"
       }
     ],
-    "name": "repayLUSD",
+    "name": "repayARTH",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -739,7 +765,7 @@
       },
       {
         "internalType": "address",
-        "name": "_lusdTokenAddress",
+        "name": "_arthTokenAddress",
         "type": "address"
       }
     ],
@@ -791,6 +817,34 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "_maxFeePercentage",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_ARTHAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_upperHint",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_lowerHint",
+        "type": "address"
+      }
+    ],
+    "name": "withdrawARTH",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "_collWithdrawal",
         "type": "uint256"
       },
@@ -806,34 +860,6 @@
       }
     ],
     "name": "withdrawColl",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_maxFeePercentage",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_LUSDAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "_upperHint",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_lowerHint",
-        "type": "address"
-      }
-    ],
-    "name": "withdrawLUSD",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

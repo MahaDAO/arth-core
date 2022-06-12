@@ -4,6 +4,32 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "_newBalance",
+        "type": "uint256"
+      }
+    ],
+    "name": "ARTHBalanceUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_ARTHDebt",
+        "type": "uint256"
+      }
+    ],
+    "name": "ActivePoolARTHDebtUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "_newActivePoolAddress",
         "type": "address"
@@ -23,19 +49,6 @@
       }
     ],
     "name": "ActivePoolETHBalanceUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "_LUSDDebt",
-        "type": "uint256"
-      }
-    ],
-    "name": "ActivePoolLUSDDebtUpdated",
     "type": "event"
   },
   {
@@ -94,19 +107,6 @@
       }
     ],
     "name": "EtherSent",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "_newBalance",
-        "type": "uint256"
-      }
-    ],
-    "name": "LUSDBalanceUpdated",
     "type": "event"
   },
   {
@@ -188,7 +188,7 @@
         "type": "uint256"
       }
     ],
-    "name": "decreaseLUSDDebt",
+    "name": "decreaseARTHDebt",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -208,7 +208,7 @@
   },
   {
     "inputs": [],
-    "name": "getETH",
+    "name": "getARTHDebt",
     "outputs": [
       {
         "internalType": "uint256",
@@ -221,7 +221,7 @@
   },
   {
     "inputs": [],
-    "name": "getLUSDDebt",
+    "name": "getETH",
     "outputs": [
       {
         "internalType": "uint256",
@@ -240,7 +240,7 @@
         "type": "uint256"
       }
     ],
-    "name": "increaseLUSDDebt",
+    "name": "increaseARTHDebt",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

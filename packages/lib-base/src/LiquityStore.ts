@@ -4,7 +4,6 @@ import { Decimal } from "./Decimal";
 import { StabilityDeposit } from "./StabilityDeposit";
 import { Trove, TroveWithPendingRedistribution, UserTrove } from "./Trove";
 import { Fees } from "./Fees";
-import { MAHAStake } from "./MAHAStake";
 import { FrontendStatus } from "./ReadableLiquity";
 
 /**
@@ -92,12 +91,6 @@ export interface LiquityStoreBaseState {
 
   /** @internal */
   _feesInNormalMode: Fees;
-
-  /** User's MAHA stake. */
-  mahaStake: MAHAStake;
-
-  /** Total amount of MAHA currently staked. */
-  totalStakedMAHA: Decimal;
 
   /** @internal */
   _riskiestTroveBeforeRedistribution: TroveWithPendingRedistribution;
@@ -455,20 +448,6 @@ export abstract class LiquityStore<T = unknown> {
         equals,
         baseState._feesInNormalMode,
         baseStateUpdate._feesInNormalMode
-      ),
-
-      mahaStake: this._updateIfChanged(
-        equals,
-        "mahaStake",
-        baseState.mahaStake,
-        baseStateUpdate.mahaStake
-      ),
-
-      totalStakedMAHA: this._updateIfChanged(
-        eq,
-        "totalStakedMAHA",
-        baseState.totalStakedMAHA,
-        baseStateUpdate.totalStakedMAHA
       ),
 
       _riskiestTroveBeforeRedistribution: this._silentlyUpdateIfChanged(

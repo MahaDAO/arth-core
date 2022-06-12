@@ -51,12 +51,6 @@ export class _CachedReadableLiquity<T extends unknown[]>
     this._readable = readable;
     this._cache = cache;
   }
-  getARTHInStabilityPool(...extraParams: T): Promise<Decimal> {
-    throw new Error("Method not implemented.");
-  }
-  getARTHBalance(address?: string | undefined, ...extraParams: T): Promise<Decimal> {
-    throw new Error("Method not implemented.");
-  }
 
   async getTotalRedistributed(...extraParams: T): Promise<Trove> {
     return (
@@ -134,48 +128,6 @@ export class _CachedReadableLiquity<T extends unknown[]>
     );
   }
 
-  async getUniTokenBalance(address?: string, ...extraParams: T): Promise<Decimal> {
-    return (
-      this._cache.getUniTokenBalance(address, ...extraParams) ??
-      this._readable.getUniTokenBalance(address, ...extraParams)
-    );
-  }
-
-  async getUniTokenAllowance(address?: string, ...extraParams: T): Promise<Decimal> {
-    return (
-      this._cache.getUniTokenAllowance(address, ...extraParams) ??
-      this._readable.getUniTokenAllowance(address, ...extraParams)
-    );
-  }
-
-  async getRemainingLiquidityMiningMAHAReward(...extraParams: T): Promise<Decimal> {
-    return (
-      this._cache.getRemainingLiquidityMiningMAHAReward(...extraParams) ??
-      this._readable.getRemainingLiquidityMiningMAHAReward(...extraParams)
-    );
-  }
-
-  async getLiquidityMiningStake(address?: string, ...extraParams: T): Promise<Decimal> {
-    return (
-      this._cache.getLiquidityMiningStake(address, ...extraParams) ??
-      this._readable.getLiquidityMiningStake(address, ...extraParams)
-    );
-  }
-
-  async getTotalStakedUniTokens(...extraParams: T): Promise<Decimal> {
-    return (
-      this._cache.getTotalStakedUniTokens(...extraParams) ??
-      this._readable.getTotalStakedUniTokens(...extraParams)
-    );
-  }
-
-  async getLiquidityMiningMAHAReward(address?: string, ...extraParams: T): Promise<Decimal> {
-    return (
-      this._cache.getLiquidityMiningMAHAReward(address, ...extraParams) ??
-      this._readable.getLiquidityMiningMAHAReward(address, ...extraParams)
-    );
-  }
-
   async getCollateralSurplusBalance(address?: string, ...extraParams: T): Promise<Decimal> {
     return (
       this._cache.getCollateralSurplusBalance(address, ...extraParams) ??
@@ -208,20 +160,6 @@ export class _CachedReadableLiquity<T extends unknown[]>
 
   async getFees(...extraParams: T): Promise<Fees> {
     return this._cache.getFees(...extraParams) ?? this._readable.getFees(...extraParams);
-  }
-
-  async getMAHAStake(address?: string, ...extraParams: T): Promise<MAHAStake> {
-    return (
-      this._cache.getMAHAStake(address, ...extraParams) ??
-      this._readable.getMAHAStake(address, ...extraParams)
-    );
-  }
-
-  async getTotalStakedMAHA(...extraParams: T): Promise<Decimal> {
-    return (
-      this._cache.getTotalStakedMAHA(...extraParams) ??
-      this._readable.getTotalStakedMAHA(...extraParams)
-    );
   }
 
   async getFrontendStatus(address?: string, ...extraParams: T): Promise<FrontendStatus> {
