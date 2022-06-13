@@ -57,7 +57,7 @@ contract CommunityIssuance is ICommunityIssuance, Ownable, CheckContract, BaseMa
         totalMAHAIssued = totalMAHAIssued.add(issuance);
         emit TotalMAHAIssuedUpdated(totalMAHAIssued);
 
-        lastUpdateTime = block.timestamp;
+        lastUpdateTime = lastTimeRewardApplicable();
 
         return issuance;
     }
