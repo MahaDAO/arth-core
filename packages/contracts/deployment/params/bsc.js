@@ -1,26 +1,26 @@
 const externalAddrs = {
-  PRICE_FEED: undefined,
-  TIMELOCK: "0x67c569F960C1Cc0B9a7979A851f5a67018c5A3b0",
+  PRICE_FEED: "0xc953285D64A3c8DF09f3167ee250605984778B53",
+  TIMELOCK: "0x9a66fc7a20f21fb72d9f229984109246e9c9f4a5",
   ECOSYSTEM_FUND: "0x6bfc9DB28f0A6d11a8d9d64c86026DDD2fad293B",
-  MAHA: "0xedd6ca8a4202d4a36611e2fff109648c4863ae19",
-  ARTH: undefined,
+  MAHA: "0xCE86F7fcD3B40791F63B86C3ea3B8B355Ce2685b",
+  ARTH: "0xa5c40f510dd2edb8d8f8cbb425dacc5180458d1a",
   DEPLOYER: "0x67c569F960C1Cc0B9a7979A851f5a67018c5A3b0"
 };
 
-const OUTPUT_FILE = "./deployment/output/polygon.json";
+const OUTPUT_FILE = "./deployment/output/bsc.json";
 
 const delay = ms => new Promise(res => setTimeout(res, ms));
 const waitFunction = async () => {
   return delay(90000); // wait 90s
 };
 
-const COMMUNITY_ISSUANCE_REWARDS_DURATION = 5 * 24 * 60 * 60;
-const BOOTSTRAP_PERIOD = 0;
-const GAS_PRICE = 50 * 1000000000; // 50 Gwei
+const COMMUNITY_ISSUANCE_REWARDS_DURATION = 30 * 86400; // 5 days
+const BOOTSTRAP_PERIOD = 7 * 86400;
+const GAS_PRICE = 10 * 1000000000; // 1 Gwei
 const TX_CONFIRMATIONS = 1;
-const EXPLORER_BASE_URL = "https://polygonscan.com/address";
+const EXPLORER_BASE_URL = "https://bscscan.com/address";
 
-const NATIVE_TOKEN_SYMBOL = "MATIC";
+const NATIVE_TOKEN_SYMBOL = "BNB";
 
 module.exports = {
   externalAddrs,

@@ -5,6 +5,7 @@ const hre = require("hardhat");
 
 const polygonParams = require("./params/polygon");
 const bscTestnetParams = require("./params/bscTestnet");
+const bscParams = require("./params/bsc");
 const localParams = require("./params/local");
 
 async function deploy(configParams) {
@@ -71,6 +72,7 @@ async function main() {
   let params;
 
   if (networkName === "bscTestnet") params = bscTestnetParams;
+  if (networkName === "bsc") params = bscParams;
   if (networkName === "local") params = localParams;
   if (networkName === "polygon") params = polygonParams;
   await deploy(params);
