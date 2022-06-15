@@ -459,7 +459,7 @@ class MainnetDeploymentHelper {
 
     deploymentState[
       name
-    ].verification = `${this.configParams.ETHERSCAN_BASE_URL}/${deploymentState[name].address}#code`;
+    ].verification = `${this.configParams.EXPLORER_BASE_URL}/${deploymentState[name].address}#code`;
 
     this.saveDeployment(deploymentState);
   }
