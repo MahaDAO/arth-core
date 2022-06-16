@@ -11,8 +11,8 @@ contract ARTHValuecoin is CheckContract, Ownable, IARTHValuecoin {
     using SafeMath for uint256;
 
     uint256 private _totalSupply;
-    string internal constant _NAME = "ARTH Valuecoin (BSC)";
-    string internal constant _SYMBOL = "ARTH.bsc";
+    string internal constant _NAME = "ARTH Valuecoin (Polygon)";
+    string internal constant _SYMBOL = "ARTH.poly";
     string internal constant _VERSION = "3";
     uint8 internal constant _DECIMALS = 18;
 

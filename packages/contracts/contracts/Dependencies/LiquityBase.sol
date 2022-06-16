@@ -20,10 +20,10 @@ contract LiquityBase is BaseMath, ILiquityBase {
     uint256 public constant _100pct = 1000000000000000000; // 1e18 == 100%
 
     // Minimum collateral ratio for individual troves
-    uint256 public constant MCR = 1050000000000000000; // 105%
+    uint256 public constant MCR = 1100000000000000000; // 110%
 
     // Critical system collateral ratio. If the system's total collateral ratio (TCR) falls below the CCR, Recovery Mode is triggered.
-    uint256 public constant CCR = 1100000000000000000; // 110%
+    uint256 public constant CCR = 1500000000000000000; // 150%
 
     // Amount of ARTH to be locked in gas pool on opening troves
     uint256 public constant ARTH_GAS_COMPENSATION = 5e18;
