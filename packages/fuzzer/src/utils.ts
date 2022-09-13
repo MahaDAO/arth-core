@@ -13,7 +13,7 @@ import {
   LUSD_LIQUIDATION_RESERVE
 } from "@mahadao/arth-base";
 import { EthersLiquity, ReadableEthersLiquity } from "@mahadao/arth-ethers";
-import { SubgraphLiquity } from "@mahadao/lib-subgraph";
+import { SubgraphLiquity } from "@mahadao/arth-subgraph";
 
 export const objToString = (o: Record<string, unknown>) =>
   "{ " +
