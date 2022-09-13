@@ -6,7 +6,8 @@
 
 ## Packages
 
-| Package                                 | Description |
-| --------------------------------------- | ----------- |
-| [@mahadao/arth-base](./lib-base.md)     |             |
-| [@mahadao/arth-ethers](./lib-ethers.md) |             |
+|  Package | Description |
+|  --- | --- |
+|  [@mahadao/arth-base](./arth-base.md) |  |
+|  [@mahadao/arth-ethers](./arth-ethers.md) |  |
+
