@@ -6,9 +6,8 @@ import {
   Decimal,
   Fees,
   FrontendStatus,
-  LQTYStake,
-  ObservableLiquity,
-  ReadableLiquity,
+  ObservableARTH,
+  ReadableARTH,
   StabilityDeposit,
   Trove,
   TroveListingParams,
@@ -183,10 +182,10 @@ const blockNumberDummy = new Query<void, BlockNumberDummy, BlockNumberDummyVaria
   () => {}
 );
 
-export class SubgraphLiquity implements ReadableLiquity, ObservableLiquity {
+export class SubgraphARTH implements ReadableARTH, ObservableARTH {
   private client: ApolloClient<NormalizedCacheObject>;
 
-  constructor(uri = "http://localhost:8000/subgraphs/name/liquity/subgraph", pollInterval = 4000) {
+  constructor(uri = "http://localhost:8000/subgraphs/name/ARTH/subgraph", pollInterval = 4000) {
     this.client = new ApolloClient({
       cache: new InMemoryCache(),
       link: new HttpLink({ fetch, uri }),
@@ -195,6 +194,26 @@ export class SubgraphLiquity implements ReadableLiquity, ObservableLiquity {
         watchQuery: { fetchPolicy: "network-only", pollInterval }
       }
     });
+  }
+  getRemainingStabilityPoolMAHAReward(): Promise<Decimal> {
+    throw new Error("Method not implemented.");
+  }
+  getARTHInStabilityPool(): Promise<Decimal> {
+    throw new Error("Method not implemented.");
+  }
+  getARTHBalance(address?: string | undefined): Promise<Decimal> {
+    throw new Error("Method not implemented.");
+  }
+  watchARTHInStabilityPool(
+    onARTHInStabilityPoolChanged: (arthInStabilityPool: Decimal) => void
+  ): () => void {
+    throw new Error("Method not implemented.");
+  }
+  watchARTHBalance(
+    onARTHBalanceChanged: (balance: Decimal) => void,
+    address?: string | undefined
+  ): () => void {
+    throw new Error("Method not implemented.");
   }
 
   getTotalRedistributed() {
@@ -325,10 +344,6 @@ export class SubgraphLiquity implements ReadableLiquity, ObservableLiquity {
   }
 
   getFees(): Promise<Fees> {
-    throw new Error("Method not implemented.");
-  }
-
-  getLQTYStake(address?: string): Promise<LQTYStake> {
     throw new Error("Method not implemented.");
   }
 
