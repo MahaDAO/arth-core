@@ -9,9 +9,9 @@ import {
   TransactableLiquity,
   Trove,
   TroveAdjustmentParams
-} from "@liquity/lib-base";
+} from "@mahadao/arth-base";
 
-import { EthersLiquity as Liquity } from "@liquity/lib-ethers";
+import { EthersLiquity as Liquity } from "@mahadao/arth-ethers";
 
 import {
   createRandomTrove,

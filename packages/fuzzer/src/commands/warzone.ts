@@ -1,7 +1,7 @@
 import { Wallet } from "@ethersproject/wallet";
 
-import { Decimal, LUSD_MINIMUM_DEBT, Trove } from "@liquity/lib-base";
-import { EthersLiquity } from "@liquity/lib-ethers";
+import { Decimal, LUSD_MINIMUM_DEBT, Trove } from "@mahadao/arth-base";
+import { EthersLiquity } from "@mahadao/arth-ethers";
 
 import { deployer, funder, provider } from "../globals";
 

@@ -21,7 +21,7 @@ import {
   MINIMUM_BORROWING_RATE,
   ARTH_MINIMUM_DEBT,
   ARTH_MINIMUM_NET_DEBT
-} from "@liquity/lib-base";
+} from "@mahadao/arth-base";
 
 import { HintHelpers } from "../types";
 

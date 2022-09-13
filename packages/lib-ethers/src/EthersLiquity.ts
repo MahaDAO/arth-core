@@ -24,7 +24,7 @@ import {
   TroveListingParams,
   TroveWithPendingRedistribution,
   UserTrove
-} from "@liquity/lib-base";
+} from "@mahadao/arth-base";
 
 import {
   EthersLiquityConnection,
@@ -156,12 +156,12 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
     return false;
   }
 
-  /** {@inheritDoc @liquity/lib-base#ReadableLiquity.getTotalRedistributed} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getTotalRedistributed} */
   getTotalRedistributed(overrides?: EthersCallOverrides): Promise<Trove> {
     return this._readable.getTotalRedistributed(overrides);
   }
 
-  /** {@inheritDoc @liquity/lib-base#ReadableLiquity.getTroveBeforeRedistribution} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getTroveBeforeRedistribution} */
   getTroveBeforeRedistribution(
     address?: string,
     overrides?: EthersCallOverrides
@@ -169,17 +169,17 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
     return this._readable.getTroveBeforeRedistribution(address, overrides);
   }
 
-  /** {@inheritDoc @liquity/lib-base#ReadableLiquity.getTrove} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getTrove} */
   getTrove(address?: string, overrides?: EthersCallOverrides): Promise<UserTrove> {
     return this._readable.getTrove(address, overrides);
   }
 
-  /** {@inheritDoc @liquity/lib-base#ReadableLiquity.getNumberOfTroves} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getNumberOfTroves} */
   getNumberOfTroves(overrides?: EthersCallOverrides): Promise<number> {
     return this._readable.getNumberOfTroves(overrides);
   }
 
-  /** {@inheritDoc @liquity/lib-base#ReadableLiquity.getPrice} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getPrice} */
   getPrice(overrides?: EthersCallOverrides): Promise<Decimal> {
     return this._readable.getPrice(overrides);
   }
@@ -194,37 +194,37 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
     return this._readable._getDefaultPool(overrides);
   }
 
-  /** {@inheritDoc @liquity/lib-base#ReadableLiquity.getTotal} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getTotal} */
   getTotal(overrides?: EthersCallOverrides): Promise<Trove> {
     return this._readable.getTotal(overrides);
   }
 
-  /** {@inheritDoc @liquity/lib-base#ReadableLiquity.getStabilityDeposit} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getStabilityDeposit} */
   getStabilityDeposit(address?: string, overrides?: EthersCallOverrides): Promise<StabilityDeposit> {
     return this._readable.getStabilityDeposit(address, overrides);
   }
 
-  /** {@inheritDoc @liquity/lib-base#ReadableLiquity.getRemainingStabilityPoolMAHAReward} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getRemainingStabilityPoolMAHAReward} */
   getRemainingStabilityPoolMAHAReward(overrides?: EthersCallOverrides): Promise<Decimal> {
     return this._readable.getRemainingStabilityPoolMAHAReward(overrides);
   }
 
-  /** {@inheritDoc @liquity/lib-base#ReadableLiquity.getARTHInStabilityPool} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getARTHInStabilityPool} */
   getARTHInStabilityPool(overrides?: EthersCallOverrides): Promise<Decimal> {
     return this._readable.getARTHInStabilityPool(overrides);
   }
 
-  /** {@inheritDoc @liquity/lib-base#ReadableLiquity.getARTHBalance} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getARTHBalance} */
   getARTHBalance(address?: string, overrides?: EthersCallOverrides): Promise<Decimal> {
     return this._readable.getARTHBalance(address, overrides);
   }
 
-  /** {@inheritDoc @liquity/lib-base#ReadableLiquity.getMAHABalance} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getMAHABalance} */
   getMAHABalance(address?: string, overrides?: EthersCallOverrides): Promise<Decimal> {
     return this._readable.getMAHABalance(address, overrides);
   }
 
-  /** {@inheritDoc @liquity/lib-base#ReadableLiquity.getCollateralSurplusBalance} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getCollateralSurplusBalance} */
   getCollateralSurplusBalance(address?: string, overrides?: EthersCallOverrides): Promise<Decimal> {
     return this._readable.getCollateralSurplusBalance(address, overrides);
   }
@@ -235,7 +235,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
     overrides?: EthersCallOverrides
   ): Promise<TroveWithPendingRedistribution[]>;
 
-  /** {@inheritDoc @liquity/lib-base#ReadableLiquity.(getTroves:2)} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.(getTroves:2)} */
   getTroves(params: TroveListingParams, overrides?: EthersCallOverrides): Promise<UserTrove[]>;
 
   getTroves(params: TroveListingParams, overrides?: EthersCallOverrides): Promise<UserTrove[]> {
@@ -254,18 +254,18 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
     return this._readable._getFeesFactory(overrides);
   }
 
-  /** {@inheritDoc @liquity/lib-base#ReadableLiquity.getFees} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getFees} */
   getFees(overrides?: EthersCallOverrides): Promise<Fees> {
     return this._readable.getFees(overrides);
   }
 
-  /** {@inheritDoc @liquity/lib-base#ReadableLiquity.getFrontendStatus} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getFrontendStatus} */
   getFrontendStatus(address?: string, overrides?: EthersCallOverrides): Promise<FrontendStatus> {
     return this._readable.getFrontendStatus(address, overrides);
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.openTrove}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.openTrove}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -282,7 +282,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.closeTrove}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.closeTrove}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -293,7 +293,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.adjustTrove}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.adjustTrove}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -310,7 +310,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.depositCollateral}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.depositCollateral}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -324,7 +324,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.withdrawCollateral}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.withdrawCollateral}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -338,7 +338,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.borrowARTH}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.borrowARTH}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -353,7 +353,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.repayARTH}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.repayARTH}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -372,7 +372,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.liquidate}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.liquidate}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -386,7 +386,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.liquidateUpTo}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.liquidateUpTo}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -400,7 +400,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.depositARTHInStabilityPool}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.depositARTHInStabilityPool}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -415,7 +415,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.withdrawARTHFromStabilityPool}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.withdrawARTHFromStabilityPool}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -429,7 +429,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.withdrawGainsFromStabilityPool}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.withdrawGainsFromStabilityPool}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -442,7 +442,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.transferCollateralGainToTrove}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.transferCollateralGainToTrove}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -455,7 +455,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.sendARTH}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.sendARTH}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -470,7 +470,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.sendMAHA}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.sendMAHA}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -485,7 +485,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.redeemARTH}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.redeemARTH}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -500,7 +500,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.claimCollateralSurplus}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.claimCollateralSurplus}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -511,7 +511,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @liquity/lib-base#TransactableLiquity.registerFrontend}
+   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.registerFrontend}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -523,7 +523,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
 }
 
 /**
- * Variant of {@link EthersLiquity} that exposes a {@link @liquity/lib-base#LiquityStore}.
+ * Variant of {@link EthersLiquity} that exposes a {@link @mahadao/arth-base#LiquityStore}.
  *
  * @public
  */
