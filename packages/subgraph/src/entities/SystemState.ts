@@ -42,7 +42,7 @@ export function getCurrentSystemState(): SystemState {
     newSystemState.totalDebt = DECIMAL_ZERO;
     newSystemState.tokensInStabilityPool = DECIMAL_ZERO;
     newSystemState.collSurplusPoolBalance = DECIMAL_ZERO;
-    newSystemState.totalLQTYTokensStaked = DECIMAL_ZERO;
+    newSystemState.totalMAHATokensStaked = DECIMAL_ZERO;
     newSystemState.save();
 
     let global = getGlobal();
@@ -205,7 +205,7 @@ export function updateSystemStateByCollSurplusChange(collSurplusChange: CollSurp
 export function updateSystemStateByLqtyStakeChange(stakeChange: LqtyStakeChange): void {
   let systemState = getCurrentSystemState();
 
-  systemState.totalLQTYTokensStaked = systemState.totalLQTYTokensStaked.plus(
+  systemState.totalMAHATokensStaked = systemState.totalMAHATokensStaked.plus(
     stakeChange.stakedAmountChange
   );
 

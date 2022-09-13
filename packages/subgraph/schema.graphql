@@ -14,10 +14,10 @@ type Global @entity {
   numberOfTrovesClosedByOwner: Int!
   totalNumberOfTroves: Int!
 
-  totalNumberOfLQTYStakes: Int!
-  numberOfActiveLQTYStakes: Int!
+  totalNumberOfMAHAStakes: Int!
+  numberOfActiveMAHAStakes: Int!
 
-  "Total amount of LUSD paid as borrowing fees"
+  "Total amount of ARTH paid as borrowing fees"
   totalBorrowingFeesPaid: BigDecimal!
   "Total amount of ETH paid as redemption fees"
   totalRedemptionFeesPaid: BigDecimal!
@@ -55,7 +55,7 @@ type SystemState @entity {
 
   tokensInStabilityPool: BigDecimal!
   collSurplusPoolBalance: BigDecimal!
-  totalLQTYTokensStaked: BigDecimal!
+  totalMAHATokensStaked: BigDecimal!
 
   cause: Change @derivedFrom(field: "systemStateAfter")
 }
@@ -275,7 +275,7 @@ type LqtyStake @entity {
   changes: [LqtyStakeChange!]! @derivedFrom(field: "stake")
 }
 
-enum LQTYStakeOperation {
+enum MAHAStakeOperation {
   stakeCreated
   stakeIncreased
   stakeDecreased
@@ -291,7 +291,7 @@ type LqtyStakeChange implements Change @entity {
   systemStateAfter: SystemState!
 
   stake: LqtyStake!
-  stakeOperation: LQTYStakeOperation!
+  stakeOperation: MAHAStakeOperation!
 
   stakedAmountBefore: BigDecimal!
   stakedAmountChange: BigDecimal!

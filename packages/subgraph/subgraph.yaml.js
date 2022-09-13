@@ -13,8 +13,8 @@ const yaml = (strings, ...keys) =>
 
 const manifest = yaml`
 specVersion: 0.0.2
-description: Liquity is a decentralized borrowing protocol offering interest-free liquidity against collateral in Ether.
-repository: https://github.com/liquity/dev/tree/main/packages/subgraph
+description: ARTH is a decentralized borrowing protocol offering interest-free liquidity against collateral in Ether.
+repository: https://github.com/mahadao/arth-core/tree/main/packages/subgraph
 schema:
   file: ./schema.graphql
 dataSources:
@@ -78,8 +78,8 @@ dataSources:
       eventHandlers:
         - event: TroveUpdated(indexed address,uint256,uint256,uint256,uint8)
           handler: handleTroveUpdated
-        - event: LUSDBorrowingFeePaid(indexed address,uint256)
-          handler: handleLUSDBorrowingFeePaid
+        - event: ARTHBorrowingFeePaid(indexed address,uint256)
+          handler: handleARTHBorrowingFeePaid
   - name: PriceFeed
     kind: ethereum/contract
     network: mainnet
@@ -160,35 +160,9 @@ dataSources:
       eventHandlers:
         - event: CollBalanceUpdated(indexed address,uint256)
           handler: handleCollSurplusBalanceUpdated
-  - name: LQTYStaking
-    kind: ethereum/contract
-    network: mainnet
-    source:
-      abi: LQTYStaking
-      address: "${addresses.lqtyStaking}"
-      startBlock: ${startBlock}
-    mapping:
-      file: ./src/mappings/LqtyStake.ts
-      language: wasm/assemblyscript
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      entities:
-        - Global
-        - User
-        - Transaction
-        - LqtyStake
-        - LqtyStakeChange
-      abis:
-        - name: LQTYStaking
-          file: ../lib-ethers/abi/LQTYStaking.json
-      eventHandlers:
-        - event: StakeChanged(indexed address,uint256)
-          handler: handleStakeChanged
-        - event: StakingGainsWithdrawn(indexed address,uint256,uint256)
-          handler: handleStakeGainsWithdrawn
 ${[
-  ["ARTHValuecoin", addresses.lusdToken],
-  ["LQTYToken", addresses.lqtyToken]
+  ["ARTHValuecoin", addresses.arthToken],
+  ["MahaToken", addresses.mahaToken]
 ].map(
   ([name, address]) => yaml`
   - name: ${name}
