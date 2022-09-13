@@ -8,12 +8,12 @@
     "DeFi",
     "Ethereum"
   ],
-  "homepage": "https://github.com/liquity/liquity#readme",
+  "homepage": "https://github.com/mahadao/arth-core#readme",
   "license": "MIT",
-  "author": "Daniel Simon <dani@mahadao.org>",
+  "author": "Steven Enamakel <enamakel@mahadao.com>",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "repository": "https://github.com/liquity/dev",
+  "repository": "https://github.com/mahadao/arth-core",
   "scripts": {
     "hardhat": "hardhat",
     "check-live-version": "ts-node scripts/check-live-version.ts",

@@ -1,19 +1,19 @@
 {
   "name": "@mahadao/arth-base",
   "version": "0.0.0-semantic-release",
-  "description": "Liquity SDK shared interfaces",
+  "description": "ARTH Valuecoin SDK shared interfaces",
   "keywords": [
-    "Liquity",
+    "MahaDAO",
     "protocol",
     "DeFi",
     "Ethereum"
   ],
   "homepage": "https://github.com/liquity/liquity#readme",
   "license": "MIT",
-  "author": "Daniel Simon <dani@mahadao.org>",
+  "author": "Steven Enamakel <enamakel@mahadao.com>",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "repository": "https://github.com/liquity/dev",
+  "repository": "https://github.com/mahadao/arth-core",
   "scripts": {
     "prepare": "run-s prepare:*",
     "prepare:eslint": "eslint src",
