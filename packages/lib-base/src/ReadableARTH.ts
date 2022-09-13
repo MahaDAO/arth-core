@@ -4,10 +4,10 @@ import { StabilityDeposit } from "./StabilityDeposit";
 import { Fees } from "./Fees";
 
 /**
- * Represents whether an address has been registered as a Liquity frontend.
+ * Represents whether an address has been registered as a ARTH frontend.
  *
  * @remarks
- * Returned by the {@link ReadableLiquity.getFrontendStatus | getFrontendStatus()} function.
+ * Returned by the {@link ReadableARTH.getFrontendStatus | getFrontendStatus()} function.
  *
  * When `status` is `"registered"`, `kickbackRate` gives the frontend's kickback rate as a
  * {@link Decimal} between 0 and 1.
@@ -19,7 +19,7 @@ export type FrontendStatus =
   | { status: "registered"; kickbackRate: Decimal };
 
 /**
- * Parameters of the {@link ReadableLiquity.(getTroves:2) | getTroves()} function.
+ * Parameters of the {@link ReadableARTH.(getTroves:2) | getTroves()} function.
  *
  * @public
  */
@@ -44,14 +44,14 @@ export interface TroveListingParams {
 }
 
 /**
- * Read the state of the Liquity protocol.
+ * Read the state of the ARTH protocol.
  *
  * @remarks
- * Implemented by {@link @mahadao/arth-ethers#EthersLiquity}.
+ * Implemented by {@link @mahadao/arth-ethers#EthersARTH}.
  *
  * @public
  */
-export interface ReadableLiquity {
+export interface ReadableARTH {
   /**
    * Get the total collateral and debt per stake that has been liquidated through redistribution.
    *
@@ -67,7 +67,7 @@ export interface ReadableLiquity {
    *
    * @remarks
    * The current state of a Trove can be fetched using
-   * {@link @mahadao/arth-base#ReadableLiquity.getTrove | getTrove()}.
+   * {@link @mahadao/arth-base#ReadableARTH.getTrove | getTrove()}.
    */
   getTroveBeforeRedistribution(address?: string): Promise<TroveWithPendingRedistribution>;
 
@@ -89,7 +89,7 @@ export interface ReadableLiquity {
   getPrice(): Promise<Decimal>;
 
   /**
-   * Get the total amount of collateral and debt in the Liquity system.
+   * Get the total amount of collateral and debt in the ARTH system.
    */
   getTotal(): Promise<Trove>;
 
@@ -124,7 +124,7 @@ export interface ReadableLiquity {
    * When a Trove gets liquidated or redeemed, any collateral it has above 110% (in case of
    * liquidation) or 100% collateralization (in case of redemption) gets sent to a pool, where it
    * can be withdrawn from using
-   * {@link @mahadao/arth-base#TransactableLiquity.claimCollateralSurplus | claimCollateralSurplus()}.
+   * {@link @mahadao/arth-base#TransactableARTH.claimCollateralSurplus | claimCollateralSurplus()}.
    */
   getCollateralSurplusBalance(address?: string): Promise<Decimal>;
 
@@ -147,7 +147,7 @@ export interface ReadableLiquity {
   getFees(): Promise<Fees>;
 
   /**
-   * Check whether an address is registered as a Liquity frontend, and what its kickback rate is.
+   * Check whether an address is registered as a ARTH frontend, and what its kickback rate is.
    *
    * @param address - Address to check.
    */

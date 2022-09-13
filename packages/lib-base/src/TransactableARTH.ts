@@ -1,10 +1,10 @@
 import { Decimal, Decimalish } from "./Decimal";
 import { Trove, TroveAdjustmentParams, TroveClosureParams, TroveCreationParams } from "./Trove";
 import { StabilityDepositChange } from "./StabilityDeposit";
-import { FailedReceipt } from "./SendableLiquity";
+import { FailedReceipt } from "./SendableARTH";
 
 /**
- * Thrown by {@link TransactableLiquity} functions in case of transaction failure.
+ * Thrown by {@link TransactableARTH} functions in case of transaction failure.
  *
  * @public
  */
@@ -20,7 +20,7 @@ export class TransactionFailedError<T extends FailedReceipt = FailedReceipt> ext
 }
 
 /**
- * Details of an {@link TransactableLiquity.openTrove | openTrove()} transaction.
+ * Details of an {@link TransactableARTH.openTrove | openTrove()} transaction.
  *
  * @public
  */
@@ -36,7 +36,7 @@ export interface TroveCreationDetails {
 }
 
 /**
- * Details of an {@link TransactableLiquity.adjustTrove | adjustTrove()} transaction.
+ * Details of an {@link TransactableARTH.adjustTrove | adjustTrove()} transaction.
  *
  * @public
  */
@@ -52,7 +52,7 @@ export interface TroveAdjustmentDetails {
 }
 
 /**
- * Details of a {@link TransactableLiquity.closeTrove | closeTrove()} transaction.
+ * Details of a {@link TransactableARTH.closeTrove | closeTrove()} transaction.
  *
  * @public
  */
@@ -62,8 +62,8 @@ export interface TroveClosureDetails {
 }
 
 /**
- * Details of a {@link TransactableLiquity.liquidate | liquidate()} or
- * {@link TransactableLiquity.liquidateUpTo | liquidateUpTo()} transaction.
+ * Details of a {@link TransactableARTH.liquidate | liquidate()} or
+ * {@link TransactableARTH.liquidateUpTo | liquidateUpTo()} transaction.
  *
  * @public
  */
@@ -82,7 +82,7 @@ export interface LiquidationDetails {
 }
 
 /**
- * Details of a {@link TransactableLiquity.redeemARTH | redeemARTH()} transaction.
+ * Details of a {@link TransactableARTH.redeemARTH | redeemARTH()} transaction.
  *
  * @public
  */
@@ -110,7 +110,7 @@ export interface RedemptionDetails {
 
 /**
  * Details of a
- * {@link TransactableLiquity.withdrawGainsFromStabilityPool | withdrawGainsFromStabilityPool()}
+ * {@link TransactableARTH.withdrawGainsFromStabilityPool | withdrawGainsFromStabilityPool()}
  * transaction.
  *
  * @public
@@ -131,8 +131,8 @@ export interface StabilityPoolGainsWithdrawalDetails {
 
 /**
  * Details of a
- * {@link TransactableLiquity.depositARTHInStabilityPool | depositARTHInStabilityPool()} or
- * {@link TransactableLiquity.withdrawARTHFromStabilityPool | withdrawARTHFromStabilityPool()}
+ * {@link TransactableARTH.depositARTHInStabilityPool | depositARTHInStabilityPool()} or
+ * {@link TransactableARTH.withdrawARTHFromStabilityPool | withdrawARTHFromStabilityPool()}
  * transaction.
  *
  * @public
@@ -144,7 +144,7 @@ export interface StabilityDepositChangeDetails extends StabilityPoolGainsWithdra
 
 /**
  * Details of a
- * {@link TransactableLiquity.transferCollateralGainToTrove | transferCollateralGainToTrove()}
+ * {@link TransactableARTH.transferCollateralGainToTrove | transferCollateralGainToTrove()}
  * transaction.
  *
  * @public
@@ -155,17 +155,17 @@ export interface CollateralGainTransferDetails extends StabilityPoolGainsWithdra
 }
 
 /**
- * Send Liquity transactions and wait for them to succeed.
+ * Send ARTH transactions and wait for them to succeed.
  *
  * @remarks
  * The functions return the details of the transaction (if any), or throw an implementation-specific
  * subclass of {@link TransactionFailedError} in case of transaction failure.
  *
- * Implemented by {@link @mahadao/arth-ethers#EthersLiquity}.
+ * Implemented by {@link @mahadao/arth-ethers#EthersARTH}.
  *
  * @public
  */
-export interface TransactableLiquity {
+export interface TransactableARTH {
   /**
    * Open a new Trove by depositing collateral and borrowing ARTH.
    *
@@ -411,7 +411,7 @@ export interface TransactableLiquity {
    * Claim leftover collateral after a liquidation or redemption.
    *
    * @remarks
-   * Use {@link @mahadao/arth-base#ReadableLiquity.getCollateralSurplusBalance | getCollateralSurplusBalance()}
+   * Use {@link @mahadao/arth-base#ReadableARTH.getCollateralSurplusBalance | getCollateralSurplusBalance()}
    * to check the amount of collateral available for withdrawal.
    *
    * @throws
@@ -420,7 +420,7 @@ export interface TransactableLiquity {
   claimCollateralSurplus(): Promise<void>;
 
   /**
-   * Register current wallet address as a Liquity frontend.
+   * Register current wallet address as a ARTH frontend.
    *
    * @param kickbackRate - The portion of MAHA rewards to pass onto users of the frontend
    *                       (between 0 and 1).

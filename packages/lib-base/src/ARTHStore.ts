@@ -4,14 +4,14 @@ import { Decimal } from "./Decimal";
 import { StabilityDeposit } from "./StabilityDeposit";
 import { Trove, TroveWithPendingRedistribution, UserTrove } from "./Trove";
 import { Fees } from "./Fees";
-import { FrontendStatus } from "./ReadableLiquity";
+import { FrontendStatus } from "./ReadableARTH";
 
 /**
  * State variables read from the blockchain.
  *
  * @public
  */
-export interface LiquityStoreBaseState {
+export interface ARTHStoreBaseState {
   /** Status of currently used frontend. */
   frontend: FrontendStatus;
 
@@ -31,7 +31,7 @@ export interface LiquityStoreBaseState {
    * Amount of leftover collateral available for withdrawal to the user.
    *
    * @remarks
-   * See {@link ReadableLiquity.getCollateralSurplusBalance | getCollateralSurplusBalance()} for
+   * See {@link ReadableARTH.getCollateralSurplusBalance | getCollateralSurplusBalance()} for
    * more information.
    */
   collateralSurplusBalance: Decimal;
@@ -42,7 +42,7 @@ export interface LiquityStoreBaseState {
   /** Total amount of ARTH currently deposited in the Stability Pool. */
   arthInStabilityPool: Decimal;
 
-  /** Total collateral and debt in the Liquity system. */
+  /** Total collateral and debt in the ARTH system. */
   total: Trove;
 
   /**
@@ -58,7 +58,7 @@ export interface LiquityStoreBaseState {
    *
    * @remarks
    * The current state of the user's Trove can be found as
-   * {@link LiquityStoreDerivedState.trove | trove}.
+   * {@link ARTHStoreDerivedState.trove | trove}.
    */
   troveBeforeRedistribution: TroveWithPendingRedistribution;
 
@@ -76,11 +76,11 @@ export interface LiquityStoreBaseState {
 }
 
 /**
- * State variables derived from {@link LiquityStoreBaseState}.
+ * State variables derived from {@link ARTHStoreBaseState}.
  *
  * @public
  */
-export interface LiquityStoreDerivedState {
+export interface ARTHStoreDerivedState {
   /** Current state of user's Trove */
   trove: UserTrove;
 
@@ -117,35 +117,35 @@ export interface LiquityStoreDerivedState {
 }
 
 /**
- * Type of {@link LiquityStore}'s {@link LiquityStore.state | state}.
+ * Type of {@link ARTHStore}'s {@link ARTHStore.state | state}.
  *
  * @remarks
- * It combines all properties of {@link LiquityStoreBaseState} and {@link LiquityStoreDerivedState}
- * with optional extra state added by the particular `LiquityStore` implementation.
+ * It combines all properties of {@link ARTHStoreBaseState} and {@link ARTHStoreDerivedState}
+ * with optional extra state added by the particular `ARTHStore` implementation.
  *
  * The type parameter `T` may be used to type the extra state.
  *
  * @public
  */
-export type LiquityStoreState<T = unknown> = LiquityStoreBaseState & LiquityStoreDerivedState & T;
+export type ARTHStoreState<T = unknown> = ARTHStoreBaseState & ARTHStoreDerivedState & T;
 
 /**
- * Parameters passed to {@link LiquityStore} listeners.
+ * Parameters passed to {@link ARTHStore} listeners.
  *
  * @remarks
- * Use the {@link LiquityStore.subscribe | subscribe()} function to register a listener.
+ * Use the {@link ARTHStore.subscribe | subscribe()} function to register a listener.
 
  * @public
  */
-export interface LiquityStoreListenerParams<T = unknown> {
+export interface ARTHStoreListenerParams<T = unknown> {
   /** The entire previous state. */
-  newState: LiquityStoreState<T>;
+  newState: ARTHStoreState<T>;
 
   /** The entire new state. */
-  oldState: LiquityStoreState<T>;
+  oldState: ARTHStoreState<T>;
 
   /** Only the state variables that have changed. */
-  stateChange: Partial<LiquityStoreState<T>>;
+  stateChange: Partial<ARTHStoreState<T>>;
 }
 
 const strictEquals = <T>(a: T, b: T) => a === b;
@@ -173,17 +173,17 @@ const difference = <T>(a: T, b: T) =>
   ) as Partial<T>;
 
 /**
- * Abstract base class of Liquity data store implementations.
+ * Abstract base class of ARTH data store implementations.
  *
  * @remarks
- * The type parameter `T` may be used to type extra state added to {@link LiquityStoreState} by the
+ * The type parameter `T` may be used to type extra state added to {@link ARTHStoreState} by the
  * subclass.
  *
- * Implemented by {@link @mahadao/arth-ethers#BlockPolledLiquityStore}.
+ * Implemented by {@link @mahadao/arth-ethers#BlockPolledARTHStore}.
  *
  * @public
  */
-export abstract class LiquityStore<T = unknown> {
+export abstract class ARTHStore<T = unknown> {
   /** Turn console logging on/off. */
   logging = false;
 
@@ -191,30 +191,30 @@ export abstract class LiquityStore<T = unknown> {
    * Called after the state is fetched for the first time.
    *
    * @remarks
-   * See {@link LiquityStore.start | start()}.
+   * See {@link ARTHStore.start | start()}.
    */
   onLoaded?: () => void;
 
   /** @internal */
   protected _loaded = false;
 
-  private _baseState?: LiquityStoreBaseState;
-  private _derivedState?: LiquityStoreDerivedState;
+  private _baseState?: ARTHStoreBaseState;
+  private _derivedState?: ARTHStoreDerivedState;
   private _extraState?: T;
 
   private _updateTimeoutId: ReturnType<typeof setTimeout> | undefined;
-  private _listeners = new Set<(params: LiquityStoreListenerParams<T>) => void>();
+  private _listeners = new Set<(params: ARTHStoreListenerParams<T>) => void>();
 
   /**
    * The current store state.
    *
    * @remarks
    * Should not be accessed before the store is loaded. Assign a function to
-   * {@link LiquityStore.onLoaded | onLoaded} to get a callback when this happens.
+   * {@link ARTHStore.onLoaded | onLoaded} to get a callback when this happens.
    *
-   * See {@link LiquityStoreState} for the list of properties returned.
+   * See {@link ARTHStoreState} for the list of properties returned.
    */
-  get state(): LiquityStoreState<T> {
+  get state(): ARTHStoreState<T> {
     return Object.assign({}, this._baseState, this._derivedState, this._extraState);
   }
 
@@ -222,13 +222,13 @@ export abstract class LiquityStore<T = unknown> {
   protected abstract _doStart(): () => void;
 
   /**
-   * Start monitoring the blockchain for Liquity state changes.
+   * Start monitoring the blockchain for ARTH state changes.
    *
    * @remarks
-   * The {@link LiquityStore.onLoaded | onLoaded} callback will be called after the state is fetched
+   * The {@link ARTHStore.onLoaded | onLoaded} callback will be called after the state is fetched
    * for the first time.
    *
-   * Use the {@link LiquityStore.subscribe | subscribe()} function to register listeners.
+   * Use the {@link ARTHStore.subscribe | subscribe()} function to register listeners.
    *
    * @returns Function to stop the monitoring.
    */
@@ -293,9 +293,9 @@ export abstract class LiquityStore<T = unknown> {
   }
 
   private _reduce(
-    baseState: LiquityStoreBaseState,
-    baseStateUpdate: Partial<LiquityStoreBaseState>
-  ): LiquityStoreBaseState {
+    baseState: ARTHStoreBaseState,
+    baseStateUpdate: Partial<ARTHStoreBaseState>
+  ): ARTHStoreBaseState {
     return {
       frontend: this._updateIfChanged(
         frontendStatusEquals,
@@ -400,7 +400,7 @@ export abstract class LiquityStore<T = unknown> {
     total,
     price,
     _riskiestTroveBeforeRedistribution
-  }: LiquityStoreBaseState): LiquityStoreDerivedState {
+  }: ARTHStoreBaseState): ARTHStoreDerivedState {
     const fees = _feesInNormalMode._setRecoveryMode(total.collateralRatioIsBelowCritical(price));
 
     return {
@@ -415,9 +415,9 @@ export abstract class LiquityStore<T = unknown> {
   }
 
   private _reduceDerived(
-    derivedState: LiquityStoreDerivedState,
-    derivedStateUpdate: LiquityStoreDerivedState
-  ): LiquityStoreDerivedState {
+    derivedState: ARTHStoreDerivedState,
+    derivedStateUpdate: ARTHStoreDerivedState
+  ): ARTHStoreDerivedState {
     return {
       fees: this._updateFees("fees", derivedState.fees, derivedStateUpdate.fees),
 
@@ -447,7 +447,7 @@ export abstract class LiquityStore<T = unknown> {
   /** @internal */
   protected abstract _reduceExtra(extraState: T, extraStateUpdate: Partial<T>): T;
 
-  private _notify(params: LiquityStoreListenerParams<T>) {
+  private _notify(params: ARTHStoreListenerParams<T>) {
     // Iterate on a copy of `_listeners`, to avoid notifying any new listeners subscribed by
     // existing listeners, as that could result in infinite loops.
     //
@@ -467,7 +467,7 @@ export abstract class LiquityStore<T = unknown> {
    * @param listener - Function that will be called whenever state changes.
    * @returns Function to unregister this listener.
    */
-  subscribe(listener: (params: LiquityStoreListenerParams<T>) => void): () => void {
+  subscribe(listener: (params: ARTHStoreListenerParams<T>) => void): () => void {
     const uniqueListener = wrap(listener);
 
     this._listeners.add(uniqueListener);
@@ -478,7 +478,7 @@ export abstract class LiquityStore<T = unknown> {
   }
 
   /** @internal */
-  protected _load(baseState: LiquityStoreBaseState, extraState?: T): void {
+  protected _load(baseState: ARTHStoreBaseState, extraState?: T): void {
     assert(!this._loaded);
 
     this._baseState = baseState;
@@ -495,7 +495,7 @@ export abstract class LiquityStore<T = unknown> {
 
   /** @internal */
   protected _update(
-    baseStateUpdate?: Partial<LiquityStoreBaseState>,
+    baseStateUpdate?: Partial<ARTHStoreBaseState>,
     extraStateUpdate?: Partial<T>
   ): void {
     assert(this._baseState && this._derivedState);
