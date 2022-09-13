@@ -69,19 +69,17 @@ contract BorrowerWrappersScript is BorrowerOperationsScript, ETHTransferScript {
     }
 
     function _getNetARTHAmount(uint256 _collateral) internal returns (uint256) {
-        // IGovernance governance = troveManager.governance();
-        // IPriceFeed priceFeed = governance.getPriceFeed();
-        // uint256 price = priceFeed.fetchPrice();
-        // uint256 ICR = troveManager.getCurrentICR(address(this), price);
+        IPriceFeed priceFeed = troveManager.getPriceFeed();
+        uint256 price = priceFeed.fetchPrice();
+        uint256 ICR = troveManager.getCurrentICR(address(this), price);
 
-        // uint256 ARTHAmount = _collateral.mul(price).div(ICR);
-        // uint256 borrowingRate = troveManager.getBorrowingRateWithDecay();
-        // uint256 netDebt = ARTHAmount.mul(LiquityMath.DECIMAL_PRECISION).div(
-        //     LiquityMath.DECIMAL_PRECISION.add(borrowingRate)
-        // );
+        uint256 ARTHAmount = _collateral.mul(price).div(ICR);
+        uint256 borrowingRate = troveManager.getBorrowingRateWithDecay();
+        uint256 netDebt = ARTHAmount.mul(LiquityMath.DECIMAL_PRECISION).div(
+            LiquityMath.DECIMAL_PRECISION.add(borrowingRate)
+        );
 
-        // return netDebt;
-        return 0;
+        return netDebt;
     }
 
     function _requireUserHasTrove(address _depositor) internal view {

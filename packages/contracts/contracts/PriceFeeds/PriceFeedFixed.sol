@@ -64,7 +64,7 @@ contract PriceFeedFixed is Ownable, CheckContract, BaseMath, IPriceFeed {
      * Uses a Chainlink.
      *
      */
-    function fetchPrice() external override returns (uint256) {
+    function fetchPrice() external view override returns (uint256) {
         return _fetchPrice();
     }
 

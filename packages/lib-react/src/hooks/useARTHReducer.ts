@@ -1,28 +1,28 @@
 import { useCallback, useEffect, useReducer, useRef } from "react";
 
-import { LiquityStoreState } from "@mahadao/arth-base";
+import { ARTHStoreState } from "@mahadao/arth-base";
 
 import { equals } from "../utils/equals";
-import { useLiquityStore } from "./useLiquityStore";
+import { useARTHStore } from "./useARTHStore";
 
-export type LiquityStoreUpdate<T = unknown> = {
+export type ARTHStoreUpdate<T = unknown> = {
   type: "updateStore";
-  newState: LiquityStoreState<T>;
-  oldState: LiquityStoreState<T>;
-  stateChange: Partial<LiquityStoreState<T>>;
+  newState: ARTHStoreState<T>;
+  oldState: ARTHStoreState<T>;
+  stateChange: Partial<ARTHStoreState<T>>;
 };
 
-export const useLiquityReducer = <S, A, T>(
-  reduce: (state: S, action: A | LiquityStoreUpdate<T>) => S,
-  init: (storeState: LiquityStoreState<T>) => S
-): [S, (action: A | LiquityStoreUpdate<T>) => void] => {
-  const store = useLiquityStore<T>();
+export const useARTHReducer = <S, A, T>(
+  reduce: (state: S, action: A | ARTHStoreUpdate<T>) => S,
+  init: (storeState: ARTHStoreState<T>) => S
+): [S, (action: A | ARTHStoreUpdate<T>) => void] => {
+  const store = useARTHStore<T>();
   const oldStore = useRef(store);
   const state = useRef(init(store.state));
   const [, rerender] = useReducer(() => ({}), {});
 
   const dispatch = useCallback(
-    (action: A | LiquityStoreUpdate<T>) => {
+    (action: A | ARTHStoreUpdate<T>) => {
       const newState = reduce(state.current, action);
 
       if (!equals(newState, state.current)) {

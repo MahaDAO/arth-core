@@ -1,12 +1,12 @@
 import { useEffect, useReducer } from "react";
 
-import { LiquityStoreState } from "@mahadao/arth-base";
+import { ARTHStoreState } from "@mahadao/arth-base";
 
 import { equals } from "../utils/equals";
-import { useLiquityStore } from "./useLiquityStore";
+import { useARTHStore } from "./useARTHStore";
 
-export const useLiquitySelector = <S, T>(select: (state: LiquityStoreState<T>) => S): S => {
-  const store = useLiquityStore<T>();
+export const useARTHSelector = <S, T>(select: (state: ARTHStoreState<T>) => S): S => {
+  const store = useARTHStore<T>();
   const [, rerender] = useReducer(() => ({}), {});
 
   useEffect(
