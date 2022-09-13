@@ -10,7 +10,7 @@
   ],
   "homepage": "https://github.com/liquity/liquity#readme",
   "license": "MIT",
-  "author": "Daniel Simon <dani@liquity.org>",
+  "author": "Daniel Simon <dani@mahadao.org>",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/liquity/dev",

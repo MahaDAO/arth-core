@@ -8,6 +8,5 @@
 
 |  Package | Description |
 |  --- | --- |
-|  [@liquity/lib-base](./lib-base.md) |  |
-|  [@liquity/lib-ethers](./lib-ethers.md) |  |
-
+|  [@mahadao/lib-base](./lib-base.md) |  |
+|  [@mahadao/lib-ethers](./lib-ethers.md) |  |
