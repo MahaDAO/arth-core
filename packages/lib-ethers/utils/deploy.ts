@@ -11,8 +11,6 @@ import {
   _connectToContracts
 } from "../src/contracts";
 
-import { createUniswapV2Pair } from "./UniswapV2Factory";
-
 let silent = true;
 
 export const log = (...args: unknown[]): void => {
@@ -87,7 +85,7 @@ const deployContracts = async (
       "LockupContractFactory",
       { ...overrides }
     ),
-    lqtyStaking: await deployContract(deployer, getContractFactory, "LQTYStaking", { ...overrides }),
+    mahaStaking: await deployContract(deployer, getContractFactory, "MAHAStaking", { ...overrides }),
     priceFeed: await deployContract(
       deployer,
       getContractFactory,
@@ -109,7 +107,7 @@ const deployContracts = async (
   return [
     {
       ...addresses,
-      lusdToken: await deployContract(
+      arthToken: await deployContract(
         deployer,
         getContractFactory,
         "ARTHValuecoin",
@@ -119,12 +117,12 @@ const deployContracts = async (
         { ...overrides }
       ),
 
-      lqtyToken: await deployContract(
+      mahaToken: await deployContract(
         deployer,
         getContractFactory,
-        "LQTYToken",
+        "MAHAToken",
         addresses.communityIssuance,
-        addresses.lqtyStaking,
+        addresses.mahaStaking,
         addresses.lockupContractFactory,
         Wallet.createRandom().address, // _bountyAddress (TODO: parameterize this)
         addresses.unipool, // _lpRewardsAddress
@@ -159,20 +157,16 @@ const connectContracts = async (
     activePool,
     borrowerOperations,
     troveManager,
-    lusdToken,
+    arthToken,
     collSurplusPool,
     communityIssuance,
     defaultPool,
-    lqtyToken,
+    mahaToken,
     hintHelpers,
-    lockupContractFactory,
-    lqtyStaking,
     priceFeed,
     sortedTroves,
     stabilityPool,
-    gasPool,
-    unipool,
-    uniToken
+    gasPool
   }: _LiquityContracts,
   deployer: Signer,
   overrides?: Overrides
@@ -199,10 +193,9 @@ const connectContracts = async (
         gasPool.address,
         collSurplusPool.address,
         priceFeed.address,
-        lusdToken.address,
+        arthToken.address,
         sortedTroves.address,
-        lqtyToken.address,
-        lqtyStaking.address,
+        mahaToken.address,
         { ...overrides, nonce }
       ),
 
@@ -216,8 +209,7 @@ const connectContracts = async (
         collSurplusPool.address,
         priceFeed.address,
         sortedTroves.address,
-        lusdToken.address,
-        lqtyStaking.address,
+        arthToken.address,
         { ...overrides, nonce }
       ),
 
@@ -226,7 +218,7 @@ const connectContracts = async (
         borrowerOperations.address,
         troveManager.address,
         activePool.address,
-        lusdToken.address,
+        arthToken.address,
         sortedTroves.address,
         priceFeed.address,
         communityIssuance.address,
@@ -263,29 +255,7 @@ const connectContracts = async (
       }),
 
     nonce =>
-      lqtyStaking.setAddresses(
-        lqtyToken.address,
-        lusdToken.address,
-        troveManager.address,
-        borrowerOperations.address,
-        activePool.address,
-        { ...overrides, nonce }
-      ),
-
-    nonce =>
-      lockupContractFactory.setLQTYTokenAddress(lqtyToken.address, {
-        ...overrides,
-        nonce
-      }),
-
-    nonce =>
-      communityIssuance.setAddresses(lqtyToken.address, stabilityPool.address, {
-        ...overrides,
-        nonce
-      }),
-
-    nonce =>
-      unipool.setParams(lqtyToken.address, uniToken.address, 2 * 30 * 24 * 60 * 60, {
+      communityIssuance.setAddresses(mahaToken.address, stabilityPool.address, {
         ...overrides,
         nonce
       })
@@ -296,22 +266,6 @@ const connectContracts = async (
   let i = 0;
   await Promise.all(txs.map(tx => tx.wait().then(() => log(`Connected ${++i}`))));
 };
-
-const deployMockUniToken = (
-  deployer: Signer,
-  getContractFactory: (name: string, signer: Signer) => Promise<ContractFactory>,
-  overrides?: Overrides
-) =>
-  deployContract(
-    deployer,
-    getContractFactory,
-    "ERC20Mock",
-    "Mock Uniswap V2",
-    "UNI-V2",
-    Wallet.createRandom().address, // initialAccount
-    0, // initialBalance
-    { ...overrides }
-  );
 
 export const deployAndSetupContracts = async (
   deployer: Signer,
@@ -333,23 +287,14 @@ export const deployAndSetupContracts = async (
     version: "unknown",
     deploymentDate: new Date().getTime(),
     bootstrapPeriod: 0,
-    totalStabilityPoolLQTYReward: "0",
-    liquidityMiningLQTYRewardRate: "0",
+    totalStabilityPoolMAHAReward: "0",
     _priceFeedIsTestnet,
-    _uniTokenIsMock: !wethAddress,
     _isDev,
 
     ...(await deployContracts(deployer, getContractFactory, _priceFeedIsTestnet, overrides).then(
       async ([addresses, startBlock]) => ({
         startBlock,
-
-        addresses: {
-          ...addresses,
-
-          uniToken: await (wethAddress
-            ? createUniswapV2Pair(deployer, wethAddress, addresses.lusdToken, overrides)
-            : deployMockUniToken(deployer, getContractFactory, overrides))
-        }
+        addresses
       })
     ))
   };
@@ -359,20 +304,16 @@ export const deployAndSetupContracts = async (
   log("Connecting contracts...");
   await connectContracts(contracts, deployer, overrides);
 
-  const lqtyTokenDeploymentTime = await contracts.lqtyToken.getDeploymentStartTime();
+  const mahaTokenDeploymentTime = await contracts.mahaToken.getDeploymentStartTime();
   const bootstrapPeriod = await contracts.troveManager.BOOTSTRAP_PERIOD();
-  const totalStabilityPoolLQTYReward = await contracts.communityIssuance.LQTYSupplyCap();
-  const liquidityMiningLQTYRewardRate = await contracts.unipool.rewardRate();
+  const totalStabilityPoolMAHAReward = await contracts.communityIssuance.MAHASupplyCap();
 
   return {
     ...deployment,
-    deploymentDate: lqtyTokenDeploymentTime.toNumber() * 1000,
+    deploymentDate: mahaTokenDeploymentTime.toNumber() * 1000,
     bootstrapPeriod: bootstrapPeriod.toNumber(),
-    totalStabilityPoolLQTYReward: `${Decimal.fromBigNumberString(
-      totalStabilityPoolLQTYReward.toHexString()
-    )}`,
-    liquidityMiningLQTYRewardRate: `${Decimal.fromBigNumberString(
-      liquidityMiningLQTYRewardRate.toHexString()
+    totalStabilityPoolMAHAReward: `${Decimal.fromBigNumberString(
+      totalStabilityPoolMAHAReward.toHexString()
     )}`
   };
 };

@@ -3,13 +3,13 @@ import { Signer } from "@ethersproject/abstract-signer";
 
 import { Decimal } from "@liquity/lib-base";
 
-import devOrNull from "../deployments/dev.json";
-import goerli from "../deployments/goerli.json";
-import kovan from "../deployments/kovan.json";
-import rinkeby from "../deployments/rinkeby.json";
-import ropsten from "../deployments/ropsten.json";
+// import devOrNull from "../deployments/dev.json";
+// import goerli from "../deployments/goerli.json";
+// import kovan from "../deployments/kovan.json";
+// import rinkeby from "../deployments/rinkeby.json";
+// import ropsten from "../deployments/ropsten.json";
 import mainnet from "../deployments/mainnet.json";
-import kiln from "../deployments/kiln.json";
+// import kiln from "../deployments/kiln.json";
 
 import { numberify, panic } from "./_utils";
 import { EthersProvider, EthersSigner } from "./types";
@@ -23,19 +23,19 @@ import {
 
 import { _connectToMulticall, _Multicall } from "./_Multicall";
 
-const dev = devOrNull as _LiquityDeploymentJSON | null;
+// const dev = devOrNull as _LiquityDeploymentJSON | null;
 
 const deployments: {
   [chainId: number]: _LiquityDeploymentJSON | undefined;
 } = {
-  [mainnet.chainId]: mainnet,
-  [ropsten.chainId]: ropsten,
-  [rinkeby.chainId]: rinkeby,
-  [goerli.chainId]: goerli,
-  [kovan.chainId]: kovan,
-  [kiln.chainId]: kiln,
+  [mainnet.chainId]: mainnet
+  // [ropsten.chainId]: ropsten,
+  // [rinkeby.chainId]: rinkeby,
+  // [goerli.chainId]: goerli,
+  // [kovan.chainId]: kovan,
+  // [kiln.chainId]: kiln,
 
-  ...(dev !== null ? { [dev.chainId]: dev } : {})
+  // ...(dev !== null ? { [dev.chainId]: dev } : {})
 };
 
 declare const brand: unique symbol;
@@ -77,8 +77,8 @@ export interface EthersLiquityConnection extends EthersLiquityConnectionOptional
   /** Total amount of MAHA allocated for rewarding stability depositors. */
   readonly totalStabilityPoolMAHAReward: Decimal;
 
-  /** Amount of MAHA collectively rewarded to stakers of the liquidity mining pool per second. */
-  readonly liquidityMiningMAHARewardRate: Decimal;
+  // /** Amount of MAHA collectively rewarded to stakers of the liquidity mining pool per second. */
+  // readonly liquidityMiningMAHARewardRate: Decimal;
 
   /** A mapping of Liquity contracts' names to their addresses. */
   readonly addresses: Record<string, string>;
@@ -105,12 +105,7 @@ const connectionFrom = (
   signer: EthersSigner | undefined,
   _contracts: _LiquityContracts,
   _multicall: _Multicall | undefined,
-  {
-    deploymentDate,
-    totalStabilityPoolMAHAReward,
-    liquidityMiningMAHARewardRate,
-    ...deployment
-  }: _LiquityDeploymentJSON,
+  { deploymentDate, totalStabilityPoolMAHAReward, ...deployment }: _LiquityDeploymentJSON,
   optionalParams?: EthersLiquityConnectionOptionalParams
 ): _InternalEthersLiquityConnection => {
   if (
@@ -128,7 +123,6 @@ const connectionFrom = (
     _multicall,
     deploymentDate: new Date(deploymentDate),
     totalStabilityPoolMAHAReward: Decimal.from(totalStabilityPoolMAHAReward),
-    liquidityMiningMAHARewardRate: Decimal.from(liquidityMiningMAHARewardRate),
     ...deployment,
     ...optionalParams
   });

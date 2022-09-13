@@ -16,7 +16,7 @@ import {
 
 import { MultiTroveGetter } from "../types";
 
-import { decimalify, numberify, panic } from "./_utils";
+import { decimalify, panic } from "./_utils";
 import { EthersCallOverrides, EthersProvider, EthersSigner } from "./types";
 
 import {
@@ -213,10 +213,9 @@ export class ReadableEthersLiquity implements ReadableLiquity {
     const { activePool } = _getContracts(this.connection);
 
     const [activeCollateral, activeDebt] = await Promise.all(
-      [
-        activePool.getETH({ ...overrides }),
-        activePool.getARTHDebt({ ...overrides })
-      ].map(getBigNumber => getBigNumber.then(decimalify))
+      [activePool.getETH({ ...overrides }), activePool.getARTHDebt({ ...overrides })].map(
+        getBigNumber => getBigNumber.then(decimalify)
+      )
     );
 
     return new Trove(activeCollateral, activeDebt);
@@ -227,10 +226,9 @@ export class ReadableEthersLiquity implements ReadableLiquity {
     const { defaultPool } = _getContracts(this.connection);
 
     const [liquidatedCollateral, closedDebt] = await Promise.all(
-      [
-        defaultPool.getETH({ ...overrides }),
-        defaultPool.getARTHDebt({ ...overrides })
-      ].map(getBigNumber => getBigNumber.then(decimalify))
+      [defaultPool.getETH({ ...overrides }), defaultPool.getARTHDebt({ ...overrides })].map(
+        getBigNumber => getBigNumber.then(decimalify)
+      )
     );
 
     return new Trove(liquidatedCollateral, closedDebt);
@@ -254,17 +252,13 @@ export class ReadableEthersLiquity implements ReadableLiquity {
     address ??= _requireAddress(this.connection);
     const { stabilityPool } = _getContracts(this.connection);
 
-    const [
-      { frontEndTag, initialValue },
-      currentARTH,
-      collateralGain,
-      MAHAReward
-    ] = await Promise.all([
-      stabilityPool.deposits(address, { ...overrides }),
-      stabilityPool.getCompoundedARTHDeposit(address, { ...overrides }),
-      stabilityPool.getDepositorETHGain(address, { ...overrides }),
-      stabilityPool.getDepositorMAHAGain(address, { ...overrides })
-    ]);
+    const [{ frontEndTag, initialValue }, currentARTH, collateralGain, MAHAReward] =
+      await Promise.all([
+        stabilityPool.deposits(address, { ...overrides }),
+        stabilityPool.getCompoundedARTHDeposit(address, { ...overrides }),
+        stabilityPool.getDepositorETHGain(address, { ...overrides }),
+        stabilityPool.getDepositorMAHAGain(address, { ...overrides })
+      ]);
 
     return new StabilityDeposit(
       decimalify(initialValue),
@@ -299,6 +293,13 @@ export class ReadableEthersLiquity implements ReadableLiquity {
     const { arthToken } = _getContracts(this.connection);
 
     return arthToken.balanceOf(address, { ...overrides }).then(decimalify);
+  }
+
+  /** {@inheritDoc @liquity/lib-base#ReadableLiquity.getMAHABalance} */
+  getMAHABalance(address?: string, overrides?: EthersCallOverrides): Promise<Decimal> {
+    address ??= _requireAddress(this.connection);
+    const { mahaToken } = _getContracts(this.connection);
+    return mahaToken.balanceOf(address, { ...overrides }).then(decimalify);
   }
 
   /** {@inheritDoc @liquity/lib-base#ReadableLiquity.getCollateralSurplusBalance} */
@@ -436,7 +437,8 @@ export interface ReadableEthersLiquityWithStore<T extends LiquityStore = Liquity
 }
 
 class _BlockPolledReadableEthersLiquity
-  implements ReadableEthersLiquityWithStore<BlockPolledLiquityStore> {
+  implements ReadableEthersLiquityWithStore<BlockPolledLiquityStore>
+{
   readonly connection: EthersLiquityConnection;
   readonly store: BlockPolledLiquityStore;
 
@@ -448,6 +450,12 @@ class _BlockPolledReadableEthersLiquity
     this.store = store;
     this.connection = readable.connection;
     this._readable = readable;
+  }
+  getMAHABalance(
+    address?: string | undefined,
+    overrides?: EthersCallOverrides | undefined
+  ): Promise<Decimal> {
+    throw new Error("Method not implemented.");
   }
 
   private _blockHit(overrides?: EthersCallOverrides): boolean {

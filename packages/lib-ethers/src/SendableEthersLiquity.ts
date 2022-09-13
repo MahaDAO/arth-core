@@ -34,7 +34,8 @@ const sendTransaction = <T>(tx: PopulatedEthersLiquityTransaction<T>) => tx.send
  * @public
  */
 export class SendableEthersLiquity
-  implements SendableLiquity<EthersTransactionReceipt, EthersTransactionResponse> {
+  implements SendableLiquity<EthersTransactionReceipt, EthersTransactionResponse>
+{
   private _populate: PopulatableEthersLiquity;
 
   constructor(populatable: PopulatableEthersLiquity) {
@@ -196,81 +197,11 @@ export class SendableEthersLiquity
     return this._populate.claimCollateralSurplus(overrides).then(sendTransaction);
   }
 
-  /** {@inheritDoc @liquity/lib-base#SendableLiquity.stakeMAHA} */
-  stakeMAHA(
-    amount: Decimalish,
-    overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<void>> {
-    return this._populate.stakeMAHA(amount, overrides).then(sendTransaction);
-  }
-
-  /** {@inheritDoc @liquity/lib-base#SendableLiquity.unstakeMAHA} */
-  unstakeMAHA(
-    amount: Decimalish,
-    overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<void>> {
-    return this._populate.unstakeMAHA(amount, overrides).then(sendTransaction);
-  }
-
-  /** {@inheritDoc @liquity/lib-base#SendableLiquity.withdrawGainsFromStaking} */
-  withdrawGainsFromStaking(
-    overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<void>> {
-    return this._populate.withdrawGainsFromStaking(overrides).then(sendTransaction);
-  }
-
   /** {@inheritDoc @liquity/lib-base#SendableLiquity.registerFrontend} */
   registerFrontend(
     kickbackRate: Decimalish,
     overrides?: EthersTransactionOverrides
   ): Promise<SentEthersLiquityTransaction<void>> {
     return this._populate.registerFrontend(kickbackRate, overrides).then(sendTransaction);
-  }
-
-  /** @internal */
-  _mintUniToken(
-    amount: Decimalish,
-    address?: string,
-    overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<void>> {
-    return this._populate._mintUniToken(amount, address, overrides).then(sendTransaction);
-  }
-
-  /** {@inheritDoc @liquity/lib-base#SendableLiquity.approveUniTokens} */
-  approveUniTokens(
-    allowance?: Decimalish,
-    overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<void>> {
-    return this._populate.approveUniTokens(allowance, overrides).then(sendTransaction);
-  }
-
-  /** {@inheritDoc @liquity/lib-base#SendableLiquity.stakeUniTokens} */
-  stakeUniTokens(
-    amount: Decimalish,
-    overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<void>> {
-    return this._populate.stakeUniTokens(amount, overrides).then(sendTransaction);
-  }
-
-  /** {@inheritDoc @liquity/lib-base#SendableLiquity.unstakeUniTokens} */
-  unstakeUniTokens(
-    amount: Decimalish,
-    overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<void>> {
-    return this._populate.unstakeUniTokens(amount, overrides).then(sendTransaction);
-  }
-
-  /** {@inheritDoc @liquity/lib-base#SendableLiquity.withdrawMAHARewardFromLiquidityMining} */
-  withdrawMAHARewardFromLiquidityMining(
-    overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<void>> {
-    return this._populate.withdrawMAHARewardFromLiquidityMining(overrides).then(sendTransaction);
-  }
-
-  /** {@inheritDoc @liquity/lib-base#SendableLiquity.exitLiquidityMining} */
-  exitLiquidityMining(
-    overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<void>> {
-    return this._populate.exitLiquidityMining(overrides).then(sendTransaction);
   }
 }

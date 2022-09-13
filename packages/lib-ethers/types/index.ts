@@ -440,29 +440,22 @@ export interface MultiTroveGetter
 }
 
 interface PriceFeedCalls {
-  DECIMAL_PRECISION(_overrides?: CallOverrides): Promise<BigNumber>;
   NAME(_overrides?: CallOverrides): Promise<string>;
-  TARGET_DIGITS(_overrides?: CallOverrides): Promise<BigNumber>;
+  ethUSDpricefeed(_overrides?: CallOverrides): Promise<string>;
   gmuOracle(_overrides?: CallOverrides): Promise<string>;
-  isOwner(_overrides?: CallOverrides): Promise<boolean>;
-  owner(_overrides?: CallOverrides): Promise<string>;
-  priceAggregator(_overrides?: CallOverrides): Promise<string>;
+  lastGoodPrice(_overrides?: CallOverrides): Promise<BigNumber>;
 }
 
 interface PriceFeedTransactions {
   fetchPrice(_overrides?: Overrides): Promise<BigNumber>;
-  setAddresses(_priceAggregatorAddress: string, _gmuOracleAddress: string, _overrides?: Overrides): Promise<void>;
-  transferOwnership(newOwner: string, _overrides?: Overrides): Promise<void>;
 }
 
 export interface PriceFeed
   extends _TypedLiquityContract<PriceFeedCalls, PriceFeedTransactions> {
   readonly filters: {
     LastGoodPriceUpdated(_lastGoodPrice?: null): EventFilter;
-    OwnershipTransferred(previousOwner?: string | null, newOwner?: string | null): EventFilter;
   };
   extractEvents(logs: Log[], name: "LastGoodPriceUpdated"): _TypedLogDescription<{ _lastGoodPrice: BigNumber }>[];
-  extractEvents(logs: Log[], name: "OwnershipTransferred"): _TypedLogDescription<{ previousOwner: string; newOwner: string }>[];
 }
 
 interface PriceFeedTestnetCalls {

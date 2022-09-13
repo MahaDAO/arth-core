@@ -42,9 +42,9 @@ export const _connectToMulticall = (
   chainId: number
 ): _Multicall | undefined =>
   hasMulticall(chainId)
-    ? ((new Contract(
+    ? (new Contract(
         multicallAddress[chainId],
         multicallAbi,
         signerOrProvider
-      ) as unknown) as _Multicall)
+      ) as unknown as _Multicall)
     : undefined;

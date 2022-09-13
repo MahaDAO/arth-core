@@ -225,24 +225,24 @@ task("deploy", "Deploys the contracts to the network")
 
         assert(!_priceFeedIsTestnet(contracts.priceFeed));
 
-        if (hasOracles(env.network.name)) {
-          const tellorCallerAddress = await deployTellorCaller(
-            deployer,
-            getContractFactory(env),
-            oracleAddresses[env.network.name].tellor,
-            overrides
-          );
+        // if (hasOracles(env.network.name)) {
+        // const tellorCallerAddress = await deployTellorCaller(
+        //   deployer,
+        //   getContractFactory(env),
+        //   oracleAddresses[env.network.name].tellor,
+        //   overrides
+        // );
 
-          console.log(`Hooking up PriceFeed with oracles ...`);
+        // console.log(`Hooking up PriceFeed with oracles ...`);
 
-          const tx = await contracts.priceFeed.setAddresses(
-            oracleAddresses[env.network.name].chainlink,
-            tellorCallerAddress,
-            overrides
-          );
+        // const tx = await contracts.priceFeed.setAddresses(
+        //   oracleAddresses[env.network.name].chainlink,
+        //   tellorCallerAddress,
+        //   overrides
+        // );
 
-          await tx.wait();
-        }
+        // await tx.wait();
+        // }
       }
 
       fs.mkdirSync(path.join("deployments", channel), { recursive: true });

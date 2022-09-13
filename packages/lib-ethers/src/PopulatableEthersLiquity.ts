@@ -51,7 +51,7 @@ import {
 } from "./EthersLiquityConnection";
 
 import { decimalify, promiseAllValues } from "./_utils";
-import { _priceFeedIsTestnet, _uniTokenIsMock } from "./contracts";
+import { _priceFeedIsTestnet } from "./contracts";
 import { logsToString } from "./parseLogs";
 import { ReadableEthersLiquity } from "./ReadableEthersLiquity";
 
@@ -67,22 +67,25 @@ const defaultBorrowingFeeDecayToleranceMinutes = 10;
 
 const noDetails = () => undefined;
 
-const compose = <T, U, V>(f: (_: U) => V, g: (_: T) => U) => (_: T) => f(g(_));
+const compose =
+  <T, U, V>(f: (_: U) => V, g: (_: T) => U) =>
+  (_: T) =>
+    f(g(_));
 
 const id = <T>(t: T) => t;
 
 // Takes ~6-7K (use 10K to be safe) to update lastFeeOperationTime, but the cost of calculating the
 // decayed baseRate increases logarithmically with time elapsed since the last update.
-const addGasForBaseRateUpdate = (maxMinutesSinceLastUpdate = 10) => (gas: BigNumber) =>
-  gas.add(10000 + 1414 * Math.ceil(Math.log2(maxMinutesSinceLastUpdate + 1)));
+const addGasForBaseRateUpdate =
+  (maxMinutesSinceLastUpdate = 10) =>
+  (gas: BigNumber) =>
+    gas.add(10000 + 1414 * Math.ceil(Math.log2(maxMinutesSinceLastUpdate + 1)));
 
 // First traversal in ascending direction takes ~50K, then ~13.5K per extra step.
 // 80K should be enough for 3 steps, plus some extra to be safe.
 const addGasForPotentialListTraversal = (gas: BigNumber) => gas.add(80000);
 
 const addGasForMAHAIssuance = (gas: BigNumber) => gas.add(50000);
-
-const addGasForUnipoolRewardUpdate = (gas: BigNumber) => gas.add(20000);
 
 // To get the best entropy available, we'd do something like:
 //
@@ -197,7 +200,8 @@ export class EthersTransactionCancelledError extends Error {
  */
 export class SentEthersLiquityTransaction<T = unknown>
   implements
-    SentLiquityTransaction<EthersTransactionResponse, LiquityReceipt<EthersTransactionReceipt, T>> {
+    SentLiquityTransaction<EthersTransactionResponse, LiquityReceipt<EthersTransactionReceipt, T>>
+{
   /** Ethers' representation of a sent transaction. */
   readonly rawSentTransaction: EthersTransactionResponse;
 
@@ -345,7 +349,8 @@ const normalizeBorrowingOperationOptionalParams = (
  */
 export class PopulatedEthersLiquityTransaction<T = unknown>
   implements
-    PopulatedLiquityTransaction<EthersPopulatedTransaction, SentEthersLiquityTransaction<T>> {
+    PopulatedLiquityTransaction<EthersPopulatedTransaction, SentEthersLiquityTransaction<T>>
+{
   /** Unsigned transaction object populated by Ethers. */
   readonly rawPopulatedTransaction: EthersPopulatedTransaction;
 
@@ -406,7 +411,8 @@ export class PopulatedEthersRedemption
       EthersPopulatedTransaction,
       EthersTransactionResponse,
       EthersTransactionReceipt
-    > {
+    >
+{
   /** {@inheritDoc @liquity/lib-base#PopulatedRedemption.attemptedARTHAmount} */
   readonly attemptedARTHAmount: Decimal;
 
@@ -486,7 +492,8 @@ export class PopulatableEthersLiquity
       EthersTransactionReceipt,
       EthersTransactionResponse,
       EthersPopulatedTransaction
-    > {
+    >
+{
   private readonly _readable: ReadableEthersLiquity;
 
   constructor(readable: ReadableEthersLiquity) {
@@ -784,21 +791,16 @@ export class PopulatableEthersLiquity
     const { hintHelpers } = _getContracts(this._readable.connection);
     const price = await this._readable.getPrice();
 
-    const {
-      firstRedemptionHint,
-      partialRedemptionHintNICR,
-      truncatedARTHamount
-    } = await hintHelpers.getRedemptionHints(amount.hex, price.hex, _redeemMaxIterations);
+    const { firstRedemptionHint, partialRedemptionHintNICR, truncatedARTHamount } =
+      await hintHelpers.getRedemptionHints(amount.hex, price.hex, _redeemMaxIterations);
 
-    const [
-      partialRedemptionUpperHint,
-      partialRedemptionLowerHint
-    ] = partialRedemptionHintNICR.isZero()
-      ? [AddressZero, AddressZero]
-      : await this._findHintsForNominalCollateralRatio(
-          decimalify(partialRedemptionHintNICR)
-          // XXX: if we knew the partially redeemed Trove's address, we'd pass it here
-        );
+    const [partialRedemptionUpperHint, partialRedemptionLowerHint] =
+      partialRedemptionHintNICR.isZero()
+        ? [AddressZero, AddressZero]
+        : await this._findHintsForNominalCollateralRatio(
+            decimalify(partialRedemptionHintNICR)
+            // XXX: if we knew the partially redeemed Trove's address, we'd pass it here
+          );
 
     return [
       decimalify(truncatedARTHamount),
@@ -836,18 +838,17 @@ export class PopulatableEthersLiquity
     const newTrove = Trove.create(normalizedParams, currentBorrowingRate);
     const hints = await this._findHints(newTrove);
 
-    const {
-      maxBorrowingRate,
-      borrowingFeeDecayToleranceMinutes
-    } = normalizeBorrowingOperationOptionalParams(
-      maxBorrowingRateOrOptionalParams,
-      currentBorrowingRate
-    );
+    const { maxBorrowingRate, borrowingFeeDecayToleranceMinutes } =
+      normalizeBorrowingOperationOptionalParams(
+        maxBorrowingRateOrOptionalParams,
+        currentBorrowingRate
+      );
 
     const txParams = (borrowARTH: Decimal): Parameters<typeof borrowerOperations.openTrove> => [
       maxBorrowingRate.hex,
       borrowARTH.hex,
       ...hints,
+      AddressZero,
       { value: depositCollateral.hex, ...overrides }
     ];
 
@@ -967,13 +968,11 @@ export class PopulatableEthersLiquity
     const adjustedTrove = trove.adjust(normalizedParams, currentBorrowingRate);
     const hints = await this._findHints(adjustedTrove, address);
 
-    const {
-      maxBorrowingRate,
-      borrowingFeeDecayToleranceMinutes
-    } = normalizeBorrowingOperationOptionalParams(
-      maxBorrowingRateOrOptionalParams,
-      currentBorrowingRate
-    );
+    const { maxBorrowingRate, borrowingFeeDecayToleranceMinutes } =
+      normalizeBorrowingOperationOptionalParams(
+        maxBorrowingRateOrOptionalParams,
+        currentBorrowingRate
+      );
 
     const txParams = (borrowARTH?: Decimal): Parameters<typeof borrowerOperations.adjustTrove> => [
       maxBorrowingRate.hex,
@@ -1212,15 +1211,13 @@ export class PopulatableEthersLiquity
     const { troveManager } = _getContracts(this._readable.connection);
     const attemptedARTHAmount = Decimal.from(amount);
 
-    const [
-      fees,
-      total,
-      [truncatedAmount, firstRedemptionHint, ...partialHints]
-    ] = await Promise.all([
-      this._readable.getFees(),
-      this._readable.getTotal(),
-      this._findRedemptionHints(attemptedARTHAmount)
-    ]);
+    const [fees, total, [truncatedAmount, firstRedemptionHint, ...partialHints]] = await Promise.all(
+      [
+        this._readable.getFees(),
+        this._readable.getTotal(),
+        this._findRedemptionHints(attemptedARTHAmount)
+      ]
+    );
 
     if (truncatedAmount.isZero) {
       throw new Error(

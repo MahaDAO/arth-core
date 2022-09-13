@@ -35,6 +35,7 @@ import {
   ARTHValuecoin,
   CollSurplusPool,
   CommunityIssuance,
+  MockERC20,
   DefaultPool,
   HintHelpers,
   MultiTroveGetter,
@@ -42,9 +43,7 @@ import {
   PriceFeedTestnet,
   SortedTroves,
   StabilityPool,
-  GasPool,
-  ERC20Mock,
-  IERC20
+  GasPool
 } from "../types";
 
 import { EthersProvider, EthersSigner } from "./types";
@@ -76,8 +75,7 @@ type EstimatedContractFunction<R = unknown, A extends unknown[] = unknown[], O =
 type CallOverridesArg = [overrides?: CallOverrides];
 
 type TypedContract<T extends Contract, U, V> = _TypeSafeContract<T> &
-  U &
-  {
+  U & {
     [P in keyof V]: V[P] extends (...args: infer A) => unknown
       ? (...args: A) => Promise<ContractTransaction>
       : never;
@@ -160,7 +158,7 @@ export interface _LiquityContracts {
   borrowerOperations: BorrowerOperations;
   troveManager: TroveManager;
   arthToken: ARTHValuecoin;
-  mahaToken: ARTHValuecoin;
+  mahaToken: MockERC20;
   collSurplusPool: CollSurplusPool;
   communityIssuance: CommunityIssuance;
   defaultPool: DefaultPool;
@@ -176,10 +174,6 @@ export interface _LiquityContracts {
 export const _priceFeedIsTestnet = (
   priceFeed: PriceFeed | PriceFeedTestnet
 ): priceFeed is PriceFeedTestnet => "setPrice" in priceFeed;
-
-/** @internal */
-export const _uniTokenIsMock = (uniToken: IERC20 | ERC20Mock): uniToken is ERC20Mock =>
-  "mint" in uniToken;
 
 type LiquityContractsKey = keyof _LiquityContracts;
 
@@ -222,9 +216,7 @@ export interface _LiquityDeploymentJSON {
   readonly startBlock: number;
   readonly bootstrapPeriod: number;
   readonly totalStabilityPoolMAHAReward: string;
-  readonly liquidityMiningMAHARewardRate: string;
   readonly _priceFeedIsTestnet: boolean;
-  readonly _uniTokenIsMock: boolean;
   readonly _isDev: boolean;
 }
 
