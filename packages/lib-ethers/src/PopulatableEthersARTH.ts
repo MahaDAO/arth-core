@@ -11,15 +11,15 @@ import {
   Decimal,
   Decimalish,
   LiquidationDetails,
-  LiquityReceipt,
+  ARTHReceipt,
   ARTH_MINIMUM_DEBT,
   ARTH_MINIMUM_NET_DEBT,
   MinedReceipt,
-  PopulatableLiquity,
-  PopulatedLiquityTransaction,
+  PopulatableARTH,
+  PopulatedARTHTransaction,
   PopulatedRedemption,
   RedemptionDetails,
-  SentLiquityTransaction,
+  SentARTHTransaction,
   StabilityDepositChangeDetails,
   StabilityPoolGainsWithdrawalDetails,
   Trove,
@@ -44,16 +44,16 @@ import {
 } from "./types";
 
 import {
-  EthersLiquityConnection,
+  EthersARTHConnection,
   _getContracts,
   _requireAddress,
   _requireSigner
-} from "./EthersLiquityConnection";
+} from "./EthersARTHConnection";
 
 import { decimalify, promiseAllValues } from "./_utils";
 import { _priceFeedIsTestnet } from "./contracts";
 import { logsToString } from "./parseLogs";
-import { ReadableEthersLiquity } from "./ReadableEthersLiquity";
+import { ReadableEthersARTH } from "./ReadableEthersARTH";
 
 const bigNumberMax = (a: BigNumber, b?: BigNumber) => (b?.gt(a) ? b : a);
 
@@ -194,24 +194,24 @@ export class EthersTransactionCancelledError extends Error {
  * A transaction that has already been sent.
  *
  * @remarks
- * Returned by {@link SendableEthersLiquity} functions.
+ * Returned by {@link SendableEthersARTH} functions.
  *
  * @public
  */
-export class SentEthersLiquityTransaction<T = unknown>
+export class SentEthersARTHTransaction<T = unknown>
   implements
-    SentLiquityTransaction<EthersTransactionResponse, LiquityReceipt<EthersTransactionReceipt, T>>
+    SentARTHTransaction<EthersTransactionResponse, ARTHReceipt<EthersTransactionReceipt, T>>
 {
   /** Ethers' representation of a sent transaction. */
   readonly rawSentTransaction: EthersTransactionResponse;
 
-  private readonly _connection: EthersLiquityConnection;
+  private readonly _connection: EthersARTHConnection;
   private readonly _parse: (rawReceipt: EthersTransactionReceipt) => T;
 
   /** @internal */
   constructor(
     rawSentTransaction: EthersTransactionResponse,
-    connection: EthersLiquityConnection,
+    connection: EthersARTHConnection,
     parse: (rawReceipt: EthersTransactionReceipt) => T
   ) {
     this.rawSentTransaction = rawSentTransaction;
@@ -251,13 +251,13 @@ export class SentEthersLiquityTransaction<T = unknown>
     }
   }
 
-  /** {@inheritDoc @mahadao/arth-base#SentLiquityTransaction.getReceipt} */
-  async getReceipt(): Promise<LiquityReceipt<EthersTransactionReceipt, T>> {
+  /** {@inheritDoc @mahadao/arth-base#SentARTHTransaction.getReceipt} */
+  async getReceipt(): Promise<ARTHReceipt<EthersTransactionReceipt, T>> {
     return this._receiptFrom(await this._waitForRawReceipt(0));
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#SentLiquityTransaction.waitForReceipt}
+   * {@inheritDoc @mahadao/arth-base#SentARTHTransaction.waitForReceipt}
    *
    * @throws
    * Throws {@link EthersTransactionCancelledError} if the transaction is cancelled or replaced.
@@ -343,13 +343,12 @@ const normalizeBorrowingOperationOptionalParams = (
  * A transaction that has been prepared for sending.
  *
  * @remarks
- * Returned by {@link PopulatableEthersLiquity} functions.
+ * Returned by {@link PopulatableEthersARTH} functions.
  *
  * @public
  */
-export class PopulatedEthersLiquityTransaction<T = unknown>
-  implements
-    PopulatedLiquityTransaction<EthersPopulatedTransaction, SentEthersLiquityTransaction<T>>
+export class PopulatedEthersARTHTransaction<T = unknown>
+  implements PopulatedARTHTransaction<EthersPopulatedTransaction, SentEthersARTHTransaction<T>>
 {
   /** Unsigned transaction object populated by Ethers. */
   readonly rawPopulatedTransaction: EthersPopulatedTransaction;
@@ -360,23 +359,23 @@ export class PopulatedEthersLiquityTransaction<T = unknown>
    * @remarks
    * Gas estimation is based on blockchain state at the latest block. However, most transactions
    * stay in pending state for several blocks before being included in a block. This may increase
-   * the actual gas requirements of certain Liquity transactions by the time they are eventually
-   * mined, therefore the Liquity SDK increases these transactions' `gasLimit` by default (unless
+   * the actual gas requirements of certain ARTH transactions by the time they are eventually
+   * mined, therefore the ARTH SDK increases these transactions' `gasLimit` by default (unless
    * `gasLimit` is {@link EthersTransactionOverrides | overridden}).
    *
    * Note: even though the SDK includes gas headroom for many transaction types, currently this
-   * property is only implemented for {@link PopulatableEthersLiquity.openTrove | openTrove()},
-   * {@link PopulatableEthersLiquity.adjustTrove | adjustTrove()} and its aliases.
+   * property is only implemented for {@link PopulatableEthersARTH.openTrove | openTrove()},
+   * {@link PopulatableEthersARTH.adjustTrove | adjustTrove()} and its aliases.
    */
   readonly gasHeadroom?: number;
 
-  private readonly _connection: EthersLiquityConnection;
+  private readonly _connection: EthersARTHConnection;
   private readonly _parse: (rawReceipt: EthersTransactionReceipt) => T;
 
   /** @internal */
   constructor(
     rawPopulatedTransaction: EthersPopulatedTransaction,
-    connection: EthersLiquityConnection,
+    connection: EthersARTHConnection,
     parse: (rawReceipt: EthersTransactionReceipt) => T,
     gasHeadroom?: number
   ) {
@@ -389,9 +388,9 @@ export class PopulatedEthersLiquityTransaction<T = unknown>
     }
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatedLiquityTransaction.send} */
-  async send(): Promise<SentEthersLiquityTransaction<T>> {
-    return new SentEthersLiquityTransaction(
+  /** {@inheritDoc @mahadao/arth-base#PopulatedARTHTransaction.send} */
+  async send(): Promise<SentEthersARTHTransaction<T>> {
+    return new SentEthersARTHTransaction(
       await _requireSigner(this._connection).sendTransaction(this.rawPopulatedTransaction),
       this._connection,
       this._parse
@@ -405,7 +404,7 @@ export class PopulatedEthersLiquityTransaction<T = unknown>
  * @public
  */
 export class PopulatedEthersRedemption
-  extends PopulatedEthersLiquityTransaction<RedemptionDetails>
+  extends PopulatedEthersARTHTransaction<RedemptionDetails>
   implements
     PopulatedRedemption<
       EthersPopulatedTransaction,
@@ -429,7 +428,7 @@ export class PopulatedEthersRedemption
   /** @internal */
   constructor(
     rawPopulatedTransaction: EthersPopulatedTransaction,
-    connection: EthersLiquityConnection,
+    connection: EthersARTHConnection,
     attemptedARTHAmount: Decimal,
     redeemableARTHAmount: Decimal,
     increaseAmountByMinimumNetDebt?: (
@@ -482,28 +481,24 @@ export interface _TroveChangeWithFees<T> {
 }
 
 /**
- * Ethers-based implementation of {@link @mahadao/arth-base#PopulatableLiquity}.
+ * Ethers-based implementation of {@link @mahadao/arth-base#PopulatableARTH}.
  *
  * @public
  */
-export class PopulatableEthersLiquity
+export class PopulatableEthersARTH
   implements
-    PopulatableLiquity<
-      EthersTransactionReceipt,
-      EthersTransactionResponse,
-      EthersPopulatedTransaction
-    >
+    PopulatableARTH<EthersTransactionReceipt, EthersTransactionResponse, EthersPopulatedTransaction>
 {
-  private readonly _readable: ReadableEthersLiquity;
+  private readonly _readable: ReadableEthersARTH;
 
-  constructor(readable: ReadableEthersLiquity) {
+  constructor(readable: ReadableEthersARTH) {
     this._readable = readable;
   }
 
   private _wrapSimpleTransaction(
     rawPopulatedTransaction: EthersPopulatedTransaction
-  ): PopulatedEthersLiquityTransaction<void> {
-    return new PopulatedEthersLiquityTransaction(
+  ): PopulatedEthersARTHTransaction<void> {
+    return new PopulatedEthersARTHTransaction(
       rawPopulatedTransaction,
       this._readable.connection,
       noDetails
@@ -514,10 +509,10 @@ export class PopulatableEthersLiquity
     params: T,
     rawPopulatedTransaction: EthersPopulatedTransaction,
     gasHeadroom?: number
-  ): PopulatedEthersLiquityTransaction<_TroveChangeWithFees<T>> {
+  ): PopulatedEthersARTHTransaction<_TroveChangeWithFees<T>> {
     const { borrowerOperations } = _getContracts(this._readable.connection);
 
-    return new PopulatedEthersLiquityTransaction(
+    return new PopulatedEthersARTHTransaction(
       rawPopulatedTransaction,
       this._readable.connection,
 
@@ -543,10 +538,10 @@ export class PopulatableEthersLiquity
 
   private async _wrapTroveClosure(
     rawPopulatedTransaction: EthersPopulatedTransaction
-  ): Promise<PopulatedEthersLiquityTransaction<TroveClosureDetails>> {
+  ): Promise<PopulatedEthersARTHTransaction<TroveClosureDetails>> {
     const { activePool, arthToken } = _getContracts(this._readable.connection);
 
-    return new PopulatedEthersLiquityTransaction(
+    return new PopulatedEthersARTHTransaction(
       rawPopulatedTransaction,
       this._readable.connection,
 
@@ -570,10 +565,10 @@ export class PopulatableEthersLiquity
 
   private _wrapLiquidation(
     rawPopulatedTransaction: EthersPopulatedTransaction
-  ): PopulatedEthersLiquityTransaction<LiquidationDetails> {
+  ): PopulatedEthersARTHTransaction<LiquidationDetails> {
     const { troveManager } = _getContracts(this._readable.connection);
 
-    return new PopulatedEthersLiquityTransaction(
+    return new PopulatedEthersARTHTransaction(
       rawPopulatedTransaction,
       this._readable.connection,
 
@@ -629,8 +624,8 @@ export class PopulatableEthersLiquity
 
   private _wrapStabilityPoolGainsWithdrawal(
     rawPopulatedTransaction: EthersPopulatedTransaction
-  ): PopulatedEthersLiquityTransaction<StabilityPoolGainsWithdrawalDetails> {
-    return new PopulatedEthersLiquityTransaction(
+  ): PopulatedEthersARTHTransaction<StabilityPoolGainsWithdrawalDetails> {
+    return new PopulatedEthersARTHTransaction(
       rawPopulatedTransaction,
       this._readable.connection,
       ({ logs }) => this._extractStabilityPoolGainsWithdrawalDetails(logs)
@@ -640,8 +635,8 @@ export class PopulatableEthersLiquity
   private _wrapStabilityDepositTopup(
     change: { depositARTH: Decimal },
     rawPopulatedTransaction: EthersPopulatedTransaction
-  ): PopulatedEthersLiquityTransaction<StabilityDepositChangeDetails> {
-    return new PopulatedEthersLiquityTransaction(
+  ): PopulatedEthersARTHTransaction<StabilityDepositChangeDetails> {
+    return new PopulatedEthersARTHTransaction(
       rawPopulatedTransaction,
       this._readable.connection,
 
@@ -654,10 +649,10 @@ export class PopulatableEthersLiquity
 
   private async _wrapStabilityDepositWithdrawal(
     rawPopulatedTransaction: EthersPopulatedTransaction
-  ): Promise<PopulatedEthersLiquityTransaction<StabilityDepositChangeDetails>> {
+  ): Promise<PopulatedEthersARTHTransaction<StabilityDepositChangeDetails>> {
     const { stabilityPool, arthToken } = _getContracts(this._readable.connection);
 
-    return new PopulatedEthersLiquityTransaction(
+    return new PopulatedEthersARTHTransaction(
       rawPopulatedTransaction,
       this._readable.connection,
 
@@ -679,10 +674,10 @@ export class PopulatableEthersLiquity
 
   private _wrapCollateralGainTransfer(
     rawPopulatedTransaction: EthersPopulatedTransaction
-  ): PopulatedEthersLiquityTransaction<CollateralGainTransferDetails> {
+  ): PopulatedEthersARTHTransaction<CollateralGainTransferDetails> {
     const { borrowerOperations } = _getContracts(this._readable.connection);
 
-    return new PopulatedEthersLiquityTransaction(
+    return new PopulatedEthersARTHTransaction(
       rawPopulatedTransaction,
       this._readable.connection,
 
@@ -811,12 +806,12 @@ export class PopulatableEthersLiquity
     ];
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.openTrove} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.openTrove} */
   async openTrove(
     params: TroveCreationParams<Decimalish>,
     maxBorrowingRateOrOptionalParams?: Decimalish | BorrowingOperationOptionalParams,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<TroveCreationDetails>> {
+  ): Promise<PopulatedEthersARTHTransaction<TroveCreationDetails>> {
     const { borrowerOperations } = _getContracts(this._readable.connection);
 
     const normalizedParams = _normalizeTroveCreation(params);
@@ -889,10 +884,10 @@ export class PopulatableEthersLiquity
     );
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.closeTrove} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.closeTrove} */
   async closeTrove(
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<TroveClosureDetails>> {
+  ): Promise<PopulatedEthersARTHTransaction<TroveClosureDetails>> {
     const { borrowerOperations } = _getContracts(this._readable.connection);
 
     return this._wrapTroveClosure(
@@ -900,45 +895,45 @@ export class PopulatableEthersLiquity
     );
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.depositCollateral} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.depositCollateral} */
   depositCollateral(
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<TroveAdjustmentDetails>> {
+  ): Promise<PopulatedEthersARTHTransaction<TroveAdjustmentDetails>> {
     return this.adjustTrove({ depositCollateral: amount }, undefined, overrides);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.withdrawCollateral} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.withdrawCollateral} */
   withdrawCollateral(
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<TroveAdjustmentDetails>> {
+  ): Promise<PopulatedEthersARTHTransaction<TroveAdjustmentDetails>> {
     return this.adjustTrove({ withdrawCollateral: amount }, undefined, overrides);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.borrowARTH} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.borrowARTH} */
   borrowARTH(
     amount: Decimalish,
     maxBorrowingRate?: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<TroveAdjustmentDetails>> {
+  ): Promise<PopulatedEthersARTHTransaction<TroveAdjustmentDetails>> {
     return this.adjustTrove({ borrowARTH: amount }, maxBorrowingRate, overrides);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.repayARTH} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.repayARTH} */
   repayARTH(
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<TroveAdjustmentDetails>> {
+  ): Promise<PopulatedEthersARTHTransaction<TroveAdjustmentDetails>> {
     return this.adjustTrove({ repayARTH: amount }, undefined, overrides);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.adjustTrove} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.adjustTrove} */
   async adjustTrove(
     params: TroveAdjustmentParams<Decimalish>,
     maxBorrowingRateOrOptionalParams?: Decimalish | BorrowingOperationOptionalParams,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<TroveAdjustmentDetails>> {
+  ): Promise<PopulatedEthersARTHTransaction<TroveAdjustmentDetails>> {
     const address = _requireAddress(this._readable.connection, overrides);
     const { borrowerOperations } = _getContracts(this._readable.connection);
 
@@ -1023,10 +1018,10 @@ export class PopulatableEthersLiquity
     );
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.claimCollateralSurplus} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.claimCollateralSurplus} */
   async claimCollateralSurplus(
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<void>> {
+  ): Promise<PopulatedEthersARTHTransaction<void>> {
     const { borrowerOperations } = _getContracts(this._readable.connection);
 
     return this._wrapSimpleTransaction(
@@ -1038,11 +1033,11 @@ export class PopulatableEthersLiquity
   async setPrice(
     price: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<void>> {
+  ): Promise<PopulatedEthersARTHTransaction<void>> {
     const { priceFeed } = _getContracts(this._readable.connection);
 
     if (!_priceFeedIsTestnet(priceFeed)) {
-      throw new Error("setPrice() unavailable on this deployment of Liquity");
+      throw new Error("setPrice() unavailable on this deployment of ARTH");
     }
 
     return this._wrapSimpleTransaction(
@@ -1050,11 +1045,11 @@ export class PopulatableEthersLiquity
     );
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.liquidate} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.liquidate} */
   async liquidate(
     address: string | string[],
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<LiquidationDetails>> {
+  ): Promise<PopulatedEthersARTHTransaction<LiquidationDetails>> {
     const { troveManager } = _getContracts(this._readable.connection);
 
     if (Array.isArray(address)) {
@@ -1076,11 +1071,11 @@ export class PopulatableEthersLiquity
     }
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.liquidateUpTo} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.liquidateUpTo} */
   async liquidateUpTo(
     maximumNumberOfTrovesToLiquidate: number,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<LiquidationDetails>> {
+  ): Promise<PopulatedEthersARTHTransaction<LiquidationDetails>> {
     const { troveManager } = _getContracts(this._readable.connection);
 
     return this._wrapLiquidation(
@@ -1092,12 +1087,12 @@ export class PopulatableEthersLiquity
     );
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.depositARTHInStabilityPool} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.depositARTHInStabilityPool} */
   async depositARTHInStabilityPool(
     amount: Decimalish,
     frontendTag?: string,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<StabilityDepositChangeDetails>> {
+  ): Promise<PopulatedEthersARTHTransaction<StabilityDepositChangeDetails>> {
     const { stabilityPool } = _getContracts(this._readable.connection);
     const depositARTH = Decimal.from(amount);
 
@@ -1112,11 +1107,11 @@ export class PopulatableEthersLiquity
     );
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.withdrawARTHFromStabilityPool} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.withdrawARTHFromStabilityPool} */
   async withdrawARTHFromStabilityPool(
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<StabilityDepositChangeDetails>> {
+  ): Promise<PopulatedEthersARTHTransaction<StabilityDepositChangeDetails>> {
     const { stabilityPool } = _getContracts(this._readable.connection);
 
     return this._wrapStabilityDepositWithdrawal(
@@ -1128,10 +1123,10 @@ export class PopulatableEthersLiquity
     );
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.withdrawGainsFromStabilityPool} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.withdrawGainsFromStabilityPool} */
   async withdrawGainsFromStabilityPool(
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<StabilityPoolGainsWithdrawalDetails>> {
+  ): Promise<PopulatedEthersARTHTransaction<StabilityPoolGainsWithdrawalDetails>> {
     const { stabilityPool } = _getContracts(this._readable.connection);
 
     return this._wrapStabilityPoolGainsWithdrawal(
@@ -1143,10 +1138,10 @@ export class PopulatableEthersLiquity
     );
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.transferCollateralGainToTrove} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.transferCollateralGainToTrove} */
   async transferCollateralGainToTrove(
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<CollateralGainTransferDetails>> {
+  ): Promise<PopulatedEthersARTHTransaction<CollateralGainTransferDetails>> {
     const address = _requireAddress(this._readable.connection, overrides);
     const { stabilityPool } = _getContracts(this._readable.connection);
 
@@ -1166,12 +1161,12 @@ export class PopulatableEthersLiquity
     );
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.sendARTH} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.sendARTH} */
   async sendARTH(
     toAddress: string,
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<void>> {
+  ): Promise<PopulatedEthersARTHTransaction<void>> {
     const { arthToken } = _getContracts(this._readable.connection);
 
     return this._wrapSimpleTransaction(
@@ -1184,12 +1179,12 @@ export class PopulatableEthersLiquity
     );
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.sendMAHA} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.sendMAHA} */
   async sendMAHA(
     toAddress: string,
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<void>> {
+  ): Promise<PopulatedEthersARTHTransaction<void>> {
     const { mahaToken } = _getContracts(this._readable.connection);
 
     return this._wrapSimpleTransaction(
@@ -1202,7 +1197,7 @@ export class PopulatableEthersLiquity
     );
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.redeemARTH} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.redeemARTH} */
   async redeemARTH(
     amount: Decimalish,
     maxRedemptionRate?: Decimalish,
@@ -1270,11 +1265,11 @@ export class PopulatableEthersLiquity
     return populateRedemption(attemptedARTHAmount, maxRedemptionRate, truncatedAmount, partialHints);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#PopulatableLiquity.registerFrontend} */
+  /** {@inheritDoc @mahadao/arth-base#PopulatableARTH.registerFrontend} */
   async registerFrontend(
     kickbackRate: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<void>> {
+  ): Promise<PopulatedEthersARTHTransaction<void>> {
     const { stabilityPool } = _getContracts(this._readable.connection);
 
     return this._wrapSimpleTransaction(

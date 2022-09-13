@@ -1,9 +1,9 @@
 {
   "name": "@mahadao/arth-ethers",
   "version": "0.0.0-semantic-release",
-  "description": "Liquity SDK Ethers-based implementation",
+  "description": "ARTH SDK Ethers-based implementation",
   "keywords": [
-    "Liquity",
+    "ARTH",
     "protocol",
     "DeFi",
     "Ethereum"

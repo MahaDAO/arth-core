@@ -4,16 +4,16 @@ import chaiSpies from "chai-spies";
 import { AddressZero } from "@ethersproject/constants";
 import { BigNumber } from "@ethersproject/bignumber";
 import { Signer } from "@ethersproject/abstract-signer";
-import { ethers, network, deployLiquity } from "hardhat";
+import { ethers, network, deployARTH } from "hardhat";
 
 import {
   Decimal,
   Decimalish,
   Trove,
   StabilityDeposit,
-  LiquityReceipt,
+  ARTHReceipt,
   SuccessfulReceipt,
-  SentLiquityTransaction,
+  SentARTHTransaction,
   TroveCreationParams,
   Fees,
   ARTH_LIQUIDATION_RESERVE,
@@ -26,16 +26,16 @@ import {
 import { HintHelpers } from "../types";
 
 import {
-  PopulatableEthersLiquity,
-  PopulatedEthersLiquityTransaction,
+  PopulatableEthersARTH,
+  PopulatedEthersARTHTransaction,
   _redeemMaxIterations
-} from "../src/PopulatableEthersLiquity";
+} from "../src/PopulatableEthersARTH";
 
 import { EthersTransactionReceipt } from "../src/types";
-import { _LiquityDeploymentJSON } from "../src/contracts";
-import { _connectToDeployment } from "../src/EthersLiquityConnection";
-import { EthersLiquity } from "../src/EthersLiquity";
-import { ReadableEthersLiquity } from "../src/ReadableEthersLiquity";
+import { _ARTHDeploymentJSON } from "../src/contracts";
+import { _connectToDeployment } from "../src/EthersARTHConnection";
+import { EthersARTH } from "../src/EthersARTH";
+import { ReadableEthersARTH } from "../src/ReadableEthersARTH";
 
 const provider = ethers.provider;
 
@@ -50,11 +50,11 @@ const GAS_BUDGET = Decimal.from(0.1); // ETH
 const getGasCost = (tx: EthersTransactionReceipt) => tx.gasUsed.mul(tx.effectiveGasPrice);
 
 const connectToDeployment = async (
-  deployment: _LiquityDeploymentJSON,
+  deployment: _ARTHDeploymentJSON,
   signer: Signer,
   frontendTag?: string
 ) =>
-  EthersLiquity._from(
+  EthersARTH._from(
     _connectToDeployment(deployment, signer, {
       userAddress: await signer.getAddress(),
       frontendTag
@@ -77,8 +77,8 @@ function assertDefined<T>(actual: T | undefined): asserts actual is T {
   assert(actual !== undefined);
 }
 
-const waitForSuccess = async <T extends LiquityReceipt>(
-  tx: Promise<SentLiquityTransaction<unknown, T>>
+const waitForSuccess = async <T extends ARTHReceipt>(
+  tx: Promise<SentARTHTransaction<unknown, T>>
 ) => {
   const receipt = await (await tx).waitForReceipt();
   assertStrictEqual(receipt.status, "succeeded" as const);
@@ -88,17 +88,17 @@ const waitForSuccess = async <T extends LiquityReceipt>(
 
 // TODO make the testcases isolated
 
-describe("EthersLiquity", () => {
+describe("EthersARTH", () => {
   let deployer: Signer;
   let funder: Signer;
   let user: Signer;
   let otherUsers: Signer[];
 
-  let deployment: _LiquityDeploymentJSON;
+  let deployment: _ARTHDeploymentJSON;
 
-  let deployerLiquity: EthersLiquity;
-  let liquity: EthersLiquity;
-  let otherLiquities: EthersLiquity[];
+  let deployerARTH: EthersARTH;
+  let liquity: EthersARTH;
+  let otherLiquities: EthersARTH[];
 
   const connectUsers = (users: Signer[]) =>
     Promise.all(users.map(user => connectToDeployment(deployment, user)));
@@ -133,10 +133,10 @@ describe("EthersLiquity", () => {
 
   before(async () => {
     [deployer, funder, user, ...otherUsers] = await ethers.getSigners();
-    deployment = await deployLiquity(deployer);
+    deployment = await deployARTH(deployer);
 
     liquity = await connectToDeployment(deployment, user);
-    expect(liquity).to.be.an.instanceOf(EthersLiquity);
+    expect(liquity).to.be.an.instanceOf(EthersARTH);
   });
 
   // Always setup same initial balance for user
@@ -222,7 +222,7 @@ describe("EthersLiquity", () => {
         findInsertPosition: () => Promise.resolve(["fake insert position"])
       });
 
-      const fakeLiquity = new PopulatableEthersLiquity({
+      const fakeARTH = new PopulatableEthersARTH({
         getNumberOfTroves: () => Promise.resolve(1000000),
         getTotal: () => Promise.resolve(new Trove(Decimal.from(10), Decimal.ONE)),
         getPrice: () => Promise.resolve(Decimal.ONE),
@@ -238,7 +238,7 @@ describe("EthersLiquity", () => {
             sortedTroves
           }
         }
-      } as unknown as ReadableEthersLiquity);
+      } as unknown as ReadableEthersARTH);
 
       const nominalCollateralRatio = Decimal.from(0.05);
 
@@ -246,7 +246,7 @@ describe("EthersLiquity", () => {
       const trove = Trove.create(params);
       expect(`${trove._nominalCollateralRatio}`).to.equal(`${nominalCollateralRatio}`);
 
-      await fakeLiquity.openTrove(params);
+      await fakeARTH.openTrove(params);
 
       expect(hintHelpers.getApproxHint).to.have.been.called.exactly(4);
       expect(hintHelpers.getApproxHint).to.have.been.called.with(nominalCollateralRatio.hex);
@@ -388,9 +388,9 @@ describe("EthersLiquity", () => {
       funderTrove = funderTrove.setDebt(Decimal.max(funderTrove.debt, ARTH_MINIMUM_DEBT));
       funderTrove = funderTrove.setCollateral(funderTrove.debt.mulDiv(1.51, price));
 
-      const funderLiquity = await connectToDeployment(deployment, funder);
-      await funderLiquity.openTrove(Trove.recreate(funderTrove));
-      await funderLiquity.sendARTH(await user.getAddress(), arthShortage);
+      const funderARTH = await connectToDeployment(deployment, funder);
+      await funderARTH.openTrove(Trove.recreate(funderTrove));
+      await funderARTH.sendARTH(await user.getAddress(), arthShortage);
 
       const { params } = await liquity.closeTrove();
 
@@ -404,7 +404,7 @@ describe("EthersLiquity", () => {
     });
   });
 
-  describe("SendableEthersLiquity", () => {
+  describe("SendableEthersARTH", () => {
     it("should parse failed transactions without throwing", async () => {
       // By passing a gasLimit, we avoid automatic use of estimateGas which would throw
       const tx = await liquity.send.openTrove(
@@ -444,21 +444,21 @@ describe("EthersLiquity", () => {
         value: Decimal.from(20.1).hex
       });
 
-      const otherLiquity = await connectToDeployment(deployment, otherUsers[0], frontendTag);
-      await otherLiquity.openTrove({ depositCollateral: 20, borrowARTH: ARTH_MINIMUM_DEBT });
+      const otherARTH = await connectToDeployment(deployment, otherUsers[0], frontendTag);
+      await otherARTH.openTrove({ depositCollateral: 20, borrowARTH: ARTH_MINIMUM_DEBT });
 
-      await otherLiquity.depositARTHInStabilityPool(ARTH_MINIMUM_DEBT);
+      await otherARTH.depositARTHInStabilityPool(ARTH_MINIMUM_DEBT);
 
-      const deposit = await otherLiquity.getStabilityDeposit();
+      const deposit = await otherARTH.getStabilityDeposit();
       expect(deposit.frontendTag).to.equal(frontendTag);
     });
   });
 
   describe("StabilityPool", () => {
     before(async () => {
-      deployment = await deployLiquity(deployer);
+      deployment = await deployARTH(deployer);
 
-      [deployerLiquity, liquity, ...otherLiquities] = await connectUsers([
+      [deployerARTH, liquity, ...otherLiquities] = await connectUsers([
         deployer,
         user,
         ...otherUsers.slice(0, 1)
@@ -510,7 +510,7 @@ describe("EthersLiquity", () => {
     const dippedPrice = Decimal.from(190);
 
     it("the price should take a dip", async () => {
-      await deployerLiquity.setPrice(dippedPrice);
+      await deployerARTH.setPrice(dippedPrice);
 
       const price = await liquity.getPrice();
       expect(`${price}`).to.equal(`${dippedPrice}`);
@@ -613,10 +613,10 @@ describe("EthersLiquity", () => {
     describe("when people overstay", () => {
       before(async () => {
         // Deploy new instances of the contracts, for a clean slate
-        deployment = await deployLiquity(deployer);
+        deployment = await deployARTH(deployer);
 
         const otherUsersSubset = otherUsers.slice(0, 5);
-        [deployerLiquity, liquity, ...otherLiquities] = await connectUsers([
+        [deployerARTH, liquity, ...otherLiquities] = await connectUsers([
           deployer,
           user,
           ...otherUsersSubset
@@ -625,7 +625,7 @@ describe("EthersLiquity", () => {
         await sendToEach(otherUsersSubset, 21.1);
 
         let price = Decimal.from(200);
-        await deployerLiquity.setPrice(price);
+        await deployerARTH.setPrice(price);
 
         // Use this account to print ARTH
         await liquity.openTrove({ depositCollateral: 50, borrowARTH: 5000 });
@@ -645,7 +645,7 @@ describe("EthersLiquity", () => {
 
         // Tank the price so we can liquidate
         price = Decimal.from(150);
-        await deployerLiquity.setPrice(price);
+        await deployerARTH.setPrice(price);
 
         // Liquidate first victim
         await liquity.liquidate(await otherUsers[3].getAddress());
@@ -687,10 +687,10 @@ describe("EthersLiquity", () => {
       }
 
       // Deploy new instances of the contracts, for a clean slate
-      deployment = await deployLiquity(deployer);
+      deployment = await deployARTH(deployer);
 
       const otherUsersSubset = otherUsers.slice(0, 3);
-      [deployerLiquity, liquity, ...otherLiquities] = await connectUsers([
+      [deployerARTH, liquity, ...otherLiquities] = await connectUsers([
         deployer,
         user,
         ...otherUsersSubset
@@ -826,10 +826,10 @@ describe("EthersLiquity", () => {
 
     beforeEach(async () => {
       // Deploy new instances of the contracts, for a clean slate
-      deployment = await deployLiquity(deployer);
+      deployment = await deployARTH(deployer);
 
       const otherUsersSubset = otherUsers.slice(0, 3);
-      [deployerLiquity, liquity, ...otherLiquities] = await connectUsers([
+      [deployerARTH, liquity, ...otherLiquities] = await connectUsers([
         deployer,
         user,
         ...otherUsersSubset
@@ -905,21 +905,21 @@ describe("EthersLiquity", () => {
       }
 
       // Deploy new instances of the contracts, for a clean slate
-      deployment = await deployLiquity(deployer);
+      deployment = await deployARTH(deployer);
       const otherUsersSubset = otherUsers.slice(0, _redeemMaxIterations);
       expect(otherUsersSubset).to.have.length(_redeemMaxIterations);
 
-      [deployerLiquity, liquity, ...otherLiquities] = await connectUsers([
+      [deployerARTH, liquity, ...otherLiquities] = await connectUsers([
         deployer,
         user,
         ...otherUsersSubset
       ]);
 
-      await deployerLiquity.setPrice(massivePrice);
+      await deployerARTH.setPrice(massivePrice);
       await sendToEach(otherUsersSubset, collateralPerTrove);
 
-      for (const otherLiquity of otherLiquities) {
-        await otherLiquity.openTrove({
+      for (const otherARTH of otherLiquities) {
+        await otherARTH.openTrove({
           depositCollateral: collateralPerTrove,
           borrowARTH: amountToBorrowPerTrove
         });
@@ -948,7 +948,7 @@ describe("EthersLiquity", () => {
     let eightOtherUsers: Signer[];
 
     before(async () => {
-      deployment = await deployLiquity(deployer);
+      deployment = await deployARTH(deployer);
       eightOtherUsers = otherUsers.slice(0, 8);
       liquity = await connectToDeployment(deployment, user);
 
@@ -988,10 +988,10 @@ describe("EthersLiquity", () => {
 
     // Test 2
     it("should not traverse the whole list when bottom Trove moves", async () => {
-      const bottomLiquity = await connectToDeployment(deployment, eightOtherUsers[7]);
+      const bottomARTH = await connectToDeployment(deployment, eightOtherUsers[7]);
 
       const initialTrove = await liquity.getTrove();
-      const bottomTrove = await bottomLiquity.getTrove();
+      const bottomTrove = await bottomARTH.getTrove();
 
       const targetTrove = Trove.create({ depositCollateral: 30, borrowARTH: 2900 });
       const interferingTrove = Trove.create({ depositCollateral: 30, borrowARTH: 3000 });
@@ -999,7 +999,7 @@ describe("EthersLiquity", () => {
       const tx = await liquity.populate.adjustTrove(initialTrove.adjustTo(targetTrove));
 
       // Suddenly: interference!
-      await bottomLiquity.adjustTrove(bottomTrove.adjustTo(interferingTrove));
+      await bottomARTH.adjustTrove(bottomTrove.adjustTo(interferingTrove));
 
       const { rawReceipt } = await waitForSuccess(tx.send());
 
@@ -1034,18 +1034,18 @@ describe("EthersLiquity", () => {
 
     let rudeUser: Signer;
     let fiveOtherUsers: Signer[];
-    let rudeLiquity: EthersLiquity;
+    let rudeARTH: EthersARTH;
 
     before(async function () {
       if (network.name !== "hardhat") {
         this.skip();
       }
 
-      deployment = await deployLiquity(deployer);
+      deployment = await deployARTH(deployer);
 
       [rudeUser, ...fiveOtherUsers] = otherUsers.slice(0, 6);
 
-      [deployerLiquity, liquity, rudeLiquity, ...otherLiquities] = await connectUsers([
+      [deployerARTH, liquity, rudeARTH, ...otherLiquities] = await connectUsers([
         deployer,
         user,
         rudeUser,
@@ -1115,7 +1115,7 @@ describe("EthersLiquity", () => {
       const arthShortage = rudeTrove.debt.sub(rudeCreation.borrowARTH);
 
       await liquity.sendARTH(await rudeUser.getAddress(), arthShortage);
-      await rudeLiquity.closeTrove();
+      await rudeARTH.closeTrove();
     });
 
     it("should include enough gas for both when borrowing", async () => {
@@ -1146,7 +1146,7 @@ describe("EthersLiquity", () => {
   });
 
   describe("Gas estimation (MAHA issuance)", () => {
-    const estimate = (tx: PopulatedEthersLiquityTransaction) =>
+    const estimate = (tx: PopulatedEthersARTHTransaction) =>
       provider.estimateGas(tx.rawPopulatedTransaction);
 
     before(async function () {
@@ -1154,8 +1154,8 @@ describe("EthersLiquity", () => {
         this.skip();
       }
 
-      deployment = await deployLiquity(deployer);
-      [deployerLiquity, liquity] = await connectUsers([deployer, user]);
+      deployment = await deployARTH(deployer);
+      [deployerARTH, liquity] = await connectUsers([deployer, user]);
     });
 
     it("should include enough gas for issuing MAHA", async function () {
@@ -1191,9 +1191,9 @@ describe("EthersLiquity", () => {
 
       const creation = Trove.recreate(new Trove(Decimal.from(11.1), Decimal.from(2000.1)));
 
-      await deployerLiquity.openTrove(creation);
-      await deployerLiquity.depositARTHInStabilityPool(creation.borrowARTH);
-      await deployerLiquity.setPrice(198);
+      await deployerARTH.openTrove(creation);
+      await deployerARTH.depositARTHInStabilityPool(creation.borrowARTH);
+      await deployerARTH.setPrice(198);
 
       const liquidateTarget = await liquity.populate.liquidate(await deployer.getAddress());
       const liquidateMultiple = await liquity.populate.liquidateUpTo(40);
@@ -1222,7 +1222,7 @@ describe("EthersLiquity", () => {
 
       this.timeout("1m");
 
-      deployment = await deployLiquity(deployer);
+      deployment = await deployARTH(deployer);
       const [redeemedUser, ...someMoreUsers] = otherUsers.slice(0, 21);
       [liquity, ...otherLiquities] = await connectUsers([user, ...someMoreUsers]);
 
@@ -1237,8 +1237,8 @@ describe("EthersLiquity", () => {
 
       // Sweep ARTH
       await Promise.all(
-        otherLiquities.map(async otherLiquity =>
-          otherLiquity.sendARTH(await user.getAddress(), await otherLiquity.getARTHBalance())
+        otherLiquities.map(async otherARTH =>
+          otherARTH.sendARTH(await user.getAddress(), await otherARTH.getARTHBalance())
         )
       );
 

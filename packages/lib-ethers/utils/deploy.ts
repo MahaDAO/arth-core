@@ -5,9 +5,9 @@ import { Wallet } from "@ethersproject/wallet";
 import { Decimal } from "@mahadao/arth-base";
 
 import {
-  _LiquityContractAddresses,
-  _LiquityContracts,
-  _LiquityDeploymentJSON,
+  _ARTHContractAddresses,
+  _ARTHContracts,
+  _ARTHDeploymentJSON,
   _connectToContracts
 } from "../src/contracts";
 
@@ -55,7 +55,7 @@ const deployContracts = async (
   getContractFactory: (name: string, signer: Signer) => Promise<ContractFactory>,
   priceFeedIsTestnet = true,
   overrides?: Overrides
-): Promise<[addresses: Omit<_LiquityContractAddresses, "uniToken">, startBlock: number]> => {
+): Promise<[addresses: Omit<_ARTHContractAddresses, "uniToken">, startBlock: number]> => {
   const [activePoolAddress, startBlock] = await deployContractAndGetBlockNumber(
     deployer,
     getContractFactory,
@@ -167,7 +167,7 @@ const connectContracts = async (
     sortedTroves,
     stabilityPool,
     gasPool
-  }: _LiquityContracts,
+  }: _ARTHContracts,
   deployer: Signer,
   overrides?: Overrides
 ) => {
@@ -274,7 +274,7 @@ export const deployAndSetupContracts = async (
   _isDev = true,
   wethAddress?: string,
   overrides?: Overrides
-): Promise<_LiquityDeploymentJSON> => {
+): Promise<_ARTHDeploymentJSON> => {
   if (!deployer.provider) {
     throw new Error("Signer must have a provider.");
   }
@@ -282,7 +282,7 @@ export const deployAndSetupContracts = async (
   log("Deploying contracts...");
   log();
 
-  const deployment: _LiquityDeploymentJSON = {
+  const deployment: _ARTHDeploymentJSON = {
     chainId: await deployer.getChainId(),
     version: "unknown",
     deploymentDate: new Date().getTime(),

@@ -13,25 +13,25 @@ import { FailedReceipt } from "@mahadao/arth-base";
 import { Fees } from "@mahadao/arth-base";
 import { FrontendStatus } from "@mahadao/arth-base";
 import { LiquidationDetails } from "@mahadao/arth-base";
-import { LiquityReceipt } from "@mahadao/arth-base";
-import { LiquityStore } from "@mahadao/arth-base";
-import { LiquityStoreState } from "@mahadao/arth-base";
+import { ARTHReceipt } from "@mahadao/arth-base";
+import { ARTHStore } from "@mahadao/arth-base";
+import { ARTHStoreState } from "@mahadao/arth-base";
 import { MinedReceipt } from "@mahadao/arth-base";
-import { ObservableLiquity } from "@mahadao/arth-base";
-import { PopulatableLiquity } from "@mahadao/arth-base";
-import { PopulatedLiquityTransaction } from "@mahadao/arth-base";
+import { ObservableARTH } from "@mahadao/arth-base";
+import { PopulatableARTH } from "@mahadao/arth-base";
+import { PopulatedARTHTransaction } from "@mahadao/arth-base";
 import { PopulatedRedemption } from "@mahadao/arth-base";
 import { PopulatedTransaction } from "@ethersproject/contracts";
 import { Provider } from "@ethersproject/abstract-provider";
-import { ReadableLiquity } from "@mahadao/arth-base";
+import { ReadableARTH } from "@mahadao/arth-base";
 import { RedemptionDetails } from "@mahadao/arth-base";
-import { SendableLiquity } from "@mahadao/arth-base";
-import { SentLiquityTransaction } from "@mahadao/arth-base";
+import { SendableARTH } from "@mahadao/arth-base";
+import { SentARTHTransaction } from "@mahadao/arth-base";
 import { Signer } from "@ethersproject/abstract-signer";
 import { StabilityDeposit } from "@mahadao/arth-base";
 import { StabilityDepositChangeDetails } from "@mahadao/arth-base";
 import { StabilityPoolGainsWithdrawalDetails } from "@mahadao/arth-base";
-import { TransactableLiquity } from "@mahadao/arth-base";
+import { TransactableARTH } from "@mahadao/arth-base";
 import { TransactionFailedError } from "@mahadao/arth-base";
 import { TransactionReceipt } from "@ethersproject/abstract-provider";
 import { TransactionResponse } from "@ethersproject/abstract-provider";
@@ -46,21 +46,21 @@ import { TroveWithPendingRedistribution } from "@mahadao/arth-base";
 import { UserTrove } from "@mahadao/arth-base";
 
 // @public
-export class BlockPolledLiquityStore extends LiquityStore<BlockPolledLiquityStoreExtraState> {
-  constructor(readable: ReadableEthersLiquity);
+export class BlockPolledARTHStore extends ARTHStore<BlockPolledARTHStoreExtraState> {
+  constructor(readable: ReadableEthersARTH);
   // (undocumented)
-  readonly connection: EthersLiquityConnection;
+  readonly connection: EthersARTHConnection;
   // @internal @override (undocumented)
   protected _doStart(): () => void;
   // @internal @override (undocumented)
   protected _reduceExtra(
-    oldState: BlockPolledLiquityStoreExtraState,
-    stateUpdate: Partial<BlockPolledLiquityStoreExtraState>
-  ): BlockPolledLiquityStoreExtraState;
+    oldState: BlockPolledARTHStoreExtraState,
+    stateUpdate: Partial<BlockPolledARTHStoreExtraState>
+  ): BlockPolledARTHStoreExtraState;
 }
 
 // @public
-export interface BlockPolledLiquityStoreExtraState {
+export interface BlockPolledARTHStoreExtraState {
   blockTag?: number;
   blockTimestamp: number;
   // @internal (undocumented)
@@ -68,7 +68,7 @@ export interface BlockPolledLiquityStoreExtraState {
 }
 
 // @public
-export type BlockPolledLiquityStoreState = LiquityStoreState<BlockPolledLiquityStoreExtraState>;
+export type BlockPolledARTHStoreState = ARTHStoreState<BlockPolledARTHStoreExtraState>;
 
 // @public
 export interface BorrowingOperationOptionalParams {
@@ -81,10 +81,10 @@ export function _connectByChainId<T>(
   provider: EthersProvider,
   signer: EthersSigner | undefined,
   chainId: number,
-  optionalParams: EthersLiquityConnectionOptionalParams & {
+  optionalParams: EthersARTHConnectionOptionalParams & {
     useStore: T;
   }
-): EthersLiquityConnection & {
+): EthersARTHConnection & {
   useStore: T;
 };
 
@@ -93,8 +93,8 @@ export function _connectByChainId(
   provider: EthersProvider,
   signer: EthersSigner | undefined,
   chainId: number,
-  optionalParams?: EthersLiquityConnectionOptionalParams
-): EthersLiquityConnection;
+  optionalParams?: EthersARTHConnectionOptionalParams
+): EthersARTHConnection;
 
 // @public
 export interface EthersCallOverrides {
@@ -103,9 +103,9 @@ export interface EthersCallOverrides {
 }
 
 // @public
-export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity {
+export class EthersARTH implements ReadableEthersARTH, TransactableARTH {
   // @internal
-  constructor(readable: ReadableEthersLiquity);
+  constructor(readable: ReadableEthersARTH);
   // (undocumented)
   adjustTrove(
     params: TroveAdjustmentParams<Decimalish>,
@@ -125,15 +125,15 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   // @internal (undocumented)
   static connect(
     signerOrProvider: EthersSigner | EthersProvider,
-    optionalParams: EthersLiquityConnectionOptionalParams & {
+    optionalParams: EthersARTHConnectionOptionalParams & {
       useStore: "blockPolled";
     }
-  ): Promise<EthersLiquityWithStore<BlockPolledLiquityStore>>;
+  ): Promise<EthersARTHWithStore<BlockPolledARTHStore>>;
   static connect(
     signerOrProvider: EthersSigner | EthersProvider,
-    optionalParams?: EthersLiquityConnectionOptionalParams
-  ): Promise<EthersLiquity>;
-  readonly connection: EthersLiquityConnection;
+    optionalParams?: EthersARTHConnectionOptionalParams
+  ): Promise<EthersARTH>;
+  readonly connection: EthersARTHConnection;
   // (undocumented)
   depositARTHInStabilityPool(
     amount: Decimalish,
@@ -147,12 +147,12 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   ): Promise<TroveAdjustmentDetails>;
   // @internal (undocumented)
   static _from(
-    connection: EthersLiquityConnection & {
+    connection: EthersARTHConnection & {
       useStore: "blockPolled";
     }
-  ): EthersLiquityWithStore<BlockPolledLiquityStore>;
+  ): EthersARTHWithStore<BlockPolledARTHStore>;
   // @internal (undocumented)
-  static _from(connection: EthersLiquityConnection): EthersLiquity;
+  static _from(connection: EthersARTHConnection): EthersARTH;
   // @internal (undocumented)
   _getActivePool(overrides?: EthersCallOverrides): Promise<Trove>;
   // (undocumented)
@@ -203,8 +203,8 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   ): Promise<TroveWithPendingRedistribution[]>;
   // (undocumented)
   getTroves(params: TroveListingParams, overrides?: EthersCallOverrides): Promise<UserTrove[]>;
-  hasStore(): this is EthersLiquityWithStore;
-  hasStore(store: "blockPolled"): this is EthersLiquityWithStore<BlockPolledLiquityStore>;
+  hasStore(): this is EthersARTHWithStore;
+  hasStore(store: "blockPolled"): this is EthersARTHWithStore<BlockPolledARTHStore>;
   // (undocumented)
   liquidate(
     address: string | string[],
@@ -221,7 +221,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
     maxBorrowingRateOrOptionalParams?: Decimalish | BorrowingOperationOptionalParams,
     overrides?: EthersTransactionOverrides
   ): Promise<TroveCreationDetails>;
-  readonly populate: PopulatableEthersLiquity;
+  readonly populate: PopulatableEthersARTH;
   // (undocumented)
   redeemARTH(
     amount: Decimalish,
@@ -235,7 +235,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
   ): Promise<TroveAdjustmentDetails>;
-  readonly send: SendableEthersLiquity;
+  readonly send: SendableEthersARTH;
   // (undocumented)
   sendARTH(
     toAddress: string,
@@ -271,7 +271,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
 }
 
 // @public
-export interface EthersLiquityConnection extends EthersLiquityConnectionOptionalParams {
+export interface EthersARTHConnection extends EthersARTHConnectionOptionalParams {
   // @internal (undocumented)
   readonly [brand]: unique symbol;
   readonly addresses: Record<string, string>;
@@ -290,18 +290,17 @@ export interface EthersLiquityConnection extends EthersLiquityConnectionOptional
 }
 
 // @public
-export interface EthersLiquityConnectionOptionalParams {
+export interface EthersARTHConnectionOptionalParams {
   readonly frontendTag?: string;
   readonly userAddress?: string;
-  readonly useStore?: EthersLiquityStoreOption;
+  readonly useStore?: EthersARTHStoreOption;
 }
 
 // @public
-export type EthersLiquityStoreOption = "blockPolled";
+export type EthersARTHStoreOption = "blockPolled";
 
 // @public
-export interface EthersLiquityWithStore<T extends LiquityStore = LiquityStore>
-  extends EthersLiquity {
+export interface EthersARTHWithStore<T extends ARTHStore = ARTHStore> extends EthersARTH {
   readonly store: T;
 }
 
@@ -350,8 +349,8 @@ export type EthersTransactionReceipt = TransactionReceipt;
 export type EthersTransactionResponse = TransactionResponse;
 
 // @alpha (undocumented)
-export class ObservableEthersLiquity implements ObservableLiquity {
-  constructor(readable: ReadableEthersLiquity);
+export class ObservableEthersARTH implements ObservableARTH {
+  constructor(readable: ReadableEthersARTH);
   // (undocumented)
   watchARTHBalance(onARTHBalanceChanged: (balance: Decimal) => void, address?: string): () => void;
   // (undocumented)
@@ -381,62 +380,58 @@ export class ObservableEthersLiquity implements ObservableLiquity {
 }
 
 // @public
-export class PopulatableEthersLiquity
+export class PopulatableEthersARTH
   implements
-    PopulatableLiquity<
-      EthersTransactionReceipt,
-      EthersTransactionResponse,
-      EthersPopulatedTransaction
-    >
+    PopulatableARTH<EthersTransactionReceipt, EthersTransactionResponse, EthersPopulatedTransaction>
 {
-  constructor(readable: ReadableEthersLiquity);
+  constructor(readable: ReadableEthersARTH);
   // (undocumented)
   adjustTrove(
     params: TroveAdjustmentParams<Decimalish>,
     maxBorrowingRateOrOptionalParams?: Decimalish | BorrowingOperationOptionalParams,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<TroveAdjustmentDetails>>;
+  ): Promise<PopulatedEthersARTHTransaction<TroveAdjustmentDetails>>;
   // (undocumented)
   borrowARTH(
     amount: Decimalish,
     maxBorrowingRate?: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<TroveAdjustmentDetails>>;
+  ): Promise<PopulatedEthersARTHTransaction<TroveAdjustmentDetails>>;
   // (undocumented)
   claimCollateralSurplus(
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<void>>;
+  ): Promise<PopulatedEthersARTHTransaction<void>>;
   // (undocumented)
   closeTrove(
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<TroveClosureDetails>>;
+  ): Promise<PopulatedEthersARTHTransaction<TroveClosureDetails>>;
   // (undocumented)
   depositARTHInStabilityPool(
     amount: Decimalish,
     frontendTag?: string,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<StabilityDepositChangeDetails>>;
+  ): Promise<PopulatedEthersARTHTransaction<StabilityDepositChangeDetails>>;
   // (undocumented)
   depositCollateral(
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<TroveAdjustmentDetails>>;
+  ): Promise<PopulatedEthersARTHTransaction<TroveAdjustmentDetails>>;
   // (undocumented)
   liquidate(
     address: string | string[],
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<LiquidationDetails>>;
+  ): Promise<PopulatedEthersARTHTransaction<LiquidationDetails>>;
   // (undocumented)
   liquidateUpTo(
     maximumNumberOfTrovesToLiquidate: number,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<LiquidationDetails>>;
+  ): Promise<PopulatedEthersARTHTransaction<LiquidationDetails>>;
   // (undocumented)
   openTrove(
     params: TroveCreationParams<Decimalish>,
     maxBorrowingRateOrOptionalParams?: Decimalish | BorrowingOperationOptionalParams,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<TroveCreationDetails>>;
+  ): Promise<PopulatedEthersARTHTransaction<TroveCreationDetails>>;
   // (undocumented)
   redeemARTH(
     amount: Decimalish,
@@ -447,70 +442,69 @@ export class PopulatableEthersLiquity
   registerFrontend(
     kickbackRate: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<void>>;
+  ): Promise<PopulatedEthersARTHTransaction<void>>;
   // (undocumented)
   repayARTH(
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<TroveAdjustmentDetails>>;
+  ): Promise<PopulatedEthersARTHTransaction<TroveAdjustmentDetails>>;
   // (undocumented)
   sendARTH(
     toAddress: string,
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<void>>;
+  ): Promise<PopulatedEthersARTHTransaction<void>>;
   // (undocumented)
   sendMAHA(
     toAddress: string,
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<void>>;
+  ): Promise<PopulatedEthersARTHTransaction<void>>;
   // @internal (undocumented)
   setPrice(
     price: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<void>>;
+  ): Promise<PopulatedEthersARTHTransaction<void>>;
   // (undocumented)
   transferCollateralGainToTrove(
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<CollateralGainTransferDetails>>;
+  ): Promise<PopulatedEthersARTHTransaction<CollateralGainTransferDetails>>;
   // (undocumented)
   withdrawARTHFromStabilityPool(
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<StabilityDepositChangeDetails>>;
+  ): Promise<PopulatedEthersARTHTransaction<StabilityDepositChangeDetails>>;
   // (undocumented)
   withdrawCollateral(
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<TroveAdjustmentDetails>>;
+  ): Promise<PopulatedEthersARTHTransaction<TroveAdjustmentDetails>>;
   // (undocumented)
   withdrawGainsFromStabilityPool(
     overrides?: EthersTransactionOverrides
-  ): Promise<PopulatedEthersLiquityTransaction<StabilityPoolGainsWithdrawalDetails>>;
+  ): Promise<PopulatedEthersARTHTransaction<StabilityPoolGainsWithdrawalDetails>>;
 }
 
 // @public
-export class PopulatedEthersLiquityTransaction<T = unknown>
-  implements
-    PopulatedLiquityTransaction<EthersPopulatedTransaction, SentEthersLiquityTransaction<T>>
+export class PopulatedEthersARTHTransaction<T = unknown>
+  implements PopulatedARTHTransaction<EthersPopulatedTransaction, SentEthersARTHTransaction<T>>
 {
   // @internal
   constructor(
     rawPopulatedTransaction: EthersPopulatedTransaction,
-    connection: EthersLiquityConnection,
+    connection: EthersARTHConnection,
     parse: (rawReceipt: EthersTransactionReceipt) => T,
     gasHeadroom?: number
   );
   readonly gasHeadroom?: number;
   readonly rawPopulatedTransaction: EthersPopulatedTransaction;
   // (undocumented)
-  send(): Promise<SentEthersLiquityTransaction<T>>;
+  send(): Promise<SentEthersARTHTransaction<T>>;
 }
 
 // @public (undocumented)
 export class PopulatedEthersRedemption
-  extends PopulatedEthersLiquityTransaction<RedemptionDetails>
+  extends PopulatedEthersARTHTransaction<RedemptionDetails>
   implements
     PopulatedRedemption<
       EthersPopulatedTransaction,
@@ -521,7 +515,7 @@ export class PopulatedEthersRedemption
   // @internal
   constructor(
     rawPopulatedTransaction: EthersPopulatedTransaction,
-    connection: EthersLiquityConnection,
+    connection: EthersARTHConnection,
     attemptedARTHAmount: Decimal,
     redeemableARTHAmount: Decimal,
     increaseAmountByMinimumNetDebt?: (
@@ -570,31 +564,31 @@ export interface _RawTransactionReplacedError extends Error {
 }
 
 // @public
-export class ReadableEthersLiquity implements ReadableLiquity {
+export class ReadableEthersARTH implements ReadableARTH {
   // @internal
-  constructor(connection: EthersLiquityConnection);
+  constructor(connection: EthersARTHConnection);
   // @internal (undocumented)
   static connect(
     signerOrProvider: EthersSigner | EthersProvider,
-    optionalParams: EthersLiquityConnectionOptionalParams & {
+    optionalParams: EthersARTHConnectionOptionalParams & {
       useStore: "blockPolled";
     }
-  ): Promise<ReadableEthersLiquityWithStore<BlockPolledLiquityStore>>;
+  ): Promise<ReadableEthersARTHWithStore<BlockPolledARTHStore>>;
   // (undocumented)
   static connect(
     signerOrProvider: EthersSigner | EthersProvider,
-    optionalParams?: EthersLiquityConnectionOptionalParams
-  ): Promise<ReadableEthersLiquity>;
+    optionalParams?: EthersARTHConnectionOptionalParams
+  ): Promise<ReadableEthersARTH>;
   // (undocumented)
-  readonly connection: EthersLiquityConnection;
+  readonly connection: EthersARTHConnection;
   // @internal (undocumented)
   static _from(
-    connection: EthersLiquityConnection & {
+    connection: EthersARTHConnection & {
       useStore: "blockPolled";
     }
-  ): ReadableEthersLiquityWithStore<BlockPolledLiquityStore>;
+  ): ReadableEthersARTHWithStore<BlockPolledARTHStore>;
   // @internal (undocumented)
-  static _from(connection: EthersLiquityConnection): ReadableEthersLiquity;
+  static _from(connection: EthersARTHConnection): ReadableEthersARTH;
   // @internal (undocumented)
   _getActivePool(overrides?: EthersCallOverrides): Promise<Trove>;
   // (undocumented)
@@ -645,13 +639,13 @@ export class ReadableEthersLiquity implements ReadableLiquity {
   ): Promise<TroveWithPendingRedistribution[]>;
   // (undocumented)
   getTroves(params: TroveListingParams, overrides?: EthersCallOverrides): Promise<UserTrove[]>;
-  hasStore(): this is ReadableEthersLiquityWithStore;
-  hasStore(store: "blockPolled"): this is ReadableEthersLiquityWithStore<BlockPolledLiquityStore>;
+  hasStore(): this is ReadableEthersARTHWithStore;
+  hasStore(store: "blockPolled"): this is ReadableEthersARTHWithStore<BlockPolledARTHStore>;
 }
 
 // @public
-export interface ReadableEthersLiquityWithStore<T extends LiquityStore = LiquityStore>
-  extends ReadableEthersLiquity {
+export interface ReadableEthersARTHWithStore<T extends ARTHStore = ARTHStore>
+  extends ReadableEthersARTH {
   readonly store: T;
 }
 
@@ -659,123 +653,123 @@ export interface ReadableEthersLiquityWithStore<T extends LiquityStore = Liquity
 export const _redeemMaxIterations = 70;
 
 // @public
-export class SendableEthersLiquity
-  implements SendableLiquity<EthersTransactionReceipt, EthersTransactionResponse>
+export class SendableEthersARTH
+  implements SendableARTH<EthersTransactionReceipt, EthersTransactionResponse>
 {
-  constructor(populatable: PopulatableEthersLiquity);
+  constructor(populatable: PopulatableEthersARTH);
   // (undocumented)
   adjustTrove(
     params: TroveAdjustmentParams<Decimalish>,
     maxBorrowingRateOrOptionalParams?: Decimalish | BorrowingOperationOptionalParams,
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<TroveAdjustmentDetails>>;
+  ): Promise<SentEthersARTHTransaction<TroveAdjustmentDetails>>;
   // (undocumented)
   borrowARTH(
     amount: Decimalish,
     maxBorrowingRate?: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<TroveAdjustmentDetails>>;
+  ): Promise<SentEthersARTHTransaction<TroveAdjustmentDetails>>;
   // (undocumented)
   claimCollateralSurplus(
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<void>>;
+  ): Promise<SentEthersARTHTransaction<void>>;
   // (undocumented)
   closeTrove(
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<TroveClosureDetails>>;
+  ): Promise<SentEthersARTHTransaction<TroveClosureDetails>>;
   // (undocumented)
   depositARTHInStabilityPool(
     amount: Decimalish,
     frontendTag?: string,
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<StabilityDepositChangeDetails>>;
+  ): Promise<SentEthersARTHTransaction<StabilityDepositChangeDetails>>;
   // (undocumented)
   depositCollateral(
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<TroveAdjustmentDetails>>;
+  ): Promise<SentEthersARTHTransaction<TroveAdjustmentDetails>>;
   // (undocumented)
   liquidate(
     address: string | string[],
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<LiquidationDetails>>;
+  ): Promise<SentEthersARTHTransaction<LiquidationDetails>>;
   // (undocumented)
   liquidateUpTo(
     maximumNumberOfTrovesToLiquidate: number,
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<LiquidationDetails>>;
+  ): Promise<SentEthersARTHTransaction<LiquidationDetails>>;
   // (undocumented)
   openTrove(
     params: TroveCreationParams<Decimalish>,
     maxBorrowingRateOrOptionalParams?: Decimalish | BorrowingOperationOptionalParams,
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<TroveCreationDetails>>;
+  ): Promise<SentEthersARTHTransaction<TroveCreationDetails>>;
   // (undocumented)
   redeemARTH(
     amount: Decimalish,
     maxRedemptionRate?: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<RedemptionDetails>>;
+  ): Promise<SentEthersARTHTransaction<RedemptionDetails>>;
   // (undocumented)
   registerFrontend(
     kickbackRate: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<void>>;
+  ): Promise<SentEthersARTHTransaction<void>>;
   // (undocumented)
   repayARTH(
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<TroveAdjustmentDetails>>;
+  ): Promise<SentEthersARTHTransaction<TroveAdjustmentDetails>>;
   // (undocumented)
   sendARTH(
     toAddress: string,
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<void>>;
+  ): Promise<SentEthersARTHTransaction<void>>;
   // (undocumented)
   sendMAHA(
     toAddress: string,
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<void>>;
+  ): Promise<SentEthersARTHTransaction<void>>;
   // @internal (undocumented)
   setPrice(
     price: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<void>>;
+  ): Promise<SentEthersARTHTransaction<void>>;
   // (undocumented)
   transferCollateralGainToTrove(
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<CollateralGainTransferDetails>>;
+  ): Promise<SentEthersARTHTransaction<CollateralGainTransferDetails>>;
   // (undocumented)
   withdrawARTHFromStabilityPool(
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<StabilityDepositChangeDetails>>;
+  ): Promise<SentEthersARTHTransaction<StabilityDepositChangeDetails>>;
   // (undocumented)
   withdrawCollateral(
     amount: Decimalish,
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<TroveAdjustmentDetails>>;
+  ): Promise<SentEthersARTHTransaction<TroveAdjustmentDetails>>;
   // (undocumented)
   withdrawGainsFromStabilityPool(
     overrides?: EthersTransactionOverrides
-  ): Promise<SentEthersLiquityTransaction<StabilityPoolGainsWithdrawalDetails>>;
+  ): Promise<SentEthersARTHTransaction<StabilityPoolGainsWithdrawalDetails>>;
 }
 
 // @public
-export class SentEthersLiquityTransaction<T = unknown>
+export class SentEthersARTHTransaction<T = unknown>
   implements
-    SentLiquityTransaction<EthersTransactionResponse, LiquityReceipt<EthersTransactionReceipt, T>>
+    SentARTHTransaction<EthersTransactionResponse, ARTHReceipt<EthersTransactionReceipt, T>>
 {
   // @internal
   constructor(
     rawSentTransaction: EthersTransactionResponse,
-    connection: EthersLiquityConnection,
+    connection: EthersARTHConnection,
     parse: (rawReceipt: EthersTransactionReceipt) => T
   );
   // (undocumented)
-  getReceipt(): Promise<LiquityReceipt<EthersTransactionReceipt, T>>;
+  getReceipt(): Promise<ARTHReceipt<EthersTransactionReceipt, T>>;
   readonly rawSentTransaction: EthersTransactionResponse;
   // (undocumented)
   waitForReceipt(): Promise<MinedReceipt<EthersTransactionReceipt, T>>;

@@ -2,26 +2,26 @@ import { AddressZero } from "@ethersproject/constants";
 
 import {
   Decimal,
-  LiquityStoreState,
-  LiquityStoreBaseState,
+  ARTHStoreState,
+  ARTHStoreBaseState,
   TroveWithPendingRedistribution,
   StabilityDeposit,
-  LiquityStore,
+  ARTHStore,
   Fees
 } from "@mahadao/arth-base";
 
 import { decimalify, promiseAllValues } from "./_utils";
-import { ReadableEthersLiquity } from "./ReadableEthersLiquity";
-import { EthersLiquityConnection, _getProvider } from "./EthersLiquityConnection";
+import { ReadableEthersARTH } from "./ReadableEthersARTH";
+import { EthersARTHConnection, _getProvider } from "./EthersARTHConnection";
 import { EthersCallOverrides, EthersProvider } from "./types";
 
 /**
- * Extra state added to {@link @mahadao/arth-base#LiquityStoreState} by
- * {@link BlockPolledLiquityStore}.
+ * Extra state added to {@link @mahadao/arth-base#ARTHStoreState} by
+ * {@link BlockPolledARTHStore}.
  *
  * @public
  */
-export interface BlockPolledLiquityStoreExtraState {
+export interface BlockPolledARTHStoreExtraState {
   /**
    * Number of block that the store state was fetched from.
    *
@@ -40,26 +40,26 @@ export interface BlockPolledLiquityStoreExtraState {
 }
 
 /**
- * The type of {@link BlockPolledLiquityStore}'s
- * {@link @mahadao/arth-base#LiquityStore.state | state}.
+ * The type of {@link BlockPolledARTHStore}'s
+ * {@link @mahadao/arth-base#ARTHStore.state | state}.
  *
  * @public
  */
-export type BlockPolledLiquityStoreState = LiquityStoreState<BlockPolledLiquityStoreExtraState>;
+export type BlockPolledARTHStoreState = ARTHStoreState<BlockPolledARTHStoreExtraState>;
 
 /**
- * Ethers-based {@link @mahadao/arth-base#LiquityStore} that updates state whenever there's a new
+ * Ethers-based {@link @mahadao/arth-base#ARTHStore} that updates state whenever there's a new
  * block.
  *
  * @public
  */
-export class BlockPolledLiquityStore extends LiquityStore<BlockPolledLiquityStoreExtraState> {
-  readonly connection: EthersLiquityConnection;
+export class BlockPolledARTHStore extends ARTHStore<BlockPolledARTHStoreExtraState> {
+  readonly connection: EthersARTHConnection;
 
-  private readonly _readable: ReadableEthersLiquity;
+  private readonly _readable: ReadableEthersARTH;
   private readonly _provider: EthersProvider;
 
-  constructor(readable: ReadableEthersLiquity) {
+  constructor(readable: ReadableEthersARTH) {
     super();
 
     this.connection = readable.connection;
@@ -84,7 +84,7 @@ export class BlockPolledLiquityStore extends LiquityStore<BlockPolledLiquityStor
 
   private async _get(
     blockTag?: number
-  ): Promise<[baseState: LiquityStoreBaseState, extraState: BlockPolledLiquityStoreExtraState]> {
+  ): Promise<[baseState: ARTHStoreBaseState, extraState: BlockPolledARTHStoreExtraState]> {
     const { userAddress, frontendTag } = this.connection;
 
     const { blockTimestamp, _feesFactory, ...baseState } = await promiseAllValues({
@@ -177,9 +177,9 @@ export class BlockPolledLiquityStore extends LiquityStore<BlockPolledLiquityStor
 
   /** @internal @override */
   protected _reduceExtra(
-    oldState: BlockPolledLiquityStoreExtraState,
-    stateUpdate: Partial<BlockPolledLiquityStoreExtraState>
-  ): BlockPolledLiquityStoreExtraState {
+    oldState: BlockPolledARTHStoreExtraState,
+    stateUpdate: Partial<BlockPolledARTHStoreExtraState>
+  ): BlockPolledARTHStoreExtraState {
     return {
       blockTag: stateUpdate.blockTag ?? oldState.blockTag,
       blockTimestamp: stateUpdate.blockTimestamp ?? oldState.blockTimestamp,

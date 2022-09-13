@@ -127,7 +127,7 @@ const buildEstimatedFunctions = <T>(
     ])
   );
 
-export class _LiquityContract extends Contract {
+export class _ARTHContract extends Contract {
   readonly estimateAndPopulate: Record<string, EstimatedContractFunction<PopulatedTransaction>>;
 
   constructor(
@@ -150,10 +150,10 @@ export class _LiquityContract extends Contract {
 }
 
 /** @internal */
-export type _TypedLiquityContract<T = unknown, U = unknown> = TypedContract<_LiquityContract, T, U>;
+export type _TypedARTHContract<T = unknown, U = unknown> = TypedContract<_ARTHContract, T, U>;
 
 /** @internal */
-export interface _LiquityContracts {
+export interface _ARTHContracts {
   activePool: ActivePool;
   borrowerOperations: BorrowerOperations;
   troveManager: TroveManager;
@@ -175,14 +175,14 @@ export const _priceFeedIsTestnet = (
   priceFeed: PriceFeed | PriceFeedTestnet
 ): priceFeed is PriceFeedTestnet => "setPrice" in priceFeed;
 
-type LiquityContractsKey = keyof _LiquityContracts;
+type ARTHContractsKey = keyof _ARTHContracts;
 
 /** @internal */
-export type _LiquityContractAddresses = Record<LiquityContractsKey, string>;
+export type _ARTHContractAddresses = Record<ARTHContractsKey, string>;
 
-type LiquityContractAbis = Record<LiquityContractsKey, JsonFragment[]>;
+type ARTHContractAbis = Record<ARTHContractsKey, JsonFragment[]>;
 
-const getAbi = (priceFeedIsTestnet: boolean): LiquityContractAbis => ({
+const getAbi = (priceFeedIsTestnet: boolean): ARTHContractAbis => ({
   activePool: activePoolAbi,
   borrowerOperations: borrowerOperationsAbi,
   troveManager: troveManagerAbi,
@@ -199,18 +199,18 @@ const getAbi = (priceFeedIsTestnet: boolean): LiquityContractAbis => ({
   gasPool: gasPoolAbi
 });
 
-const mapLiquityContracts = <T, U>(
-  contracts: Record<LiquityContractsKey, T>,
-  f: (t: T, key: LiquityContractsKey) => U
+const mapARTHContracts = <T, U>(
+  contracts: Record<ARTHContractsKey, T>,
+  f: (t: T, key: ARTHContractsKey) => U
 ) =>
   Object.fromEntries(
-    Object.entries(contracts).map(([key, t]) => [key, f(t, key as LiquityContractsKey)])
-  ) as Record<LiquityContractsKey, U>;
+    Object.entries(contracts).map(([key, t]) => [key, f(t, key as ARTHContractsKey)])
+  ) as Record<ARTHContractsKey, U>;
 
 /** @internal */
-export interface _LiquityDeploymentJSON {
+export interface _ARTHDeploymentJSON {
   readonly chainId: number;
-  readonly addresses: _LiquityContractAddresses;
+  readonly addresses: _ARTHContractAddresses;
   readonly version: string;
   readonly deploymentDate: number;
   readonly startBlock: number;
@@ -223,13 +223,12 @@ export interface _LiquityDeploymentJSON {
 /** @internal */
 export const _connectToContracts = (
   signerOrProvider: EthersSigner | EthersProvider,
-  { addresses, _priceFeedIsTestnet }: _LiquityDeploymentJSON
-): _LiquityContracts => {
+  { addresses, _priceFeedIsTestnet }: _ARTHDeploymentJSON
+): _ARTHContracts => {
   const abi = getAbi(_priceFeedIsTestnet);
 
-  return mapLiquityContracts(
+  return mapARTHContracts(
     addresses,
-    (address, key) =>
-      new _LiquityContract(address, abi[key], signerOrProvider) as _TypedLiquityContract
-  ) as _LiquityContracts;
+    (address, key) => new _ARTHContract(address, abi[key], signerOrProvider) as _TypedARTHContract
+  ) as _ARTHContracts;
 };

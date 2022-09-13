@@ -9,7 +9,7 @@ import {
   EventFilter
 } from "@ethersproject/contracts";
 
-import { _TypedLiquityContract, _TypedLogDescription } from "../src/contracts";
+import { _TypedARTHContract, _TypedLogDescription } from "../src/contracts";
 
 interface ActivePoolCalls {
   NAME(_overrides?: CallOverrides): Promise<string>;
@@ -32,7 +32,7 @@ interface ActivePoolTransactions {
 }
 
 export interface ActivePool
-  extends _TypedLiquityContract<ActivePoolCalls, ActivePoolTransactions> {
+  extends _TypedARTHContract<ActivePoolCalls, ActivePoolTransactions> {
   readonly filters: {
     ARTHBalanceUpdated(_newBalance?: null): EventFilter;
     ActivePoolARTHDebtUpdated(_ARTHDebt?: null): EventFilter;
@@ -102,7 +102,7 @@ interface BorrowerOperationsTransactions {
 }
 
 export interface BorrowerOperations
-  extends _TypedLiquityContract<BorrowerOperationsCalls, BorrowerOperationsTransactions> {
+  extends _TypedARTHContract<BorrowerOperationsCalls, BorrowerOperationsTransactions> {
   readonly filters: {
     ARTHBorrowingFeePaid(_borrower?: string | null, _ARTHFee?: null): EventFilter;
     ARTHTokenAddressChanged(_arthTokenAddress?: null): EventFilter;
@@ -158,7 +158,7 @@ interface CollSurplusPoolTransactions {
 }
 
 export interface CollSurplusPool
-  extends _TypedLiquityContract<CollSurplusPoolCalls, CollSurplusPoolTransactions> {
+  extends _TypedARTHContract<CollSurplusPoolCalls, CollSurplusPoolTransactions> {
   readonly filters: {
     ActivePoolAddressChanged(_newActivePoolAddress?: null): EventFilter;
     BorrowerOperationsAddressChanged(_newBorrowerOperationsAddress?: null): EventFilter;
@@ -199,7 +199,7 @@ interface CommunityIssuanceTransactions {
 }
 
 export interface CommunityIssuance
-  extends _TypedLiquityContract<CommunityIssuanceCalls, CommunityIssuanceTransactions> {
+  extends _TypedARTHContract<CommunityIssuanceCalls, CommunityIssuanceTransactions> {
   readonly filters: {
     OwnershipTransferred(previousOwner?: string | null, newOwner?: string | null): EventFilter;
     RewardAdded(reward?: null): EventFilter;
@@ -229,7 +229,7 @@ interface DefaultPoolTransactions {
 }
 
 export interface DefaultPool
-  extends _TypedLiquityContract<DefaultPoolCalls, DefaultPoolTransactions> {
+  extends _TypedARTHContract<DefaultPoolCalls, DefaultPoolTransactions> {
   readonly filters: {
     ARTHBalanceUpdated(_newBalance?: null): EventFilter;
     ActivePoolAddressChanged(_newActivePoolAddress?: null): EventFilter;
@@ -275,7 +275,7 @@ interface MockERC20Transactions {
 }
 
 export interface MockERC20
-  extends _TypedLiquityContract<MockERC20Calls, MockERC20Transactions> {
+  extends _TypedARTHContract<MockERC20Calls, MockERC20Transactions> {
   readonly filters: {
     Approval(owner?: string | null, spender?: string | null, value?: null): EventFilter;
     Transfer(from?: string | null, to?: string | null, value?: null): EventFilter;
@@ -291,7 +291,7 @@ interface GasPoolTransactions {
 }
 
 export interface GasPool
-  extends _TypedLiquityContract<GasPoolCalls, GasPoolTransactions> {
+  extends _TypedARTHContract<GasPoolCalls, GasPoolTransactions> {
   readonly filters: {
   };
 }
@@ -330,7 +330,7 @@ interface HintHelpersTransactions {
 }
 
 export interface HintHelpers
-  extends _TypedLiquityContract<HintHelpersCalls, HintHelpersTransactions> {
+  extends _TypedARTHContract<HintHelpersCalls, HintHelpersTransactions> {
   readonly filters: {
     OwnershipTransferred(previousOwner?: string | null, newOwner?: string | null): EventFilter;
     SortedTrovesAddressChanged(_sortedTrovesAddress?: null): EventFilter;
@@ -354,7 +354,7 @@ interface IERC20Transactions {
 }
 
 export interface IERC20
-  extends _TypedLiquityContract<IERC20Calls, IERC20Transactions> {
+  extends _TypedARTHContract<IERC20Calls, IERC20Transactions> {
   readonly filters: {
     Approval(owner?: string | null, spender?: string | null, value?: null): EventFilter;
     Transfer(from?: string | null, to?: string | null, value?: null): EventFilter;
@@ -399,7 +399,7 @@ interface ARTHValuecoinTransactions {
 }
 
 export interface ARTHValuecoin
-  extends _TypedLiquityContract<ARTHValuecoinCalls, ARTHValuecoinTransactions> {
+  extends _TypedARTHContract<ARTHValuecoinCalls, ARTHValuecoinTransactions> {
   readonly filters: {
     ARTHTokenBalanceUpdated(_user?: null, _amount?: null): EventFilter;
     Approval(owner?: string | null, spender?: string | null, value?: null): EventFilter;
@@ -434,7 +434,7 @@ interface MultiTroveGetterTransactions {
 }
 
 export interface MultiTroveGetter
-  extends _TypedLiquityContract<MultiTroveGetterCalls, MultiTroveGetterTransactions> {
+  extends _TypedARTHContract<MultiTroveGetterCalls, MultiTroveGetterTransactions> {
   readonly filters: {
   };
 }
@@ -451,7 +451,7 @@ interface PriceFeedTransactions {
 }
 
 export interface PriceFeed
-  extends _TypedLiquityContract<PriceFeedCalls, PriceFeedTransactions> {
+  extends _TypedARTHContract<PriceFeedCalls, PriceFeedTransactions> {
   readonly filters: {
     LastGoodPriceUpdated(_lastGoodPrice?: null): EventFilter;
   };
@@ -468,7 +468,7 @@ interface PriceFeedTestnetTransactions {
 }
 
 export interface PriceFeedTestnet
-  extends _TypedLiquityContract<PriceFeedTestnetCalls, PriceFeedTestnetTransactions> {
+  extends _TypedARTHContract<PriceFeedTestnetCalls, PriceFeedTestnetTransactions> {
   readonly filters: {
     LastGoodPriceUpdated(_lastGoodPrice?: null): EventFilter;
   };
@@ -504,7 +504,7 @@ interface SortedTrovesTransactions {
 }
 
 export interface SortedTroves
-  extends _TypedLiquityContract<SortedTrovesCalls, SortedTrovesTransactions> {
+  extends _TypedARTHContract<SortedTrovesCalls, SortedTrovesTransactions> {
   readonly filters: {
     BorrowerOperationsAddressChanged(_borrowerOperationsAddress?: null): EventFilter;
     NodeAdded(_id?: null, _NICR?: null): EventFilter;
@@ -580,7 +580,7 @@ interface StabilityPoolTransactions {
 }
 
 export interface StabilityPool
-  extends _TypedLiquityContract<StabilityPoolCalls, StabilityPoolTransactions> {
+  extends _TypedARTHContract<StabilityPoolCalls, StabilityPoolTransactions> {
   readonly filters: {
     ARTHTokenAddressChanged(_newARTHTokenAddress?: null): EventFilter;
     ActivePoolAddressChanged(_newActivePoolAddress?: null): EventFilter;
@@ -724,7 +724,7 @@ interface TroveManagerTransactions {
 }
 
 export interface TroveManager
-  extends _TypedLiquityContract<TroveManagerCalls, TroveManagerTransactions> {
+  extends _TypedARTHContract<TroveManagerCalls, TroveManagerTransactions> {
   readonly filters: {
     ARTHTokenAddressChanged(_newARTHTokenAddress?: null): EventFilter;
     ActivePoolAddressChanged(_activePoolAddress?: null): EventFilter;

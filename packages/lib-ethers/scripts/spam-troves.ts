@@ -4,11 +4,7 @@ import { JsonRpcProvider } from "@ethersproject/providers";
 import { Wallet } from "@ethersproject/wallet";
 
 import { Decimal, LUSD_MINIMUM_DEBT, Trove } from "@mahadao/arth-base";
-import {
-  EthersLiquity,
-  EthersLiquityWithStore,
-  BlockPolledLiquityStore
-} from "@mahadao/arth-ethers";
+import { EthersARTH, EthersARTHWithStore, BlockPolledARTHStore } from "@mahadao/arth-ethers";
 
 import {
   Batched,
@@ -28,7 +24,7 @@ const funderKey = "0x4d5db4107d237df6a3d58ee5f70ae63d73d7658d4026f2eefd2f204c816
 
 let provider: BatchedProvider & WebSocketAugmentedProvider & JsonRpcProvider;
 let funder: Wallet;
-let liquity: EthersLiquityWithStore<BlockPolledLiquityStore>;
+let liquity: EthersARTHWithStore<BlockPolledARTHStore>;
 
 const waitForSuccess = (tx: TransactionResponse) =>
   tx.wait().then(receipt => {
@@ -87,7 +83,7 @@ const main = async () => {
     network
   );
 
-  liquity = await EthersLiquity.connect(provider, { useStore: "blockPolled" });
+  liquity = await EthersARTH.connect(provider, { useStore: "blockPolled" });
 
   let stopStore: () => void;
 

@@ -16,7 +16,7 @@ import "@nomiclabs/hardhat-ethers";
 import { Decimal } from "@mahadao/arth-base";
 
 import { deployAndSetupContracts, deployTellorCaller, setSilent } from "./utils/deploy";
-import { _connectToContracts, _LiquityDeploymentJSON, _priceFeedIsTestnet } from "./src/contracts";
+import { _connectToContracts, _ARTHDeploymentJSON, _priceFeedIsTestnet } from "./src/contracts";
 
 import accounts from "./accounts.json";
 
@@ -132,12 +132,12 @@ const config: HardhatUserConfig = {
 
 declare module "hardhat/types/runtime" {
   interface HardhatRuntimeEnvironment {
-    deployLiquity: (
+    deployARTH: (
       deployer: Signer,
       useRealPriceFeed?: boolean,
       wethAddress?: string,
       overrides?: Overrides
-    ) => Promise<_LiquityDeploymentJSON>;
+    ) => Promise<_ARTHDeploymentJSON>;
   }
 }
 
@@ -154,7 +154,7 @@ const getContractFactory: (
   : env => env.ethers.getContractFactory;
 
 extendEnvironment(env => {
-  env.deployLiquity = async (
+  env.deployARTH = async (
     deployer,
     useRealPriceFeed = false,
     wethAddress = undefined,
@@ -218,7 +218,7 @@ task("deploy", "Deploys the contracts to the network")
 
       setSilent(false);
 
-      const deployment = await env.deployLiquity(deployer, useRealPriceFeed, wethAddress, overrides);
+      const deployment = await env.deployARTH(deployer, useRealPriceFeed, wethAddress, overrides);
 
       if (useRealPriceFeed) {
         const contracts = _connectToContracts(deployer, deployment);

@@ -8,12 +8,12 @@ import {
   Fees,
   FrontendStatus,
   LiquidationDetails,
-  LiquityStore,
+  ARTHStore,
   RedemptionDetails,
   StabilityDeposit,
   StabilityDepositChangeDetails,
   StabilityPoolGainsWithdrawalDetails,
-  TransactableLiquity,
+  TransactableARTH,
   TransactionFailedError,
   Trove,
   TroveAdjustmentDetails,
@@ -27,12 +27,12 @@ import {
 } from "@mahadao/arth-base";
 
 import {
-  EthersLiquityConnection,
-  EthersLiquityConnectionOptionalParams,
-  EthersLiquityStoreOption,
+  EthersARTHConnection,
+  EthersARTHConnectionOptionalParams,
+  EthersARTHStoreOption,
   _connect,
   _usingStore
-} from "./EthersLiquityConnection";
+} from "./EthersARTHConnection";
 
 import {
   EthersCallOverrides,
@@ -44,15 +44,15 @@ import {
 
 import {
   BorrowingOperationOptionalParams,
-  PopulatableEthersLiquity,
-  SentEthersLiquityTransaction
-} from "./PopulatableEthersLiquity";
-import { ReadableEthersLiquity, ReadableEthersLiquityWithStore } from "./ReadableEthersLiquity";
-import { SendableEthersLiquity } from "./SendableEthersLiquity";
-import { BlockPolledLiquityStore } from "./BlockPolledLiquityStore";
+  PopulatableEthersARTH,
+  SentEthersARTHTransaction
+} from "./PopulatableEthersARTH";
+import { ReadableEthersARTH, ReadableEthersARTHWithStore } from "./ReadableEthersARTH";
+import { SendableEthersARTH } from "./SendableEthersARTH";
+import { BlockPolledARTHStore } from "./BlockPolledARTHStore";
 
 /**
- * Thrown by {@link EthersLiquity} in case of transaction failure.
+ * Thrown by {@link EthersARTH} in case of transaction failure.
  *
  * @public
  */
@@ -64,7 +64,7 @@ export class EthersTransactionFailedError extends TransactionFailedError<
   }
 }
 
-const waitForSuccess = async <T>(tx: SentEthersLiquityTransaction<T>) => {
+const waitForSuccess = async <T>(tx: SentEthersARTHTransaction<T>) => {
   const receipt = await tx.waitForReceipt();
 
   if (receipt.status !== "succeeded") {
@@ -79,51 +79,51 @@ const waitForSuccess = async <T>(tx: SentEthersLiquityTransaction<T>) => {
  *
  * @public
  */
-export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity {
-  /** Information about the connection to the Liquity protocol. */
-  readonly connection: EthersLiquityConnection;
+export class EthersARTH implements ReadableEthersARTH, TransactableARTH {
+  /** Information about the connection to the ARTH protocol. */
+  readonly connection: EthersARTHConnection;
 
   /** Can be used to create populated (unsigned) transactions. */
-  readonly populate: PopulatableEthersLiquity;
+  readonly populate: PopulatableEthersARTH;
 
   /** Can be used to send transactions without waiting for them to be mined. */
-  readonly send: SendableEthersLiquity;
+  readonly send: SendableEthersARTH;
 
-  private _readable: ReadableEthersLiquity;
+  private _readable: ReadableEthersARTH;
 
   /** @internal */
-  constructor(readable: ReadableEthersLiquity) {
+  constructor(readable: ReadableEthersARTH) {
     this._readable = readable;
     this.connection = readable.connection;
-    this.populate = new PopulatableEthersLiquity(readable);
-    this.send = new SendableEthersLiquity(this.populate);
+    this.populate = new PopulatableEthersARTH(readable);
+    this.send = new SendableEthersARTH(this.populate);
   }
 
   /** @internal */
   static _from(
-    connection: EthersLiquityConnection & { useStore: "blockPolled" }
-  ): EthersLiquityWithStore<BlockPolledLiquityStore>;
+    connection: EthersARTHConnection & { useStore: "blockPolled" }
+  ): EthersARTHWithStore<BlockPolledARTHStore>;
 
   /** @internal */
-  static _from(connection: EthersLiquityConnection): EthersLiquity;
+  static _from(connection: EthersARTHConnection): EthersARTH;
 
   /** @internal */
-  static _from(connection: EthersLiquityConnection): EthersLiquity {
+  static _from(connection: EthersARTHConnection): EthersARTH {
     if (_usingStore(connection)) {
-      return new _EthersLiquityWithStore(ReadableEthersLiquity._from(connection));
+      return new _EthersARTHWithStore(ReadableEthersARTH._from(connection));
     } else {
-      return new EthersLiquity(ReadableEthersLiquity._from(connection));
+      return new EthersARTH(ReadableEthersARTH._from(connection));
     }
   }
 
   /** @internal */
   static connect(
     signerOrProvider: EthersSigner | EthersProvider,
-    optionalParams: EthersLiquityConnectionOptionalParams & { useStore: "blockPolled" }
-  ): Promise<EthersLiquityWithStore<BlockPolledLiquityStore>>;
+    optionalParams: EthersARTHConnectionOptionalParams & { useStore: "blockPolled" }
+  ): Promise<EthersARTHWithStore<BlockPolledARTHStore>>;
 
   /**
-   * Connect to the Liquity protocol and create an `EthersLiquity` object.
+   * Connect to the ARTH protocol and create an `EthersARTH` object.
    *
    * @param signerOrProvider - Ethers `Signer` or `Provider` to use for connecting to the Ethereum
    *                           network.
@@ -131,37 +131,37 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
    */
   static connect(
     signerOrProvider: EthersSigner | EthersProvider,
-    optionalParams?: EthersLiquityConnectionOptionalParams
-  ): Promise<EthersLiquity>;
+    optionalParams?: EthersARTHConnectionOptionalParams
+  ): Promise<EthersARTH>;
 
   static async connect(
     signerOrProvider: EthersSigner | EthersProvider,
-    optionalParams?: EthersLiquityConnectionOptionalParams
-  ): Promise<EthersLiquity> {
-    return EthersLiquity._from(await _connect(signerOrProvider, optionalParams));
+    optionalParams?: EthersARTHConnectionOptionalParams
+  ): Promise<EthersARTH> {
+    return EthersARTH._from(await _connect(signerOrProvider, optionalParams));
   }
 
   /**
-   * Check whether this `EthersLiquity` is an {@link EthersLiquityWithStore}.
+   * Check whether this `EthersARTH` is an {@link EthersARTHWithStore}.
    */
-  hasStore(): this is EthersLiquityWithStore;
+  hasStore(): this is EthersARTHWithStore;
 
   /**
-   * Check whether this `EthersLiquity` is an
-   * {@link EthersLiquityWithStore}\<{@link BlockPolledLiquityStore}\>.
+   * Check whether this `EthersARTH` is an
+   * {@link EthersARTHWithStore}\<{@link BlockPolledARTHStore}\>.
    */
-  hasStore(store: "blockPolled"): this is EthersLiquityWithStore<BlockPolledLiquityStore>;
+  hasStore(store: "blockPolled"): this is EthersARTHWithStore<BlockPolledARTHStore>;
 
   hasStore(): boolean {
     return false;
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getTotalRedistributed} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getTotalRedistributed} */
   getTotalRedistributed(overrides?: EthersCallOverrides): Promise<Trove> {
     return this._readable.getTotalRedistributed(overrides);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getTroveBeforeRedistribution} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getTroveBeforeRedistribution} */
   getTroveBeforeRedistribution(
     address?: string,
     overrides?: EthersCallOverrides
@@ -169,17 +169,17 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
     return this._readable.getTroveBeforeRedistribution(address, overrides);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getTrove} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getTrove} */
   getTrove(address?: string, overrides?: EthersCallOverrides): Promise<UserTrove> {
     return this._readable.getTrove(address, overrides);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getNumberOfTroves} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getNumberOfTroves} */
   getNumberOfTroves(overrides?: EthersCallOverrides): Promise<number> {
     return this._readable.getNumberOfTroves(overrides);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getPrice} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getPrice} */
   getPrice(overrides?: EthersCallOverrides): Promise<Decimal> {
     return this._readable.getPrice(overrides);
   }
@@ -194,37 +194,37 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
     return this._readable._getDefaultPool(overrides);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getTotal} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getTotal} */
   getTotal(overrides?: EthersCallOverrides): Promise<Trove> {
     return this._readable.getTotal(overrides);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getStabilityDeposit} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getStabilityDeposit} */
   getStabilityDeposit(address?: string, overrides?: EthersCallOverrides): Promise<StabilityDeposit> {
     return this._readable.getStabilityDeposit(address, overrides);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getRemainingStabilityPoolMAHAReward} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getRemainingStabilityPoolMAHAReward} */
   getRemainingStabilityPoolMAHAReward(overrides?: EthersCallOverrides): Promise<Decimal> {
     return this._readable.getRemainingStabilityPoolMAHAReward(overrides);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getARTHInStabilityPool} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getARTHInStabilityPool} */
   getARTHInStabilityPool(overrides?: EthersCallOverrides): Promise<Decimal> {
     return this._readable.getARTHInStabilityPool(overrides);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getARTHBalance} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getARTHBalance} */
   getARTHBalance(address?: string, overrides?: EthersCallOverrides): Promise<Decimal> {
     return this._readable.getARTHBalance(address, overrides);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getMAHABalance} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getMAHABalance} */
   getMAHABalance(address?: string, overrides?: EthersCallOverrides): Promise<Decimal> {
     return this._readable.getMAHABalance(address, overrides);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getCollateralSurplusBalance} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getCollateralSurplusBalance} */
   getCollateralSurplusBalance(address?: string, overrides?: EthersCallOverrides): Promise<Decimal> {
     return this._readable.getCollateralSurplusBalance(address, overrides);
   }
@@ -235,7 +235,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
     overrides?: EthersCallOverrides
   ): Promise<TroveWithPendingRedistribution[]>;
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.(getTroves:2)} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.(getTroves:2)} */
   getTroves(params: TroveListingParams, overrides?: EthersCallOverrides): Promise<UserTrove[]>;
 
   getTroves(params: TroveListingParams, overrides?: EthersCallOverrides): Promise<UserTrove[]> {
@@ -254,18 +254,18 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
     return this._readable._getFeesFactory(overrides);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getFees} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getFees} */
   getFees(overrides?: EthersCallOverrides): Promise<Fees> {
     return this._readable.getFees(overrides);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getFrontendStatus} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getFrontendStatus} */
   getFrontendStatus(address?: string, overrides?: EthersCallOverrides): Promise<FrontendStatus> {
     return this._readable.getFrontendStatus(address, overrides);
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.openTrove}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.openTrove}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -282,7 +282,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.closeTrove}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.closeTrove}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -293,7 +293,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.adjustTrove}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.adjustTrove}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -310,7 +310,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.depositCollateral}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.depositCollateral}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -324,7 +324,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.withdrawCollateral}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.withdrawCollateral}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -338,7 +338,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.borrowARTH}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.borrowARTH}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -353,7 +353,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.repayARTH}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.repayARTH}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -372,7 +372,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.liquidate}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.liquidate}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -386,7 +386,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.liquidateUpTo}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.liquidateUpTo}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -400,7 +400,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.depositARTHInStabilityPool}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.depositARTHInStabilityPool}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -415,7 +415,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.withdrawARTHFromStabilityPool}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.withdrawARTHFromStabilityPool}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -429,7 +429,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.withdrawGainsFromStabilityPool}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.withdrawGainsFromStabilityPool}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -442,7 +442,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.transferCollateralGainToTrove}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.transferCollateralGainToTrove}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -455,7 +455,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.sendARTH}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.sendARTH}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -470,7 +470,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.sendMAHA}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.sendMAHA}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -485,7 +485,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.redeemARTH}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.redeemARTH}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -500,7 +500,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.claimCollateralSurplus}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.claimCollateralSurplus}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -511,7 +511,7 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
   }
 
   /**
-   * {@inheritDoc @mahadao/arth-base#TransactableLiquity.registerFrontend}
+   * {@inheritDoc @mahadao/arth-base#TransactableARTH.registerFrontend}
    *
    * @throws
    * Throws {@link EthersTransactionFailedError} in case of transaction failure.
@@ -523,29 +523,28 @@ export class EthersLiquity implements ReadableEthersLiquity, TransactableLiquity
 }
 
 /**
- * Variant of {@link EthersLiquity} that exposes a {@link @mahadao/arth-base#LiquityStore}.
+ * Variant of {@link EthersARTH} that exposes a {@link @mahadao/arth-base#ARTHStore}.
  *
  * @public
  */
-export interface EthersLiquityWithStore<T extends LiquityStore = LiquityStore>
-  extends EthersLiquity {
-  /** An object that implements LiquityStore. */
+export interface EthersARTHWithStore<T extends ARTHStore = ARTHStore> extends EthersARTH {
+  /** An object that implements ARTHStore. */
   readonly store: T;
 }
 
-class _EthersLiquityWithStore<T extends LiquityStore = LiquityStore>
-  extends EthersLiquity
-  implements EthersLiquityWithStore<T>
+class _EthersARTHWithStore<T extends ARTHStore = ARTHStore>
+  extends EthersARTH
+  implements EthersARTHWithStore<T>
 {
   readonly store: T;
 
-  constructor(readable: ReadableEthersLiquityWithStore<T>) {
+  constructor(readable: ReadableEthersARTHWithStore<T>) {
     super(readable);
 
     this.store = readable.store;
   }
 
-  hasStore(store?: EthersLiquityStoreOption): boolean {
+  hasStore(store?: EthersARTHStoreOption): boolean {
     return store === undefined || store === this.connection.useStore;
   }
 }

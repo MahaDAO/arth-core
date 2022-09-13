@@ -5,10 +5,10 @@ import { LogDescription, Interface } from "@ethersproject/abi";
 
 import { Decimal } from "@mahadao/arth-base";
 
-import { _LiquityContracts, _TypedLiquityContract } from "./contracts";
+import { _ARTHContracts, _TypedARTHContract } from "./contracts";
 
 type ContractLookup = {
-  [name: string]: _TypedLiquityContract;
+  [name: string]: _TypedARTHContract;
 };
 
 type InterfaceLookup = {
@@ -99,7 +99,7 @@ const logDescriptionToString = (logDescription: LogDescription, nameLookup: Name
   return `${logDescription.name}({ ${prettyEntries.join(", ")} })`;
 };
 
-export const logsToString = (receipt: TransactionReceipt, contracts: _LiquityContracts): string => {
+export const logsToString = (receipt: TransactionReceipt, contracts: _ARTHContracts): string => {
   const contractLookup = contracts as unknown as ContractLookup;
   const interfaceLookup = interfaceLookupFrom(contractLookup);
   const contractNameLookup = nameLookupFrom(contractLookup);

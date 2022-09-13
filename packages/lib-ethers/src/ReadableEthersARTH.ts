@@ -4,8 +4,8 @@ import {
   Decimal,
   Fees,
   FrontendStatus,
-  LiquityStore,
-  ReadableLiquity,
+  ARTHStore,
+  ReadableARTH,
   StabilityDeposit,
   Trove,
   TroveListingParams,
@@ -20,21 +20,21 @@ import { decimalify, panic } from "./_utils";
 import { EthersCallOverrides, EthersProvider, EthersSigner } from "./types";
 
 import {
-  EthersLiquityConnection,
-  EthersLiquityConnectionOptionalParams,
-  EthersLiquityStoreOption,
+  EthersARTHConnection,
+  EthersARTHConnectionOptionalParams,
+  EthersARTHStoreOption,
   _connect,
   _getBlockTimestamp,
   _getContracts,
   _requireAddress,
   _requireFrontendAddress
-} from "./EthersLiquityConnection";
+} from "./EthersARTHConnection";
 
-import { BlockPolledLiquityStore } from "./BlockPolledLiquityStore";
+import { BlockPolledARTHStore } from "./BlockPolledARTHStore";
 
 // TODO: these are constant in the contracts, so it doesn't make sense to make a call for them,
 // but to avoid having to update them here when we change them in the contracts, we could read
-// them once after deployment and save them to LiquityDeployment.
+// them once after deployment and save them to ARTHDeployment.
 const MINUTE_DECAY_FACTOR = Decimal.from("0.999037758833783000");
 const BETA = Decimal.from(2);
 
@@ -76,48 +76,48 @@ const expectPositiveInt = <K extends string>(obj: { [P in K]?: number }, key: K)
 };
 
 /**
- * Ethers-based implementation of {@link @mahadao/arth-base#ReadableLiquity}.
+ * Ethers-based implementation of {@link @mahadao/arth-base#ReadableARTH}.
  *
  * @public
  */
-export class ReadableEthersLiquity implements ReadableLiquity {
-  readonly connection: EthersLiquityConnection;
+export class ReadableEthersARTH implements ReadableARTH {
+  readonly connection: EthersARTHConnection;
 
   /** @internal */
-  constructor(connection: EthersLiquityConnection) {
+  constructor(connection: EthersARTHConnection) {
     this.connection = connection;
   }
 
   /** @internal */
   static _from(
-    connection: EthersLiquityConnection & { useStore: "blockPolled" }
-  ): ReadableEthersLiquityWithStore<BlockPolledLiquityStore>;
+    connection: EthersARTHConnection & { useStore: "blockPolled" }
+  ): ReadableEthersARTHWithStore<BlockPolledARTHStore>;
 
   /** @internal */
-  static _from(connection: EthersLiquityConnection): ReadableEthersLiquity;
+  static _from(connection: EthersARTHConnection): ReadableEthersARTH;
 
   /** @internal */
-  static _from(connection: EthersLiquityConnection): ReadableEthersLiquity {
-    const readable = new ReadableEthersLiquity(connection);
+  static _from(connection: EthersARTHConnection): ReadableEthersARTH {
+    const readable = new ReadableEthersARTH(connection);
 
     return connection.useStore === "blockPolled"
-      ? new _BlockPolledReadableEthersLiquity(readable)
+      ? new _BlockPolledReadableEthersARTH(readable)
       : readable;
   }
 
   /** @internal */
   static connect(
     signerOrProvider: EthersSigner | EthersProvider,
-    optionalParams: EthersLiquityConnectionOptionalParams & { useStore: "blockPolled" }
-  ): Promise<ReadableEthersLiquityWithStore<BlockPolledLiquityStore>>;
+    optionalParams: EthersARTHConnectionOptionalParams & { useStore: "blockPolled" }
+  ): Promise<ReadableEthersARTHWithStore<BlockPolledARTHStore>>;
 
   static connect(
     signerOrProvider: EthersSigner | EthersProvider,
-    optionalParams?: EthersLiquityConnectionOptionalParams
-  ): Promise<ReadableEthersLiquity>;
+    optionalParams?: EthersARTHConnectionOptionalParams
+  ): Promise<ReadableEthersARTH>;
 
   /**
-   * Connect to the Liquity protocol and create a `ReadableEthersLiquity` object.
+   * Connect to the ARTH protocol and create a `ReadableEthersARTH` object.
    *
    * @param signerOrProvider - Ethers `Signer` or `Provider` to use for connecting to the Ethereum
    *                           network.
@@ -125,27 +125,27 @@ export class ReadableEthersLiquity implements ReadableLiquity {
    */
   static async connect(
     signerOrProvider: EthersSigner | EthersProvider,
-    optionalParams?: EthersLiquityConnectionOptionalParams
-  ): Promise<ReadableEthersLiquity> {
-    return ReadableEthersLiquity._from(await _connect(signerOrProvider, optionalParams));
+    optionalParams?: EthersARTHConnectionOptionalParams
+  ): Promise<ReadableEthersARTH> {
+    return ReadableEthersARTH._from(await _connect(signerOrProvider, optionalParams));
   }
 
   /**
-   * Check whether this `ReadableEthersLiquity` is a {@link ReadableEthersLiquityWithStore}.
+   * Check whether this `ReadableEthersARTH` is a {@link ReadableEthersARTHWithStore}.
    */
-  hasStore(): this is ReadableEthersLiquityWithStore;
+  hasStore(): this is ReadableEthersARTHWithStore;
 
   /**
-   * Check whether this `ReadableEthersLiquity` is a
-   * {@link ReadableEthersLiquityWithStore}\<{@link BlockPolledLiquityStore}\>.
+   * Check whether this `ReadableEthersARTH` is a
+   * {@link ReadableEthersARTHWithStore}\<{@link BlockPolledARTHStore}\>.
    */
-  hasStore(store: "blockPolled"): this is ReadableEthersLiquityWithStore<BlockPolledLiquityStore>;
+  hasStore(store: "blockPolled"): this is ReadableEthersARTHWithStore<BlockPolledARTHStore>;
 
   hasStore(): boolean {
     return false;
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getTotalRedistributed} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getTotalRedistributed} */
   async getTotalRedistributed(overrides?: EthersCallOverrides): Promise<Trove> {
     const { troveManager } = _getContracts(this.connection);
 
@@ -157,7 +157,7 @@ export class ReadableEthersLiquity implements ReadableLiquity {
     return new Trove(collateral, debt);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getTroveBeforeRedistribution} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getTroveBeforeRedistribution} */
   async getTroveBeforeRedistribution(
     address?: string,
     overrides?: EthersCallOverrides
@@ -184,7 +184,7 @@ export class ReadableEthersLiquity implements ReadableLiquity {
     }
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getTrove} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getTrove} */
   async getTrove(address?: string, overrides?: EthersCallOverrides): Promise<UserTrove> {
     const [trove, totalRedistributed] = await Promise.all([
       this.getTroveBeforeRedistribution(address, overrides),
@@ -194,14 +194,14 @@ export class ReadableEthersLiquity implements ReadableLiquity {
     return trove.applyRedistribution(totalRedistributed);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getNumberOfTroves} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getNumberOfTroves} */
   async getNumberOfTroves(overrides?: EthersCallOverrides): Promise<number> {
     const { troveManager } = _getContracts(this.connection);
 
     return (await troveManager.getTroveOwnersCount({ ...overrides })).toNumber();
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getPrice} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getPrice} */
   getPrice(overrides?: EthersCallOverrides): Promise<Decimal> {
     const { priceFeed } = _getContracts(this.connection);
 
@@ -234,7 +234,7 @@ export class ReadableEthersLiquity implements ReadableLiquity {
     return new Trove(liquidatedCollateral, closedDebt);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getTotal} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getTotal} */
   async getTotal(overrides?: EthersCallOverrides): Promise<Trove> {
     const [activePool, defaultPool] = await Promise.all([
       this._getActivePool(overrides),
@@ -244,7 +244,7 @@ export class ReadableEthersLiquity implements ReadableLiquity {
     return activePool.add(defaultPool);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getStabilityDeposit} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getStabilityDeposit} */
   async getStabilityDeposit(
     address?: string,
     overrides?: EthersCallOverrides
@@ -269,7 +269,7 @@ export class ReadableEthersLiquity implements ReadableLiquity {
     );
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getRemainingStabilityPoolMAHAReward} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getRemainingStabilityPoolMAHAReward} */
   async getRemainingStabilityPoolMAHAReward(overrides?: EthersCallOverrides): Promise<Decimal> {
     const { communityIssuance } = _getContracts(this.connection);
 
@@ -280,14 +280,14 @@ export class ReadableEthersLiquity implements ReadableLiquity {
     return issuanceCap.sub(totalMAHAIssued);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getARTHInStabilityPool} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getARTHInStabilityPool} */
   getARTHInStabilityPool(overrides?: EthersCallOverrides): Promise<Decimal> {
     const { stabilityPool } = _getContracts(this.connection);
 
     return stabilityPool.getTotalARTHDeposits({ ...overrides }).then(decimalify);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getARTHBalance} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getARTHBalance} */
   getARTHBalance(address?: string, overrides?: EthersCallOverrides): Promise<Decimal> {
     address ??= _requireAddress(this.connection);
     const { arthToken } = _getContracts(this.connection);
@@ -295,14 +295,14 @@ export class ReadableEthersLiquity implements ReadableLiquity {
     return arthToken.balanceOf(address, { ...overrides }).then(decimalify);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getMAHABalance} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getMAHABalance} */
   getMAHABalance(address?: string, overrides?: EthersCallOverrides): Promise<Decimal> {
     address ??= _requireAddress(this.connection);
     const { mahaToken } = _getContracts(this.connection);
     return mahaToken.balanceOf(address, { ...overrides }).then(decimalify);
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getCollateralSurplusBalance} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getCollateralSurplusBalance} */
   getCollateralSurplusBalance(address?: string, overrides?: EthersCallOverrides): Promise<Decimal> {
     address ??= _requireAddress(this.connection);
     const { collSurplusPool } = _getContracts(this.connection);
@@ -316,7 +316,7 @@ export class ReadableEthersLiquity implements ReadableLiquity {
     overrides?: EthersCallOverrides
   ): Promise<TroveWithPendingRedistribution[]>;
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.(getTroves:2)} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.(getTroves:2)} */
   getTroves(params: TroveListingParams, overrides?: EthersCallOverrides): Promise<UserTrove[]>;
 
   async getTroves(
@@ -381,7 +381,7 @@ export class ReadableEthersLiquity implements ReadableLiquity {
       );
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getFees} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getFees} */
   async getFees(overrides?: EthersCallOverrides): Promise<Fees> {
     const [createFees, total, price, blockTimestamp] = await Promise.all([
       this._getFeesFactory(overrides),
@@ -393,7 +393,7 @@ export class ReadableEthersLiquity implements ReadableLiquity {
     return createFees(blockTimestamp, total.collateralRatioIsBelowCritical(price));
   }
 
-  /** {@inheritDoc @mahadao/arth-base#ReadableLiquity.getFrontendStatus} */
+  /** {@inheritDoc @mahadao/arth-base#ReadableARTH.getFrontendStatus} */
   async getFrontendStatus(
     address?: string,
     overrides?: EthersCallOverrides
@@ -426,26 +426,24 @@ const mapBackendTroves = (troves: BackendTroves): TroveWithPendingRedistribution
   );
 
 /**
- * Variant of {@link ReadableEthersLiquity} that exposes a {@link @mahadao/arth-base#LiquityStore}.
+ * Variant of {@link ReadableEthersARTH} that exposes a {@link @mahadao/arth-base#ARTHStore}.
  *
  * @public
  */
-export interface ReadableEthersLiquityWithStore<T extends LiquityStore = LiquityStore>
-  extends ReadableEthersLiquity {
-  /** An object that implements LiquityStore. */
+export interface ReadableEthersARTHWithStore<T extends ARTHStore = ARTHStore>
+  extends ReadableEthersARTH {
+  /** An object that implements ARTHStore. */
   readonly store: T;
 }
 
-class _BlockPolledReadableEthersLiquity
-  implements ReadableEthersLiquityWithStore<BlockPolledLiquityStore>
-{
-  readonly connection: EthersLiquityConnection;
-  readonly store: BlockPolledLiquityStore;
+class _BlockPolledReadableEthersARTH implements ReadableEthersARTHWithStore<BlockPolledARTHStore> {
+  readonly connection: EthersARTHConnection;
+  readonly store: BlockPolledARTHStore;
 
-  private readonly _readable: ReadableEthersLiquity;
+  private readonly _readable: ReadableEthersARTH;
 
-  constructor(readable: ReadableEthersLiquity) {
-    const store = new BlockPolledLiquityStore(readable);
+  constructor(readable: ReadableEthersARTH) {
+    const store = new BlockPolledARTHStore(readable);
 
     this.store = store;
     this.connection = readable.connection;
@@ -480,7 +478,7 @@ class _BlockPolledReadableEthersLiquity
     );
   }
 
-  hasStore(store?: EthersLiquityStoreOption): boolean {
+  hasStore(store?: EthersARTHStoreOption): boolean {
     return store === undefined || store === "blockPolled";
   }
 

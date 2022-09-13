@@ -3,14 +3,14 @@ import { Event } from "@ethersproject/contracts";
 
 import {
   Decimal,
-  ObservableLiquity,
+  ObservableARTH,
   StabilityDeposit,
   Trove,
   TroveWithPendingRedistribution
 } from "@mahadao/arth-base";
 
-import { _getContracts, _requireAddress } from "./EthersLiquityConnection";
-import { ReadableEthersLiquity } from "./ReadableEthersLiquity";
+import { _getContracts, _requireAddress } from "./EthersARTHConnection";
+import { ReadableEthersARTH } from "./ReadableEthersARTH";
 
 const debouncingDelayMs = 50;
 
@@ -37,10 +37,10 @@ const debounce = (listener: (latestBlock: number) => void) => {
 };
 
 /** @alpha */
-export class ObservableEthersLiquity implements ObservableLiquity {
-  private readonly _readable: ReadableEthersLiquity;
+export class ObservableEthersARTH implements ObservableARTH {
+  private readonly _readable: ReadableEthersARTH;
 
-  constructor(readable: ReadableEthersLiquity) {
+  constructor(readable: ReadableEthersARTH) {
     this._readable = readable;
   }
 
