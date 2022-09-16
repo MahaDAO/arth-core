@@ -19,20 +19,20 @@ const { EthersARTH } = require("@mahadao/arth-ethers");
 async function example() {
   const provider = new providers.JsonRpcProvider("http://localhost:8545");
   const wallet = new Wallet(process.env.PRIVATE_KEY).connect(provider);
-  const liquity = await EthersARTH.connect(wallet);
+  const arth = await EthersARTH.connect(wallet);
 
-  const { newTrove } = await liquity.openTrove({
+  const { newTrove } = await arth.openTrove({
     depositCollateral: 5, // ETH
     borrowLUSD: 2000
   });
 
-  console.log(`Successfully opened a ARTH Trove (${newTrove})!`);
+  console.log(`Successfully opened a ARTH Loan (${newTrove})!`);
 }
 ```
 
 ## More examples
 
-See [packages/examples](https://github.com/liquity/liquity/tree/master/packages/examples) in the repo.
+See [packages/examples](https://github.com/mahadao/arth-core/tree/master/packages/examples) in the repo.
 
 ARTH's [Dev UI](https://github.com/liquity/liquity/tree/master/packages/dev-frontend) itself contains many examples of `@mahadao/arth-ethers` use.
 

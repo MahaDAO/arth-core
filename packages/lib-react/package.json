@@ -1,9 +1,9 @@
 {
   "name": "@mahadao/arth-react",
   "version": "0.0.0-semantic-release",
-  "description": "Components and hooks for React-based Liquity frontends",
+  "description": "Components and hooks for React-based ARTH frontends",
   "keywords": [
-    "Liquity",
+    "ARTH",
     "protocol",
     "DeFi",
     "Ethereum"

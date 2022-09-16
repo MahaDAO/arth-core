@@ -16,21 +16,21 @@ async function main() {
   // Replace URL if not using a local node
   const provider = new providers.JsonRpcProvider("http://localhost:8545");
   const wallet = new Wallet(process.env.PRIVATE_KEY).connect(provider);
-  const liquity = await EthersLiquity.connect(wallet, { useStore: "blockPolled" });
+  const arth = await EthersLiquity.connect(wallet, { useStore: "blockPolled" });
 
-  liquity.store.onLoaded = () => {
+  arth.store.onLoaded = () => {
     info("Waiting for price drops...");
-    tryToLiquidate(liquity);
+    tryToLiquidate(arth);
   };
 
-  liquity.store.subscribe(({ newState, oldState }) => {
+  arth.store.subscribe(({ newState, oldState }) => {
     // Try to liquidate whenever the price drops
     if (newState.price.lt(oldState.price)) {
-      tryToLiquidate(liquity);
+      tryToLiquidate(arth);
     }
   });
 
-  liquity.store.start();
+  arth.store.start();
 }
 
 /**
