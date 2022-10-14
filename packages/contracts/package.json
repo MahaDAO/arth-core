@@ -1,7 +1,7 @@
 {
-  "name": "@mahadao/contracts",
+  "name": "@mahadao/arth-contracts",
   "version": "1.0.0",
-  "description": "",
+  "description": "Core contracts for the ARTH valuecoin",
   "main": "truffle-config.js",
   "directories": {
     "test": "test"
@@ -16,7 +16,7 @@
     "coveralls": "cat coverage/lcov.info | coveralls"
   },
   "keywords": [],
-  "author": "",
+  "author": "Steven Enamakel <enamakel@mahadao.com>",
   "license": "ISC",
   "dependencies": {
     "@nomiclabs/hardhat-etherscan": "^3.1.0",
