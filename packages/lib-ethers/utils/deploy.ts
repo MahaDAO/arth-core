@@ -101,7 +101,8 @@ const deployContracts = async (
     gasPool: await deployContract(deployer, getContractFactory, "GasPool", {
       ...overrides
     }),
-    unipool: await deployContract(deployer, getContractFactory, "Unipool", { ...overrides })
+    unipool: await deployContract(deployer, getContractFactory, "Unipool", { ...overrides }),
+    
   };
 
   return [
@@ -116,7 +117,6 @@ const deployContracts = async (
         addresses.borrowerOperations,
         { ...overrides }
       ),
-
       mahaToken: await deployContract(
         deployer,
         getContractFactory,
@@ -134,10 +134,13 @@ const deployContracts = async (
         deployer,
         getContractFactory,
         "MultiTroveGetter",
+        Wallet.createRandom().address, // governance wallet
         addresses.troveManager,
         addresses.sortedTroves,
         { ...overrides }
-      )
+      ),
+
+      governance: await deployContract(deployer, getContractFactory, "Governance", {...overrides}),
     },
 
     startBlock
@@ -175,6 +178,8 @@ const connectContracts = async (
     throw new Error("Signer must have a provider.");
   }
 
+
+
   const txCount = await deployer.provider.getTransactionCount(deployer.getAddress());
 
   const connections: ((nonce: number) => Promise<ContractTransaction>)[] = [
@@ -195,7 +200,7 @@ const connectContracts = async (
         priceFeed.address,
         arthToken.address,
         sortedTroves.address,
-        mahaToken.address,
+        // mahaToken.address,
         { ...overrides, nonce }
       ),
 
@@ -254,11 +259,11 @@ const connectContracts = async (
         nonce
       }),
 
-    nonce =>
-      communityIssuance.setAddresses(mahaToken.address, stabilityPool.address, {
-        ...overrides,
-        nonce
-      })
+    // nonce =>
+    //   communityIssuance.setAddresses(mahaToken.address, stabilityPool.address, {
+    //     ...overrides,
+    //     nonce
+    //   })
   ];
 
   const txs = await Promise.all(connections.map((connect, i) => connect(txCount + i)));
@@ -281,6 +286,7 @@ export const deployAndSetupContracts = async (
 
   log("Deploying contracts...");
   log();
+  console.log("Provider chainId---------------", await deployer.provider.getNetwork(), await deployer.getChainId())
 
   const deployment: _ARTHDeploymentJSON = {
     chainId: await deployer.getChainId(),
@@ -302,18 +308,19 @@ export const deployAndSetupContracts = async (
   const contracts = _connectToContracts(deployer, deployment);
 
   log("Connecting contracts...");
-  await connectContracts(contracts, deployer, overrides);
+  console.log("======Maha token Address====", contracts.mahaToken.address)
+  // await connectContracts(contracts, deployer, overrides);
 
-  const mahaTokenDeploymentTime = await contracts.mahaToken.getDeploymentStartTime();
-  const bootstrapPeriod = await contracts.troveManager.BOOTSTRAP_PERIOD();
-  const totalStabilityPoolMAHAReward = await contracts.communityIssuance.MAHASupplyCap();
+  // const mahaTokenDeploymentTime = await contracts.mahaToken.getDeploymentStartTime();
+  // const bootstrapPeriod = await contracts.troveManager.BOOTSTRAP_PERIOD();
+  // const totalStabilityPoolMAHAReward = await contracts.communityIssuance.MAHASupplyCap();
 
   return {
     ...deployment,
-    deploymentDate: mahaTokenDeploymentTime.toNumber() * 1000,
-    bootstrapPeriod: bootstrapPeriod.toNumber(),
-    totalStabilityPoolMAHAReward: `${Decimal.fromBigNumberString(
-      totalStabilityPoolMAHAReward.toHexString()
-    )}`
+    // deploymentDate: mahaTokenDeploymentTime.toNumber() * 1000,
+    // bootstrapPeriod: bootstrapPeriod.toNumber(),
+    // totalStabilityPoolMAHAReward: `${Decimal.fromBigNumberString(
+    //   totalStabilityPoolMAHAReward.toHexString()
+    // )}`
   };
 };
