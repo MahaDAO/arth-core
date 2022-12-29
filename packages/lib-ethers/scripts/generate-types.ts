@@ -156,7 +156,7 @@ const contractArtifacts = [
   SortedTroves,
   StabilityPool,
   TroveManager,
-  Governance
+  Governance,
 ];
 
 const contracts = contractArtifacts.map(({ contractName, abi }) => ({

@@ -415,8 +415,12 @@ export class Trove {
 
   /** @internal */
   constructor(collateral = Decimal.ZERO, debt = Decimal.ZERO) {
+    console.error("---------------------xxx")
+
     this.collateral = collateral;
     this.debt = debt;
+    console.error("---------------------xccc")
+
   }
 
   get isEmpty(): boolean {
@@ -562,7 +566,9 @@ export class Trove {
     that: Trove,
     borrowingRate: Decimalish = MINIMUM_BORROWING_RATE
   ): TroveChange<Decimal> | undefined {
+    console.log("---------------------------------watchchanged------------------")
     if (this.collateral.eq(that.collateral) && this.debt.eq(that.debt)) {
+      console.warn("test0")
       return undefined;
     }
 
@@ -570,7 +576,7 @@ export class Trove {
       if (that.debt.lt(ARTH_LIQUIDATION_RESERVE)) {
         return invalidTroveCreation(that, "missingLiquidationReserve");
       }
-
+      console.warn("test1")
       return troveCreation({
         depositCollateral: that.collateral,
         borrowARTH: unapplyFee(borrowingRate, that.netDebt)
@@ -578,13 +584,14 @@ export class Trove {
     }
 
     if (that.isEmpty) {
+      console.warn("test2")
       return troveClosure(
         this.netDebt.nonZero
           ? { withdrawCollateral: this.collateral, repayARTH: this.netDebt }
           : { withdrawCollateral: this.collateral }
       );
     }
-
+    console.warn("test3")
     return this.collateral.eq(that.collateral)
       ? troveAdjustment<Decimal>(this._debtChange(that, borrowingRate), that.debt.zero && "debt")
       : this.debt.eq(that.debt)
@@ -681,7 +688,8 @@ export class Trove {
    * @param that - The Trove to recreate.
    * @param borrowingRate - Current borrowing rate.
    */
-  static recreate(that: Trove, borrowingRate?: Decimalish): TroveCreationParams<Decimal> {
+  public static recreate(that: Trove, borrowingRate?: Decimalish): TroveCreationParams<Decimal> {
+    console.log("---------------------------------recreate------------------")
     const change = _emptyTrove.whatChanged(that, borrowingRate);
     assert(change?.type === "creation");
     return change.params;

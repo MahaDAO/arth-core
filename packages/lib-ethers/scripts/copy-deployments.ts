@@ -13,7 +13,6 @@ const exists = (dir: string) => {
 
 const copyDeploymentsFrom = (deploymentsDir: string) => {
   const deployments = fs.readdirSync(deploymentsDir);
-
   for (const deployment of deployments) {
     fs.copyFileSync(path.join(deploymentsDir, deployment), path.join(outputDir, deployment));
   }
