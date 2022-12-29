@@ -816,7 +816,8 @@ export class PopulatableEthersARTH
 
     const normalizedParams = _normalizeTroveCreation(params);
     const { depositCollateral, borrowARTH } = normalizedParams;
-
+    console.log("**dev -----depositCollateral", depositCollateral.toString())
+    console.log("**dev -----borrowARTH", borrowARTH.toString())
     const [fees, blockTimestamp, total, price] = await Promise.all([
       this._readable._getFeesFactory(),
       this._readable._getBlockTimestamp(),
@@ -863,16 +864,15 @@ export class PopulatableEthersARTH
             `within ${borrowingFeeDecayToleranceMinutes} minutes`
         );
       }
-
       const [gasNow, gasLater] = await Promise.all([
         borrowerOperations.estimateGas.openTrove(...txParams(borrowARTH)),
         borrowerOperations.estimateGas.openTrove(...txParams(borrowARTHSimulatingDecay))
       ]);
-
+      
       const gasLimit = addGasForBaseRateUpdate(borrowingFeeDecayToleranceMinutes)(
         bigNumberMax(addGasForPotentialListTraversal(gasNow), gasLater)
       );
-
+      
       gasHeadroom = gasLimit.sub(gasNow).toNumber();
       overrides = { ...overrides, gasLimit };
     }

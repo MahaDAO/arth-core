@@ -71,7 +71,7 @@ const deployContracts = async (
   else if (network?.name === "mainnet") params = ethParams;
   else if (network?.name === "polygon") params = polygonParams;
   else params = localParams;
-
+  console.log("**dev----------------------", params.externalAddrs.TIMELOCK)
   const [activePoolAddress, startBlock] = await deployContractAndGetBlockNumber(
     deployer,
     getContractFactory,
@@ -150,7 +150,7 @@ const deployContracts = async (
         deployer,
         getContractFactory,
         "ARTHValuecoin",
-        governance,
+        params.externalAddrs.TIMELOCK,
         { ...overrides }
       ),
     },
