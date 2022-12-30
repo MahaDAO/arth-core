@@ -78,6 +78,15 @@ const deployContracts = async (
     "ActivePool",
     { ...overrides }
   );
+
+  // const priceFeed = params.externalAddrs.PRICE_FEED ? params.externalAddrs.PRICE_FEED : await deployContract(
+  //   deployer,
+  //   getContractFactory,
+  //   priceFeedIsTestnet ? "PriceFeedTestnet" : "PriceFeed",
+  //   { ...overrides }
+  // )
+
+  const priceFeed = await (await getContractFactory("PriceFeedTestnet", deployer)).deploy();
   
   const addresses = {
     activePool: activePoolAddress,
@@ -104,12 +113,7 @@ const deployContracts = async (
     
     defaultPool: await deployContract(deployer, getContractFactory, "DefaultPool", { ...overrides }),
     hintHelpers: await deployContract(deployer, getContractFactory, "HintHelpers", { ...overrides }),
-    priceFeed: params.externalAddrs.PRICE_FEED ? params.externalAddrs.PRICE_FEED : await deployContract(
-      deployer,
-      getContractFactory,
-      priceFeedIsTestnet ? "PriceFeedTestnet" : "PriceFeed",
-      { ...overrides }
-    ),
+    priceFeed: priceFeed.address,
     sortedTroves: await deployContract(deployer, getContractFactory, "SortedTroves", {
       ...overrides
     }),
@@ -128,6 +132,7 @@ const deployContracts = async (
     "0",
     {...overrides}
   )
+  priceFeed
   return [
     {
       ...addresses,
@@ -201,6 +206,10 @@ const connectContracts = async (
         ...overrides,
         nonce
       }),
+
+    // nonce => governance.setPriceFeed(priceFeed.address, {...overrides,
+    //   nonce
+    // }),
 
     nonce =>
       troveManager.setAddresses(

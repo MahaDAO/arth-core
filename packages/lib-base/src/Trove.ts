@@ -415,12 +415,8 @@ export class Trove {
 
   /** @internal */
   constructor(collateral = Decimal.ZERO, debt = Decimal.ZERO) {
-    console.error("---------------------xxx")
-
     this.collateral = collateral;
     this.debt = debt;
-    console.error("---------------------xccc")
-
   }
 
   get isEmpty(): boolean {

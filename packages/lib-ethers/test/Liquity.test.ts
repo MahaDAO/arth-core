@@ -247,7 +247,7 @@ describe("EthersARTH", () => {
       const nominalCollateralRatio = Decimal.from(1).div(3);
       const params = Trove.recreate(new Trove(Decimal.from(1), ARTH_MINIMUM_DEBT));
       const trove = Trove.create(params);
-      // expect(`${trove._nominalCollateralRatio}`).to.equal(`${nominalCollateralRatio}`);
+      expect(`${trove._nominalCollateralRatio}`).to.equal(`${nominalCollateralRatio}`);
 
       await fakeARTH.openTrove(params);
 
@@ -294,7 +294,7 @@ describe("EthersARTH", () => {
       console.log("**dev ---- ARTH_MINIMUM_NET_DEBT", ARTH_MINIMUM_NET_DEBT.toString())
       console.log("**dev ------ collateral",newTrove.collateral.toString(), aaa.collateral.toString())
       console.log("**dev ------ debt",newTrove.debt.toString(), aaa.debt.toString())
-      // expect(newTrove).to.deep.equal(Trove.create(withSomeBorrowing));
+      expect(newTrove).to.deep.equal(Trove.create(withSomeBorrowing));
       expect(`${fee}`).to.equal(`${MINIMUM_BORROWING_RATE.mul(withSomeBorrowing.borrowARTH)}`);
     });
 

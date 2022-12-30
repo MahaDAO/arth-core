@@ -519,12 +519,20 @@ export class PopulatableEthersARTH
       ({ logs }) => {
         const [newTrove] = borrowerOperations
           .extractEvents(logs, "TroveUpdated")
-          .map(({ args: { _coll, _debt } }) => new Trove(decimalify(_coll), decimalify(_debt)));
+          .map(({ args: { _coll, _debt, _borrower, stake, operation } }) => {
+            console.log("-------------(*(*(*(*--------",_borrower,_debt.toString(), _coll.toString(), stake.toString(), operation)
+            return new Trove(decimalify(_coll), decimalify(_debt))
+          });
 
         const [fee] = borrowerOperations
           .extractEvents(logs, "ARTHBorrowingFeePaid")
-          .map(({ args: { _ARTHFee } }) => decimalify(_ARTHFee));
-
+          .map(({ args: { _ARTHFee } }) => {
+            console.log("----asdfasdf-----", _ARTHFee.toString())
+            return decimalify(_ARTHFee)});
+        borrowerOperations.extractEvents(logs, "Test").map(arg=>{
+          console.log('-------------------ttttttttttttt--------------',arg)
+          return
+        })
         return {
           params,
           newTrove,
@@ -816,8 +824,7 @@ export class PopulatableEthersARTH
 
     const normalizedParams = _normalizeTroveCreation(params);
     const { depositCollateral, borrowARTH } = normalizedParams;
-    console.log("**dev -----depositCollateral", depositCollateral.toString())
-    console.log("**dev -----borrowARTH", borrowARTH.toString())
+    
     const [fees, blockTimestamp, total, price] = await Promise.all([
       this._readable._getFeesFactory(),
       this._readable._getBlockTimestamp(),
@@ -831,6 +838,7 @@ export class PopulatableEthersARTH
       fees(blockTimestamp + seconds, recoveryMode).borrowingRate();
 
     const currentBorrowingRate = decayBorrowingRate(0);
+    
     const newTrove = Trove.create(normalizedParams, currentBorrowingRate);
     const hints = await this._findHints(newTrove);
 
@@ -847,7 +855,6 @@ export class PopulatableEthersARTH
       AddressZero,
       { value: depositCollateral.hex, ...overrides }
     ];
-
     let gasHeadroom: number | undefined;
 
     if (overrides?.gasLimit === undefined) {
@@ -857,7 +864,6 @@ export class PopulatableEthersARTH
         decayedTrove,
         currentBorrowingRate
       );
-
       if (decayedTrove.debt.lt(ARTH_MINIMUM_DEBT)) {
         throw new Error(
           `Trove's debt might fall below ${ARTH_MINIMUM_DEBT} ` +
@@ -876,6 +882,7 @@ export class PopulatableEthersARTH
       gasHeadroom = gasLimit.sub(gasNow).toNumber();
       overrides = { ...overrides, gasLimit };
     }
+    console.log("**dev -----123", txParams(borrowARTH))
 
     return this._wrapTroveChangeWithFees(
       normalizedParams,

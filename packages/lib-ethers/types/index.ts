@@ -117,6 +117,7 @@ export interface BorrowerOperations
     PaidARTHBorrowingFeeToFrontEnd(_frontEndTag?: string | null, _ARTHFee?: null): EventFilter;
     SortedTrovesAddressChanged(_sortedTrovesAddress?: null): EventFilter;
     StabilityPoolAddressChanged(_stabilityPoolAddress?: null): EventFilter;
+    Test(price?: BigNumber, fee?: BigNumber, deby?: BigNumber, composite?: BigNumber, ICR?: BigNumber, NICR?: BigNumber, stake?: BigNumber, arrIndex?: BigNumber, recoverMode?: boolean): EventFilter;
     TroveCreated(_borrower?: string | null, arrayIndex?: null): EventFilter;
     TroveManagerAddressChanged(_newTroveManagerAddress?: null): EventFilter;
     TroveUpdated(_borrower?: string | null, _debt?: null, _coll?: null, stake?: null, operation?: null): EventFilter;
@@ -134,6 +135,7 @@ export interface BorrowerOperations
   extractEvents(logs: Log[], name: "PaidARTHBorrowingFeeToFrontEnd"): _TypedLogDescription<{ _frontEndTag: string; _ARTHFee: BigNumber }>[];
   extractEvents(logs: Log[], name: "SortedTrovesAddressChanged"): _TypedLogDescription<{ _sortedTrovesAddress: string }>[];
   extractEvents(logs: Log[], name: "StabilityPoolAddressChanged"): _TypedLogDescription<{ _stabilityPoolAddress: string }>[];
+  extractEvents(logs: Log[], name: "Test"): _TypedLogDescription<[{ price: BigNumber; ARTHFee: BigNumber; netDebt: BigNumber; compositeDebt: BigNumber; ICR: BigNumber; NICR: BigNumber; stake: BigNumber; arrayIndex: BigNumber }, boolean]>[];
   extractEvents(logs: Log[], name: "TroveCreated"): _TypedLogDescription<{ _borrower: string; arrayIndex: BigNumber }>[];
   extractEvents(logs: Log[], name: "TroveManagerAddressChanged"): _TypedLogDescription<{ _newTroveManagerAddress: string }>[];
   extractEvents(logs: Log[], name: "TroveUpdated"): _TypedLogDescription<{ _borrower: string; _debt: BigNumber; _coll: BigNumber; stake: BigNumber; operation: number }>[];

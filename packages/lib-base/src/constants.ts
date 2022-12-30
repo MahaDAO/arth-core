@@ -19,8 +19,7 @@ export const MINIMUM_COLLATERAL_RATIO = Decimal.from(1.1);
  *
  * @public
  */
-export const ARTH_LIQUIDATION_RESERVE = Decimal.from(200);
-// export const ARTH_LIQUIDATION_RESERVE = Decimal.from(50);
+export const ARTH_LIQUIDATION_RESERVE = Decimal.from(50);
 
 /**
  * A Trove must always have at least this much debt on top of the
@@ -31,8 +30,7 @@ export const ARTH_LIQUIDATION_RESERVE = Decimal.from(200);
  *
  * @public
  */
-// export const ARTH_MINIMUM_NET_DEBT = Decimal.from(250);
-export const ARTH_MINIMUM_NET_DEBT = Decimal.from(1800);
+export const ARTH_MINIMUM_NET_DEBT = Decimal.from(250);
 
 /**
  * A Trove must always have at least this much debt.
@@ -53,18 +51,18 @@ export const ARTH_MINIMUM_DEBT = ARTH_LIQUIDATION_RESERVE.add(ARTH_MINIMUM_NET_D
  *
  * @public
  */
-export const MINIMUM_BORROWING_RATE = Decimal.from(0.005);
+export const MINIMUM_BORROWING_RATE = Decimal.from(0.005); // getBorrowingFeeFloor
 
 /**
  * Value that the {@link Fees.borrowingRate | borrowing rate} will never exceed.
  *
  * @public
  */
-export const MAXIMUM_BORROWING_RATE = Decimal.from(0.05);
+export const MAXIMUM_BORROWING_RATE = Decimal.from(0.05); // getMaxBorrowingFee
 
 /**
  * Value that the {@link Fees.redemptionRate | redemption rate} will never decay below.
  *
  * @public
  */
-export const MINIMUM_REDEMPTION_RATE = Decimal.from(0.005);
+export const MINIMUM_REDEMPTION_RATE = Decimal.from(0.005); // getRedemptionFeeFloor
