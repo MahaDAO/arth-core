@@ -46,6 +46,7 @@ import {
 import {
   EthersARTHConnection,
   _getContracts,
+  _getProvider,
   _requireAddress,
   _requireSigner
 } from "./EthersARTHConnection";
@@ -830,7 +831,7 @@ export class PopulatableEthersARTH
 
     const recoveryMode = total.collateralRatioIsBelowCritical(price);
     const decayBorrowingRate = async(seconds: number) =>
-      await fees(blockTimestamp + seconds, recoveryMode).borrowingRate(governance.address);
+      await fees(blockTimestamp + seconds, recoveryMode).borrowingRate(governance.address, _getProvider(this._readable.connection));
 
     const currentBorrowingRate = await decayBorrowingRate(0);
     
@@ -959,7 +960,7 @@ export class PopulatableEthersARTH
           feeVars.blockTimestamp + seconds,
           feeVars.total.collateralRatioIsBelowCritical(feeVars.price)
         )
-        .borrowingRate(governance.address);
+        .borrowingRate(governance.address, _getProvider(this._readable.connection));
 
     const currentBorrowingRate = await decayBorrowingRate(0);
     const adjustedTrove = await trove.adjust(normalizedParams, currentBorrowingRate);
@@ -1224,7 +1225,7 @@ export class PopulatableEthersARTH
 
     const defaultMaxRedemptionRate = async (amount: Decimal) =>
       Decimal.min(
-        (await fees.redemptionRate(governance.address, amount.div(total.debt))).add(defaultRedemptionRateSlippageTolerance),
+        (await fees.redemptionRate(governance.address,_getProvider(this._readable.connection), amount.div(total.debt))).add(defaultRedemptionRateSlippageTolerance),
         Decimal.ONE
       );
 

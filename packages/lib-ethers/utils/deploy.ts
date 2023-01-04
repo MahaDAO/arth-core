@@ -71,7 +71,6 @@ const deployContracts = async (
   else if (network?.name === "mainnet") params = ethParams;
   else if (network?.name === "polygon") params = polygonParams;
   else params = localParams;
-  console.log("**dev----------------------", params.externalAddrs.TIMELOCK)
   const [activePoolAddress, startBlock] = await deployContractAndGetBlockNumber(
     deployer,
     getContractFactory,
@@ -307,7 +306,6 @@ export const deployAndSetupContracts = async (
 
   log("Deploying contracts...");
   log();
-  console.log("Provider chainId---------------", await deployer.provider.getNetwork(), await deployer.getChainId())
 
   const deployment: _ARTHDeploymentJSON = {
     chainId: await deployer.getChainId(),

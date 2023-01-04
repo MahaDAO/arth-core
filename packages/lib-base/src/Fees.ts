@@ -1,6 +1,7 @@
 import assert from "assert";
 
 import { Decimal, Decimalish } from "./Decimal";
+import { Provider } from '@ethersproject/abstract-provider'
 
 import {
   // MAXIMUM_BORROWING_RATE,
@@ -113,10 +114,11 @@ export class Fees {
    * const borrowingFeeARTH = borrowingRate.mul(borrowedARTHAmount);
    * ```
    */
-  async borrowingRate(governAddr: string, when?: Date): Promise<Decimal> {
+  async borrowingRate(governAddr: string, provider: Provider, when?: Date): Promise<Decimal> {
+    console.log("**dev------------------- borrowingRate-----------------", governAddr)
     return this._recoveryMode
       ? Decimal.ZERO
-      : Decimal.min((await BorrowingRate.minBorrowingRate(governAddr)).add(this.baseRate(when)), (await BorrowingRate.maxBorrowingRate(governAddr)));
+      : Decimal.min((await BorrowingRate.minBorrowingRate(governAddr, provider)).add(this.baseRate(when)), (await BorrowingRate.maxBorrowingRate(governAddr, provider)));
   }
 
   /**
@@ -148,14 +150,14 @@ export class Fees {
    * const redemptionFeeARTH = redemptionRate.mul(redeemedARTHAmount);
    * ```
    */
-  async redemptionRate(governAddr: string, redeemedFractionOfSupply: Decimalish = Decimal.ZERO, when?: Date): Promise<Decimal> {
+  async redemptionRate(governAddr: string, provider:Provider, redeemedFractionOfSupply: Decimalish = Decimal.ZERO, when?: Date): Promise<Decimal> {
     redeemedFractionOfSupply = Decimal.from(redeemedFractionOfSupply);
     let baseRate = this.baseRate(when);
 
     if (redeemedFractionOfSupply.nonZero) {
       baseRate = redeemedFractionOfSupply.div(this._beta).add(baseRate);
     }
-
-    return Decimal.min((await BorrowingRate.minRedemptionRate(governAddr)).add(baseRate), Decimal.ONE);
+    console.log("**dev------------------- redemptionRate-----------------", governAddr)
+    return Decimal.min((await BorrowingRate.minRedemptionRate(governAddr, provider)).add(baseRate), Decimal.ONE);
   }
 }

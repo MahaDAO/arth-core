@@ -4,6 +4,8 @@
 
 ```ts
 
+import { Provider } from '@ethersproject/abstract-provider';
+
 // @public
 export const ARTH_LIQUIDATION_RESERVE: Decimal;
 
@@ -74,6 +76,8 @@ export interface ARTHStoreBaseState {
     numberOfTroves: number;
     ownFrontend: FrontendStatus;
     price: Decimal;
+    // (undocumented)
+    provider: Provider;
     remainingStabilityPoolMAHAReward: Decimal;
     // @internal (undocumented)
     _riskiestTroveBeforeRedistribution: TroveWithPendingRedistribution;
@@ -105,11 +109,11 @@ export type ARTHStoreState<T = unknown> = ARTHStoreBaseState & ARTHStoreDerivedS
 // @public (undocumented)
 export class BorrowingRate {
     // (undocumented)
-    static maxBorrowingRate(governance: string): Promise<Decimal>;
+    static maxBorrowingRate(governance: string, provider: Provider): Promise<Decimal>;
     // (undocumented)
-    static minBorrowingRate(governance: string): Promise<Decimal>;
+    static minBorrowingRate(governance: string, provider: Provider): Promise<Decimal>;
     // (undocumented)
-    static minRedemptionRate(governance: string): Promise<Decimal>;
+    static minRedemptionRate(governance: string, provider: Provider): Promise<Decimal>;
 }
 
 // @internal (undocumented)
@@ -284,9 +288,9 @@ export class Fees {
     constructor(baseRateWithoutDecay: Decimalish, minuteDecayFactor: Decimalish, beta: Decimalish, lastFeeOperation: Date, timeOfLatestBlock: Date, recoveryMode: boolean);
     // @internal (undocumented)
     baseRate(when?: Date): Decimal;
-    borrowingRate(governAddr: string, when?: Date): Promise<Decimal>;
+    borrowingRate(governAddr: string, provider: Provider, when?: Date): Promise<Decimal>;
     equals(that: Fees): boolean;
-    redemptionRate(governAddr: string, redeemedFractionOfSupply?: Decimalish, when?: Date): Promise<Decimal>;
+    redemptionRate(governAddr: string, provider: Provider, redeemedFractionOfSupply?: Decimalish, when?: Date): Promise<Decimal>;
     // @internal (undocumented)
     _setRecoveryMode(recoveryMode: boolean): Fees;
     // @internal (undocumented)
@@ -618,7 +622,7 @@ export class Trove {
     // (undocumented)
     equals(that: Trove): boolean;
     // (undocumented)
-    static readonly governance: string;
+    static governance: string;
     // (undocumented)
     get isEmpty(): boolean;
     isOpenableInRecoveryMode(price: Decimalish): boolean;
@@ -627,6 +631,8 @@ export class Trove {
     get netDebt(): Decimal;
     // @internal (undocumented)
     get _nominalCollateralRatio(): Decimal;
+    // (undocumented)
+    static provider?: Provider;
     static recreate(that: Trove, borrowingRate?: Decimalish): Promise<TroveCreationParams<Decimal>>;
     // (undocumented)
     setCollateral(collateral: Decimalish): Trove;

@@ -5,6 +5,7 @@ import { StabilityDeposit } from "./StabilityDeposit";
 import { Trove, TroveWithPendingRedistribution, UserTrove } from "./Trove";
 import { Fees } from "./Fees";
 import { FrontendStatus } from "./ReadableARTH";
+import { Provider } from '@ethersproject/abstract-provider'
 
 /**
  * State variables read from the blockchain.
@@ -74,7 +75,8 @@ export interface ARTHStoreBaseState {
   /** @internal */
   _riskiestTroveBeforeRedistribution: TroveWithPendingRedistribution;
 
-  governanceAddress: string
+  governanceAddress: string;
+  provider: Provider
 }
 
 /**
@@ -392,7 +394,8 @@ export abstract class ARTHStore<T = unknown> {
         baseState._riskiestTroveBeforeRedistribution,
         baseStateUpdate._riskiestTroveBeforeRedistribution
       ),
-      governanceAddress: baseState.governanceAddress
+      governanceAddress: baseState.governanceAddress,
+      provider: baseState.provider
     };
   }
 
@@ -403,15 +406,16 @@ export abstract class ARTHStore<T = unknown> {
     total,
     price,
     _riskiestTroveBeforeRedistribution,
-    governanceAddress
+    governanceAddress,
+    provider
   }: ARTHStoreBaseState): Promise<ARTHStoreDerivedState> {
     const fees = _feesInNormalMode._setRecoveryMode(total.collateralRatioIsBelowCritical(price));
 
     return {
       trove: troveBeforeRedistribution.applyRedistribution(totalRedistributed),
       fees,
-      borrowingRate: await fees.borrowingRate(governanceAddress),
-      redemptionRate: await fees.redemptionRate(governanceAddress),
+      borrowingRate: await fees.borrowingRate(governanceAddress, provider),
+      redemptionRate: await fees.redemptionRate(governanceAddress, provider),
       haveUndercollateralizedTroves: _riskiestTroveBeforeRedistribution
         .applyRedistribution(totalRedistributed)
         .collateralRatioIsBelowMinimum(price)

@@ -1,6 +1,7 @@
 import assert from "assert";
 
 import { Decimal, Decimalish } from "./Decimal";
+import { Provider } from '@ethersproject/abstract-provider'
 
 import {
   MINIMUM_COLLATERAL_RATIO,
@@ -414,7 +415,8 @@ export class Trove {
   /** Amount of ARTH owed. */
   readonly debt: Decimal;
 
-  static readonly governance: string;
+  static governance: string;
+  static provider?: Provider = undefined;
 
   /** @internal */
   constructor(collateral = Decimal.ZERO, debt = Decimal.ZERO) {
@@ -571,7 +573,8 @@ export class Trove {
 
     if(!borrowingRate) {
       if(!Trove.governance) throw new Error("should be initialize governace Address")
-      borrowingRate = await BorrowingRate.minBorrowingRate(Trove.governance)
+      if(!Trove.provider) throw new Error("should be initialize provider")
+      borrowingRate = await BorrowingRate.minBorrowingRate(Trove.governance, Trove.provider)
     }
 
     if (this.isEmpty) {
@@ -620,7 +623,8 @@ export class Trove {
 
     if(!borrowingRate) {
       if(!Trove.governance) throw new Error("should be initialize governace Address")
-      borrowingRate = await BorrowingRate.minBorrowingRate(Trove.governance)
+      if(!Trove.provider) throw new Error("should be initialize provider")
+      borrowingRate = await BorrowingRate.minBorrowingRate(Trove.governance, Trove.provider)
     }
 
     switch (change.type) {

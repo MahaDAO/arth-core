@@ -102,6 +102,7 @@ export class BlockPolledARTHStore extends ARTHStore<BlockPolledARTHStoreExtraSta
         blockTag
       }),
       governanceAddress: governance.address,
+      provider: this._provider,
       frontend: frontendTag
         ? this._readable.getFrontendStatus(frontendTag, { blockTag })
         : { status: "unregistered" as const },
@@ -141,7 +142,7 @@ export class BlockPolledARTHStore extends ARTHStore<BlockPolledARTHStoreExtraSta
     return [
       {
         ...baseState,
-        _feesInNormalMode: _feesFactory(blockTimestamp, false)
+        _feesInNormalMode: _feesFactory(blockTimestamp, false),
       },
       {
         blockTag,

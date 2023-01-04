@@ -17,8 +17,9 @@ import {
   TroveCreationParams,
   Fees,
   ARTH_LIQUIDATION_RESERVE,
-  MAXIMUM_BORROWING_RATE,
-  MINIMUM_BORROWING_RATE,
+  // MAXIMUM_BORROWING_RATE,
+  // MINIMUM_BORROWING_RATE,
+  BorrowingRate,
   ARTH_MINIMUM_DEBT,
   ARTH_MINIMUM_NET_DEBT
 } from "@mahadao/arth-base";
@@ -141,6 +142,7 @@ describe("EthersARTH", () => {
     await ARTHContract.toggleBorrowerOperations(deployment.addresses.borrowerOperations)
     liquity = await connectToDeployment(deployment, user);
     expect(liquity).to.be.an.instanceOf(EthersARTH);
+    Trove.governance = deployment.addresses.governance;
   });
 
   // Always setup same initial balance for user
@@ -208,7 +210,7 @@ describe("EthersARTH", () => {
         { diff: BigNumber.from(1), hintAddress: "carol", latestRandomSeed: BigNumber.from(3333) },
         { diff: BigNumber.from(2), hintAddress: "dennis", latestRandomSeed: BigNumber.from(4444) }
       ];
-
+      
       const borrowerOperations = {
         estimateGas: {
           openTrove: () => Promise.resolve(BigNumber.from(1))
@@ -243,10 +245,12 @@ describe("EthersARTH", () => {
           }
         }
       } as unknown as ReadableEthersARTH);
-
+      console.log("111111111111111111", Trove.governance)
       const nominalCollateralRatio = Decimal.from(1).div(3);
-      const params = Trove.recreate(new Trove(Decimal.from(1), ARTH_MINIMUM_DEBT));
-      const trove = Trove.create(params);
+      const params = await Trove.recreate(new Trove(Decimal.from(1), ARTH_MINIMUM_DEBT));
+      console.log("222222222222")
+      const trove = await Trove.create(params);
+      console.log("3333333333333333333")
       expect(`${trove._nominalCollateralRatio}`).to.equal(`${nominalCollateralRatio}`);
 
       await fakeARTH.openTrove(params);
@@ -277,25 +281,22 @@ describe("EthersARTH", () => {
       const price = await liquity.getPrice();
       const undercollateralized = new Trove(ARTH_MINIMUM_DEBT.div(price), ARTH_MINIMUM_DEBT);
 
-      await expect(liquity.openTrove(Trove.recreate(undercollateralized))).to.eventually.be.rejected;
+      await expect(liquity.openTrove(await Trove.recreate(undercollateralized))).to.eventually.be.rejected;
     });
 
     it("should fail to create a Trove with too little debt", async () => {
       const withTooLittleDebt = new Trove(Decimal.from(50), ARTH_MINIMUM_DEBT.sub(1));
 
-      await expect(liquity.openTrove(Trove.recreate(withTooLittleDebt))).to.eventually.be.rejected;
+      await expect(liquity.openTrove(await Trove.recreate(withTooLittleDebt))).to.eventually.be.rejected;
     });
 
     const withSomeBorrowing = { depositCollateral: 50, borrowARTH: ARTH_MINIMUM_NET_DEBT.add(100) };
 
     it("should create a Trove with some borrowing", async () => {
       const { newTrove, fee } = await liquity.openTrove(withSomeBorrowing);
-      const aaa = Trove.create(withSomeBorrowing)
-      console.log("**dev ---- ARTH_MINIMUM_NET_DEBT", ARTH_MINIMUM_NET_DEBT.toString())
-      console.log("**dev ------ collateral",newTrove.collateral.toString(), aaa.collateral.toString())
-      console.log("**dev ------ debt",newTrove.debt.toString(), aaa.debt.toString())
-      expect(newTrove).to.deep.equal(Trove.create(withSomeBorrowing));
-      expect(`${fee}`).to.equal(`${MINIMUM_BORROWING_RATE.mul(withSomeBorrowing.borrowARTH)}`);
+      console.log("**dev ------ governance address",deployment.addresses.governance)
+      expect(newTrove).to.deep.equal(await Trove.create(withSomeBorrowing));
+      expect(`${fee}`).to.equal(`${(await BorrowingRate.minBorrowingRate(deployment.addresses.governance)).mul(withSomeBorrowing.borrowARTH)}`);
     });
 
     it("should fail to withdraw all the collateral while the Trove has debt", async () => {
@@ -308,7 +309,7 @@ describe("EthersARTH", () => {
 
     it("should repay some debt", async () => {
       const { newTrove, fee } = await liquity.repayARTH(repaySomeDebt.repayARTH);
-      expect(newTrove).to.deep.equal(Trove.create(withSomeBorrowing).adjust(repaySomeDebt));
+      expect(newTrove).to.deep.equal(await (await Trove.create(withSomeBorrowing)).adjust(repaySomeDebt));
       expect(`${fee}`).to.equal("0");
     });
 
@@ -317,9 +318,9 @@ describe("EthersARTH", () => {
     it("should borrow some more", async () => {
       const { newTrove, fee } = await liquity.borrowARTH(borrowSomeMore.borrowARTH);
       expect(newTrove).to.deep.equal(
-        Trove.create(withSomeBorrowing).adjust(repaySomeDebt).adjust(borrowSomeMore)
+        await (await(await Trove.create(withSomeBorrowing)).adjust(repaySomeDebt)).adjust(borrowSomeMore)
       );
-      expect(`${fee}`).to.equal(`${MINIMUM_BORROWING_RATE.mul(borrowSomeMore.borrowARTH)}`);
+      expect(`${fee}`).to.equal(`${(await BorrowingRate.minBorrowingRate(deployment.addresses.governance)).mul(borrowSomeMore.borrowARTH)}`);
     });
 
     const depositMoreCollateral = { depositCollateral: 1 };
@@ -327,9 +328,9 @@ describe("EthersARTH", () => {
     it("should deposit more collateral", async () => {
       const { newTrove } = await liquity.depositCollateral(depositMoreCollateral.depositCollateral);
       expect(newTrove).to.deep.equal(
-        Trove.create(withSomeBorrowing)
-          .adjust(repaySomeDebt)
-          .adjust(borrowSomeMore)
+        await (await (await (await Trove.create(withSomeBorrowing))
+          .adjust(repaySomeDebt))
+          .adjust(borrowSomeMore))
           .adjust(depositMoreCollateral)
       );
     });
@@ -343,10 +344,10 @@ describe("EthersARTH", () => {
       } = await waitForSuccess(liquity.send.adjustTrove(repayAndWithdraw));
 
       expect(newTrove).to.deep.equal(
-        Trove.create(withSomeBorrowing)
-          .adjust(repaySomeDebt)
-          .adjust(borrowSomeMore)
-          .adjust(depositMoreCollateral)
+        await (await (await (await (await Trove.create(withSomeBorrowing))
+          .adjust(repaySomeDebt))
+          .adjust(borrowSomeMore))
+          .adjust(depositMoreCollateral))
           .adjust(repayAndWithdraw)
       );
 
@@ -367,15 +368,15 @@ describe("EthersARTH", () => {
       } = await waitForSuccess(liquity.send.adjustTrove(borrowAndDeposit));
 
       expect(newTrove).to.deep.equal(
-        Trove.create(withSomeBorrowing)
-          .adjust(repaySomeDebt)
-          .adjust(borrowSomeMore)
-          .adjust(depositMoreCollateral)
-          .adjust(repayAndWithdraw)
+        await (await (await (await (await (await Trove.create(withSomeBorrowing))
+          .adjust(repaySomeDebt))
+          .adjust(borrowSomeMore))
+          .adjust(depositMoreCollateral))
+          .adjust(repayAndWithdraw))
           .adjust(borrowAndDeposit)
       );
 
-      expect(`${fee}`).to.equal(`${MINIMUM_BORROWING_RATE.mul(borrowAndDeposit.borrowARTH)}`);
+      expect(`${fee}`).to.equal(`${(await BorrowingRate.minBorrowingRate(deployment.addresses.governance)).mul(borrowAndDeposit.borrowARTH)}`);
 
       const ethBalance = await user.getBalance();
       const expectedBalance = BigNumber.from(STARTING_BALANCE.sub(0.5).hex).sub(
@@ -391,12 +392,12 @@ describe("EthersARTH", () => {
       const arthBalance = await liquity.getMAHABalance();
       const arthShortage = initialTrove.netDebt.sub(arthBalance);
 
-      let funderTrove = Trove.create({ depositCollateral: 1, borrowARTH: arthShortage });
+      let funderTrove = await Trove.create({ depositCollateral: 1, borrowARTH: arthShortage });
       funderTrove = funderTrove.setDebt(Decimal.max(funderTrove.debt, ARTH_MINIMUM_DEBT));
       funderTrove = funderTrove.setCollateral(funderTrove.debt.mulDiv(1.51, price));
 
       const funderARTH = await connectToDeployment(deployment, funder);
-      await funderARTH.openTrove(Trove.recreate(funderTrove));
+      await funderARTH.openTrove(await Trove.recreate(funderTrove));
       await funderARTH.sendARTH(await user.getAddress(), arthShortage);
 
       const { params } = await liquity.closeTrove();
