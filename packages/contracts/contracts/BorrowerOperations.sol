@@ -70,7 +70,6 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         IARTHValuecoin arthToken;
     }
 
-    event Test(uint,uint,uint,uint,uint,uint,uint,uint, bool);
 
     mapping(address => bool) public frontEnds;
 
@@ -226,7 +225,6 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
             BorrowerOperation.openTrove
         );
         emit ARTHBorrowingFeePaid(msg.sender, vars.ARTHFee);
-        emit Test(vars.price,vars.ARTHFee,vars.netDebt,vars.compositeDebt,vars.ICR,vars.NICR,vars.stake,vars.arrayIndex, isRecoveryMode);
     }
 
     // Send ETH as collateral to a trove

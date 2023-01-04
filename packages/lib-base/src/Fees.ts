@@ -3,9 +3,10 @@ import assert from "assert";
 import { Decimal, Decimalish } from "./Decimal";
 
 import {
-  MAXIMUM_BORROWING_RATE,
-  MINIMUM_BORROWING_RATE,
-  MINIMUM_REDEMPTION_RATE
+  // MAXIMUM_BORROWING_RATE,
+  // MINIMUM_BORROWING_RATE,
+  // MINIMUM_REDEMPTION_RATE,
+  BorrowingRate
 } from "./constants";
 
 /**
@@ -112,10 +113,10 @@ export class Fees {
    * const borrowingFeeARTH = borrowingRate.mul(borrowedARTHAmount);
    * ```
    */
-  borrowingRate(when?: Date): Decimal {
+  async borrowingRate(governAddr: string, when?: Date): Promise<Decimal> {
     return this._recoveryMode
       ? Decimal.ZERO
-      : Decimal.min(MINIMUM_BORROWING_RATE.add(this.baseRate(when)), MAXIMUM_BORROWING_RATE);
+      : Decimal.min((await BorrowingRate.minBorrowingRate(governAddr)).add(this.baseRate(when)), (await BorrowingRate.maxBorrowingRate(governAddr)));
   }
 
   /**
@@ -147,7 +148,7 @@ export class Fees {
    * const redemptionFeeARTH = redemptionRate.mul(redeemedARTHAmount);
    * ```
    */
-  redemptionRate(redeemedFractionOfSupply: Decimalish = Decimal.ZERO, when?: Date): Decimal {
+  async redemptionRate(governAddr: string, redeemedFractionOfSupply: Decimalish = Decimal.ZERO, when?: Date): Promise<Decimal> {
     redeemedFractionOfSupply = Decimal.from(redeemedFractionOfSupply);
     let baseRate = this.baseRate(when);
 
@@ -155,6 +156,6 @@ export class Fees {
       baseRate = redeemedFractionOfSupply.div(this._beta).add(baseRate);
     }
 
-    return Decimal.min(MINIMUM_REDEMPTION_RATE.add(baseRate), Decimal.ONE);
+    return Decimal.min((await BorrowingRate.minRedemptionRate(governAddr)).add(baseRate), Decimal.ONE);
   }
 }

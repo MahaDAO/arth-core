@@ -6,7 +6,8 @@ import {
   MINIMUM_COLLATERAL_RATIO,
   CRITICAL_COLLATERAL_RATIO,
   ARTH_LIQUIDATION_RESERVE,
-  MINIMUM_BORROWING_RATE
+  // MINIMUM_BORROWING_RATE
+  BorrowingRate
 } from "./constants";
 
 /** @internal */ export type _CollateralDeposit<T> = { depositCollateral: T };
@@ -413,6 +414,8 @@ export class Trove {
   /** Amount of ARTH owed. */
   readonly debt: Decimal;
 
+  static readonly governance: string;
+
   /** @internal */
   constructor(collateral = Decimal.ZERO, debt = Decimal.ZERO) {
     this.collateral = collateral;
@@ -558,12 +561,17 @@ export class Trove {
    * @returns
    * An object representing the change, or `undefined` if the Troves are equal.
    */
-  whatChanged(
+  async whatChanged(
     that: Trove,
-    borrowingRate: Decimalish = MINIMUM_BORROWING_RATE
-  ): TroveChange<Decimal> | undefined {
+    borrowingRate?: Decimalish
+  ): Promise<TroveChange<Decimal> | undefined> {
     if (this.collateral.eq(that.collateral) && this.debt.eq(that.debt)) {
       return undefined;
+    }
+
+    if(!borrowingRate) {
+      if(!Trove.governance) throw new Error("should be initialize governace Address")
+      borrowingRate = await BorrowingRate.minBorrowingRate(Trove.governance)
     }
 
     if (this.isEmpty) {
@@ -602,12 +610,17 @@ export class Trove {
    * @param change - The change to apply.
    * @param borrowingRate - Borrowing rate to use when adding a borrowed amount to the Trove's debt.
    */
-  apply(
+  async apply(
     change: TroveChange<Decimal> | undefined,
-    borrowingRate: Decimalish = MINIMUM_BORROWING_RATE
-  ): Trove {
+    borrowingRate?: Decimalish
+  ): Promise<Trove> {
     if (!change) {
       return this;
+    }
+
+    if(!borrowingRate) {
+      if(!Trove.governance) throw new Error("should be initialize governace Address")
+      borrowingRate = await BorrowingRate.minBorrowingRate(Trove.governance)
     }
 
     switch (change.type) {
@@ -668,8 +681,8 @@ export class Trove {
    * @param params - Parameters of the transaction.
    * @param borrowingRate - Borrowing rate to use when calculating the Trove's debt.
    */
-  static create(params: TroveCreationParams<Decimalish>, borrowingRate?: Decimalish): Trove {
-    return _emptyTrove.apply(troveCreation(_normalizeTroveCreation(params)), borrowingRate);
+  static async create(params: TroveCreationParams<Decimalish>, borrowingRate?: Decimalish): Promise<Trove> {
+    return await _emptyTrove.apply(troveCreation(_normalizeTroveCreation(params)), borrowingRate);
   }
 
   /**
@@ -679,8 +692,8 @@ export class Trove {
    * @param that - The Trove to recreate.
    * @param borrowingRate - Current borrowing rate.
    */
-  public static recreate(that: Trove, borrowingRate?: Decimalish): TroveCreationParams<Decimal> {
-    const change = _emptyTrove.whatChanged(that, borrowingRate);
+  public static async recreate(that: Trove, borrowingRate?: Decimalish): Promise<TroveCreationParams<Decimal>> {
+    const change = await _emptyTrove.whatChanged(that, borrowingRate);
     assert(change?.type === "creation");
     return change.params;
   }
@@ -692,8 +705,8 @@ export class Trove {
    * @param params - Parameters of the transaction.
    * @param borrowingRate - Borrowing rate to use when adding to the Trove's debt.
    */
-  adjust(params: TroveAdjustmentParams<Decimalish>, borrowingRate?: Decimalish): Trove {
-    return this.apply(troveAdjustment(_normalizeTroveAdjustment(params)), borrowingRate);
+  async adjust(params: TroveAdjustmentParams<Decimalish>, borrowingRate?: Decimalish): Promise<Trove> {
+    return await this.apply(troveAdjustment(_normalizeTroveAdjustment(params)), borrowingRate);
   }
 
   /**
@@ -703,8 +716,8 @@ export class Trove {
    * @param that - The desired result of the transaction.
    * @param borrowingRate - Current borrowing rate.
    */
-  adjustTo(that: Trove, borrowingRate?: Decimalish): TroveAdjustmentParams<Decimal> {
-    const change = this.whatChanged(that, borrowingRate);
+  async adjustTo(that: Trove, borrowingRate?: Decimalish): Promise<TroveAdjustmentParams<Decimal>> {
+    const change = await this.whatChanged(that, borrowingRate);
     assert(change?.type === "adjustment");
     return change.params;
   }

@@ -46,7 +46,7 @@ export abstract class ARTHStore<T = unknown> {
     // @internal (undocumented)
     protected abstract _doStart(): () => void;
     // @internal (undocumented)
-    protected _load(baseState: ARTHStoreBaseState, extraState?: T): void;
+    protected _load(baseState: ARTHStoreBaseState, extraState?: T): Promise<void>;
     // @internal (undocumented)
     protected _loaded: boolean;
     logging: boolean;
@@ -57,7 +57,7 @@ export abstract class ARTHStore<T = unknown> {
     get state(): ARTHStoreState<T>;
     subscribe(listener: (params: ARTHStoreListenerParams<T>) => void): () => void;
     // @internal (undocumented)
-    protected _update(baseStateUpdate?: Partial<ARTHStoreBaseState>, extraStateUpdate?: Partial<T>): void;
+    protected _update(baseStateUpdate?: Partial<ARTHStoreBaseState>, extraStateUpdate?: Partial<T>): Promise<void>;
     }
 
 // @public
@@ -69,6 +69,8 @@ export interface ARTHStoreBaseState {
     // @internal (undocumented)
     _feesInNormalMode: Fees;
     frontend: FrontendStatus;
+    // (undocumented)
+    governanceAddress: string;
     numberOfTroves: number;
     ownFrontend: FrontendStatus;
     price: Decimal;
@@ -99,6 +101,16 @@ export interface ARTHStoreListenerParams<T = unknown> {
 
 // @public
 export type ARTHStoreState<T = unknown> = ARTHStoreBaseState & ARTHStoreDerivedState & T;
+
+// @public (undocumented)
+export class BorrowingRate {
+    // (undocumented)
+    static maxBorrowingRate(governance: string): Promise<Decimal>;
+    // (undocumented)
+    static minBorrowingRate(governance: string): Promise<Decimal>;
+    // (undocumented)
+    static minRedemptionRate(governance: string): Promise<Decimal>;
+}
 
 // @internal (undocumented)
 export class _CachedReadableARTH<T extends unknown[]> implements _ReadableARTHWithExtraParams<T> {
@@ -272,9 +284,9 @@ export class Fees {
     constructor(baseRateWithoutDecay: Decimalish, minuteDecayFactor: Decimalish, beta: Decimalish, lastFeeOperation: Date, timeOfLatestBlock: Date, recoveryMode: boolean);
     // @internal (undocumented)
     baseRate(when?: Date): Decimal;
-    borrowingRate(when?: Date): Decimal;
+    borrowingRate(governAddr: string, when?: Date): Promise<Decimal>;
     equals(that: Fees): boolean;
-    redemptionRate(redeemedFractionOfSupply?: Decimalish, when?: Date): Decimal;
+    redemptionRate(governAddr: string, redeemedFractionOfSupply?: Decimalish, when?: Date): Promise<Decimal>;
     // @internal (undocumented)
     _setRecoveryMode(recoveryMode: boolean): Fees;
     // @internal (undocumented)
@@ -298,19 +310,10 @@ export interface LiquidationDetails {
 }
 
 // @public
-export const MAXIMUM_BORROWING_RATE: Decimal;
-
-// @public
 export type MinedReceipt<R = unknown, D = unknown> = FailedReceipt<R> | SuccessfulReceipt<R, D>;
 
 // @public
-export const MINIMUM_BORROWING_RATE: Decimal;
-
-// @public
 export const MINIMUM_COLLATERAL_RATIO: Decimal;
-
-// @public
-export const MINIMUM_REDEMPTION_RATE: Decimal;
 
 // @internal (undocumented)
 export type _NoARTHBorrowing = Partial<_ARTHBorrowing<undefined>>;
@@ -603,17 +606,19 @@ export class Trove {
     addCollateral(collateral: Decimalish): Trove;
     // (undocumented)
     addDebt(debt: Decimalish): Trove;
-    adjust(params: TroveAdjustmentParams<Decimalish>, borrowingRate?: Decimalish): Trove;
-    adjustTo(that: Trove, borrowingRate?: Decimalish): TroveAdjustmentParams<Decimal>;
-    apply(change: TroveChange<Decimal> | undefined, borrowingRate?: Decimalish): Trove;
+    adjust(params: TroveAdjustmentParams<Decimalish>, borrowingRate?: Decimalish): Promise<Trove>;
+    adjustTo(that: Trove, borrowingRate?: Decimalish): Promise<TroveAdjustmentParams<Decimal>>;
+    apply(change: TroveChange<Decimal> | undefined, borrowingRate?: Decimalish): Promise<Trove>;
     readonly collateral: Decimal;
     collateralRatio(price: Decimalish): Decimal;
     collateralRatioIsBelowCritical(price: Decimalish): boolean;
     collateralRatioIsBelowMinimum(price: Decimalish): boolean;
-    static create(params: TroveCreationParams<Decimalish>, borrowingRate?: Decimalish): Trove;
+    static create(params: TroveCreationParams<Decimalish>, borrowingRate?: Decimalish): Promise<Trove>;
     readonly debt: Decimal;
     // (undocumented)
     equals(that: Trove): boolean;
+    // (undocumented)
+    static readonly governance: string;
     // (undocumented)
     get isEmpty(): boolean;
     isOpenableInRecoveryMode(price: Decimalish): boolean;
@@ -622,7 +627,7 @@ export class Trove {
     get netDebt(): Decimal;
     // @internal (undocumented)
     get _nominalCollateralRatio(): Decimal;
-    static recreate(that: Trove, borrowingRate?: Decimalish): TroveCreationParams<Decimal>;
+    static recreate(that: Trove, borrowingRate?: Decimalish): Promise<TroveCreationParams<Decimal>>;
     // (undocumented)
     setCollateral(collateral: Decimalish): Trove;
     // (undocumented)
@@ -635,7 +640,7 @@ export class Trove {
     subtractDebt(debt: Decimalish): Trove;
     // @internal (undocumented)
     toString(): string;
-    whatChanged(that: Trove, borrowingRate?: Decimalish): TroveChange<Decimal> | undefined;
+    whatChanged(that: Trove, borrowingRate?: Decimalish): Promise<TroveChange<Decimal> | undefined>;
 }
 
 // @public

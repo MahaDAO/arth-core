@@ -529,10 +529,6 @@ export class PopulatableEthersARTH
           .map(({ args: { _ARTHFee } }) => {
             console.log("----asdfasdf-----", _ARTHFee.toString())
             return decimalify(_ARTHFee)});
-        borrowerOperations.extractEvents(logs, "Test").map(arg=>{
-          console.log('-------------------ttttttttttttt--------------',arg)
-          return
-        })
         return {
           params,
           newTrove,
@@ -820,7 +816,7 @@ export class PopulatableEthersARTH
     maxBorrowingRateOrOptionalParams?: Decimalish | BorrowingOperationOptionalParams,
     overrides?: EthersTransactionOverrides
   ): Promise<PopulatedEthersARTHTransaction<TroveCreationDetails>> {
-    const { borrowerOperations } = _getContracts(this._readable.connection);
+    const { borrowerOperations, governance } = _getContracts(this._readable.connection);
 
     const normalizedParams = _normalizeTroveCreation(params);
     const { depositCollateral, borrowARTH } = normalizedParams;
@@ -833,13 +829,12 @@ export class PopulatableEthersARTH
     ]);
 
     const recoveryMode = total.collateralRatioIsBelowCritical(price);
+    const decayBorrowingRate = async(seconds: number) =>
+      await fees(blockTimestamp + seconds, recoveryMode).borrowingRate(governance.address);
 
-    const decayBorrowingRate = (seconds: number) =>
-      fees(blockTimestamp + seconds, recoveryMode).borrowingRate();
-
-    const currentBorrowingRate = decayBorrowingRate(0);
+    const currentBorrowingRate = await decayBorrowingRate(0);
     
-    const newTrove = Trove.create(normalizedParams, currentBorrowingRate);
+    const newTrove = await Trove.create(normalizedParams, currentBorrowingRate);
     const hints = await this._findHints(newTrove);
 
     const { maxBorrowingRate, borrowingFeeDecayToleranceMinutes } =
@@ -858,9 +853,9 @@ export class PopulatableEthersARTH
     let gasHeadroom: number | undefined;
 
     if (overrides?.gasLimit === undefined) {
-      const decayedBorrowingRate = decayBorrowingRate(60 * borrowingFeeDecayToleranceMinutes);
-      const decayedTrove = Trove.create(normalizedParams, decayedBorrowingRate);
-      const { borrowARTH: borrowARTHSimulatingDecay } = Trove.recreate(
+      const decayedBorrowingRate = await decayBorrowingRate(60 * borrowingFeeDecayToleranceMinutes);
+      const decayedTrove = await Trove.create(normalizedParams, decayedBorrowingRate);
+      const { borrowARTH: borrowARTHSimulatingDecay } = await Trove.recreate(
         decayedTrove,
         currentBorrowingRate
       );
@@ -942,7 +937,7 @@ export class PopulatableEthersARTH
     overrides?: EthersTransactionOverrides
   ): Promise<PopulatedEthersARTHTransaction<TroveAdjustmentDetails>> {
     const address = _requireAddress(this._readable.connection, overrides);
-    const { borrowerOperations } = _getContracts(this._readable.connection);
+    const { borrowerOperations, governance } = _getContracts(this._readable.connection);
 
     const normalizedParams = _normalizeTroveAdjustment(params);
     const { depositCollateral, withdrawCollateral, borrowARTH, repayARTH } = normalizedParams;
@@ -958,16 +953,16 @@ export class PopulatableEthersARTH
         })
     ]);
 
-    const decayBorrowingRate = (seconds: number) =>
-      feeVars
+    const decayBorrowingRate = async (seconds: number) =>
+      await feeVars
         ?.fees(
           feeVars.blockTimestamp + seconds,
           feeVars.total.collateralRatioIsBelowCritical(feeVars.price)
         )
-        .borrowingRate();
+        .borrowingRate(governance.address);
 
-    const currentBorrowingRate = decayBorrowingRate(0);
-    const adjustedTrove = trove.adjust(normalizedParams, currentBorrowingRate);
+    const currentBorrowingRate = await decayBorrowingRate(0);
+    const adjustedTrove = await trove.adjust(normalizedParams, currentBorrowingRate);
     const hints = await this._findHints(adjustedTrove, address);
 
     const { maxBorrowingRate, borrowingFeeDecayToleranceMinutes } =
@@ -988,9 +983,9 @@ export class PopulatableEthersARTH
     let gasHeadroom: number | undefined;
 
     if (overrides?.gasLimit === undefined) {
-      const decayedBorrowingRate = decayBorrowingRate(60 * borrowingFeeDecayToleranceMinutes);
-      const decayedTrove = trove.adjust(normalizedParams, decayedBorrowingRate);
-      const { borrowARTH: borrowARTHSimulatingDecay } = trove.adjustTo(
+      const decayedBorrowingRate = await decayBorrowingRate(60 * borrowingFeeDecayToleranceMinutes);
+      const decayedTrove = await trove.adjust(normalizedParams, decayedBorrowingRate);
+      const { borrowARTH: borrowARTHSimulatingDecay } = await trove.adjustTo(
         decayedTrove,
         currentBorrowingRate
       );
@@ -1210,7 +1205,7 @@ export class PopulatableEthersARTH
     maxRedemptionRate?: Decimalish,
     overrides?: EthersTransactionOverrides
   ): Promise<PopulatedEthersRedemption> {
-    const { troveManager } = _getContracts(this._readable.connection);
+    const { troveManager, governance } = _getContracts(this._readable.connection);
     const attemptedARTHAmount = Decimal.from(amount);
 
     const [fees, total, [truncatedAmount, firstRedemptionHint, ...partialHints]] = await Promise.all(
@@ -1227,9 +1222,9 @@ export class PopulatableEthersARTH
       );
     }
 
-    const defaultMaxRedemptionRate = (amount: Decimal) =>
+    const defaultMaxRedemptionRate = async (amount: Decimal) =>
       Decimal.min(
-        fees.redemptionRate(amount.div(total.debt)).add(defaultRedemptionRateSlippageTolerance),
+        (await fees.redemptionRate(governance.address, amount.div(total.debt))).add(defaultRedemptionRateSlippageTolerance),
         Decimal.ONE
       );
 
@@ -1242,7 +1237,7 @@ export class PopulatableEthersARTH
       const maxRedemptionRateOrDefault =
         maxRedemptionRate !== undefined
           ? Decimal.from(maxRedemptionRate)
-          : defaultMaxRedemptionRate(truncatedAmount);
+          : await defaultMaxRedemptionRate(truncatedAmount);
 
       return new PopulatedEthersRedemption(
         await troveManager.estimateAndPopulate.redeemCollateral(
