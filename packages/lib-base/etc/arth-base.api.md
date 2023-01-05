@@ -5,6 +5,7 @@
 ```ts
 
 import { Provider } from '@ethersproject/abstract-provider';
+import { Signer } from '@ethersproject/abstract-signer';
 
 // @public
 export const ARTH_LIQUIDATION_RESERVE: Decimal;
@@ -109,11 +110,11 @@ export type ARTHStoreState<T = unknown> = ARTHStoreBaseState & ARTHStoreDerivedS
 // @public (undocumented)
 export class BorrowingRate {
     // (undocumented)
-    static maxBorrowingRate(governance: string, provider: Provider): Promise<Decimal>;
+    static maxBorrowingRate(governance: string, provider: Provider | Signer): Promise<Decimal>;
     // (undocumented)
-    static minBorrowingRate(governance: string, provider: Provider): Promise<Decimal>;
+    static minBorrowingRate(governance: string, provider: Provider | Signer): Promise<Decimal>;
     // (undocumented)
-    static minRedemptionRate(governance: string, provider: Provider): Promise<Decimal>;
+    static minRedemptionRate(governance: string, provider: Provider | Signer): Promise<Decimal>;
 }
 
 // @internal (undocumented)
@@ -288,9 +289,9 @@ export class Fees {
     constructor(baseRateWithoutDecay: Decimalish, minuteDecayFactor: Decimalish, beta: Decimalish, lastFeeOperation: Date, timeOfLatestBlock: Date, recoveryMode: boolean);
     // @internal (undocumented)
     baseRate(when?: Date): Decimal;
-    borrowingRate(governAddr: string, provider: Provider, when?: Date): Promise<Decimal>;
+    borrowingRate(governAddr: string, provider: Provider | Signer, when?: Date): Promise<Decimal>;
     equals(that: Fees): boolean;
-    redemptionRate(governAddr: string, provider: Provider, redeemedFractionOfSupply?: Decimalish, when?: Date): Promise<Decimal>;
+    redemptionRate(governAddr: string, provider: Provider | Signer, redeemedFractionOfSupply?: Decimalish, when?: Date): Promise<Decimal>;
     // @internal (undocumented)
     _setRecoveryMode(recoveryMode: boolean): Fees;
     // @internal (undocumented)
@@ -632,7 +633,7 @@ export class Trove {
     // @internal (undocumented)
     get _nominalCollateralRatio(): Decimal;
     // (undocumented)
-    static provider?: Provider;
+    static provider?: Provider | Signer;
     static recreate(that: Trove, borrowingRate?: Decimalish): Promise<TroveCreationParams<Decimal>>;
     // (undocumented)
     setCollateral(collateral: Decimalish): Trove;

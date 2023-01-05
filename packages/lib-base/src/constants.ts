@@ -1,3 +1,4 @@
+import { Signer } from '@ethersproject/abstract-signer';
 import { Decimal } from "./Decimal";
 import { Contract, ContractInterface } from "@ethersproject/contracts";
 import { BigNumber } from "@ethersproject/bignumber";
@@ -114,23 +115,20 @@ export class BorrowingRate {
           },
     ]
 
-    static async minBorrowingRate(governance: string, provider: Provider ): Promise<Decimal> {
-        console.log("**dev-------------------------minBorrowingRate", governance)
+    static async minBorrowingRate(governance: string, provider: Provider | Signer ): Promise<Decimal> {
         const governanceContract = new Contract(governance, this.ABI, provider)
-        console.log(await governanceContract.provider, governanceContract.signer)
         const rate: BigNumber = await governanceContract.getBorrowingFeeFloor();
-        console.log("**dev -----------------minBorrowingRate---------------", rate.toString())
         return Decimal.fromBigNumberString(rate.toString())
     }
 
-    static async maxBorrowingRate(governance: string, provider: Provider): Promise<Decimal> {
+    static async maxBorrowingRate(governance: string, provider: Provider | Signer): Promise<Decimal> {
         
         const governanceContract = new Contract(governance, this.ABI, provider)
         const rate: BigNumber = await governanceContract.getMaxBorrowingFee();
         return Decimal.fromBigNumberString(rate.toString())
     }
 
-    static async minRedemptionRate(governance: string, provider: Provider): Promise<Decimal> {
+    static async minRedemptionRate(governance: string, provider: Provider | Signer): Promise<Decimal> {
         
         const governanceContract = new Contract(governance, this.ABI, provider)
         const rate: BigNumber = await governanceContract.getRedemptionFeeFloor();

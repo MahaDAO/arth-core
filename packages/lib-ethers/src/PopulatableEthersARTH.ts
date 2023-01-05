@@ -520,15 +520,13 @@ export class PopulatableEthersARTH
       ({ logs }) => {
         const [newTrove] = borrowerOperations
           .extractEvents(logs, "TroveUpdated")
-          .map(({ args: { _coll, _debt, _borrower, stake, operation } }) => {
-            console.log("-------------(*(*(*(*--------",_borrower,_debt.toString(), _coll.toString(), stake.toString(), operation)
+          .map(({ args: { _coll, _debt } }) => {
             return new Trove(decimalify(_coll), decimalify(_debt))
           });
 
         const [fee] = borrowerOperations
           .extractEvents(logs, "ARTHBorrowingFeePaid")
           .map(({ args: { _ARTHFee } }) => {
-            console.log("----asdfasdf-----", _ARTHFee.toString())
             return decimalify(_ARTHFee)});
         return {
           params,
@@ -818,7 +816,6 @@ export class PopulatableEthersARTH
     overrides?: EthersTransactionOverrides
   ): Promise<PopulatedEthersARTHTransaction<TroveCreationDetails>> {
     const { borrowerOperations, governance } = _getContracts(this._readable.connection);
-
     const normalizedParams = _normalizeTroveCreation(params);
     const { depositCollateral, borrowARTH } = normalizedParams;
     
@@ -830,8 +827,7 @@ export class PopulatableEthersARTH
     ]);
 
     const recoveryMode = total.collateralRatioIsBelowCritical(price);
-    const decayBorrowingRate = async(seconds: number) =>
-      await fees(blockTimestamp + seconds, recoveryMode).borrowingRate(governance.address, _getProvider(this._readable.connection));
+    const decayBorrowingRate = async(seconds: number) => await fees(blockTimestamp + seconds, recoveryMode).borrowingRate(governance.address, _getProvider(this._readable.connection));
 
     const currentBorrowingRate = await decayBorrowingRate(0);
     
@@ -878,7 +874,6 @@ export class PopulatableEthersARTH
       gasHeadroom = gasLimit.sub(gasNow).toNumber();
       overrides = { ...overrides, gasLimit };
     }
-    console.log("**dev -----123", txParams(borrowARTH))
 
     return this._wrapTroveChangeWithFees(
       normalizedParams,
@@ -954,8 +949,7 @@ export class PopulatableEthersARTH
         })
     ]);
 
-    const decayBorrowingRate = async (seconds: number) =>
-      await feeVars
+    const decayBorrowingRate = async (seconds: number) => await feeVars
         ?.fees(
           feeVars.blockTimestamp + seconds,
           feeVars.total.collateralRatioIsBelowCritical(feeVars.price)

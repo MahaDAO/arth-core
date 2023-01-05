@@ -250,6 +250,12 @@ const connectContracts = async (
         { ...overrides, nonce }
       ),
 
+      nonce =>
+      arthToken.toggleStabilityPool(
+        stabilityPool.address,
+        { ...overrides, nonce }
+      ),
+
     nonce =>
       activePool.setAddresses(
         borrowerOperations.address,

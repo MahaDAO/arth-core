@@ -1,3 +1,4 @@
+import { Signer } from '@ethersproject/abstract-signer';
 import assert from "assert";
 
 import { Decimal, Decimalish } from "./Decimal";
@@ -416,7 +417,7 @@ export class Trove {
   readonly debt: Decimal;
 
   static governance: string;
-  static provider?: Provider = undefined;
+  static provider?: Provider | Signer = undefined;
 
   /** @internal */
   constructor(collateral = Decimal.ZERO, debt = Decimal.ZERO) {

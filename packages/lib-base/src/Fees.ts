@@ -1,3 +1,4 @@
+import { Signer } from '@ethersproject/abstract-signer';
 import assert from "assert";
 
 import { Decimal, Decimalish } from "./Decimal";
@@ -114,8 +115,7 @@ export class Fees {
    * const borrowingFeeARTH = borrowingRate.mul(borrowedARTHAmount);
    * ```
    */
-  async borrowingRate(governAddr: string, provider: Provider, when?: Date): Promise<Decimal> {
-    console.log("**dev------------------- borrowingRate-----------------", governAddr)
+  async borrowingRate(governAddr: string, provider: Provider | Signer, when?: Date): Promise<Decimal> {
     return this._recoveryMode
       ? Decimal.ZERO
       : Decimal.min((await BorrowingRate.minBorrowingRate(governAddr, provider)).add(this.baseRate(when)), (await BorrowingRate.maxBorrowingRate(governAddr, provider)));
@@ -150,7 +150,7 @@ export class Fees {
    * const redemptionFeeARTH = redemptionRate.mul(redeemedARTHAmount);
    * ```
    */
-  async redemptionRate(governAddr: string, provider:Provider, redeemedFractionOfSupply: Decimalish = Decimal.ZERO, when?: Date): Promise<Decimal> {
+  async redemptionRate(governAddr: string, provider:Provider | Signer, redeemedFractionOfSupply: Decimalish = Decimal.ZERO, when?: Date): Promise<Decimal> {
     redeemedFractionOfSupply = Decimal.from(redeemedFractionOfSupply);
     let baseRate = this.baseRate(when);
 
