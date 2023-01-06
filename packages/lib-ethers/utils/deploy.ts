@@ -303,7 +303,6 @@ const connectContracts = async (
     //     nonce
     //   })
   ];
-
   const txs = await Promise.all(connections.map((connect, i) => connect(txCount + i)));
 
   let i = 0;
