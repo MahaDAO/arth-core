@@ -256,6 +256,18 @@ const connectContracts = async (
         { ...overrides, nonce }
       ),
 
+      nonce =>
+      arthToken.toggleBorrowerOperations(
+        borrowerOperations.address,
+        { ...overrides, nonce }
+      ),
+
+      nonce =>
+      arthToken.toggleTroveManager(
+        troveManager.address,
+        { ...overrides, nonce }
+      ),
+
     nonce =>
       activePool.setAddresses(
         borrowerOperations.address,

@@ -157,7 +157,6 @@ export class Fees {
     if (redeemedFractionOfSupply.nonZero) {
       baseRate = redeemedFractionOfSupply.div(this._beta).add(baseRate);
     }
-    console.log("**dev------------------- redemptionRate-----------------", governAddr)
     return Decimal.min((await BorrowingRate.minRedemptionRate(governAddr, provider)).add(baseRate), Decimal.ONE);
   }
 }
