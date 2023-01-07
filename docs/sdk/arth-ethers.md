@@ -8,15 +8,15 @@
 
 |  Class | Description |
 |  --- | --- |
-|  [BlockPolledARTHStore](./arth-ethers.blockpolledarthstore.md) | Ethers-based  that updates state whenever there's a new block. |
+|  [BlockPolledARTHStore](./arth-ethers.blockpolledarthstore.md) | Ethers-based [ARTHStore](./arth-base.arthstore.md) that updates state whenever there's a new block. |
 |  [EthersARTH](./arth-ethers.ethersarth.md) | Convenience class that combines multiple interfaces of the library in one object. |
 |  [EthersTransactionCancelledError](./arth-ethers.etherstransactioncancellederror.md) | Thrown when a transaction is cancelled or replaced by a different transaction. |
 |  [EthersTransactionFailedError](./arth-ethers.etherstransactionfailederror.md) | Thrown by [EthersARTH](./arth-ethers.ethersarth.md) in case of transaction failure. |
-|  [PopulatableEthersARTH](./arth-ethers.populatableethersarth.md) | Ethers-based implementation of . |
+|  [PopulatableEthersARTH](./arth-ethers.populatableethersarth.md) | Ethers-based implementation of [PopulatableARTH](./arth-base.populatablearth.md)<!-- -->. |
 |  [PopulatedEthersARTHTransaction](./arth-ethers.populatedethersarthtransaction.md) | A transaction that has been prepared for sending. |
 |  [PopulatedEthersRedemption](./arth-ethers.populatedethersredemption.md) | A redemption transaction that has been prepared for sending. |
-|  [ReadableEthersARTH](./arth-ethers.readableethersarth.md) | Ethers-based implementation of . |
-|  [SendableEthersARTH](./arth-ethers.sendableethersarth.md) | Ethers-based implementation of . |
+|  [ReadableEthersARTH](./arth-ethers.readableethersarth.md) | Ethers-based implementation of [ReadableARTH](./arth-base.readablearth.md)<!-- -->. |
+|  [SendableEthersARTH](./arth-ethers.sendableethersarth.md) | Ethers-based implementation of [SendableARTH](./arth-base.sendablearth.md)<!-- -->. |
 |  [SentEthersARTHTransaction](./arth-ethers.sentethersarthtransaction.md) | A transaction that has already been sent. |
 |  [UnsupportedNetworkError](./arth-ethers.unsupportednetworkerror.md) | Thrown when trying to connect to a network where ARTH is not deployed. |
 
@@ -24,20 +24,20 @@
 
 |  Interface | Description |
 |  --- | --- |
-|  [BlockPolledARTHStoreExtraState](./arth-ethers.blockpolledarthstoreextrastate.md) | Extra state added to  by [BlockPolledARTHStore](./arth-ethers.blockpolledarthstore.md)<!-- -->. |
+|  [BlockPolledARTHStoreExtraState](./arth-ethers.blockpolledarthstoreextrastate.md) | Extra state added to [ARTHStoreState](./arth-base.arthstorestate.md) by [BlockPolledARTHStore](./arth-ethers.blockpolledarthstore.md)<!-- -->. |
 |  [BorrowingOperationOptionalParams](./arth-ethers.borrowingoperationoptionalparams.md) | Optional parameters of a transaction that borrows ARTH. |
 |  [EthersARTHConnection](./arth-ethers.ethersarthconnection.md) | Information about a connection to the ARTH protocol. |
 |  [EthersARTHConnectionOptionalParams](./arth-ethers.ethersarthconnectionoptionalparams.md) | Optional parameters of [ReadableEthersARTH.connect()](./arth-ethers.readableethersarth.connect_1.md) and [EthersARTH.connect()](./arth-ethers.ethersarth.connect_1.md)<!-- -->. |
-|  [EthersARTHWithStore](./arth-ethers.ethersarthwithstore.md) | Variant of [EthersARTH](./arth-ethers.ethersarth.md) that exposes a . |
+|  [EthersARTHWithStore](./arth-ethers.ethersarthwithstore.md) | Variant of [EthersARTH](./arth-ethers.ethersarth.md) that exposes a [ARTHStore](./arth-base.arthstore.md)<!-- -->. |
 |  [EthersCallOverrides](./arth-ethers.etherscalloverrides.md) | Optional parameters taken by [ReadableEthersARTH](./arth-ethers.readableethersarth.md) functions. |
 |  [EthersTransactionOverrides](./arth-ethers.etherstransactionoverrides.md) | Optional parameters taken by [EthersARTH](./arth-ethers.ethersarth.md) transaction functions. |
-|  [ReadableEthersARTHWithStore](./arth-ethers.readableethersarthwithstore.md) | Variant of [ReadableEthersARTH](./arth-ethers.readableethersarth.md) that exposes a . |
+|  [ReadableEthersARTHWithStore](./arth-ethers.readableethersarthwithstore.md) | Variant of [ReadableEthersARTH](./arth-ethers.readableethersarth.md) that exposes a [ARTHStore](./arth-base.arthstore.md)<!-- -->. |
 
 ## Type Aliases
 
 |  Type Alias | Description |
 |  --- | --- |
-|  [BlockPolledARTHStoreState](./arth-ethers.blockpolledarthstorestate.md) | The type of [BlockPolledARTHStore](./arth-ethers.blockpolledarthstore.md)<!-- -->'s . |
+|  [BlockPolledARTHStoreState](./arth-ethers.blockpolledarthstorestate.md) | The type of [BlockPolledARTHStore](./arth-ethers.blockpolledarthstore.md)<!-- -->'s [state](./arth-base.arthstore.state.md)<!-- -->. |
 |  [EthersARTHStoreOption](./arth-ethers.ethersarthstoreoption.md) | Possible values for the optional [useStore](./arth-ethers.ethersarthconnectionoptionalparams.usestore.md) connection parameter. |
 |  [EthersPopulatedTransaction](./arth-ethers.etherspopulatedtransaction.md) | Alias of Ethers' <code>PopulatedTransaction</code> type, which implements [UnsignedTransaction](https://docs.ethers.io/v5/api/utils/transactions/#UnsignedTransaction)<!-- -->. |
 |  [EthersProvider](./arth-ethers.ethersprovider.md) | Alias of Ethers' abstract [Provider](https://docs.ethers.io/v5/api/providers/) type. |

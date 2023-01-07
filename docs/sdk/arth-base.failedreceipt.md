@@ -19,5 +19,5 @@ export declare type FailedReceipt<R = unknown> = {
 
 The `rawReceipt` property is an implementation-specific transaction receipt object.
 
-Returned by [SentLiquityTransaction.getReceipt()](./arth-base.sentliquitytransaction.getreceipt.md) and [SentLiquityTransaction.waitForReceipt()](./arth-base.sentliquitytransaction.waitforreceipt.md)<!-- -->.
+Returned by [SentARTHTransaction.getReceipt()](./arth-base.sentarthtransaction.getreceipt.md) and [SentARTHTransaction.waitForReceipt()](./arth-base.sentarthtransaction.waitforreceipt.md)<!-- -->.
 

@@ -4,14 +4,14 @@
 
 ## BlockPolledARTHStore class
 
-Ethers-based  that updates state whenever there's a new block.
+Ethers-based [ARTHStore](./arth-base.arthstore.md) that updates state whenever there's a new block.
 
 <b>Signature:</b>
 
 ```typescript
 export declare class BlockPolledARTHStore extends ARTHStore<BlockPolledARTHStoreExtraState> 
 ```
-<b>Extends:</b> ARTHStore&lt;[BlockPolledARTHStoreExtraState](./arth-ethers.blockpolledarthstoreextrastate.md)<!-- -->&gt;
+<b>Extends:</b> [ARTHStore](./arth-base.arthstore.md)<!-- -->&lt;[BlockPolledARTHStoreExtraState](./arth-ethers.blockpolledarthstoreextrastate.md)<!-- -->&gt;
 
 ## Constructors
 

@@ -4,12 +4,12 @@
 
 ## Trove.adjustTo() method
 
-Calculate the parameters of an [adjustTrove()](./arth-base.transactableliquity.adjusttrove.md) transaction that will change this Trove into the given Trove.
+Calculate the parameters of an [adjustTrove()](./arth-base.transactablearth.adjusttrove.md) transaction that will change this Trove into the given Trove.
 
 <b>Signature:</b>
 
 ```typescript
-adjustTo(that: Trove, borrowingRate?: Decimalish): TroveAdjustmentParams<Decimal>;
+adjustTo(that: Trove, borrowingRate?: Decimalish): Promise<TroveAdjustmentParams<Decimal>>;
 ```
 
 ## Parameters
@@ -21,5 +21,5 @@ adjustTo(that: Trove, borrowingRate?: Decimalish): TroveAdjustmentParams<Decimal
 
 <b>Returns:</b>
 
-[TroveAdjustmentParams](./arth-base.troveadjustmentparams.md)<!-- -->&lt;[Decimal](./arth-base.decimal.md)<!-- -->&gt;
+Promise&lt;[TroveAdjustmentParams](./arth-base.troveadjustmentparams.md)<!-- -->&lt;[Decimal](./arth-base.decimal.md)<!-- -->&gt;&gt;
 

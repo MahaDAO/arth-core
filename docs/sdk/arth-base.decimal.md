@@ -14,7 +14,7 @@ export declare class Decimal
 
 ## Remarks
 
-Used by Liquity libraries to precisely represent native currency (e.g. Ether), ARTH and MAHA amounts, as well as derived metrics like collateral ratios.
+Used by ARTH libraries to precisely represent native currency (e.g. Ether), ARTH and MAHA amounts, as well as derived metrics like collateral ratios.
 
 ## Properties
 

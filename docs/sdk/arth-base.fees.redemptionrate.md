@@ -9,19 +9,21 @@ Calculate the current redemption rate.
 <b>Signature:</b>
 
 ```typescript
-redemptionRate(redeemedFractionOfSupply?: Decimalish, when?: Date): Decimal;
+redemptionRate(governAddr: string, provider: Provider | Signer, redeemedFractionOfSupply?: Decimalish, when?: Date): Promise<Decimal>;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
+|  governAddr | string |  |
+|  provider | Provider \| Signer |  |
 |  redeemedFractionOfSupply | [Decimalish](./arth-base.decimalish.md) | The amount of ARTH being redeemed divided by the total supply. |
 |  when | Date | Optional timestamp that can be used to calculate what the redemption rate would decay to at a point of time in the future. |
 
 <b>Returns:</b>
 
-[Decimal](./arth-base.decimal.md)
+Promise&lt;[Decimal](./arth-base.decimal.md)<!-- -->&gt;
 
 ## Remarks
 
@@ -35,8 +37,8 @@ To calculate the redemption fee in ARTH, multiply the redeemed ARTH amount with 
 
 
 ```typescript
-const fees = await liquity.getFees();
-const total = await liquity.getTotal();
+const fees = await arth.getFees();
+const total = await arth.getTotal();
 
 const redeemedARTHAmount = Decimal.from(100);
 const redeemedFractionOfSupply = redeemedARTHAmount.div(total.debt);

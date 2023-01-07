@@ -4,6 +4,8 @@
 
 ## EthersARTH.adjustTrove() method
 
+Adjust existing Trove by changing its collateral, debt, or both.
+
 <b>Signature:</b>
 
 ```typescript
@@ -14,7 +16,7 @@ adjustTrove(params: TroveAdjustmentParams<Decimalish>, maxBorrowingRateOrOptiona
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  params | [TroveAdjustmentParams](./arth-base.troveadjustmentparams.md)<!-- -->&lt;[Decimalish](./arth-base.decimalish.md)<!-- -->&gt; |  |
+|  params | [TroveAdjustmentParams](./arth-base.troveadjustmentparams.md)<!-- -->&lt;[Decimalish](./arth-base.decimalish.md)<!-- -->&gt; | Parameters of the adjustment. |
 |  maxBorrowingRateOrOptionalParams | [Decimalish](./arth-base.decimalish.md) \| [BorrowingOperationOptionalParams](./arth-ethers.borrowingoperationoptionalparams.md) |  |
 |  overrides | [EthersTransactionOverrides](./arth-ethers.etherstransactionoverrides.md) |  |
 
@@ -25,4 +27,10 @@ Promise&lt;[TroveAdjustmentDetails](./arth-base.troveadjustmentdetails.md)<!-- -
 ## Exceptions
 
 Throws [EthersTransactionFailedError](./arth-ethers.etherstransactionfailederror.md) in case of transaction failure. Throws [EthersTransactionCancelledError](./arth-ethers.etherstransactioncancellederror.md) if the transaction is cancelled or replaced.
+
+## Remarks
+
+The transaction will fail if the Trove's debt would fall below [ARTH\_MINIMUM\_DEBT](./arth-base.arth_minimum_debt.md)<!-- -->.
+
+If `maxBorrowingRate` is omitted, the current borrowing rate plus 0.5% is used as maximum acceptable rate.
 

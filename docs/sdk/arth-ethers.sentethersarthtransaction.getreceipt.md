@@ -4,6 +4,7 @@
 
 ## SentEthersARTHTransaction.getReceipt() method
 
+Check whether the transaction has been mined, and whether it was successful.
 
 <b>Signature:</b>
 
@@ -12,5 +13,9 @@ getReceipt(): Promise<ARTHReceipt<EthersTransactionReceipt, T>>;
 ```
 <b>Returns:</b>
 
-Promise&lt;ARTHReceipt&lt;[EthersTransactionReceipt](./arth-ethers.etherstransactionreceipt.md)<!-- -->, T&gt;&gt;
+Promise&lt;[ARTHReceipt](./arth-base.arthreceipt.md)<!-- -->&lt;[EthersTransactionReceipt](./arth-ethers.etherstransactionreceipt.md)<!-- -->, T&gt;&gt;
+
+## Remarks
+
+Unlike [waitForReceipt()](./arth-base.sentarthtransaction.waitforreceipt.md)<!-- -->, this function doesn't wait for the transaction to be mined.
 

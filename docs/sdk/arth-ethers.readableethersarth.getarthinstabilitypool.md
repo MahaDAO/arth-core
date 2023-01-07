@@ -4,6 +4,7 @@
 
 ## ReadableEthersARTH.getARTHInStabilityPool() method
 
+Get the total amount of ARTH currently deposited in the Stability Pool.
 
 <b>Signature:</b>
 

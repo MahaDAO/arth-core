@@ -4,6 +4,8 @@
 
 ## EthersARTH.claimCollateralSurplus() method
 
+Claim leftover collateral after a liquidation or redemption.
+
 <b>Signature:</b>
 
 ```typescript
@@ -23,4 +25,8 @@ Promise&lt;void&gt;
 ## Exceptions
 
 Throws [EthersTransactionFailedError](./arth-ethers.etherstransactionfailederror.md) in case of transaction failure. Throws [EthersTransactionCancelledError](./arth-ethers.etherstransactioncancellederror.md) if the transaction is cancelled or replaced.
+
+## Remarks
+
+Use [getCollateralSurplusBalance()](./arth-base.readablearth.getcollateralsurplusbalance.md) to check the amount of collateral available for withdrawal.
 

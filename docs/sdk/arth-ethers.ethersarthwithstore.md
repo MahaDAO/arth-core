@@ -4,7 +4,7 @@
 
 ## EthersARTHWithStore interface
 
-Variant of [EthersARTH](./arth-ethers.ethersarth.md) that exposes a .
+Variant of [EthersARTH](./arth-ethers.ethersarth.md) that exposes a [ARTHStore](./arth-base.arthstore.md)<!-- -->.
 
 <b>Signature:</b>
 

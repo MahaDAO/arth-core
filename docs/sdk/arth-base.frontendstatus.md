@@ -4,7 +4,7 @@
 
 ## FrontendStatus type
 
-Represents whether an address has been registered as a Liquity frontend.
+Represents whether an address has been registered as a ARTH frontend.
 
 <b>Signature:</b>
 
@@ -20,7 +20,7 @@ export declare type FrontendStatus = {
 
 ## Remarks
 
-Returned by the [getFrontendStatus()](./arth-base.readableliquity.getfrontendstatus.md) function.
+Returned by the [getFrontendStatus()](./arth-base.readablearth.getfrontendstatus.md) function.
 
 When `status` is `"registered"`<!-- -->, `kickbackRate` gives the frontend's kickback rate as a [Decimal](./arth-base.decimal.md) between 0 and 1.
 

@@ -4,6 +4,7 @@
 
 ## SendableEthersARTH.borrowARTH() method
 
+Adjust existing Trove by borrowing more ARTH.
 
 <b>Signature:</b>
 
@@ -15,11 +16,20 @@ borrowARTH(amount: Decimalish, maxBorrowingRate?: Decimalish, overrides?: Ethers
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  amount | [Decimalish](./arth-base.decimalish.md) |  |
-|  maxBorrowingRate | [Decimalish](./arth-base.decimalish.md) |  |
+|  amount | [Decimalish](./arth-base.decimalish.md) | The amount of ARTH to borrow. |
+|  maxBorrowingRate | [Decimalish](./arth-base.decimalish.md) | Maximum acceptable [borrowing rate](./arth-base.fees.borrowingrate.md)<!-- -->. |
 |  overrides | [EthersTransactionOverrides](./arth-ethers.etherstransactionoverrides.md) |  |
 
 <b>Returns:</b>
 
 Promise&lt;[SentEthersARTHTransaction](./arth-ethers.sentethersarthtransaction.md)<!-- -->&lt;[TroveAdjustmentDetails](./arth-base.troveadjustmentdetails.md)<!-- -->&gt;&gt;
+
+## Remarks
+
+Equivalent to:
+
+```typescript
+adjustTrove({ borrowARTH: amount }, maxBorrowingRate)
+
+```
 

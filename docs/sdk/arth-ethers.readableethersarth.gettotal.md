@@ -4,6 +4,7 @@
 
 ## ReadableEthersARTH.getTotal() method
 
+Get the total amount of collateral and debt in the ARTH system.
 
 <b>Signature:</b>
 

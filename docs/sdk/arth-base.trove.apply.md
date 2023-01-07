@@ -9,7 +9,7 @@ Make a new Trove by applying a [TroveChange](./arth-base.trovechange.md) to this
 <b>Signature:</b>
 
 ```typescript
-apply(change: TroveChange<Decimal> | undefined, borrowingRate?: Decimalish): Trove;
+apply(change: TroveChange<Decimal> | undefined, borrowingRate?: Decimalish): Promise<Trove>;
 ```
 
 ## Parameters
@@ -21,5 +21,5 @@ apply(change: TroveChange<Decimal> | undefined, borrowingRate?: Decimalish): Tro
 
 <b>Returns:</b>
 
-[Trove](./arth-base.trove.md)
+Promise&lt;[Trove](./arth-base.trove.md)<!-- -->&gt;
 

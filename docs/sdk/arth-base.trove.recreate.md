@@ -4,12 +4,12 @@
 
 ## Trove.recreate() method
 
-Calculate the parameters of an [openTrove()](./arth-base.transactableliquity.opentrove.md) transaction that will result in the given Trove.
+Calculate the parameters of an [openTrove()](./arth-base.transactablearth.opentrove.md) transaction that will result in the given Trove.
 
 <b>Signature:</b>
 
 ```typescript
-static recreate(that: Trove, borrowingRate?: Decimalish): TroveCreationParams<Decimal>;
+static recreate(that: Trove, borrowingRate?: Decimalish): Promise<TroveCreationParams<Decimal>>;
 ```
 
 ## Parameters
@@ -21,5 +21,5 @@ static recreate(that: Trove, borrowingRate?: Decimalish): TroveCreationParams<De
 
 <b>Returns:</b>
 
-[TroveCreationParams](./arth-base.trovecreationparams.md)<!-- -->&lt;[Decimal](./arth-base.decimal.md)<!-- -->&gt;
+Promise&lt;[TroveCreationParams](./arth-base.trovecreationparams.md)<!-- -->&lt;[Decimal](./arth-base.decimal.md)<!-- -->&gt;&gt;
 

@@ -4,6 +4,7 @@
 
 ## SendableEthersARTH.depositARTHInStabilityPool() method
 
+Make a new Stability Deposit, or top up existing one.
 
 <b>Signature:</b>
 
@@ -15,11 +16,17 @@ depositARTHInStabilityPool(amount: Decimalish, frontendTag?: string, overrides?:
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  amount | [Decimalish](./arth-base.decimalish.md) |  |
-|  frontendTag | string |  |
+|  amount | [Decimalish](./arth-base.decimalish.md) | Amount of ARTH to add to new or existing deposit. |
+|  frontendTag | string | Address that should receive a share of this deposit's MAHA rewards. |
 |  overrides | [EthersTransactionOverrides](./arth-ethers.etherstransactionoverrides.md) |  |
 
 <b>Returns:</b>
 
 Promise&lt;[SentEthersARTHTransaction](./arth-ethers.sentethersarthtransaction.md)<!-- -->&lt;[StabilityDepositChangeDetails](./arth-base.stabilitydepositchangedetails.md)<!-- -->&gt;&gt;
+
+## Remarks
+
+The `frontendTag` parameter is only effective when making a new deposit.
+
+As a side-effect, the transaction will also pay out an existing Stability Deposit's [collateral gain](./arth-base.stabilitydeposit.collateralgain.md) and [MAHA reward](./arth-base.stabilitydeposit.mahareward.md)<!-- -->.
 

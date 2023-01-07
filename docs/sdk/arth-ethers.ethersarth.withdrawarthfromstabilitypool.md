@@ -4,6 +4,8 @@
 
 ## EthersARTH.withdrawARTHFromStabilityPool() method
 
+Withdraw ARTH from Stability Deposit.
+
 <b>Signature:</b>
 
 ```typescript
@@ -14,7 +16,7 @@ withdrawARTHFromStabilityPool(amount: Decimalish, overrides?: EthersTransactionO
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  amount | [Decimalish](./arth-base.decimalish.md) |  |
+|  amount | [Decimalish](./arth-base.decimalish.md) | Amount of ARTH to withdraw. |
 |  overrides | [EthersTransactionOverrides](./arth-ethers.etherstransactionoverrides.md) |  |
 
 <b>Returns:</b>
@@ -24,4 +26,8 @@ Promise&lt;[StabilityDepositChangeDetails](./arth-base.stabilitydepositchangedet
 ## Exceptions
 
 Throws [EthersTransactionFailedError](./arth-ethers.etherstransactionfailederror.md) in case of transaction failure. Throws [EthersTransactionCancelledError](./arth-ethers.etherstransactioncancellederror.md) if the transaction is cancelled or replaced.
+
+## Remarks
+
+As a side-effect, the transaction will also pay out the Stability Deposit's [collateral gain](./arth-base.stabilitydeposit.collateralgain.md) and [MAHA reward](./arth-base.stabilitydeposit.mahareward.md)<!-- -->.
 
