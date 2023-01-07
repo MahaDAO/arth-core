@@ -42,10 +42,6 @@ contract LiquityBase is BaseMath, ILiquityBase {
 
     // --- Gas compensation functions ---
 
-    // function governance() external view override returns (IGovernance) {
-    //     return governance;
-    // }
-
     function getBorrowingFeeFloor() public view returns (uint256) {
         return governance.getBorrowingFeeFloor();
     }
@@ -60,6 +56,10 @@ contract LiquityBase is BaseMath, ILiquityBase {
 
     function getPriceFeed() public view override returns (IPriceFeed) {
         return governance.getPriceFeed();
+    }
+
+    function fetchPriceFeedPrice() public returns (uint256) {
+        return governance.getPriceFeed().fetchPrice();
     }
 
     // Returns the composite debt (drawn debt + gas compensation) of a trove, for the purpose of ICR calculation

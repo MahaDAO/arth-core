@@ -4,7 +4,8 @@ const ZERO_ADDRESS = "0x" + "0".repeat(40);
 const maxBytes32 = "0x" + "f".repeat(64);
 
 class MainnetDeploymentHelper {
-  constructor(configParams, deployerWallet) {
+  constructor(configParams, deployerWallet, network) {
+    this.network = network;
     this.configParams = configParams;
     this.deployerWallet = deployerWallet;
     this.hre = require("hardhat");
@@ -21,6 +22,7 @@ class MainnetDeploymentHelper {
   }
 
   saveDeployment(deploymentState) {
+    if (this.network === "hardhat") return;
     const deploymentStateJSON = JSON.stringify(deploymentState, null, 2);
     fs.writeFileSync(this.configParams.OUTPUT_FILE, deploymentStateJSON);
   }
@@ -185,7 +187,7 @@ class MainnetDeploymentHelper {
       this.configParams.externalAddrs.TIMELOCK,
       troveManager.address,
       borrowerOperations.address,
-      priceFeed.address,
+      this.configParams.externalAddrs.PRICE_FEED,
       this.configParams.externalAddrs.ECOSYSTEM_FUND,
       "0"
     ];
@@ -318,10 +320,10 @@ class MainnetDeploymentHelper {
 
     // set contracts in the Trove Manager
     console.log("set address for troveManager");
-    (await this.isOwnershipRenounced(contracts.troveManager)) ||
-      (await this.sendAndWaitForTransaction(
-        contracts.arthToken.toggleTroveManager(contracts.troveManager.address, { gasPrice })
-      ));
+    // (await this.isOwnershipRenounced(contracts.troveManager)) ||
+    //   (await this.sendAndWaitForTransaction(
+    //     contracts.arthToken.toggleTroveManager(contracts.troveManager.address, { gasPrice })
+    //   ));
 
     (await this.isOwnershipRenounced(contracts.troveManager)) ||
       (await this.sendAndWaitForTransaction(
@@ -341,12 +343,12 @@ class MainnetDeploymentHelper {
 
     // set contracts in BorrowerOperations
     console.log("set address for borrowerOperations");
-    (await this.isOwnershipRenounced(contracts.borrowerOperations)) ||
-      (await this.sendAndWaitForTransaction(
-        contracts.arthToken.toggleBorrowerOperations(contracts.borrowerOperations.address, {
-          gasPrice
-        })
-      ));
+    // (await this.isOwnershipRenounced(contracts.borrowerOperations)) ||
+    //   (await this.sendAndWaitForTransaction(
+    //     contracts.arthToken.toggleBorrowerOperations(contracts.borrowerOperations.address, {
+    //       gasPrice
+    //     })
+    //   ));
 
     (await this.isOwnershipRenounced(contracts.borrowerOperations)) ||
       (await this.sendAndWaitForTransaction(
@@ -366,12 +368,12 @@ class MainnetDeploymentHelper {
 
     // set contracts in the Pools
     console.log("set address for stabilityPool");
-    (await this.isOwnershipRenounced(contracts.stabilityPool)) ||
-      (await this.sendAndWaitForTransaction(
-        contracts.arthToken.toggleStabilityPool(contracts.stabilityPool.address, {
-          gasPrice
-        })
-      ));
+    // (await this.isOwnershipRenounced(contracts.stabilityPool)) ||
+    //   (await this.sendAndWaitForTransaction(
+    //     contracts.arthToken.toggleStabilityPool(contracts.stabilityPool.address, {
+    //       gasPrice
+    //     })
+    //   ));
 
     (await this.isOwnershipRenounced(contracts.stabilityPool)) ||
       (await this.sendAndWaitForTransaction(
