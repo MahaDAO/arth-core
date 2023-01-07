@@ -33,6 +33,7 @@ contract Governance is BaseMath, Ownable, IGovernance {
     // Minimum amount of net ARTH debt a trove must have
     uint256 private immutable MIN_NET_DEBT;
 
+    uint256 private immutable DEPLOYMENT_START_TIME;
     address public immutable troveManagerAddress;
     address public immutable borrowerOperationAddress;
 
@@ -40,22 +41,14 @@ contract Governance is BaseMath, Ownable, IGovernance {
     // set this according to how much ever debt we'd like to accumulate; default is infinity
     bool private allowMinting = true;
 
-    // MAHA; the governance token used for charging stability fees
-    IBurnableERC20 private stabilityFeeToken;
-
     // price feed
     IPriceFeed private priceFeed;
 
     // The fund which recieves all the fees.
     address private fund;
 
-    IOracle private stabilityTokenPairOracle;
-
     uint256 private maxDebtCeiling =
         0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff; // infinity
-    uint256 private stabilityFee = 0; // 0%
-
-    uint256 private immutable DEPLOYMENT_START_TIME;
 
     constructor(
         address _timelock,
@@ -121,22 +114,6 @@ contract Governance is BaseMath, Ownable, IGovernance {
         emit AllowMintingChanged(oldFlag, _value, block.timestamp);
     }
 
-    function setStabilityFee(uint256 _value) public onlyOwner {
-        uint256 oldValue = stabilityFee;
-        stabilityFee = _value;
-        emit StabilityFeeChanged(oldValue, _value, block.timestamp);
-    }
-
-    function setStabilityFeeToken(address token, IOracle oracle) public onlyOwner {
-        address oldAddress = address(stabilityFeeToken);
-        stabilityFeeToken = IBurnableERC20(token);
-        emit StabilityFeeTokenChanged(oldAddress, address(token), block.timestamp);
-
-        oldAddress = address(stabilityTokenPairOracle);
-        stabilityTokenPairOracle = oracle;
-        emit StabilityTokenPairOracleChanged(oldAddress, address(oracle), block.timestamp);
-    }
-
     function getDeploymentStartTime() external view override returns (uint256) {
         return DEPLOYMENT_START_TIME;
     }
@@ -169,52 +146,11 @@ contract Governance is BaseMath, Ownable, IGovernance {
         return fund;
     }
 
-    function getStabilityFee() external view override returns (uint256) {
-        return stabilityFee;
-    }
-
-    function getStabilityTokenPairOracle() external view override returns (IOracle) {
-        return stabilityTokenPairOracle;
-    }
-
     function getAllowMinting() external view override returns (bool) {
         return allowMinting;
     }
 
-    function getStabilityFeeToken() external view override returns (IERC20) {
-        return stabilityFeeToken;
-    }
-
     function getPriceFeed() external view override returns (IPriceFeed) {
         return priceFeed;
-    }
-
-    function chargeStabilityFee(address who, uint256 LUSDAmount) external override {
-        _requireCallerIsTroveManager();
-
-        if (
-            address(stabilityTokenPairOracle) == address(0) ||
-            address(stabilityFeeToken) == address(0)
-        ) return;
-
-        uint256 stabilityFeeInLUSD = LUSDAmount.mul(stabilityFee).div(_100pct);
-        uint256 stabilityTokenPriceInLUSD = stabilityTokenPairOracle.getPrice();
-        uint256 _stabilityFee = stabilityFeeInLUSD.mul(1e18).div(stabilityTokenPriceInLUSD);
-
-        if (stabilityFee > 0) {
-            stabilityFeeToken.burnFrom(who, _stabilityFee);
-            emit StabilityFeeCharged(LUSDAmount, _stabilityFee, block.timestamp);
-        }
-    }
-
-    function _requireCallerIsTroveManager() internal view {
-        require(msg.sender == troveManagerAddress, "Governance: Caller is not TroveManager");
-    }
-
-    function _requireCallerIsBOorTroveM() internal view {
-        require(
-            msg.sender == borrowerOperationAddress || msg.sender == troveManagerAddress,
-            "Governance: Caller is neither BorrowerOperations nor TroveManager"
-        );
     }
 }
