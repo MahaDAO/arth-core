@@ -118,7 +118,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         emit SortedTrovesAddressChanged(_sortedTrovesAddress);
         emit ARTHTokenAddressChanged(_arthTokenAddress);
 
-        _renounceOwnership();
+        // _renounceOwnership(); renounce ownership after migration is done (openTroveFor)
     }
 
     // --- Borrower Trove Operations ---
@@ -137,8 +137,47 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         address _lowerHint,
         address _frontEndTag
     ) external payable override {
+        _openTrove(
+            msg.sender,
+            msg.sender,
+            _maxFeePercentage,
+            _ARTHAmount,
+            _upperHint,
+            _lowerHint,
+            _frontEndTag
+        );
+    }
+
+    function openTroveFor(
+        address _who,
+        uint256 _maxFeePercentage,
+        uint256 _ARTHAmount,
+        address _upperHint,
+        address _lowerHint,
+        address _frontEndTag
+    ) external payable onlyOwner {
+        _openTrove(
+            _who,
+            msg.sender,
+            _maxFeePercentage,
+            _ARTHAmount,
+            _upperHint,
+            _lowerHint,
+            _frontEndTag
+        );
+    }
+
+    function _openTrove(
+        address _who,
+        address _arthRecipeint,
+        uint256 _maxFeePercentage,
+        uint256 _ARTHAmount,
+        address _upperHint,
+        address _lowerHint,
+        address _frontEndTag
+    ) internal {
         _requireFrontEndIsRegisteredOrZero(_frontEndTag);
-        _requireFrontEndNotRegistered(msg.sender);
+        _requireFrontEndNotRegistered(_who);
 
         ContractsCache memory contractsCache = ContractsCache(troveManager, activePool, arthToken);
         LocalVariables_openTrove memory vars;
@@ -147,7 +186,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         bool isRecoveryMode = _checkRecoveryMode(vars.price);
 
         _requireValidMaxFeePercentage(_maxFeePercentage, isRecoveryMode);
-        _requireTroveisNotActive(contractsCache.troveManager, msg.sender);
+        _requireTroveisNotActive(contractsCache.troveManager, _who);
 
         vars.ARTHFee;
         vars.netDebt = _ARTHAmount;
@@ -186,24 +225,24 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         }
 
         // Set the trove struct's properties
-        contractsCache.troveManager.setTroveFrontEndTag(msg.sender, _frontEndTag);
-        contractsCache.troveManager.setTroveStatus(msg.sender, 1);
-        contractsCache.troveManager.increaseTroveColl(msg.sender, msg.value);
-        contractsCache.troveManager.increaseTroveDebt(msg.sender, vars.compositeDebt);
+        contractsCache.troveManager.setTroveFrontEndTag(_who, _frontEndTag);
+        contractsCache.troveManager.setTroveStatus(_who, 1);
+        contractsCache.troveManager.increaseTroveColl(_who, msg.value);
+        contractsCache.troveManager.increaseTroveDebt(_who, vars.compositeDebt);
 
-        contractsCache.troveManager.updateTroveRewardSnapshots(msg.sender);
-        vars.stake = contractsCache.troveManager.updateStakeAndTotalStakes(msg.sender);
+        contractsCache.troveManager.updateTroveRewardSnapshots(_who);
+        vars.stake = contractsCache.troveManager.updateStakeAndTotalStakes(_who);
 
-        sortedTroves.insert(msg.sender, vars.NICR, _upperHint, _lowerHint);
-        vars.arrayIndex = contractsCache.troveManager.addTroveOwnerToArray(msg.sender);
-        emit TroveCreated(msg.sender, vars.arrayIndex);
+        sortedTroves.insert(_who, vars.NICR, _upperHint, _lowerHint);
+        vars.arrayIndex = contractsCache.troveManager.addTroveOwnerToArray(_who);
+        emit TroveCreated(_who, vars.arrayIndex);
 
         // Move the ether to the Active Pool, and mint the ARTHAmount to the borrower
         _activePoolAddColl(contractsCache.activePool, msg.value);
         _withdrawARTH(
             contractsCache.activePool,
             contractsCache.arthToken,
-            msg.sender,
+            _arthRecipeint,
             _ARTHAmount,
             vars.netDebt
         );
@@ -217,13 +256,13 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         );
 
         emit TroveUpdated(
-            msg.sender,
+            _who,
             vars.compositeDebt,
             msg.value,
             vars.stake,
             BorrowerOperation.openTrove
         );
-        emit ARTHBorrowingFeePaid(msg.sender, vars.ARTHFee);
+        emit ARTHBorrowingFeePaid(_who, vars.ARTHFee);
     }
 
     // Send ETH as collateral to a trove

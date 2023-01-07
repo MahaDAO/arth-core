@@ -231,6 +231,7 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
 
     // Error tracker for the error correction in the MAHA issuance calculation
     uint256 public lastMAHAError;
+
     // Error trackers for the error correction in the offset calculation
     uint256 public lastETHError_Offset;
     uint256 public lastARTHLossError_Offset;
@@ -269,6 +270,8 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
         emit SortedTrovesAddressChanged(_sortedTrovesAddress);
         emit GovernanceAddressChanged(_governanceAddress);
         emit CommunityIssuanceAddressChanged(_communityIssuanceAddress);
+
+        // _renounceOwnership(); renounce ownership after migration is done
     }
 
     // --- Getters for public variables. Required by IPool interface ---
@@ -292,40 +295,56 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
      * - Increases deposit and tagged front end's stake, and takes new snapshots for each.
      */
     function provideToSP(uint256 _amount, address _frontEndTag) external override {
+        _provideToSP(msg.sender, msg.sender, _amount, _frontEndTag);
+    }
+
+    // provide ARTH in return for
+    function provideToSPFor(
+        address _who,
+        uint256 _amount,
+        address _frontEndTag
+    ) external onlyOwner {
+        _provideToSP(_who, msg.sender, _amount, _frontEndTag);
+    }
+
+    function _provideToSP(
+        address _who,
+        address _arthFrom,
+        uint256 _amount,
+        address _frontEndTag
+    ) internal {
         _requireFrontEndIsRegisteredOrZero(_frontEndTag);
-        _requireFrontEndNotRegistered(msg.sender);
+        _requireFrontEndNotRegistered(_who);
         _requireNonZeroAmount(_amount);
 
-        uint256 initialDeposit = deposits[msg.sender].initialValue;
+        uint256 initialDeposit = deposits[_who].initialValue;
 
         ICommunityIssuance communityIssuanceCached = communityIssuance;
 
         _triggerMAHAIssuance(communityIssuanceCached);
 
-        if (initialDeposit == 0) {
-            _setFrontEndTag(msg.sender, _frontEndTag);
-        }
-        uint256 depositorETHGain = getDepositorETHGain(msg.sender);
-        uint256 compoundedARTHDeposit = getCompoundedARTHDeposit(msg.sender);
+        if (initialDeposit == 0) _setFrontEndTag(_who, _frontEndTag);
+        uint256 depositorETHGain = getDepositorETHGain(_who);
+        uint256 compoundedARTHDeposit = getCompoundedARTHDeposit(_who);
         uint256 ARTHLoss = initialDeposit.sub(compoundedARTHDeposit); // Needed only for event log
 
         // First pay out any MAHA gains
-        address frontEnd = deposits[msg.sender].frontEndTag;
-        _payOutMAHAGains(communityIssuanceCached, msg.sender, frontEnd);
+        address frontEnd = deposits[_who].frontEndTag;
+        _payOutMAHAGains(communityIssuanceCached, _who, frontEnd);
 
         // Update front end stake
         uint256 compoundedFrontEndStake = getCompoundedFrontEndStake(frontEnd);
         uint256 newFrontEndStake = compoundedFrontEndStake.add(_amount);
         _updateFrontEndStakeAndSnapshots(frontEnd, newFrontEndStake);
-        emit FrontEndStakeChanged(frontEnd, newFrontEndStake, msg.sender);
+        emit FrontEndStakeChanged(frontEnd, newFrontEndStake, _who);
 
-        _sendARTHtoStabilityPool(msg.sender, _amount);
+        _sendARTHtoStabilityPool(_arthFrom, _amount);
 
         uint256 newDeposit = compoundedARTHDeposit.add(_amount);
-        _updateDepositAndSnapshots(msg.sender, newDeposit);
-        emit UserDepositChanged(msg.sender, newDeposit);
+        _updateDepositAndSnapshots(_who, newDeposit);
+        emit UserDepositChanged(_who, newDeposit);
 
-        emit ETHGainWithdrawn(msg.sender, depositorETHGain, ARTHLoss); // ARTH Loss required for event log
+        emit ETHGainWithdrawn(_who, depositorETHGain, ARTHLoss); // ARTH Loss required for event log
 
         _sendETHGainToDepositor(depositorETHGain);
     }
@@ -375,7 +394,6 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
         emit UserDepositChanged(msg.sender, newDeposit);
 
         emit ETHGainWithdrawn(msg.sender, depositorETHGain, ARTHLoss); // ARTH Loss required for event log
-
         _sendETHGainToDepositor(depositorETHGain);
     }
 
@@ -504,7 +522,6 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
         );
 
         _updateRewardSumAndProduct(ETHGainPerUnitStaked, ARTHLossPerUnitStaked); // updates S and P
-
         _moveOffsetCollAndDebt(_collToAdd, _debtToOffset);
     }
 
