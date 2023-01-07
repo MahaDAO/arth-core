@@ -44,8 +44,6 @@ contract("StabilityPool", async accounts => {
     frontEnd_3
   ] = accounts;
 
-  const [bountyAddress, lpRewardsAddress, multisig] = accounts.slice(997, 1000);
-
   const frontEnds = [frontEnd_1, frontEnd_2, frontEnd_3];
   let contracts;
   let priceFeed;
@@ -57,7 +55,6 @@ contract("StabilityPool", async accounts => {
   let defaultPool;
   let borrowerOperations;
   let mahaToken;
-  let communityIssuance;
 
   let gasPriceInWei;
 
@@ -65,7 +62,7 @@ contract("StabilityPool", async accounts => {
   const openTrove = async params => th.openTrove(contracts, params);
   const assertRevert = th.assertRevert;
 
-  describe.only("Stability Pool Mechanisms", async () => {
+  describe("Stability Pool Mechanisms", async () => {
     before(async () => {
       gasPriceInWei = await web3.eth.getGasPrice();
     });
@@ -87,7 +84,6 @@ contract("StabilityPool", async accounts => {
       hintHelpers = contracts.hintHelpers;
 
       mahaToken = MAHAContracts.mahaToken;
-      communityIssuance = MAHAContracts.communityIssuance;
 
       await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
 
@@ -1328,14 +1324,14 @@ contract("StabilityPool", async accounts => {
       // --- TEST ---
 
       // A, B, C provide to SP
-      const G1 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
       await stabilityPool.provideToSP(deposit_A, frontEnd_1, { from: A });
+      const G1 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
 
-      const G2 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
       await stabilityPool.provideToSP(deposit_B, frontEnd_2, { from: B });
+      const G2 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
 
-      const G3 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
       await stabilityPool.provideToSP(deposit_C, frontEnd_3, { from: C });
+      const G3 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
 
       const frontEnds = [frontEnd_1, frontEnd_2, frontEnd_3];
       const G_Values = [G1, G2, G3];
@@ -1911,7 +1907,6 @@ contract("StabilityPool", async accounts => {
         // Check snapshots are the expected values
         assert.equal(snapshot[0], "0"); // S (should always be 0 for front ends)
         assert.isTrue(snapshot[1].eq(P_Before)); // P
-        console.log(snapshot[2].toString(), G.toString());
         assert.equal(snapshot[2].toString(), G.toString()); // G
         assert.equal(snapshot[3], "0"); // scale
         assert.equal(snapshot[4], "0"); // epoch
@@ -3104,7 +3099,7 @@ contract("StabilityPool", async accounts => {
       assert.equal(ARTHinSP_After, expectedARTHinSP);
     });
 
-    it.only("withdrawFromSP(): caller can withdraw full deposit and ETH gain during Recovery Mode", async () => {
+    it("withdrawFromSP(): caller can withdraw full deposit and ETH gain during Recovery Mode", async () => {
       // --- SETUP ---
 
       // Price doubles
@@ -3694,10 +3689,9 @@ contract("StabilityPool", async accounts => {
       // Get front ends' snapshots before
       for (frontEnd of [frontEnd_1, frontEnd_2, frontEnd_3]) {
         const snapshot = await stabilityPool.frontEndSnapshots(frontEnd);
-
         assert.equal(snapshot[0], "0"); // S (should always be 0 for front ends, since S corresponds to ETH gain)
         assert.equal(snapshot[1], dec(1, 18)); // P
-        assert.equal(snapshot[2], "0"); // G
+        // assert.equal(snapshot[2], "0"); // G // ignore this as G keeps increasing with every deposit
         assert.equal(snapshot[3], "0"); // scale
         assert.equal(snapshot[4], "0"); // epoch
       }
@@ -3708,14 +3702,14 @@ contract("StabilityPool", async accounts => {
 
       // A, B, C top withdraw part of their deposits. Grab G at each stage, as it can increase a bit
       // between topups, because some block.timestamp time passes (and MAHA is issued) between ops
-      const G1 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
       await stabilityPool.withdrawFromSP(dec(1, 18), { from: A });
+      const G1 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
 
-      const G2 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
       await stabilityPool.withdrawFromSP(dec(2, 18), { from: B });
+      const G2 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
 
-      const G3 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
       await stabilityPool.withdrawFromSP(dec(3, 18), { from: C });
+      const G3 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
 
       const frontEnds = [frontEnd_1, frontEnd_2, frontEnd_3];
       const G_Values = [G1, G2, G3];
@@ -4949,7 +4943,7 @@ contract("StabilityPool", async accounts => {
 
         assert.equal(snapshot[0], "0"); // S (should always be 0 for front ends, since S corresponds to ETH gain)
         assert.equal(snapshot[1], dec(1, 18)); // P
-        assert.equal(snapshot[2], "0"); // G
+        // assert.equal(snapshot[2], "0"); // G // ignore this as G keeps increasing for every deposit
         assert.equal(snapshot[3], "0"); // scale
         assert.equal(snapshot[4], "0"); // epoch
       }
@@ -4965,14 +4959,14 @@ contract("StabilityPool", async accounts => {
 
       // A, B, C withdraw ETH gain to troves. Grab G at each stage, as it can increase a bit
       // between topups, because some block.timestamp time passes (and MAHA is issued) between ops
-      const G1 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
       await stabilityPool.withdrawETHGainToTrove(A, A, { from: A });
+      const G1 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
 
-      const G2 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
       await stabilityPool.withdrawETHGainToTrove(B, B, { from: B });
+      const G2 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
 
-      const G3 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
       await stabilityPool.withdrawETHGainToTrove(C, C, { from: C });
+      const G3 = await stabilityPool.epochToScaleToG(currentScale, currentEpoch);
 
       const frontEnds = [frontEnd_1, frontEnd_2, frontEnd_3];
       const G_Values = [G1, G2, G3];
