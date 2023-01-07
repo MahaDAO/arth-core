@@ -67,25 +67,25 @@ contract("SortedTroves", async accounts => {
   let sortedTroves;
   let troveManager;
   let borrowerOperations;
-  let lusdToken;
+  let arthToken;
 
   const [bountyAddress, lpRewardsAddress, multisig] = accounts.slice(997, 1000);
 
   let contracts;
 
-  const getOpenTroveLUSDAmount = async totalDebt => th.getOpenTroveLUSDAmount(contracts, totalDebt);
+  const getOpenTroveARTHAmount = async totalDebt => th.getOpenTroveARTHAmount(contracts, totalDebt);
   const openTrove = async params => th.openTrove(contracts, params);
 
   describe("SortedTroves", () => {
     beforeEach(async () => {
       contracts = await deploymentHelper.deployLiquityCore();
       contracts.troveManager = await TroveManagerTester.new();
-      contracts.lusdToken = await ARTHValuecoin.new(
+      contracts.arthToken = await ARTHValuecoin.new(
         contracts.troveManager.address,
         contracts.stabilityPool.address,
         contracts.borrowerOperations.address
       );
-      const LQTYContracts = await deploymentHelper.deployLQTYContracts(
+      const MAHAContracts = await deploymentHelper.deployMAHAContracts(
         bountyAddress,
         lpRewardsAddress,
         multisig
@@ -95,11 +95,11 @@ contract("SortedTroves", async accounts => {
       sortedTroves = contracts.sortedTroves;
       troveManager = contracts.troveManager;
       borrowerOperations = contracts.borrowerOperations;
-      lusdToken = contracts.lusdToken;
+      arthToken = contracts.arthToken;
 
-      await deploymentHelper.connectLQTYContracts(LQTYContracts);
-      await deploymentHelper.connectCoreContracts(contracts, LQTYContracts);
-      await deploymentHelper.connectLQTYContractsToCore(LQTYContracts, contracts);
+      await deploymentHelper.connectMAHAContracts(MAHAContracts);
+      await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
+      await deploymentHelper.connectMAHAContractsToCore(MAHAContracts, contracts);
     });
 
     it("contains(): returns true for addresses that have opened troves", async () => {
@@ -135,7 +135,7 @@ contract("SortedTroves", async accounts => {
     it("contains(): returns false for addresses that opened and then closed a trove", async () => {
       await openTrove({
         ICR: toBN(dec(1000, 18)),
-        extraLUSDAmount: toBN(dec(3000, 18)),
+        extraARTHAmount: toBN(dec(3000, 18)),
         extraParams: { from: whale }
       });
 
@@ -144,9 +144,9 @@ contract("SortedTroves", async accounts => {
       await openTrove({ ICR: toBN(dec(2000, 18)), extraParams: { from: carol } });
 
       // to compensate borrowing fees
-      await lusdToken.transfer(alice, dec(1000, 18), { from: whale });
-      await lusdToken.transfer(bob, dec(1000, 18), { from: whale });
-      await lusdToken.transfer(carol, dec(1000, 18), { from: whale });
+      await arthToken.transfer(alice, dec(1000, 18), { from: whale });
+      await arthToken.transfer(bob, dec(1000, 18), { from: whale });
+      await arthToken.transfer(carol, dec(1000, 18), { from: whale });
 
       // A, B, C close troves
       await borrowerOperations.closeTrove({ from: alice });
@@ -168,7 +168,7 @@ contract("SortedTroves", async accounts => {
     it("contains(): returns true for addresses that opened, closed and then re-opened a trove", async () => {
       await openTrove({
         ICR: toBN(dec(1000, 18)),
-        extraLUSDAmount: toBN(dec(3000, 18)),
+        extraARTHAmount: toBN(dec(3000, 18)),
         extraParams: { from: whale }
       });
 
@@ -177,9 +177,9 @@ contract("SortedTroves", async accounts => {
       await openTrove({ ICR: toBN(dec(2000, 18)), extraParams: { from: carol } });
 
       // to compensate borrowing fees
-      await lusdToken.transfer(alice, dec(1000, 18), { from: whale });
-      await lusdToken.transfer(bob, dec(1000, 18), { from: whale });
-      await lusdToken.transfer(carol, dec(1000, 18), { from: whale });
+      await arthToken.transfer(alice, dec(1000, 18), { from: whale });
+      await arthToken.transfer(bob, dec(1000, 18), { from: whale });
+      await arthToken.transfer(carol, dec(1000, 18), { from: whale });
 
       // A, B, C close troves
       await borrowerOperations.closeTrove({ from: alice });

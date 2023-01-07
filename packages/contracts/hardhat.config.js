@@ -49,19 +49,14 @@ module.exports = {
   },
   networks: {
     hardhat: {
-      accounts: [
-        {
-          balance: "100000000000000000000",
-          privateKey: getSecret("DEPLOYER_PRIVATEKEY")
-        }
-      ],
+      allowUnlimitedContractSize: true,
       gas: 10000000, // tx gas limit
       blockGasLimit: 15000000,
       gasPrice: 20000000000,
-      initialBaseFeePerGas: 0,
-      forking: {
-        url: alchemyUrl()
-      }
+      initialBaseFeePerGas: 0
+      // forking: {
+      //   url: alchemyUrl()
+      // }
     },
     local: {
       url: "http://127.0.0.1:8545/",

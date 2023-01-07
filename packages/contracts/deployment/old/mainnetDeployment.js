@@ -119,58 +119,6 @@ async function mainnetDeploy(configParams) {
   ).toString();
   console.log(`time oneYearFromDeployment: ${oneYearFromDeployment}`);
 
-  // Deploy LockupContracts - one for each beneficiary
-  const lockupContracts = {};
-
-  for (const [investor, investorAddr] of Object.entries(configParams.beneficiaries)) {
-    const lockupContractEthersFactory = await ethers.getContractFactory(
-      "LockupContract",
-      deployerWallet
-    );
-    if (deploymentState[investor] && deploymentState[investor].address) {
-      console.log(
-        `Using previously deployed ${investor} lockup contract at address ${deploymentState[investor].address}`
-      );
-      lockupContracts[investor] = new ethers.Contract(
-        deploymentState[investor].address,
-        lockupContractEthersFactory.interface,
-        deployerWallet
-      );
-    } else {
-      const txReceipt = await mdh.sendAndWaitForTransaction(
-        LQTYContracts.lockupContractFactory.deployLockupContract(
-          investorAddr,
-          oneYearFromDeployment,
-          { gasPrice }
-        )
-      );
-
-      const address = await txReceipt.logs[0].address; // The deployment event emitted from the LC itself is is the first of two events, so this is its address
-      lockupContracts[investor] = new ethers.Contract(
-        address,
-        lockupContractEthersFactory.interface,
-        deployerWallet
-      );
-
-      deploymentState[investor] = {
-        address: address,
-        txHash: txReceipt.transactionHash
-      };
-
-      mdh.saveDeployment(deploymentState);
-    }
-
-    const lqtyTokenAddr = LQTYContracts.lqtyToken.address;
-    // verify
-    if (configParams.ETHERSCAN_BASE_URL) {
-      await mdh.verifyContract(investor, deploymentState, [
-        lqtyTokenAddr,
-        investorAddr,
-        oneYearFromDeployment
-      ]);
-    }
-  }
-
   // // --- TESTS AND CHECKS  ---
 
   // Deployer repay LUSD
@@ -469,18 +417,14 @@ async function mainnetDeploy(configParams) {
   // console.log("CHECK BENEFICIARY ATTEMPTING WITHDRAWAL FROM LC")
 
   // // connect Acct2 wallet to the LC they are beneficiary of
-  // let account2LockupContract = await lockupContracts["ACCOUNT_2"].connect(account2Wallet)
 
   // // Deployer funds LC with 10 LQTY
-  // // await mdh.sendAndWaitForTransaction(LQTYContracts.lqtyToken.transfer(account2LockupContract.address, dec(10, 18), { gasPrice }))
 
   // // account2 LQTY bal
   // let account2bal = await LQTYContracts.lqtyToken.balanceOf(account2Wallet.address)
   // th.logBN("account2 LQTY bal before withdrawal attempt", account2bal)
 
   // // Check LC LQTY bal
-  // let account2LockupContractBal = await LQTYContracts.lqtyToken.balanceOf(account2LockupContract.address)
-  // th.logBN("account2's LC LQTY bal before withdrawal attempt", account2LockupContractBal)
 
   // // Acct2 attempts withdrawal from  LC
   // await mdh.sendAndWaitForTransaction(account2LockupContract.withdrawLQTY({ gasPrice, gasLimit: 1000000 }))
@@ -490,8 +434,6 @@ async function mainnetDeploy(configParams) {
   // th.logBN("account2's LQTY bal after LC withdrawal attempt", account2bal)
 
   // // Check LC bal
-  // account2LockupContractBal = await LQTYContracts.lqtyToken.balanceOf(account2LockupContract.address)
-  // th.logBN("account2's LC LQTY bal LC withdrawal attempt", account2LockupContractBal)
 
   // // --- Stake LQTY ---
   // console.log("CHECK DEPLOYER STAKING LQTY")

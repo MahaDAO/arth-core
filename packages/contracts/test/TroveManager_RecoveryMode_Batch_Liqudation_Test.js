@@ -45,12 +45,12 @@ contract("TroveManager - in Recovery Mode - back to normal mode in 1 tx", async 
   beforeEach(async () => {
     contracts = await deploymentHelper.deployLiquityCore();
     contracts.troveManager = await TroveManagerTester.new();
-    contracts.lusdToken = await ARTHValuecoin.new(
+    contracts.arthToken = await ARTHValuecoin.new(
       contracts.troveManager.address,
       contracts.stabilityPool.address,
       contracts.borrowerOperations.address
     );
-    const LQTYContracts = await deploymentHelper.deployLQTYContracts(
+    const MAHAContracts = await deploymentHelper.deployMAHAContracts(
       bountyAddress,
       lpRewardsAddress,
       multisig
@@ -61,9 +61,9 @@ contract("TroveManager - in Recovery Mode - back to normal mode in 1 tx", async 
     priceFeed = contracts.priceFeedTestnet;
     sortedTroves = contracts.sortedTroves;
 
-    await deploymentHelper.connectLQTYContracts(LQTYContracts);
-    await deploymentHelper.connectCoreContracts(contracts, LQTYContracts);
-    await deploymentHelper.connectLQTYContractsToCore(LQTYContracts, contracts);
+    await deploymentHelper.connectMAHAContracts(MAHAContracts);
+    await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
+    await deploymentHelper.connectMAHAContractsToCore(MAHAContracts, contracts);
   });
 
   context("Batch liquidations", () => {
@@ -85,7 +85,7 @@ contract("TroveManager - in Recovery Mode - back to normal mode in 1 tx", async 
 
       await openTrove({
         ICR: toBN(dec(340, 16)),
-        extraLUSDAmount: totalLiquidatedDebt,
+        extraARTHAmount: totalLiquidatedDebt,
         extraParams: { from: whale }
       });
       await stabilityPool.provideToSP(totalLiquidatedDebt, ZERO_ADDRESS, { from: whale });
@@ -149,7 +149,7 @@ contract("TroveManager - in Recovery Mode - back to normal mode in 1 tx", async 
       const { A_coll, A_totalDebt, C_coll, C_totalDebt, totalLiquidatedDebt, price } = await setup();
 
       const spEthBefore = await stabilityPool.getETH();
-      const spLusdBefore = await stabilityPool.getTotalLUSDDeposits();
+      const spLusdBefore = await stabilityPool.getTotalARTHDeposits();
 
       const tx = await troveManager.batchLiquidateTroves([alice, carol]);
 
@@ -162,7 +162,7 @@ contract("TroveManager - in Recovery Mode - back to normal mode in 1 tx", async 
       assert.equal((await troveManager.Troves(carol))[3], "3");
 
       const spEthAfter = await stabilityPool.getETH();
-      const spLusdAfter = await stabilityPool.getTotalLUSDDeposits();
+      const spLusdAfter = await stabilityPool.getTotalARTHDeposits();
 
       // liquidate collaterals with the gas compensation fee subtracted
       const expectedCollateralLiquidatedA = th.applyLiquidationFee(
@@ -170,11 +170,11 @@ contract("TroveManager - in Recovery Mode - back to normal mode in 1 tx", async 
       );
       const expectedCollateralLiquidatedC = th.applyLiquidationFee(C_coll);
       // Stability Pool gains
-      const expectedGainInLUSD = expectedCollateralLiquidatedA
+      const expectedGainInARTH = expectedCollateralLiquidatedA
         .mul(price)
         .div(mv._1e18BN)
         .sub(A_totalDebt);
-      const realGainInLUSD = spEthAfter
+      const realGainInARTH = spEthAfter
         .sub(spEthBefore)
         .mul(price)
         .div(mv._1e18BN)
@@ -188,11 +188,11 @@ contract("TroveManager - in Recovery Mode - back to normal mode in 1 tx", async 
       assert.equal(
         spLusdBefore.sub(spLusdAfter).toString(),
         A_totalDebt.toString(),
-        "Stability Pool LUSD doesn’t match"
+        "Stability Pool ARTH doesn’t match"
       );
       assert.equal(
-        realGainInLUSD.toString(),
-        expectedGainInLUSD.toString(),
+        realGainInARTH.toString(),
+        expectedGainInARTH.toString(),
         "Stability Pool gains don’t match"
       );
     });
@@ -215,7 +215,7 @@ contract("TroveManager - in Recovery Mode - back to normal mode in 1 tx", async 
 
       await openTrove({
         ICR: toBN(dec(310, 16)),
-        extraLUSDAmount: totalLiquidatedDebt,
+        extraARTHAmount: totalLiquidatedDebt,
         extraParams: { from: whale }
       });
       await stabilityPool.provideToSP(totalLiquidatedDebt, ZERO_ADDRESS, { from: whale });
@@ -270,7 +270,7 @@ contract("TroveManager - in Recovery Mode - back to normal mode in 1 tx", async 
 
       await openTrove({
         ICR: toBN(dec(300, 16)),
-        extraLUSDAmount: totalLiquidatedDebt,
+        extraARTHAmount: totalLiquidatedDebt,
         extraParams: { from: whale }
       });
       await stabilityPool.provideToSP(totalLiquidatedDebt, ZERO_ADDRESS, { from: whale });

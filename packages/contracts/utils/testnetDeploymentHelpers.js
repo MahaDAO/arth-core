@@ -100,7 +100,7 @@ class TestDeploymentHelper {
     const collSurplusPoolFactory = await this.getFactory("CollSurplusPool");
     const borrowerOperationsFactory = await this.getFactory("BorrowerOperations");
     const hintHelpersFactory = await this.getFactory("HintHelpers");
-    const lusdTokenFactory = await this.getFactory("ARTHValuecoin");
+    const arthTokenFactory = await this.getFactory("ARTHValuecoin");
     const communityIssuanceFactory = await this.getFactory("CommunityIssuance");
     const multiTroveGetterFactory = await this.getFactory("MultiTroveGetter");
     const governanceFactory = await this.getFactory("Governance");
@@ -195,17 +195,17 @@ class TestDeploymentHelper {
       wrappedETHParams
     );
 
-    const lusdTokenParams = [
+    const arthTokenParams = [
       troveManager.address,
       stabilityPool.address,
       borrowerOperations.address
     ];
-    const lusdToken = await this.loadOrDeploy(
-      lusdTokenFactory,
+    const arthToken = await this.loadOrDeploy(
+      arthTokenFactory,
       "ARTH",
       "ARTHValuecoin",
       deploymentState,
-      lusdTokenParams
+      arthTokenParams
     );
 
     const multiTroveGetterParams = [troveManager.address, sortedTroves.address];
@@ -273,7 +273,7 @@ class TestDeploymentHelper {
         `${this.configParams.NATIVE_TOKEN_SYMBOL}HintHelpers`,
         deploymentState
       );
-      await this.verifyContract("ARTH", deploymentState, lusdTokenParams);
+      await this.verifyContract("ARTH", deploymentState, arthTokenParams);
       await this.verifyContract(
         `${this.configParams.NATIVE_TOKEN_SYMBOL}CommunityIssuance`,
         deploymentState
@@ -295,7 +295,7 @@ class TestDeploymentHelper {
     const coreContracts = {
       mahaToken,
       priceFeed,
-      lusdToken,
+      arthToken,
       sortedTroves,
       troveManager,
       activePool,
@@ -341,7 +341,7 @@ class TestDeploymentHelper {
           contracts.gasPool.address,
           contracts.collSurplusPool.address,
           contracts.governance.address,
-          contracts.lusdToken.address,
+          contracts.arthToken.address,
           contracts.sortedTroves.address,
           { gasPrice }
         )
@@ -359,7 +359,7 @@ class TestDeploymentHelper {
           contracts.collSurplusPool.address,
           contracts.governance.address,
           contracts.sortedTroves.address,
-          contracts.lusdToken.address,
+          contracts.arthToken.address,
           { gasPrice }
         )
       ));
@@ -371,7 +371,7 @@ class TestDeploymentHelper {
           contracts.borrowerOperations.address,
           contracts.troveManager.address,
           contracts.activePool.address,
-          contracts.lusdToken.address,
+          contracts.arthToken.address,
           contracts.sortedTroves.address,
           contracts.governance.address,
           contracts.communityIssuance.address,

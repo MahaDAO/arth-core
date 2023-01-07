@@ -9,9 +9,7 @@ const StabilityPool = artifacts.require("./StabilityPool.sol");
 const FunctionCaller = artifacts.require("./FunctionCaller.sol");
 const BorrowerOperations = artifacts.require("./BorrowerOperations.sol");
 
-const MAHAStaking = artifacts.require("./MAHA/MAHAStaking.sol");
-const MAHAToken = artifacts.require("./MAHA/MAHAToken.sol");
-const LockupContractFactory = artifacts.require("./MAHA/LockupContractFactory.sol");
+const MAHAToken = artifacts.require("./TestContracts/MockERC20.sol");
 const CommunityIssuance = artifacts.require("./MAHA/CommunityIssuance.sol");
 const HintHelpers = artifacts.require("./HintHelpers.sol");
 
@@ -21,7 +19,7 @@ const DefaultPoolTester = artifacts.require("./DefaultPoolTester.sol");
 const LiquityMathTester = artifacts.require("./LiquityMathTester.sol");
 const BorrowerOperationsTester = artifacts.require("./BorrowerOperationsTester.sol");
 const TroveManagerTester = artifacts.require("./TroveManagerTester.sol");
-const LUSDTokenTester = artifacts.require("./LUSDTokenTester.sol");
+const ARTHTokenTester = artifacts.require("./ARTHTokenTester.sol");
 
 const { TestHelper: th } = require("../utils/testHelpers.js");
 
@@ -41,7 +39,7 @@ const coreContractABIs = [
   HintHelpers
 ];
 
-const MAHAContractABIs = [MAHAStaking, MAHAToken, LockupContractFactory, CommunityIssuance];
+const MAHAContractABIs = [MAHAToken, CommunityIssuance];
 
 const TesterContractABIs = [
   CommunityIssuanceTester,
@@ -50,7 +48,7 @@ const TesterContractABIs = [
   LiquityMathTester,
   BorrowerOperationsTester,
   TroveManagerTester,
-  LUSDTokenTester
+  ARTHTokenTester
 ];
 
 const getGasFromContractDeployment = async (contractObject, name) => {
@@ -110,8 +108,6 @@ async function main() {
   const testerContracts = await dh.deployTesterContractsHardhat();
 
   await dh.connectCoreContracts(coreContracts, MAHAContracts);
-  await dh.connectMAHAContracts(MAHAContracts);
-  await dh.connectMAHAContractsToCore(MAHAContracts, coreContracts);
 
   console.log(`\n`);
   console.log(`MAHA CONTRACTS`);

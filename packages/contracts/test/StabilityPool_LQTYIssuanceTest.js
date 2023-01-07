@@ -12,7 +12,7 @@ const ARTHValuecoin = artifacts.require("ARTHValuecoin");
 
 const GAS_PRICE = 10000000;
 
-contract("StabilityPool - LQTY Rewards", async accounts => {
+contract("StabilityPool - MAHA Rewards", async accounts => {
   const [
     owner,
     whale,
@@ -40,15 +40,15 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
   let contracts;
 
   let priceFeed;
-  let lusdToken;
+  let arthToken;
   let stabilityPool;
   let sortedTroves;
   let troveManager;
   let borrowerOperations;
-  let lqtyToken;
+  let mahaToken;
   let communityIssuanceTester;
 
-  let communityLQTYSupply;
+  let communityMAHASupply;
   let issuance_M1;
   let issuance_M2;
   let issuance_M3;
@@ -58,44 +58,44 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
 
   const ZERO_ADDRESS = th.ZERO_ADDRESS;
 
-  const getOpenTroveLUSDAmount = async totalDebt => th.getOpenTroveLUSDAmount(contracts, totalDebt);
+  const getOpenTroveARTHAmount = async totalDebt => th.getOpenTroveARTHAmount(contracts, totalDebt);
 
   const openTrove = async params => th.openTrove(contracts, params);
-  describe("LQTY Rewards", async () => {
+  describe("MAHA Rewards", async () => {
     beforeEach(async () => {
       contracts = await deploymentHelper.deployLiquityCore();
       contracts.troveManager = await TroveManagerTester.new();
-      contracts.lusdToken = await ARTHValuecoin.new(
+      contracts.arthToken = await ARTHValuecoin.new(
         contracts.troveManager.address,
         contracts.stabilityPool.address,
         contracts.borrowerOperations.address
       );
-      const LQTYContracts = await deploymentHelper.deployLQTYTesterContractsHardhat(
+      const MAHAContracts = await deploymentHelper.deployMAHATesterContractsHardhat(
         bountyAddress,
         lpRewardsAddress,
         multisig
       );
 
       priceFeed = contracts.priceFeedTestnet;
-      lusdToken = contracts.lusdToken;
+      arthToken = contracts.arthToken;
       stabilityPool = contracts.stabilityPool;
       sortedTroves = contracts.sortedTroves;
       troveManager = contracts.troveManager;
       stabilityPool = contracts.stabilityPool;
       borrowerOperations = contracts.borrowerOperations;
 
-      lqtyToken = LQTYContracts.lqtyToken;
-      communityIssuanceTester = LQTYContracts.communityIssuance;
+      mahaToken = MAHAContracts.mahaToken;
+      communityIssuanceTester = MAHAContracts.communityIssuance;
 
-      await deploymentHelper.connectLQTYContracts(LQTYContracts);
-      await deploymentHelper.connectCoreContracts(contracts, LQTYContracts);
-      await deploymentHelper.connectLQTYContractsToCore(LQTYContracts, contracts);
+      await deploymentHelper.connectMAHAContracts(MAHAContracts);
+      await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
+      await deploymentHelper.connectMAHAContractsToCore(MAHAContracts, contracts);
 
-      // Check community issuance starts with 32 million LQTY
-      communityLQTYSupply = toBN(await lqtyToken.balanceOf(communityIssuanceTester.address));
-      assert.isAtMost(getDifference(communityLQTYSupply, "32000000000000000000000000"), 1000);
+      // Check community issuance starts with 32 million MAHA
+      communityMAHASupply = toBN(await mahaToken.balanceOf(communityIssuanceTester.address));
+      assert.isAtMost(getDifference(communityMAHASupply, "32000000000000000000000000"), 1000);
 
-      /* Monthly LQTY issuance
+      /* Monthly MAHA issuance
 
         Expected fraction of total supply issued per month, for a yearly halving schedule
         (issuance in each month, not cumulative):
@@ -109,33 +109,33 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       */
 
       issuance_M1 = toBN("55378538087966600")
-        .mul(communityLQTYSupply)
+        .mul(communityMAHASupply)
         .div(toBN(dec(1, 18)));
       issuance_M2 = toBN("52311755607206100")
-        .mul(communityLQTYSupply)
+        .mul(communityMAHASupply)
         .div(toBN(dec(1, 18)));
       issuance_M3 = toBN("49414807056864200")
-        .mul(communityLQTYSupply)
+        .mul(communityMAHASupply)
         .div(toBN(dec(1, 18)));
       issuance_M4 = toBN("46678287282156100")
-        .mul(communityLQTYSupply)
+        .mul(communityMAHASupply)
         .div(toBN(dec(1, 18)));
       issuance_M5 = toBN("44093311972020200")
-        .mul(communityLQTYSupply)
+        .mul(communityMAHASupply)
         .div(toBN(dec(1, 18)));
       issuance_M6 = toBN("41651488815552900")
-        .mul(communityLQTYSupply)
+        .mul(communityMAHASupply)
         .div(toBN(dec(1, 18)));
     });
 
-    it("liquidation < 1 minute after a deposit does not change totalLQTYIssued", async () => {
+    it("liquidation < 1 minute after a deposit does not change totalMAHAIssued", async () => {
       await openTrove({
-        extraLUSDAmount: toBN(dec(10000, 18)),
+        extraARTHAmount: toBN(dec(10000, 18)),
         ICR: toBN(dec(2, 18)),
         extraParams: { from: A }
       });
       await openTrove({
-        extraLUSDAmount: toBN(dec(10000, 18)),
+        extraARTHAmount: toBN(dec(10000, 18)),
         ICR: toBN(dec(2, 18)),
         extraParams: { from: B }
       });
@@ -148,41 +148,41 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
 
       await priceFeed.setPrice(dec(105, 18));
 
-      // B adjusts, triggering LQTY issuance for all
+      // B adjusts, triggering MAHA issuance for all
       await stabilityPool.provideToSP(dec(1, 18), ZERO_ADDRESS, { from: B });
       const blockTimestamp_1 = th.toBN(await th.getLatestBlockTimestamp(web3));
 
-      // Check LQTY has been issued
-      const totalLQTYIssued_1 = await communityIssuanceTester.totalLQTYIssued();
-      assert.isTrue(totalLQTYIssued_1.gt(toBN("0")));
+      // Check MAHA has been issued
+      const totalMAHAIssued_1 = await communityIssuanceTester.totalMAHAIssued();
+      assert.isTrue(totalMAHAIssued_1.gt(toBN("0")));
 
       await troveManager.liquidate(B);
       const blockTimestamp_2 = th.toBN(await th.getLatestBlockTimestamp(web3));
 
       assert.isFalse(await sortedTroves.contains(B));
 
-      const totalLQTYIssued_2 = await communityIssuanceTester.totalLQTYIssued();
+      const totalMAHAIssued_2 = await communityIssuanceTester.totalMAHAIssued();
 
-      //console.log(`totalLQTYIssued_1: ${totalLQTYIssued_1}`)
-      //console.log(`totalLQTYIssued_2: ${totalLQTYIssued_2}`)
+      //console.log(`totalMAHAIssued_1: ${totalMAHAIssued_1}`)
+      //console.log(`totalMAHAIssued_2: ${totalMAHAIssued_2}`)
 
       // check blockTimestamp diff < 60s
       const timestampDiff = blockTimestamp_2.sub(blockTimestamp_1);
       assert.isTrue(timestampDiff.lt(toBN(60)));
 
-      // Check that the liquidation did not alter total LQTY issued
-      assert.isTrue(totalLQTYIssued_2.eq(totalLQTYIssued_1));
+      // Check that the liquidation did not alter total MAHA issued
+      assert.isTrue(totalMAHAIssued_2.eq(totalMAHAIssued_1));
 
-      // Check that depositor B has no LQTY gain
-      const B_pendingLQTYGain = await stabilityPool.getDepositorLQTYGain(B);
-      assert.equal(B_pendingLQTYGain, "0");
+      // Check that depositor B has no MAHA gain
+      const B_pendingMAHAGain = await stabilityPool.getDepositorMAHAGain(B);
+      assert.equal(B_pendingMAHAGain, "0");
 
       // Check depositor B has a pending ETH gain
       const B_pendingETHGain = await stabilityPool.getDepositorETHGain(B);
       assert.isTrue(B_pendingETHGain.gt(toBN("0")));
     });
 
-    it("withdrawFromSP(): reward term G does not update when no LQTY is issued", async () => {
+    it("withdrawFromSP(): reward term G does not update when no MAHA is issued", async () => {
       await borrowerOperations.openTrove(th._100pct, dec(10000, 18), A, A, {
         from: A,
         value: dec(1000, "ether")
@@ -195,7 +195,7 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       // defaulter opens trove
       await borrowerOperations.openTrove(
         th._100pct,
-        await getOpenTroveLUSDAmount(dec(10000, 18)),
+        await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_1,
         defaulter_1,
         { from: defaulter_1, value: dec(100, "ether") }
@@ -212,18 +212,18 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
 
       // Get G and communityIssuance before
       const G_Before = await stabilityPool.epochToScaleToG(0, 0);
-      const LQTYIssuedBefore = await communityIssuanceTester.totalLQTYIssued();
+      const MAHAIssuedBefore = await communityIssuanceTester.totalMAHAIssued();
 
       //  A withdraws some deposit. Triggers issuance.
       const tx = await stabilityPool.withdrawFromSP(1000, { from: A, gasPrice: GAS_PRICE });
       assert.isTrue(tx.receipt.status);
 
-      // Check G and LQTYIssued do not increase, since <1 minute has passed between issuance triggers
+      // Check G and MAHAIssued do not increase, since <1 minute has passed between issuance triggers
       const G_After = await stabilityPool.epochToScaleToG(0, 0);
-      const LQTYIssuedAfter = await communityIssuanceTester.totalLQTYIssued();
+      const MAHAIssuedAfter = await communityIssuanceTester.totalMAHAIssued();
 
       assert.isTrue(G_After.eq(G_Before));
-      assert.isTrue(LQTYIssuedAfter.eq(LQTYIssuedBefore));
+      assert.isTrue(MAHAIssuedAfter.eq(MAHAIssuedBefore));
     });
 
     // using the result of this to advance time by the desired amount from the deployment time, whether or not some extra time has passed in the meanwhile
@@ -236,8 +236,8 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
     };
 
     // Simple case: 3 depositors, equal stake. No liquidations. No front-end.
-    it("withdrawFromSP(): Depositors with equal initial deposit withdraw correct LQTY gain. No liquidations. No front end.", async () => {
-      const initialIssuance = await communityIssuanceTester.totalLQTYIssued();
+    it("withdrawFromSP(): Depositors with equal initial deposit withdraw correct MAHA gain. No liquidations. No front end.", async () => {
+      const initialIssuance = await communityIssuanceTester.totalMAHAIssued();
       assert.equal(initialIssuance, 0);
 
       // Whale opens Trove with 10k ETH
@@ -263,10 +263,10 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
         value: dec(100, "ether")
       });
 
-      // Check all LQTY balances are initially 0
-      assert.equal(await lqtyToken.balanceOf(A), 0);
-      assert.equal(await lqtyToken.balanceOf(B), 0);
-      assert.equal(await lqtyToken.balanceOf(C), 0);
+      // Check all MAHA balances are initially 0
+      assert.equal(await mahaToken.balanceOf(A), 0);
+      assert.equal(await mahaToken.balanceOf(B), 0);
+      assert.equal(await mahaToken.balanceOf(C), 0);
 
       // A, B, C deposit
       await stabilityPool.provideToSP(dec(1, 22), ZERO_ADDRESS, { from: A });
@@ -279,64 +279,64 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
         web3.currentProvider
       );
 
-      // D deposits, triggering LQTY gains for A,B,C. Withdraws immediately after
+      // D deposits, triggering MAHA gains for A,B,C. Withdraws immediately after
       await stabilityPool.provideToSP(dec(1, 18), ZERO_ADDRESS, { from: D });
       await stabilityPool.withdrawFromSP(dec(1, 18), { from: D });
 
       // Expected gains for each depositor after 1 year (50% total issued).  Each deposit gets 1/3 of issuance.
-      const expectedLQTYGain_1yr = communityLQTYSupply.div(toBN("2")).div(toBN("3"));
+      const expectedMAHAGain_1yr = communityMAHASupply.div(toBN("2")).div(toBN("3"));
 
-      // Check LQTY gain
-      const A_LQTYGain_1yr = await stabilityPool.getDepositorLQTYGain(A);
-      const B_LQTYGain_1yr = await stabilityPool.getDepositorLQTYGain(B);
-      const C_LQTYGain_1yr = await stabilityPool.getDepositorLQTYGain(C);
+      // Check MAHA gain
+      const A_MAHAGain_1yr = await stabilityPool.getDepositorMAHAGain(A);
+      const B_MAHAGain_1yr = await stabilityPool.getDepositorMAHAGain(B);
+      const C_MAHAGain_1yr = await stabilityPool.getDepositorMAHAGain(C);
 
       // Check gains are correct, error tolerance = 1e-6 of a token
 
-      assert.isAtMost(getDifference(A_LQTYGain_1yr, expectedLQTYGain_1yr), 1e12);
-      assert.isAtMost(getDifference(B_LQTYGain_1yr, expectedLQTYGain_1yr), 1e12);
-      assert.isAtMost(getDifference(C_LQTYGain_1yr, expectedLQTYGain_1yr), 1e12);
+      assert.isAtMost(getDifference(A_MAHAGain_1yr, expectedMAHAGain_1yr), 1e12);
+      assert.isAtMost(getDifference(B_MAHAGain_1yr, expectedMAHAGain_1yr), 1e12);
+      assert.isAtMost(getDifference(C_MAHAGain_1yr, expectedMAHAGain_1yr), 1e12);
 
       // Another year passes
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
 
-      // D deposits, triggering LQTY gains for A,B,C. Withdraws immediately after
+      // D deposits, triggering MAHA gains for A,B,C. Withdraws immediately after
       await stabilityPool.provideToSP(dec(1, 18), ZERO_ADDRESS, { from: D });
       await stabilityPool.withdrawFromSP(dec(1, 18), { from: D });
 
       // Expected gains for each depositor after 2 years (75% total issued).  Each deposit gets 1/3 of issuance.
-      const expectedLQTYGain_2yr = communityLQTYSupply.mul(toBN("3")).div(toBN("4")).div(toBN("3"));
+      const expectedMAHAGain_2yr = communityMAHASupply.mul(toBN("3")).div(toBN("4")).div(toBN("3"));
 
-      // Check LQTY gain
-      const A_LQTYGain_2yr = await stabilityPool.getDepositorLQTYGain(A);
-      const B_LQTYGain_2yr = await stabilityPool.getDepositorLQTYGain(B);
-      const C_LQTYGain_2yr = await stabilityPool.getDepositorLQTYGain(C);
+      // Check MAHA gain
+      const A_MAHAGain_2yr = await stabilityPool.getDepositorMAHAGain(A);
+      const B_MAHAGain_2yr = await stabilityPool.getDepositorMAHAGain(B);
+      const C_MAHAGain_2yr = await stabilityPool.getDepositorMAHAGain(C);
 
       // Check gains are correct, error tolerance = 1e-6 of a token
-      assert.isAtMost(getDifference(A_LQTYGain_2yr, expectedLQTYGain_2yr), 1e12);
-      assert.isAtMost(getDifference(B_LQTYGain_2yr, expectedLQTYGain_2yr), 1e12);
-      assert.isAtMost(getDifference(C_LQTYGain_2yr, expectedLQTYGain_2yr), 1e12);
+      assert.isAtMost(getDifference(A_MAHAGain_2yr, expectedMAHAGain_2yr), 1e12);
+      assert.isAtMost(getDifference(B_MAHAGain_2yr, expectedMAHAGain_2yr), 1e12);
+      assert.isAtMost(getDifference(C_MAHAGain_2yr, expectedMAHAGain_2yr), 1e12);
 
       // Each depositor fully withdraws
       await stabilityPool.withdrawFromSP(dec(100, 18), { from: A });
       await stabilityPool.withdrawFromSP(dec(100, 18), { from: B });
       await stabilityPool.withdrawFromSP(dec(100, 18), { from: C });
 
-      // Check LQTY balances increase by correct amount
-      assert.isAtMost(getDifference(await lqtyToken.balanceOf(A), expectedLQTYGain_2yr), 1e12);
-      assert.isAtMost(getDifference(await lqtyToken.balanceOf(B), expectedLQTYGain_2yr), 1e12);
-      assert.isAtMost(getDifference(await lqtyToken.balanceOf(C), expectedLQTYGain_2yr), 1e12);
+      // Check MAHA balances increase by correct amount
+      assert.isAtMost(getDifference(await mahaToken.balanceOf(A), expectedMAHAGain_2yr), 1e12);
+      assert.isAtMost(getDifference(await mahaToken.balanceOf(B), expectedMAHAGain_2yr), 1e12);
+      assert.isAtMost(getDifference(await mahaToken.balanceOf(C), expectedMAHAGain_2yr), 1e12);
     });
 
     // 3 depositors, varied stake. No liquidations. No front-end.
-    it("withdrawFromSP(): Depositors with varying initial deposit withdraw correct LQTY gain. No liquidations. No front end.", async () => {
-      const initialIssuance = await communityIssuanceTester.totalLQTYIssued();
+    it("withdrawFromSP(): Depositors with varying initial deposit withdraw correct MAHA gain. No liquidations. No front end.", async () => {
+      const initialIssuance = await communityIssuanceTester.totalMAHAIssued();
       assert.equal(initialIssuance, 0);
 
       // Whale opens Trove with 10k ETH
       await borrowerOperations.openTrove(
         th._100pct,
-        await getOpenTroveLUSDAmount(dec(10000, 18)),
+        await getOpenTroveARTHAmount(dec(10000, 18)),
         whale,
         whale,
         { from: whale, value: dec(10000, "ether") }
@@ -359,10 +359,10 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
         value: dec(100, "ether")
       });
 
-      // Check all LQTY balances are initially 0
-      assert.equal(await lqtyToken.balanceOf(A), 0);
-      assert.equal(await lqtyToken.balanceOf(B), 0);
-      assert.equal(await lqtyToken.balanceOf(C), 0);
+      // Check all MAHA balances are initially 0
+      assert.equal(await mahaToken.balanceOf(A), 0);
+      assert.equal(await mahaToken.balanceOf(B), 0);
+      assert.equal(await mahaToken.balanceOf(C), 0);
 
       // A, B, C deposit
       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: A });
@@ -375,80 +375,80 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
         web3.currentProvider
       );
 
-      // D deposits, triggering LQTY gains for A,B,C. Withdraws immediately after
+      // D deposits, triggering MAHA gains for A,B,C. Withdraws immediately after
       await stabilityPool.provideToSP(dec(1, 18), ZERO_ADDRESS, { from: D });
       await stabilityPool.withdrawFromSP(dec(1, 18), { from: D });
 
       // Expected gains for each depositor after 1 year (50% total issued)
-      const A_expectedLQTYGain_1yr = communityLQTYSupply
+      const A_expectedMAHAGain_1yr = communityMAHASupply
         .div(toBN("2")) // 50% of total issued after 1 year
         .div(toBN("6")); // A gets 1/6 of the issuance
 
-      const B_expectedLQTYGain_1yr = communityLQTYSupply
+      const B_expectedMAHAGain_1yr = communityMAHASupply
         .div(toBN("2")) // 50% of total issued after 1 year
         .div(toBN("3")); // B gets 2/6 = 1/3 of the issuance
 
-      const C_expectedLQTYGain_1yr = communityLQTYSupply
+      const C_expectedMAHAGain_1yr = communityMAHASupply
         .div(toBN("2")) // 50% of total issued after 1 year
         .div(toBN("2")); // C gets 3/6 = 1/2 of the issuance
 
-      // Check LQTY gain
-      const A_LQTYGain_1yr = await stabilityPool.getDepositorLQTYGain(A);
-      const B_LQTYGain_1yr = await stabilityPool.getDepositorLQTYGain(B);
-      const C_LQTYGain_1yr = await stabilityPool.getDepositorLQTYGain(C);
+      // Check MAHA gain
+      const A_MAHAGain_1yr = await stabilityPool.getDepositorMAHAGain(A);
+      const B_MAHAGain_1yr = await stabilityPool.getDepositorMAHAGain(B);
+      const C_MAHAGain_1yr = await stabilityPool.getDepositorMAHAGain(C);
 
       // Check gains are correct, error tolerance = 1e-6 of a toke
-      assert.isAtMost(getDifference(A_LQTYGain_1yr, A_expectedLQTYGain_1yr), 1e12);
-      assert.isAtMost(getDifference(B_LQTYGain_1yr, B_expectedLQTYGain_1yr), 1e12);
-      assert.isAtMost(getDifference(C_LQTYGain_1yr, C_expectedLQTYGain_1yr), 1e12);
+      assert.isAtMost(getDifference(A_MAHAGain_1yr, A_expectedMAHAGain_1yr), 1e12);
+      assert.isAtMost(getDifference(B_MAHAGain_1yr, B_expectedMAHAGain_1yr), 1e12);
+      assert.isAtMost(getDifference(C_MAHAGain_1yr, C_expectedMAHAGain_1yr), 1e12);
 
       // Another year passes
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
 
-      // D deposits, triggering LQTY gains for A,B,C. Withdraws immediately after
+      // D deposits, triggering MAHA gains for A,B,C. Withdraws immediately after
       await stabilityPool.provideToSP(dec(1, 18), ZERO_ADDRESS, { from: D });
       await stabilityPool.withdrawFromSP(dec(1, 18), { from: D });
 
       // Expected gains for each depositor after 2 years (75% total issued).
-      const A_expectedLQTYGain_2yr = communityLQTYSupply
+      const A_expectedMAHAGain_2yr = communityMAHASupply
         .mul(toBN("3"))
         .div(toBN("4")) // 75% of total issued after 1 year
         .div(toBN("6")); // A gets 1/6 of the issuance
 
-      const B_expectedLQTYGain_2yr = communityLQTYSupply
+      const B_expectedMAHAGain_2yr = communityMAHASupply
         .mul(toBN("3"))
         .div(toBN("4")) // 75% of total issued after 1 year
         .div(toBN("3")); // B gets 2/6 = 1/3 of the issuance
 
-      const C_expectedLQTYGain_2yr = communityLQTYSupply
+      const C_expectedMAHAGain_2yr = communityMAHASupply
         .mul(toBN("3"))
         .div(toBN("4")) // 75% of total issued after 1 year
         .div(toBN("2")); // C gets 3/6 = 1/2 of the issuance
 
-      // Check LQTY gain
-      const A_LQTYGain_2yr = await stabilityPool.getDepositorLQTYGain(A);
-      const B_LQTYGain_2yr = await stabilityPool.getDepositorLQTYGain(B);
-      const C_LQTYGain_2yr = await stabilityPool.getDepositorLQTYGain(C);
+      // Check MAHA gain
+      const A_MAHAGain_2yr = await stabilityPool.getDepositorMAHAGain(A);
+      const B_MAHAGain_2yr = await stabilityPool.getDepositorMAHAGain(B);
+      const C_MAHAGain_2yr = await stabilityPool.getDepositorMAHAGain(C);
 
       // Check gains are correct, error tolerance = 1e-6 of a token
-      assert.isAtMost(getDifference(A_LQTYGain_2yr, A_expectedLQTYGain_2yr), 1e12);
-      assert.isAtMost(getDifference(B_LQTYGain_2yr, B_expectedLQTYGain_2yr), 1e12);
-      assert.isAtMost(getDifference(C_LQTYGain_2yr, C_expectedLQTYGain_2yr), 1e12);
+      assert.isAtMost(getDifference(A_MAHAGain_2yr, A_expectedMAHAGain_2yr), 1e12);
+      assert.isAtMost(getDifference(B_MAHAGain_2yr, B_expectedMAHAGain_2yr), 1e12);
+      assert.isAtMost(getDifference(C_MAHAGain_2yr, C_expectedMAHAGain_2yr), 1e12);
 
       // Each depositor fully withdraws
       await stabilityPool.withdrawFromSP(dec(10000, 18), { from: A });
       await stabilityPool.withdrawFromSP(dec(10000, 18), { from: B });
       await stabilityPool.withdrawFromSP(dec(10000, 18), { from: C });
 
-      // Check LQTY balances increase by correct amount
-      assert.isAtMost(getDifference(await lqtyToken.balanceOf(A), A_expectedLQTYGain_2yr), 1e12);
-      assert.isAtMost(getDifference(await lqtyToken.balanceOf(B), B_expectedLQTYGain_2yr), 1e12);
-      assert.isAtMost(getDifference(await lqtyToken.balanceOf(C), C_expectedLQTYGain_2yr), 1e12);
+      // Check MAHA balances increase by correct amount
+      assert.isAtMost(getDifference(await mahaToken.balanceOf(A), A_expectedMAHAGain_2yr), 1e12);
+      assert.isAtMost(getDifference(await mahaToken.balanceOf(B), B_expectedMAHAGain_2yr), 1e12);
+      assert.isAtMost(getDifference(await mahaToken.balanceOf(C), C_expectedMAHAGain_2yr), 1e12);
     });
 
     // A, B, C deposit. Varied stake. 1 Liquidation. D joins.
-    it("withdrawFromSP(): Depositors with varying initial deposit withdraw correct LQTY gain. No liquidations. No front end.", async () => {
-      const initialIssuance = await communityIssuanceTester.totalLQTYIssued();
+    it("withdrawFromSP(): Depositors with varying initial deposit withdraw correct MAHA gain. No liquidations. No front end.", async () => {
+      const initialIssuance = await communityIssuanceTester.totalMAHAIssued();
       assert.equal(initialIssuance, 0);
 
       // Whale opens Trove with 10k ETH
@@ -480,17 +480,17 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
 
       await borrowerOperations.openTrove(
         th._100pct,
-        await getOpenTroveLUSDAmount(dec(30000, 18)),
+        await getOpenTroveARTHAmount(dec(30000, 18)),
         defaulter_1,
         defaulter_1,
         { from: defaulter_1, value: dec(300, "ether") }
       );
 
-      // Check all LQTY balances are initially 0
-      assert.equal(await lqtyToken.balanceOf(A), 0);
-      assert.equal(await lqtyToken.balanceOf(B), 0);
-      assert.equal(await lqtyToken.balanceOf(C), 0);
-      assert.equal(await lqtyToken.balanceOf(D), 0);
+      // Check all MAHA balances are initially 0
+      assert.equal(await mahaToken.balanceOf(A), 0);
+      assert.equal(await mahaToken.balanceOf(B), 0);
+      assert.equal(await mahaToken.balanceOf(C), 0);
+      assert.equal(await mahaToken.balanceOf(D), 0);
 
       // A, B, C deposit
       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: A });
@@ -503,7 +503,7 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
         web3.currentProvider
       );
 
-      assert.equal(await stabilityPool.getTotalLUSDDeposits(), dec(60000, 18));
+      assert.equal(await stabilityPool.getTotalARTHDeposits(), dec(60000, 18));
 
       // Price Drops, defaulter1 liquidated. Stability Pool size drops by 50%
       await priceFeed.setPrice(dec(100, 18));
@@ -513,32 +513,32 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
 
       // Confirm SP dropped from 60k to 30k
       assert.isAtMost(
-        getDifference(await stabilityPool.getTotalLUSDDeposits(), dec(30000, 18)),
+        getDifference(await stabilityPool.getTotalARTHDeposits(), dec(30000, 18)),
         1000
       );
 
       // Expected gains for each depositor after 1 year (50% total issued)
-      const A_expectedLQTYGain_Y1 = communityLQTYSupply
+      const A_expectedMAHAGain_Y1 = communityMAHASupply
         .div(toBN("2")) // 50% of total issued in Y1
         .div(toBN("6")); // A got 1/6 of the issuance
 
-      const B_expectedLQTYGain_Y1 = communityLQTYSupply
+      const B_expectedMAHAGain_Y1 = communityMAHASupply
         .div(toBN("2")) // 50% of total issued in Y1
         .div(toBN("3")); // B gets 2/6 = 1/3 of the issuance
 
-      const C_expectedLQTYGain_Y1 = communityLQTYSupply
+      const C_expectedMAHAGain_Y1 = communityMAHASupply
         .div(toBN("2")) // 50% of total issued in Y1
         .div(toBN("2")); // C gets 3/6 = 1/2 of the issuance
 
-      // Check LQTY gain
-      const A_LQTYGain_Y1 = await stabilityPool.getDepositorLQTYGain(A);
-      const B_LQTYGain_Y1 = await stabilityPool.getDepositorLQTYGain(B);
-      const C_LQTYGain_Y1 = await stabilityPool.getDepositorLQTYGain(C);
+      // Check MAHA gain
+      const A_MAHAGain_Y1 = await stabilityPool.getDepositorMAHAGain(A);
+      const B_MAHAGain_Y1 = await stabilityPool.getDepositorMAHAGain(B);
+      const C_MAHAGain_Y1 = await stabilityPool.getDepositorMAHAGain(C);
 
       // Check gains are correct, error tolerance = 1e-6 of a toke
-      assert.isAtMost(getDifference(A_LQTYGain_Y1, A_expectedLQTYGain_Y1), 1e12);
-      assert.isAtMost(getDifference(B_LQTYGain_Y1, B_expectedLQTYGain_Y1), 1e12);
-      assert.isAtMost(getDifference(C_LQTYGain_Y1, C_expectedLQTYGain_Y1), 1e12);
+      assert.isAtMost(getDifference(A_MAHAGain_Y1, A_expectedMAHAGain_Y1), 1e12);
+      assert.isAtMost(getDifference(B_MAHAGain_Y1, B_expectedMAHAGain_Y1), 1e12);
+      assert.isAtMost(getDifference(C_MAHAGain_Y1, C_expectedMAHAGain_Y1), 1e12);
 
       // D deposits 40k
       await stabilityPool.provideToSP(dec(40000, 18), ZERO_ADDRESS, { from: D });
@@ -546,45 +546,45 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       // Year 2 passes
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
 
-      // E deposits and withdraws, creating LQTY issuance
+      // E deposits and withdraws, creating MAHA issuance
       await stabilityPool.provideToSP(dec(1, 18), ZERO_ADDRESS, { from: E });
       await stabilityPool.withdrawFromSP(dec(1, 18), { from: E });
 
       // Expected gains for each depositor during Y2:
-      const A_expectedLQTYGain_Y2 = communityLQTYSupply
+      const A_expectedMAHAGain_Y2 = communityMAHASupply
         .div(toBN("4")) // 25% of total issued in Y2
         .div(toBN("14")); // A got 50/700 = 1/14 of the issuance
 
-      const B_expectedLQTYGain_Y2 = communityLQTYSupply
+      const B_expectedMAHAGain_Y2 = communityMAHASupply
         .div(toBN("4")) // 25% of total issued in Y2
         .div(toBN("7")); // B got 100/700 = 1/7 of the issuance
 
-      const C_expectedLQTYGain_Y2 = communityLQTYSupply
+      const C_expectedMAHAGain_Y2 = communityMAHASupply
         .div(toBN("4")) // 25% of total issued in Y2
         .mul(toBN("3"))
         .div(toBN("14")); // C gets 150/700 = 3/14 of the issuance
 
-      const D_expectedLQTYGain_Y2 = communityLQTYSupply
+      const D_expectedMAHAGain_Y2 = communityMAHASupply
         .div(toBN("4")) // 25% of total issued in Y2
         .mul(toBN("4"))
         .div(toBN("7")); // D gets 400/700 = 4/7 of the issuance
 
-      // Check LQTY gain
-      const A_LQTYGain_AfterY2 = await stabilityPool.getDepositorLQTYGain(A);
-      const B_LQTYGain_AfterY2 = await stabilityPool.getDepositorLQTYGain(B);
-      const C_LQTYGain_AfterY2 = await stabilityPool.getDepositorLQTYGain(C);
-      const D_LQTYGain_AfterY2 = await stabilityPool.getDepositorLQTYGain(D);
+      // Check MAHA gain
+      const A_MAHAGain_AfterY2 = await stabilityPool.getDepositorMAHAGain(A);
+      const B_MAHAGain_AfterY2 = await stabilityPool.getDepositorMAHAGain(B);
+      const C_MAHAGain_AfterY2 = await stabilityPool.getDepositorMAHAGain(C);
+      const D_MAHAGain_AfterY2 = await stabilityPool.getDepositorMAHAGain(D);
 
-      const A_expectedTotalGain = A_expectedLQTYGain_Y1.add(A_expectedLQTYGain_Y2);
-      const B_expectedTotalGain = B_expectedLQTYGain_Y1.add(B_expectedLQTYGain_Y2);
-      const C_expectedTotalGain = C_expectedLQTYGain_Y1.add(C_expectedLQTYGain_Y2);
-      const D_expectedTotalGain = D_expectedLQTYGain_Y2;
+      const A_expectedTotalGain = A_expectedMAHAGain_Y1.add(A_expectedMAHAGain_Y2);
+      const B_expectedTotalGain = B_expectedMAHAGain_Y1.add(B_expectedMAHAGain_Y2);
+      const C_expectedTotalGain = C_expectedMAHAGain_Y1.add(C_expectedMAHAGain_Y2);
+      const D_expectedTotalGain = D_expectedMAHAGain_Y2;
 
       // Check gains are correct, error tolerance = 1e-6 of a token
-      assert.isAtMost(getDifference(A_LQTYGain_AfterY2, A_expectedTotalGain), 1e12);
-      assert.isAtMost(getDifference(B_LQTYGain_AfterY2, B_expectedTotalGain), 1e12);
-      assert.isAtMost(getDifference(C_LQTYGain_AfterY2, C_expectedTotalGain), 1e12);
-      assert.isAtMost(getDifference(D_LQTYGain_AfterY2, D_expectedTotalGain), 1e12);
+      assert.isAtMost(getDifference(A_MAHAGain_AfterY2, A_expectedTotalGain), 1e12);
+      assert.isAtMost(getDifference(B_MAHAGain_AfterY2, B_expectedTotalGain), 1e12);
+      assert.isAtMost(getDifference(C_MAHAGain_AfterY2, C_expectedTotalGain), 1e12);
+      assert.isAtMost(getDifference(D_MAHAGain_AfterY2, D_expectedTotalGain), 1e12);
 
       // Each depositor fully withdraws
       await stabilityPool.withdrawFromSP(dec(10000, 18), { from: A });
@@ -592,11 +592,11 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       await stabilityPool.withdrawFromSP(dec(30000, 18), { from: C });
       await stabilityPool.withdrawFromSP(dec(40000, 18), { from: D });
 
-      // Check LQTY balances increase by correct amount
-      assert.isAtMost(getDifference(await lqtyToken.balanceOf(A), A_expectedTotalGain), 1e12);
-      assert.isAtMost(getDifference(await lqtyToken.balanceOf(B), B_expectedTotalGain), 1e12);
-      assert.isAtMost(getDifference(await lqtyToken.balanceOf(C), C_expectedTotalGain), 1e12);
-      assert.isAtMost(getDifference(await lqtyToken.balanceOf(D), D_expectedTotalGain), 1e12);
+      // Check MAHA balances increase by correct amount
+      assert.isAtMost(getDifference(await mahaToken.balanceOf(A), A_expectedTotalGain), 1e12);
+      assert.isAtMost(getDifference(await mahaToken.balanceOf(B), B_expectedTotalGain), 1e12);
+      assert.isAtMost(getDifference(await mahaToken.balanceOf(C), C_expectedTotalGain), 1e12);
+      assert.isAtMost(getDifference(await mahaToken.balanceOf(D), D_expectedTotalGain), 1e12);
     });
 
     //--- Serial pool-emptying liquidations ---
@@ -610,46 +610,46 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
     G,H deposits 100C
     L4 cancels 200C
 
-    Expect all depositors withdraw  1/2 of 1 month's LQTY issuance */
-    it("withdrawFromSP(): Depositor withdraws correct LQTY gain after serial pool-emptying liquidations. No front-ends.", async () => {
-      const initialIssuance = await communityIssuanceTester.totalLQTYIssued();
+    Expect all depositors withdraw  1/2 of 1 month's MAHA issuance */
+    it("withdrawFromSP(): Depositor withdraws correct MAHA gain after serial pool-emptying liquidations. No front-ends.", async () => {
+      const initialIssuance = await communityIssuanceTester.totalMAHAIssued();
       assert.equal(initialIssuance, 0);
 
       // Whale opens Trove with 10k ETH
       await borrowerOperations.openTrove(
         th._100pct,
-        await getOpenTroveLUSDAmount(dec(10000, 18)),
+        await getOpenTroveARTHAmount(dec(10000, 18)),
         whale,
         whale,
         { from: whale, value: dec(10000, "ether") }
       );
 
       const allDepositors = [A, B, C, D, E, F, G, H];
-      // 4 Defaulters open trove with 200LUSD debt, and 200% ICR
+      // 4 Defaulters open trove with 200ARTH debt, and 200% ICR
       await borrowerOperations.openTrove(
         th._100pct,
-        await getOpenTroveLUSDAmount(dec(20000, 18)),
+        await getOpenTroveARTHAmount(dec(20000, 18)),
         defaulter_1,
         defaulter_1,
         { from: defaulter_1, value: dec(200, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
-        await getOpenTroveLUSDAmount(dec(20000, 18)),
+        await getOpenTroveARTHAmount(dec(20000, 18)),
         defaulter_2,
         defaulter_2,
         { from: defaulter_2, value: dec(200, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
-        await getOpenTroveLUSDAmount(dec(20000, 18)),
+        await getOpenTroveARTHAmount(dec(20000, 18)),
         defaulter_3,
         defaulter_3,
         { from: defaulter_3, value: dec(200, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
-        await getOpenTroveLUSDAmount(dec(20000, 18)),
+        await getOpenTroveARTHAmount(dec(20000, 18)),
         defaulter_4,
         defaulter_4,
         { from: defaulter_4, value: dec(200, "ether") }
@@ -658,12 +658,12 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       // price drops by 50%: defaulter ICR falls to 100%
       await priceFeed.setPrice(dec(100, 18));
 
-      // Check all would-be depositors have 0 LQTY balance
+      // Check all would-be depositors have 0 MAHA balance
       for (depositor of allDepositors) {
-        assert.equal(await lqtyToken.balanceOf(depositor), "0");
+        assert.equal(await mahaToken.balanceOf(depositor), "0");
       }
 
-      // A, B each deposit 10k LUSD
+      // A, B each deposit 10k ARTH
       const depositors_1 = [A, B];
       for (account of depositors_1) {
         await borrowerOperations.openTrove(th._100pct, dec(10000, 18), account, account, {
@@ -679,10 +679,10 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
         web3.currentProvider
       );
 
-      // Defaulter 1 liquidated. 20k LUSD fully offset with pool.
+      // Defaulter 1 liquidated. 20k ARTH fully offset with pool.
       await troveManager.liquidate(defaulter_1, { from: owner });
 
-      // C, D each deposit 10k LUSD
+      // C, D each deposit 10k ARTH
       const depositors_2 = [C, D];
       for (account of depositors_2) {
         await borrowerOperations.openTrove(th._100pct, dec(10000, 18), account, account, {
@@ -695,10 +695,10 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       // 1 month passes
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_MONTH, web3.currentProvider);
 
-      // Defaulter 2 liquidated. 10k LUSD offset
+      // Defaulter 2 liquidated. 10k ARTH offset
       await troveManager.liquidate(defaulter_2, { from: owner });
 
-      // Erin, Flyn each deposit 100 LUSD
+      // Erin, Flyn each deposit 100 ARTH
       const depositors_3 = [E, F];
       for (account of depositors_3) {
         await borrowerOperations.openTrove(th._100pct, dec(10000, 18), account, account, {
@@ -711,10 +711,10 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       // 1 month passes
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_MONTH, web3.currentProvider);
 
-      // Defaulter 3 liquidated. 100 LUSD offset
+      // Defaulter 3 liquidated. 100 ARTH offset
       await troveManager.liquidate(defaulter_3, { from: owner });
 
-      // Graham, Harriet each deposit 10k LUSD
+      // Graham, Harriet each deposit 10k ARTH
       const depositors_4 = [G, H];
       for (account of depositors_4) {
         await borrowerOperations.openTrove(th._100pct, dec(10000, 18), account, account, {
@@ -727,7 +727,7 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       // 1 month passes
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_MONTH, web3.currentProvider);
 
-      // Defaulter 4 liquidated. 100 LUSD offset
+      // Defaulter 4 liquidated. 100 ARTH offset
       await troveManager.liquidate(defaulter_4, { from: owner });
 
       // All depositors withdraw from SP
@@ -736,42 +736,42 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       }
 
       /* Each depositor constitutes 50% of the pool from the time they deposit, up until the liquidation.
-      Therefore, divide monthly issuance by 2 to get the expected per-depositor LQTY gain.*/
-      const expectedLQTYGain_M1 = issuance_M1.div(th.toBN("2"));
-      const expectedLQTYGain_M2 = issuance_M2.div(th.toBN("2"));
-      const expectedLQTYGain_M3 = issuance_M3.div(th.toBN("2"));
-      const expectedLQTYGain_M4 = issuance_M4.div(th.toBN("2"));
+      Therefore, divide monthly issuance by 2 to get the expected per-depositor MAHA gain.*/
+      const expectedMAHAGain_M1 = issuance_M1.div(th.toBN("2"));
+      const expectedMAHAGain_M2 = issuance_M2.div(th.toBN("2"));
+      const expectedMAHAGain_M3 = issuance_M3.div(th.toBN("2"));
+      const expectedMAHAGain_M4 = issuance_M4.div(th.toBN("2"));
 
       // Check A, B only earn issuance from month 1. Error tolerance = 1e-3 tokens
       for (depositor of [A, B]) {
-        const LQTYBalance = await lqtyToken.balanceOf(depositor);
-        assert.isAtMost(getDifference(LQTYBalance, expectedLQTYGain_M1), 1e15);
+        const MAHABalance = await mahaToken.balanceOf(depositor);
+        assert.isAtMost(getDifference(MAHABalance, expectedMAHAGain_M1), 1e15);
       }
 
       // Check C, D only earn issuance from month 2.  Error tolerance = 1e-3 tokens
       for (depositor of [C, D]) {
-        const LQTYBalance = await lqtyToken.balanceOf(depositor);
-        assert.isAtMost(getDifference(LQTYBalance, expectedLQTYGain_M2), 1e15);
+        const MAHABalance = await mahaToken.balanceOf(depositor);
+        assert.isAtMost(getDifference(MAHABalance, expectedMAHAGain_M2), 1e15);
       }
 
       // Check E, F only earn issuance from month 3.  Error tolerance = 1e-3 tokens
       for (depositor of [E, F]) {
-        const LQTYBalance = await lqtyToken.balanceOf(depositor);
-        assert.isAtMost(getDifference(LQTYBalance, expectedLQTYGain_M3), 1e15);
+        const MAHABalance = await mahaToken.balanceOf(depositor);
+        assert.isAtMost(getDifference(MAHABalance, expectedMAHAGain_M3), 1e15);
       }
 
       // Check G, H only earn issuance from month 4.  Error tolerance = 1e-3 tokens
       for (depositor of [G, H]) {
-        const LQTYBalance = await lqtyToken.balanceOf(depositor);
-        assert.isAtMost(getDifference(LQTYBalance, expectedLQTYGain_M4), 1e15);
+        const MAHABalance = await mahaToken.balanceOf(depositor);
+        assert.isAtMost(getDifference(MAHABalance, expectedMAHAGain_M4), 1e15);
       }
 
       const finalEpoch = (await stabilityPool.currentEpoch()).toString();
       assert.equal(finalEpoch, 4);
     });
 
-    it("LQTY issuance for a given period is not obtainable if the SP was empty during the period", async () => {
-      const CIBalanceBefore = await lqtyToken.balanceOf(communityIssuanceTester.address);
+    it("MAHA issuance for a given period is not obtainable if the SP was empty during the period", async () => {
+      const CIBalanceBefore = await mahaToken.balanceOf(communityIssuanceTester.address);
 
       await borrowerOperations.openTrove(th._100pct, dec(16000, 18), A, A, {
         from: A,
@@ -786,9 +786,9 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
         value: dec(200, "ether")
       });
 
-      const totalLQTYissuance_0 = await communityIssuanceTester.totalLQTYIssued();
+      const totalMAHAissuance_0 = await communityIssuanceTester.totalMAHAIssued();
       const G_0 = await stabilityPool.epochToScaleToG(0, 0); // epochs and scales will not change in this test: no liquidations
-      assert.equal(totalLQTYissuance_0, "0");
+      assert.equal(totalMAHAissuance_0, "0");
       assert.equal(G_0, "0");
 
       // 1 month passes (M1)
@@ -797,44 +797,44 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
         web3.currentProvider
       );
 
-      // LQTY issuance event triggered: A deposits
+      // MAHA issuance event triggered: A deposits
       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: A });
 
       // Check G is not updated, since SP was empty prior to A's deposit
       const G_1 = await stabilityPool.epochToScaleToG(0, 0);
       assert.isTrue(G_1.eq(G_0));
 
-      // Check total LQTY issued is updated
-      const totalLQTYissuance_1 = await communityIssuanceTester.totalLQTYIssued();
-      assert.isTrue(totalLQTYissuance_1.gt(totalLQTYissuance_0));
+      // Check total MAHA issued is updated
+      const totalMAHAissuance_1 = await communityIssuanceTester.totalMAHAIssued();
+      assert.isTrue(totalMAHAissuance_1.gt(totalMAHAissuance_0));
 
       // 1 month passes (M2)
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_MONTH, web3.currentProvider);
 
-      //LQTY issuance event triggered: A withdraws.
+      //MAHA issuance event triggered: A withdraws.
       await stabilityPool.withdrawFromSP(dec(10000, 18), { from: A });
 
       // Check G is updated, since SP was not empty prior to A's withdrawal
       const G_2 = await stabilityPool.epochToScaleToG(0, 0);
       assert.isTrue(G_2.gt(G_1));
 
-      // Check total LQTY issued is updated
-      const totalLQTYissuance_2 = await communityIssuanceTester.totalLQTYIssued();
-      assert.isTrue(totalLQTYissuance_2.gt(totalLQTYissuance_1));
+      // Check total MAHA issued is updated
+      const totalMAHAissuance_2 = await communityIssuanceTester.totalMAHAIssued();
+      assert.isTrue(totalMAHAissuance_2.gt(totalMAHAissuance_1));
 
       // 1 month passes (M3)
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_MONTH, web3.currentProvider);
 
-      // LQTY issuance event triggered: C deposits
+      // MAHA issuance event triggered: C deposits
       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: C });
 
       // Check G is not updated, since SP was empty prior to C's deposit
       const G_3 = await stabilityPool.epochToScaleToG(0, 0);
       assert.isTrue(G_3.eq(G_2));
 
-      // Check total LQTY issued is updated
-      const totalLQTYissuance_3 = await communityIssuanceTester.totalLQTYIssued();
-      assert.isTrue(totalLQTYissuance_3.gt(totalLQTYissuance_2));
+      // Check total MAHA issued is updated
+      const totalMAHAissuance_3 = await communityIssuanceTester.totalMAHAIssued();
+      assert.isTrue(totalMAHAissuance_3.gt(totalMAHAissuance_2));
 
       // 1 month passes (M4)
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_MONTH, web3.currentProvider);
@@ -846,55 +846,55 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       const G_4 = await stabilityPool.epochToScaleToG(0, 0);
       assert.isTrue(G_4.gt(G_3));
 
-      // Check total LQTY issued is increased
-      const totalLQTYissuance_4 = await communityIssuanceTester.totalLQTYIssued();
-      assert.isTrue(totalLQTYissuance_4.gt(totalLQTYissuance_3));
+      // Check total MAHA issued is increased
+      const totalMAHAissuance_4 = await communityIssuanceTester.totalMAHAIssued();
+      assert.isTrue(totalMAHAissuance_4.gt(totalMAHAissuance_3));
 
-      // Get LQTY Gains
-      const A_LQTYGain = await lqtyToken.balanceOf(A);
-      const C_LQTYGain = await lqtyToken.balanceOf(C);
+      // Get MAHA Gains
+      const A_MAHAGain = await mahaToken.balanceOf(A);
+      const C_MAHAGain = await mahaToken.balanceOf(C);
 
       // Check A earns gains from M2 only
-      assert.isAtMost(getDifference(A_LQTYGain, issuance_M2), 1e15);
+      assert.isAtMost(getDifference(A_MAHAGain, issuance_M2), 1e15);
 
       // Check C earns gains from M4 only
-      assert.isAtMost(getDifference(C_LQTYGain, issuance_M4), 1e15);
+      assert.isAtMost(getDifference(C_MAHAGain, issuance_M4), 1e15);
 
-      // Check totalLQTYIssued = M1 + M2 + M3 + M4.  1e-3 error tolerance.
+      // Check totalMAHAIssued = M1 + M2 + M3 + M4.  1e-3 error tolerance.
       const expectedIssuance4Months = issuance_M1.add(issuance_M2).add(issuance_M3).add(issuance_M4);
-      assert.isAtMost(getDifference(expectedIssuance4Months, totalLQTYissuance_4), 1e15);
+      assert.isAtMost(getDifference(expectedIssuance4Months, totalMAHAissuance_4), 1e15);
 
       // Check CI has only transferred out tokens for M2 + M4.  1e-3 error tolerance.
-      const expectedLQTYSentOutFromCI = issuance_M2.add(issuance_M4);
-      const CIBalanceAfter = await lqtyToken.balanceOf(communityIssuanceTester.address);
+      const expectedMAHASentOutFromCI = issuance_M2.add(issuance_M4);
+      const CIBalanceAfter = await mahaToken.balanceOf(communityIssuanceTester.address);
       const CIBalanceDifference = CIBalanceBefore.sub(CIBalanceAfter);
-      assert.isAtMost(getDifference(CIBalanceDifference, expectedLQTYSentOutFromCI), 1e15);
+      assert.isAtMost(getDifference(CIBalanceDifference, expectedMAHASentOutFromCI), 1e15);
     });
 
     // --- Scale factor changes ---
 
     /* Serial scale changes
 
-    A make deposit 10k LUSD
-    1 month passes. L1 decreases P: P = 1e-5 P. L1:   9999.9 LUSD, 100 ETH
+    A make deposit 10k ARTH
+    1 month passes. L1 decreases P: P = 1e-5 P. L1:   9999.9 ARTH, 100 ETH
     B makes deposit 9999.9
-    1 month passes. L2 decreases P: P =  1e-5 P. L2:  9999.9 LUSD, 100 ETH
+    1 month passes. L2 decreases P: P =  1e-5 P. L2:  9999.9 ARTH, 100 ETH
     C makes deposit  9999.9
-    1 month passes. L3 decreases P: P = 1e-5 P. L3:  9999.9 LUSD, 100 ETH
+    1 month passes. L3 decreases P: P = 1e-5 P. L3:  9999.9 ARTH, 100 ETH
     D makes deposit  9999.9
-    1 month passes. L4 decreases P: P = 1e-5 P. L4:  9999.9 LUSD, 100 ETH
+    1 month passes. L4 decreases P: P = 1e-5 P. L4:  9999.9 ARTH, 100 ETH
     E makes deposit  9999.9
-    1 month passes. L5 decreases P: P = 1e-5 P. L5:  9999.9 LUSD, 100 ETH
+    1 month passes. L5 decreases P: P = 1e-5 P. L5:  9999.9 ARTH, 100 ETH
     =========
     F makes deposit 100
-    1 month passes. L6 empties the Pool. L6:  10000 LUSD, 100 ETH
+    1 month passes. L6 empties the Pool. L6:  10000 ARTH, 100 ETH
 
-    expect A, B, C, D each withdraw ~1 month's worth of LQTY */
-    it("withdrawFromSP(): Several deposits of 100 LUSD span one scale factor change. Depositors withdraw correct LQTY gains", async () => {
+    expect A, B, C, D each withdraw ~1 month's worth of MAHA */
+    it("withdrawFromSP(): Several deposits of 100 ARTH span one scale factor change. Depositors withdraw correct MAHA gains", async () => {
       // Whale opens Trove with 100 ETH
       await borrowerOperations.openTrove(
         th._100pct,
-        await getOpenTroveLUSDAmount(dec(10000, 18)),
+        await getOpenTroveARTHAmount(dec(10000, 18)),
         whale,
         whale,
         { from: whale, value: dec(100, "ether") }
@@ -931,7 +931,7 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
         // Defaulters 1-5 each withdraw to 9999.9 debt (including gas comp)
         await borrowerOperations.openTrove(
           th._100pct,
-          await getOpenTroveLUSDAmount("9999900000000000000000"),
+          await getOpenTroveARTHAmount("9999900000000000000000"),
           defaulter,
           defaulter,
           { from: defaulter, value: dec(100, "ether") }
@@ -941,15 +941,15 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       // Defaulter 6 withdraws to 10k debt (inc. gas comp)
       await borrowerOperations.openTrove(
         th._100pct,
-        await getOpenTroveLUSDAmount(dec(10000, 18)),
+        await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_6,
         defaulter_6,
         { from: defaulter_6, value: dec(100, "ether") }
       );
 
-      // Confirm all depositors have 0 LQTY
+      // Confirm all depositors have 0 MAHA
       for (const depositor of [A, B, C, D, E, F]) {
-        assert.equal(await lqtyToken.balanceOf(depositor), "0");
+        assert.equal(await mahaToken.balanceOf(depositor), "0");
       }
       // price drops by 50%
       await priceFeed.setPrice(dec(100, 18));
@@ -1057,19 +1057,19 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       await priceFeed.setPrice(dec(200, 18));
 
       /* All depositors withdraw fully from SP.  Withdraw in reverse order, so that the largest remaining
-      deposit (F) withdraws first, and does not get extra LQTY gains from the periods between withdrawals */
+      deposit (F) withdraws first, and does not get extra MAHA gains from the periods between withdrawals */
       for (depositor of [F, E, D, C, B, A]) {
         await stabilityPool.withdrawFromSP(dec(10000, 18), { from: depositor });
       }
 
-      const LQTYGain_A = await lqtyToken.balanceOf(A);
-      const LQTYGain_B = await lqtyToken.balanceOf(B);
-      const LQTYGain_C = await lqtyToken.balanceOf(C);
-      const LQTYGain_D = await lqtyToken.balanceOf(D);
-      const LQTYGain_E = await lqtyToken.balanceOf(E);
-      const LQTYGain_F = await lqtyToken.balanceOf(F);
+      const MAHAGain_A = await mahaToken.balanceOf(A);
+      const MAHAGain_B = await mahaToken.balanceOf(B);
+      const MAHAGain_C = await mahaToken.balanceOf(C);
+      const MAHAGain_D = await mahaToken.balanceOf(D);
+      const MAHAGain_E = await mahaToken.balanceOf(E);
+      const MAHAGain_F = await mahaToken.balanceOf(F);
 
-      /* Expect each deposit to have earned 100% of the LQTY issuance for the month in which it was active, prior
+      /* Expect each deposit to have earned 100% of the MAHA issuance for the month in which it was active, prior
      to the liquidation that mostly depleted it.  Error tolerance = 1e-3 tokens. */
 
       const expectedGainA = issuance_M1.add(issuance_M2.div(toBN("100000")));
@@ -1091,19 +1091,19 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
         .div(toBN("100000"));
       const expectedGainF = issuance_M6.mul(toBN("99999")).div(toBN("100000"));
 
-      assert.isAtMost(getDifference(expectedGainA, LQTYGain_A), 1e15);
-      assert.isAtMost(getDifference(expectedGainB, LQTYGain_B), 1e15);
-      assert.isAtMost(getDifference(expectedGainC, LQTYGain_C), 1e15);
-      assert.isAtMost(getDifference(expectedGainD, LQTYGain_D), 1e15);
+      assert.isAtMost(getDifference(expectedGainA, MAHAGain_A), 1e15);
+      assert.isAtMost(getDifference(expectedGainB, MAHAGain_B), 1e15);
+      assert.isAtMost(getDifference(expectedGainC, MAHAGain_C), 1e15);
+      assert.isAtMost(getDifference(expectedGainD, MAHAGain_D), 1e15);
 
-      assert.isAtMost(getDifference(expectedGainE, LQTYGain_E), 1e15);
-      assert.isAtMost(getDifference(expectedGainF, LQTYGain_F), 1e15);
+      assert.isAtMost(getDifference(expectedGainE, MAHAGain_E), 1e15);
+      assert.isAtMost(getDifference(expectedGainF, MAHAGain_F), 1e15);
     });
 
     // --- FrontEnds and kickback rates
 
     // Simple case: 4 depositors, equal stake. No liquidations.
-    it("withdrawFromSP(): Depositors with equal initial deposit withdraw correct LQTY gain. No liquidations. Front ends and kickback rates.", async () => {
+    it("withdrawFromSP(): Depositors with equal initial deposit withdraw correct MAHA gain. No liquidations. Front ends and kickback rates.", async () => {
       // Register 2 front ends
       const kickbackRate_F1 = toBN(dec(5, 17)); // F1 kicks 50% back to depositor
       const kickbackRate_F2 = toBN(dec(80, 16)); // F2 kicks 80% back to depositor
@@ -1111,7 +1111,7 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       await stabilityPool.registerFrontEnd(kickbackRate_F1, { from: frontEnd_1 });
       await stabilityPool.registerFrontEnd(kickbackRate_F2, { from: frontEnd_2 });
 
-      const initialIssuance = await communityIssuanceTester.totalLQTYIssued();
+      const initialIssuance = await communityIssuanceTester.totalMAHAIssued();
       assert.equal(initialIssuance, 0);
 
       // Whale opens Trove with 10k ETH
@@ -1141,13 +1141,13 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
         value: dec(100, "ether")
       });
 
-      // Check all LQTY balances are initially 0
-      assert.equal(await lqtyToken.balanceOf(A), 0);
-      assert.equal(await lqtyToken.balanceOf(B), 0);
-      assert.equal(await lqtyToken.balanceOf(C), 0);
-      assert.equal(await lqtyToken.balanceOf(D), 0);
-      assert.equal(await lqtyToken.balanceOf(frontEnd_1), 0);
-      assert.equal(await lqtyToken.balanceOf(frontEnd_2), 0);
+      // Check all MAHA balances are initially 0
+      assert.equal(await mahaToken.balanceOf(A), 0);
+      assert.equal(await mahaToken.balanceOf(B), 0);
+      assert.equal(await mahaToken.balanceOf(C), 0);
+      assert.equal(await mahaToken.balanceOf(D), 0);
+      assert.equal(await mahaToken.balanceOf(frontEnd_1), 0);
+      assert.equal(await mahaToken.balanceOf(frontEnd_2), 0);
 
       // A, B, C, D deposit
       await stabilityPool.provideToSP(dec(10000, 18), frontEnd_1, { from: A });
@@ -1168,20 +1168,20 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
         web3.currentProvider
       );
 
-      // E deposits, triggering LQTY gains for A,B,C,D,F1,F2. Withdraws immediately after
+      // E deposits, triggering MAHA gains for A,B,C,D,F1,F2. Withdraws immediately after
       await stabilityPool.provideToSP(dec(1, 18), ZERO_ADDRESS, { from: E });
       await stabilityPool.withdrawFromSP(dec(1, 18), { from: E });
 
       // Expected issuance for year 1 is 50% of total supply.
-      const expectedIssuance_Y1 = communityLQTYSupply.div(toBN("2"));
+      const expectedIssuance_Y1 = communityMAHASupply.div(toBN("2"));
 
-      // Get actual LQTY gains
-      const A_LQTYGain_Y1 = await stabilityPool.getDepositorLQTYGain(A);
-      const B_LQTYGain_Y1 = await stabilityPool.getDepositorLQTYGain(B);
-      const C_LQTYGain_Y1 = await stabilityPool.getDepositorLQTYGain(C);
-      const D_LQTYGain_Y1 = await stabilityPool.getDepositorLQTYGain(D);
-      const F1_LQTYGain_Y1 = await stabilityPool.getFrontEndLQTYGain(frontEnd_1);
-      const F2_LQTYGain_Y1 = await stabilityPool.getFrontEndLQTYGain(frontEnd_2);
+      // Get actual MAHA gains
+      const A_MAHAGain_Y1 = await stabilityPool.getDepositorMAHAGain(A);
+      const B_MAHAGain_Y1 = await stabilityPool.getDepositorMAHAGain(B);
+      const C_MAHAGain_Y1 = await stabilityPool.getDepositorMAHAGain(C);
+      const D_MAHAGain_Y1 = await stabilityPool.getDepositorMAHAGain(D);
+      const F1_MAHAGain_Y1 = await stabilityPool.getFrontEndMAHAGain(frontEnd_1);
+      const F2_MAHAGain_Y1 = await stabilityPool.getFrontEndMAHAGain(frontEnd_2);
 
       // Expected depositor and front-end gains
       const A_expectedGain_Y1 = kickbackRate_F1
@@ -1211,23 +1211,23 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
         .div(toBN(dec(1, 18)));
 
       // Check gains are correct, error tolerance = 1e-6 of a token
-      assert.isAtMost(getDifference(A_LQTYGain_Y1, A_expectedGain_Y1), 1e12);
-      assert.isAtMost(getDifference(B_LQTYGain_Y1, B_expectedGain_Y1), 1e12);
-      assert.isAtMost(getDifference(C_LQTYGain_Y1, C_expectedGain_Y1), 1e12);
-      assert.isAtMost(getDifference(D_LQTYGain_Y1, D_expectedGain_Y1), 1e12);
+      assert.isAtMost(getDifference(A_MAHAGain_Y1, A_expectedGain_Y1), 1e12);
+      assert.isAtMost(getDifference(B_MAHAGain_Y1, B_expectedGain_Y1), 1e12);
+      assert.isAtMost(getDifference(C_MAHAGain_Y1, C_expectedGain_Y1), 1e12);
+      assert.isAtMost(getDifference(D_MAHAGain_Y1, D_expectedGain_Y1), 1e12);
 
-      assert.isAtMost(getDifference(F1_LQTYGain_Y1, F1_expectedGain_Y1), 1e12);
-      assert.isAtMost(getDifference(F2_LQTYGain_Y1, F2_expectedGain_Y1), 1e12);
+      assert.isAtMost(getDifference(F1_MAHAGain_Y1, F1_expectedGain_Y1), 1e12);
+      assert.isAtMost(getDifference(F2_MAHAGain_Y1, F2_expectedGain_Y1), 1e12);
 
       // Another year passes
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
 
-      // E deposits, triggering LQTY gains for A,B,CD,F1, F2. Withdraws immediately after
+      // E deposits, triggering MAHA gains for A,B,CD,F1, F2. Withdraws immediately after
       await stabilityPool.provideToSP(dec(1, 18), ZERO_ADDRESS, { from: E });
       await stabilityPool.withdrawFromSP(dec(1, 18), { from: E });
 
       // Expected gains for each depositor in Y2(25% total issued).  .
-      const expectedIssuance_Y2 = communityLQTYSupply.div(toBN("4"));
+      const expectedIssuance_Y2 = communityMAHASupply.div(toBN("4"));
 
       const expectedFinalIssuance = expectedIssuance_Y1.add(expectedIssuance_Y2);
 
@@ -1266,17 +1266,17 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       await stabilityPool.withdrawFromSP(dec(10000, 18), { from: C });
       await stabilityPool.withdrawFromSP(dec(10000, 18), { from: D });
 
-      // Check LQTY balances increase by correct amount
-      assert.isAtMost(getDifference(await lqtyToken.balanceOf(A), A_expectedFinalGain), 1e12);
-      assert.isAtMost(getDifference(await lqtyToken.balanceOf(B), B_expectedFinalGain), 1e12);
-      assert.isAtMost(getDifference(await lqtyToken.balanceOf(C), C_expectedFinalGain), 1e12);
-      assert.isAtMost(getDifference(await lqtyToken.balanceOf(D), D_expectedFinalGain), 1e12);
+      // Check MAHA balances increase by correct amount
+      assert.isAtMost(getDifference(await mahaToken.balanceOf(A), A_expectedFinalGain), 1e12);
+      assert.isAtMost(getDifference(await mahaToken.balanceOf(B), B_expectedFinalGain), 1e12);
+      assert.isAtMost(getDifference(await mahaToken.balanceOf(C), C_expectedFinalGain), 1e12);
+      assert.isAtMost(getDifference(await mahaToken.balanceOf(D), D_expectedFinalGain), 1e12);
       assert.isAtMost(
-        getDifference(await lqtyToken.balanceOf(frontEnd_1), F1_expectedFinalGain),
+        getDifference(await mahaToken.balanceOf(frontEnd_1), F1_expectedFinalGain),
         1e12
       );
       assert.isAtMost(
-        getDifference(await lqtyToken.balanceOf(frontEnd_2), F2_expectedFinalGain),
+        getDifference(await mahaToken.balanceOf(frontEnd_2), F2_expectedFinalGain),
         1e12
       );
     });
@@ -1300,7 +1300,7 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
     // Pool size 80k
     // 1 month passes.
     // All withdraw
-    it("withdrawFromSP(): Depositors with varying initial deposit withdraw correct LQTY gain. Front ends and kickback rates", async () => {
+    it("withdrawFromSP(): Depositors with varying initial deposit withdraw correct MAHA gain. Front ends and kickback rates", async () => {
       // Register 2 front ends
       const F1_kickbackRate = toBN(dec(5, 17)); // F1 kicks 50% back to depositor
       const F2_kickbackRate = toBN(dec(80, 16)); // F2 kicks 80% back to depositor
@@ -1308,7 +1308,7 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       await stabilityPool.registerFrontEnd(F1_kickbackRate, { from: frontEnd_1 });
       await stabilityPool.registerFrontEnd(F2_kickbackRate, { from: frontEnd_2 });
 
-      const initialIssuance = await communityIssuanceTester.totalLQTYIssued();
+      const initialIssuance = await communityIssuanceTester.totalMAHAIssued();
       assert.equal(initialIssuance, 0);
 
       // Whale opens Trove with 10k ETH
@@ -1342,33 +1342,33 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       // D1, D2, D3 open troves with total debt 50k, 30k, 10k respectively (inc. gas comp)
       await borrowerOperations.openTrove(
         th._100pct,
-        await getOpenTroveLUSDAmount(dec(50000, 18)),
+        await getOpenTroveARTHAmount(dec(50000, 18)),
         defaulter_1,
         defaulter_1,
         { from: defaulter_1, value: dec(500, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
-        await getOpenTroveLUSDAmount(dec(20000, 18)),
+        await getOpenTroveARTHAmount(dec(20000, 18)),
         defaulter_2,
         defaulter_2,
         { from: defaulter_2, value: dec(200, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
-        await getOpenTroveLUSDAmount(dec(10000, 18)),
+        await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_3,
         defaulter_3,
         { from: defaulter_3, value: dec(100, "ether") }
       );
 
-      // Check all LQTY balances are initially 0
-      assert.equal(await lqtyToken.balanceOf(A), 0);
-      assert.equal(await lqtyToken.balanceOf(B), 0);
-      assert.equal(await lqtyToken.balanceOf(C), 0);
-      assert.equal(await lqtyToken.balanceOf(D), 0);
-      assert.equal(await lqtyToken.balanceOf(frontEnd_1), 0);
-      assert.equal(await lqtyToken.balanceOf(frontEnd_2), 0);
+      // Check all MAHA balances are initially 0
+      assert.equal(await mahaToken.balanceOf(A), 0);
+      assert.equal(await mahaToken.balanceOf(B), 0);
+      assert.equal(await mahaToken.balanceOf(C), 0);
+      assert.equal(await mahaToken.balanceOf(D), 0);
+      assert.equal(await mahaToken.balanceOf(frontEnd_1), 0);
+      assert.equal(await mahaToken.balanceOf(frontEnd_2), 0);
 
       // A, B, C, D deposit
       await stabilityPool.provideToSP(dec(10000, 18), frontEnd_1, { from: A });
@@ -1393,62 +1393,62 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
         web3.currentProvider
       );
 
-      assert.equal(await stabilityPool.getTotalLUSDDeposits(), dec(100000, 18)); // total 100k
+      assert.equal(await stabilityPool.getTotalARTHDeposits(), dec(100000, 18)); // total 100k
 
       // LIQUIDATION 1
       await troveManager.liquidate(defaulter_1);
       assert.isFalse(await sortedTroves.contains(defaulter_1));
 
-      th.assertIsApproximatelyEqual(await stabilityPool.getTotalLUSDDeposits(), dec(50000, 18)); // 50k
+      th.assertIsApproximatelyEqual(await stabilityPool.getTotalARTHDeposits(), dec(50000, 18)); // 50k
 
       // --- CHECK GAINS AFTER L1 ---
 
       // During month 1, deposit sizes are: A:10000, B:20000, C:30000, D:40000.  Total: 100000
       // Expected gains for each depositor after month 1
       const A_share_M1 = issuance_M1.mul(toBN("10000")).div(toBN("100000"));
-      const A_expectedLQTYGain_M1 = F1_kickbackRate.mul(A_share_M1).div(toBN(dec(1, 18)));
+      const A_expectedMAHAGain_M1 = F1_kickbackRate.mul(A_share_M1).div(toBN(dec(1, 18)));
 
       const B_share_M1 = issuance_M1.mul(toBN("20000")).div(toBN("100000"));
-      const B_expectedLQTYGain_M1 = F2_kickbackRate.mul(B_share_M1).div(toBN(dec(1, 18)));
+      const B_expectedMAHAGain_M1 = F2_kickbackRate.mul(B_share_M1).div(toBN(dec(1, 18)));
 
       const C_share_M1 = issuance_M1.mul(toBN("30000")).div(toBN("100000"));
-      const C_expectedLQTYGain_M1 = F2_kickbackRate.mul(C_share_M1).div(toBN(dec(1, 18)));
+      const C_expectedMAHAGain_M1 = F2_kickbackRate.mul(C_share_M1).div(toBN(dec(1, 18)));
 
       const D_share_M1 = issuance_M1.mul(toBN("40000")).div(toBN("100000"));
-      const D_expectedLQTYGain_M1 = D_share_M1;
+      const D_expectedMAHAGain_M1 = D_share_M1;
 
       // F1's stake = A
-      const F1_expectedLQTYGain_M1 = toBN(dec(1, 18))
+      const F1_expectedMAHAGain_M1 = toBN(dec(1, 18))
         .sub(F1_kickbackRate)
         .mul(A_share_M1)
         .div(toBN(dec(1, 18)));
 
       // F2's stake = B + C
-      const F2_expectedLQTYGain_M1 = toBN(dec(1, 18))
+      const F2_expectedMAHAGain_M1 = toBN(dec(1, 18))
         .sub(F2_kickbackRate)
         .mul(B_share_M1.add(C_share_M1))
         .div(toBN(dec(1, 18)));
 
-      // Check LQTY gain
-      const A_LQTYGain_M1 = await stabilityPool.getDepositorLQTYGain(A);
-      const B_LQTYGain_M1 = await stabilityPool.getDepositorLQTYGain(B);
-      const C_LQTYGain_M1 = await stabilityPool.getDepositorLQTYGain(C);
-      const D_LQTYGain_M1 = await stabilityPool.getDepositorLQTYGain(D);
-      const F1_LQTYGain_M1 = await stabilityPool.getFrontEndLQTYGain(frontEnd_1);
-      const F2_LQTYGain_M1 = await stabilityPool.getFrontEndLQTYGain(frontEnd_2);
+      // Check MAHA gain
+      const A_MAHAGain_M1 = await stabilityPool.getDepositorMAHAGain(A);
+      const B_MAHAGain_M1 = await stabilityPool.getDepositorMAHAGain(B);
+      const C_MAHAGain_M1 = await stabilityPool.getDepositorMAHAGain(C);
+      const D_MAHAGain_M1 = await stabilityPool.getDepositorMAHAGain(D);
+      const F1_MAHAGain_M1 = await stabilityPool.getFrontEndMAHAGain(frontEnd_1);
+      const F2_MAHAGain_M1 = await stabilityPool.getFrontEndMAHAGain(frontEnd_2);
 
       // Check gains are correct, error tolerance = 1e-3 of a token
-      assert.isAtMost(getDifference(A_LQTYGain_M1, A_expectedLQTYGain_M1), 1e15);
-      assert.isAtMost(getDifference(B_LQTYGain_M1, B_expectedLQTYGain_M1), 1e15);
-      assert.isAtMost(getDifference(C_LQTYGain_M1, C_expectedLQTYGain_M1), 1e15);
-      assert.isAtMost(getDifference(D_LQTYGain_M1, D_expectedLQTYGain_M1), 1e15);
-      assert.isAtMost(getDifference(F1_LQTYGain_M1, F1_expectedLQTYGain_M1), 1e15);
-      assert.isAtMost(getDifference(F2_LQTYGain_M1, F2_expectedLQTYGain_M1), 1e15);
+      assert.isAtMost(getDifference(A_MAHAGain_M1, A_expectedMAHAGain_M1), 1e15);
+      assert.isAtMost(getDifference(B_MAHAGain_M1, B_expectedMAHAGain_M1), 1e15);
+      assert.isAtMost(getDifference(C_MAHAGain_M1, C_expectedMAHAGain_M1), 1e15);
+      assert.isAtMost(getDifference(D_MAHAGain_M1, D_expectedMAHAGain_M1), 1e15);
+      assert.isAtMost(getDifference(F1_MAHAGain_M1, F1_expectedMAHAGain_M1), 1e15);
+      assert.isAtMost(getDifference(F2_MAHAGain_M1, F2_expectedMAHAGain_M1), 1e15);
 
       // E deposits 30k via F1
       await stabilityPool.provideToSP(dec(30000, 18), frontEnd_1, { from: E });
 
-      th.assertIsApproximatelyEqual(await stabilityPool.getTotalLUSDDeposits(), dec(80000, 18));
+      th.assertIsApproximatelyEqual(await stabilityPool.getTotalARTHDeposits(), dec(80000, 18));
 
       // Month 2 passes
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_MONTH, web3.currentProvider);
@@ -1457,7 +1457,7 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       await troveManager.liquidate(defaulter_2);
       assert.isFalse(await sortedTroves.contains(defaulter_2));
 
-      th.assertIsApproximatelyEqual(await stabilityPool.getTotalLUSDDeposits(), dec(60000, 18));
+      th.assertIsApproximatelyEqual(await stabilityPool.getTotalARTHDeposits(), dec(60000, 18));
 
       const startTime = await communityIssuanceTester.deploymentTime();
       const currentTime = await th.getLatestBlockTimestamp(web3);
@@ -1469,76 +1469,76 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
 
       // Expected gains for each depositor after month 2
       const A_share_M2 = issuance_M2.mul(toBN("5000")).div(toBN("80000"));
-      const A_expectedLQTYGain_M2 = F1_kickbackRate.mul(A_share_M2).div(toBN(dec(1, 18)));
+      const A_expectedMAHAGain_M2 = F1_kickbackRate.mul(A_share_M2).div(toBN(dec(1, 18)));
 
       const B_share_M2 = issuance_M2.mul(toBN("10000")).div(toBN("80000"));
-      const B_expectedLQTYGain_M2 = F2_kickbackRate.mul(B_share_M2).div(toBN(dec(1, 18)));
+      const B_expectedMAHAGain_M2 = F2_kickbackRate.mul(B_share_M2).div(toBN(dec(1, 18)));
 
       const C_share_M2 = issuance_M2.mul(toBN("15000")).div(toBN("80000"));
-      const C_expectedLQTYGain_M2 = F2_kickbackRate.mul(C_share_M2).div(toBN(dec(1, 18)));
+      const C_expectedMAHAGain_M2 = F2_kickbackRate.mul(C_share_M2).div(toBN(dec(1, 18)));
 
       const D_share_M2 = issuance_M2.mul(toBN("20000")).div(toBN("80000"));
-      const D_expectedLQTYGain_M2 = D_share_M2;
+      const D_expectedMAHAGain_M2 = D_share_M2;
 
       const E_share_M2 = issuance_M2.mul(toBN("30000")).div(toBN("80000"));
-      const E_expectedLQTYGain_M2 = F1_kickbackRate.mul(E_share_M2).div(toBN(dec(1, 18)));
+      const E_expectedMAHAGain_M2 = F1_kickbackRate.mul(E_share_M2).div(toBN(dec(1, 18)));
 
       // F1's stake = A + E
-      const F1_expectedLQTYGain_M2 = toBN(dec(1, 18))
+      const F1_expectedMAHAGain_M2 = toBN(dec(1, 18))
         .sub(F1_kickbackRate)
         .mul(A_share_M2.add(E_share_M2))
         .div(toBN(dec(1, 18)));
 
       // F2's stake = B + C
-      const F2_expectedLQTYGain_M2 = toBN(dec(1, 18))
+      const F2_expectedMAHAGain_M2 = toBN(dec(1, 18))
         .sub(F2_kickbackRate)
         .mul(B_share_M2.add(C_share_M2))
         .div(toBN(dec(1, 18)));
 
-      // Check LQTY gains after month 2
-      const A_LQTYGain_After_M2 = await stabilityPool.getDepositorLQTYGain(A);
-      const B_LQTYGain_After_M2 = await stabilityPool.getDepositorLQTYGain(B);
-      const C_LQTYGain_After_M2 = await stabilityPool.getDepositorLQTYGain(C);
-      const D_LQTYGain_After_M2 = await stabilityPool.getDepositorLQTYGain(D);
-      const E_LQTYGain_After_M2 = await stabilityPool.getDepositorLQTYGain(E);
-      const F1_LQTYGain_After_M2 = await stabilityPool.getFrontEndLQTYGain(frontEnd_1);
-      const F2_LQTYGain_After_M2 = await stabilityPool.getFrontEndLQTYGain(frontEnd_2);
+      // Check MAHA gains after month 2
+      const A_MAHAGain_After_M2 = await stabilityPool.getDepositorMAHAGain(A);
+      const B_MAHAGain_After_M2 = await stabilityPool.getDepositorMAHAGain(B);
+      const C_MAHAGain_After_M2 = await stabilityPool.getDepositorMAHAGain(C);
+      const D_MAHAGain_After_M2 = await stabilityPool.getDepositorMAHAGain(D);
+      const E_MAHAGain_After_M2 = await stabilityPool.getDepositorMAHAGain(E);
+      const F1_MAHAGain_After_M2 = await stabilityPool.getFrontEndMAHAGain(frontEnd_1);
+      const F2_MAHAGain_After_M2 = await stabilityPool.getFrontEndMAHAGain(frontEnd_2);
 
       assert.isAtMost(
-        getDifference(A_LQTYGain_After_M2, A_expectedLQTYGain_M2.add(A_expectedLQTYGain_M1)),
+        getDifference(A_MAHAGain_After_M2, A_expectedMAHAGain_M2.add(A_expectedMAHAGain_M1)),
         1e15
       );
       assert.isAtMost(
-        getDifference(B_LQTYGain_After_M2, B_expectedLQTYGain_M2.add(B_expectedLQTYGain_M1)),
+        getDifference(B_MAHAGain_After_M2, B_expectedMAHAGain_M2.add(B_expectedMAHAGain_M1)),
         1e15
       );
       assert.isAtMost(
-        getDifference(C_LQTYGain_After_M2, C_expectedLQTYGain_M2.add(C_expectedLQTYGain_M1)),
+        getDifference(C_MAHAGain_After_M2, C_expectedMAHAGain_M2.add(C_expectedMAHAGain_M1)),
         1e15
       );
       assert.isAtMost(
-        getDifference(D_LQTYGain_After_M2, D_expectedLQTYGain_M2.add(D_expectedLQTYGain_M1)),
+        getDifference(D_MAHAGain_After_M2, D_expectedMAHAGain_M2.add(D_expectedMAHAGain_M1)),
         1e15
       );
-      assert.isAtMost(getDifference(E_LQTYGain_After_M2, E_expectedLQTYGain_M2), 1e15);
+      assert.isAtMost(getDifference(E_MAHAGain_After_M2, E_expectedMAHAGain_M2), 1e15);
 
       // Check F1 balance is his M1 gain (it was paid out when E joined through F1)
-      const F1_LQTYBalance_After_M2 = await lqtyToken.balanceOf(frontEnd_1);
-      assert.isAtMost(getDifference(F1_LQTYBalance_After_M2, F1_expectedLQTYGain_M1), 1e15);
+      const F1_MAHABalance_After_M2 = await mahaToken.balanceOf(frontEnd_1);
+      assert.isAtMost(getDifference(F1_MAHABalance_After_M2, F1_expectedMAHAGain_M1), 1e15);
 
-      // Check F1's LQTY gain in system after M2: Just their gain due to M2
-      assert.isAtMost(getDifference(F1_LQTYGain_After_M2, F1_expectedLQTYGain_M2), 1e15);
+      // Check F1's MAHA gain in system after M2: Just their gain due to M2
+      assert.isAtMost(getDifference(F1_MAHAGain_After_M2, F1_expectedMAHAGain_M2), 1e15);
 
-      // Check F2 LQTY gain in system after M2: the sum of their gains from M1 + M2
+      // Check F2 MAHA gain in system after M2: the sum of their gains from M1 + M2
       assert.isAtMost(
-        getDifference(F2_LQTYGain_After_M2, F2_expectedLQTYGain_M2.add(F2_expectedLQTYGain_M1)),
+        getDifference(F2_MAHAGain_After_M2, F2_expectedMAHAGain_M2.add(F2_expectedMAHAGain_M1)),
         1e15
       );
 
       // B tops up 40k via F2
       await stabilityPool.provideToSP(dec(40000, 18), frontEnd_2, { from: B });
 
-      th.assertIsApproximatelyEqual(await stabilityPool.getTotalLUSDDeposits(), dec(100000, 18));
+      th.assertIsApproximatelyEqual(await stabilityPool.getTotalARTHDeposits(), dec(100000, 18));
 
       // Month 3 passes
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_MONTH, web3.currentProvider);
@@ -1547,7 +1547,7 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       await troveManager.liquidate(defaulter_3);
       assert.isFalse(await sortedTroves.contains(defaulter_3));
 
-      th.assertIsApproximatelyEqual(await stabilityPool.getTotalLUSDDeposits(), dec(90000, 18));
+      th.assertIsApproximatelyEqual(await stabilityPool.getTotalARTHDeposits(), dec(90000, 18));
 
       // --- CHECK GAINS AFTER L3 ---
 
@@ -1555,111 +1555,111 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
 
       // Expected gains for each depositor after month 3
       const A_share_M3 = issuance_M3.mul(toBN("3750")).div(toBN("100000"));
-      const A_expectedLQTYGain_M3 = F1_kickbackRate.mul(A_share_M3).div(toBN(dec(1, 18)));
+      const A_expectedMAHAGain_M3 = F1_kickbackRate.mul(A_share_M3).div(toBN(dec(1, 18)));
 
       const B_share_M3 = issuance_M3.mul(toBN("47500")).div(toBN("100000"));
-      const B_expectedLQTYGain_M3 = F2_kickbackRate.mul(B_share_M3).div(toBN(dec(1, 18)));
+      const B_expectedMAHAGain_M3 = F2_kickbackRate.mul(B_share_M3).div(toBN(dec(1, 18)));
 
       const C_share_M3 = issuance_M3.mul(toBN("11250")).div(toBN("100000"));
-      const C_expectedLQTYGain_M3 = F2_kickbackRate.mul(C_share_M3).div(toBN(dec(1, 18)));
+      const C_expectedMAHAGain_M3 = F2_kickbackRate.mul(C_share_M3).div(toBN(dec(1, 18)));
 
       const D_share_M3 = issuance_M3.mul(toBN("15000")).div(toBN("100000"));
-      const D_expectedLQTYGain_M3 = D_share_M3;
+      const D_expectedMAHAGain_M3 = D_share_M3;
 
       const E_share_M3 = issuance_M3.mul(toBN("22500")).div(toBN("100000"));
-      const E_expectedLQTYGain_M3 = F1_kickbackRate.mul(E_share_M3).div(toBN(dec(1, 18)));
+      const E_expectedMAHAGain_M3 = F1_kickbackRate.mul(E_share_M3).div(toBN(dec(1, 18)));
 
       // F1's stake = A + E
-      const F1_expectedLQTYGain_M3 = toBN(dec(1, 18))
+      const F1_expectedMAHAGain_M3 = toBN(dec(1, 18))
         .sub(F1_kickbackRate)
         .mul(A_share_M3.add(E_share_M3))
         .div(toBN(dec(1, 18)));
 
       // F2's stake = B + C
-      const F2_expectedLQTYGain_M3 = toBN(dec(1, 18))
+      const F2_expectedMAHAGain_M3 = toBN(dec(1, 18))
         .sub(F2_kickbackRate)
         .mul(B_share_M3.add(C_share_M3))
         .div(toBN(dec(1, 18)));
 
-      // Check LQTY gains after month 3
-      const A_LQTYGain_After_M3 = await stabilityPool.getDepositorLQTYGain(A);
-      const B_LQTYGain_After_M3 = await stabilityPool.getDepositorLQTYGain(B);
-      const C_LQTYGain_After_M3 = await stabilityPool.getDepositorLQTYGain(C);
-      const D_LQTYGain_After_M3 = await stabilityPool.getDepositorLQTYGain(D);
-      const E_LQTYGain_After_M3 = await stabilityPool.getDepositorLQTYGain(E);
-      const F1_LQTYGain_After_M3 = await stabilityPool.getFrontEndLQTYGain(frontEnd_1);
-      const F2_LQTYGain_After_M3 = await stabilityPool.getFrontEndLQTYGain(frontEnd_2);
+      // Check MAHA gains after month 3
+      const A_MAHAGain_After_M3 = await stabilityPool.getDepositorMAHAGain(A);
+      const B_MAHAGain_After_M3 = await stabilityPool.getDepositorMAHAGain(B);
+      const C_MAHAGain_After_M3 = await stabilityPool.getDepositorMAHAGain(C);
+      const D_MAHAGain_After_M3 = await stabilityPool.getDepositorMAHAGain(D);
+      const E_MAHAGain_After_M3 = await stabilityPool.getDepositorMAHAGain(E);
+      const F1_MAHAGain_After_M3 = await stabilityPool.getFrontEndMAHAGain(frontEnd_1);
+      const F2_MAHAGain_After_M3 = await stabilityPool.getFrontEndMAHAGain(frontEnd_2);
 
-      // Expect A, C, D LQTY system gains to equal their gains from (M1 + M2 + M3)
+      // Expect A, C, D MAHA system gains to equal their gains from (M1 + M2 + M3)
       assert.isAtMost(
         getDifference(
-          A_LQTYGain_After_M3,
-          A_expectedLQTYGain_M3.add(A_expectedLQTYGain_M2).add(A_expectedLQTYGain_M1)
+          A_MAHAGain_After_M3,
+          A_expectedMAHAGain_M3.add(A_expectedMAHAGain_M2).add(A_expectedMAHAGain_M1)
         ),
         1e15
       );
       assert.isAtMost(
         getDifference(
-          C_LQTYGain_After_M3,
-          C_expectedLQTYGain_M3.add(C_expectedLQTYGain_M2).add(C_expectedLQTYGain_M1)
+          C_MAHAGain_After_M3,
+          C_expectedMAHAGain_M3.add(C_expectedMAHAGain_M2).add(C_expectedMAHAGain_M1)
         ),
         1e15
       );
       assert.isAtMost(
         getDifference(
-          D_LQTYGain_After_M3,
-          D_expectedLQTYGain_M3.add(D_expectedLQTYGain_M2).add(D_expectedLQTYGain_M1)
+          D_MAHAGain_After_M3,
+          D_expectedMAHAGain_M3.add(D_expectedMAHAGain_M2).add(D_expectedMAHAGain_M1)
         ),
         1e15
       );
 
-      // Expect E's LQTY system gain to equal their gains from (M2 + M3)
+      // Expect E's MAHA system gain to equal their gains from (M2 + M3)
       assert.isAtMost(
-        getDifference(E_LQTYGain_After_M3, E_expectedLQTYGain_M3.add(E_expectedLQTYGain_M2)),
+        getDifference(E_MAHAGain_After_M3, E_expectedMAHAGain_M3.add(E_expectedMAHAGain_M2)),
         1e15
       );
 
-      // Expect B LQTY system gains to equal gains just from M3 (his topup paid out his gains from M1 + M2)
-      assert.isAtMost(getDifference(B_LQTYGain_After_M3, B_expectedLQTYGain_M3), 1e15);
+      // Expect B MAHA system gains to equal gains just from M3 (his topup paid out his gains from M1 + M2)
+      assert.isAtMost(getDifference(B_MAHAGain_After_M3, B_expectedMAHAGain_M3), 1e15);
 
-      // Expect B LQTY balance to equal gains from (M1 + M2)
-      const B_LQTYBalance_After_M3 = await await lqtyToken.balanceOf(B);
+      // Expect B MAHA balance to equal gains from (M1 + M2)
+      const B_MAHABalance_After_M3 = await await mahaToken.balanceOf(B);
       assert.isAtMost(
-        getDifference(B_LQTYBalance_After_M3, B_expectedLQTYGain_M2.add(B_expectedLQTYGain_M1)),
+        getDifference(B_MAHABalance_After_M3, B_expectedMAHAGain_M2.add(B_expectedMAHAGain_M1)),
         1e15
       );
 
-      // Expect F1 LQTY system gains to equal their gain from (M2 + M3)
+      // Expect F1 MAHA system gains to equal their gain from (M2 + M3)
       assert.isAtMost(
-        getDifference(F1_LQTYGain_After_M3, F1_expectedLQTYGain_M3.add(F1_expectedLQTYGain_M2)),
+        getDifference(F1_MAHAGain_After_M3, F1_expectedMAHAGain_M3.add(F1_expectedMAHAGain_M2)),
         1e15
       );
 
-      // Expect F1 LQTY balance to equal their M1 gain
-      const F1_LQTYBalance_After_M3 = await lqtyToken.balanceOf(frontEnd_1);
-      assert.isAtMost(getDifference(F1_LQTYBalance_After_M3, F1_expectedLQTYGain_M1), 1e15);
+      // Expect F1 MAHA balance to equal their M1 gain
+      const F1_MAHABalance_After_M3 = await mahaToken.balanceOf(frontEnd_1);
+      assert.isAtMost(getDifference(F1_MAHABalance_After_M3, F1_expectedMAHAGain_M1), 1e15);
 
-      // Expect F2 LQTY system gains to equal their gain from M3
-      assert.isAtMost(getDifference(F2_LQTYGain_After_M3, F2_expectedLQTYGain_M3), 1e15);
+      // Expect F2 MAHA system gains to equal their gain from M3
+      assert.isAtMost(getDifference(F2_MAHAGain_After_M3, F2_expectedMAHAGain_M3), 1e15);
 
-      // Expect F2 LQTY balance to equal their gain from M1 + M2
-      const F2_LQTYBalance_After_M3 = await lqtyToken.balanceOf(frontEnd_2);
+      // Expect F2 MAHA balance to equal their gain from M1 + M2
+      const F2_MAHABalance_After_M3 = await mahaToken.balanceOf(frontEnd_2);
       assert.isAtMost(
-        getDifference(F2_LQTYBalance_After_M3, F2_expectedLQTYGain_M2.add(F2_expectedLQTYGain_M1)),
+        getDifference(F2_MAHABalance_After_M3, F2_expectedMAHAGain_M2.add(F2_expectedMAHAGain_M1)),
         1e15
       );
 
-      // Expect deposit C now to be 10125 LUSD
-      const C_compoundedLUSDDeposit = await stabilityPool.getCompoundedLUSDDeposit(C);
-      assert.isAtMost(getDifference(C_compoundedLUSDDeposit, dec(10125, 18)), 1000);
+      // Expect deposit C now to be 10125 ARTH
+      const C_compoundedARTHDeposit = await stabilityPool.getCompoundedARTHDeposit(C);
+      assert.isAtMost(getDifference(C_compoundedARTHDeposit, dec(10125, 18)), 1000);
 
       // --- C withdraws ---
 
-      th.assertIsApproximatelyEqual(await stabilityPool.getTotalLUSDDeposits(), dec(90000, 18));
+      th.assertIsApproximatelyEqual(await stabilityPool.getTotalARTHDeposits(), dec(90000, 18));
 
       await stabilityPool.withdrawFromSP(dec(10000, 18), { from: C });
 
-      th.assertIsApproximatelyEqual(await stabilityPool.getTotalLUSDDeposits(), dec(80000, 18));
+      th.assertIsApproximatelyEqual(await stabilityPool.getTotalARTHDeposits(), dec(80000, 18));
 
       // Month 4 passes
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_MONTH, web3.currentProvider);
@@ -1667,104 +1667,103 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       // All depositors fully withdraw
       for (depositor of [A, B, C, D, E]) {
         await stabilityPool.withdrawFromSP(dec(100000, 18), { from: depositor });
-        const compoundedLUSDDeposit = await stabilityPool.getCompoundedLUSDDeposit(depositor);
-        assert.equal(compoundedLUSDDeposit, "0");
+        const compoundedARTHDeposit = await stabilityPool.getCompoundedARTHDeposit(depositor);
+        assert.equal(compoundedARTHDeposit, "0");
       }
 
       // During month 4, deposit sizes: A:3375, B:42750, C:125, D:13500, E:20250, Total: 80000
 
       // Expected gains for each depositor after month 4
       const A_share_M4 = issuance_M4.mul(toBN("3375")).div(toBN("80000")); // 3375/800
-      const A_expectedLQTYGain_M4 = F1_kickbackRate.mul(A_share_M4).div(toBN(dec(1, 18)));
+      const A_expectedMAHAGain_M4 = F1_kickbackRate.mul(A_share_M4).div(toBN(dec(1, 18)));
 
       const B_share_M4 = issuance_M4.mul(toBN("42750")).div(toBN("80000")); // 42750/80000
-      const B_expectedLQTYGain_M4 = F2_kickbackRate.mul(B_share_M4).div(toBN(dec(1, 18)));
+      const B_expectedMAHAGain_M4 = F2_kickbackRate.mul(B_share_M4).div(toBN(dec(1, 18)));
 
       const C_share_M4 = issuance_M4.mul(toBN("125")).div(toBN("80000")); // 125/80000
-      const C_expectedLQTYGain_M4 = F2_kickbackRate.mul(C_share_M4).div(toBN(dec(1, 18)));
+      const C_expectedMAHAGain_M4 = F2_kickbackRate.mul(C_share_M4).div(toBN(dec(1, 18)));
 
       const D_share_M4 = issuance_M4.mul(toBN("13500")).div(toBN("80000"));
-      const D_expectedLQTYGain_M4 = D_share_M4;
+      const D_expectedMAHAGain_M4 = D_share_M4;
 
       const E_share_M4 = issuance_M4.mul(toBN("20250")).div(toBN("80000")); // 2025/80000
-      const E_expectedLQTYGain_M4 = F1_kickbackRate.mul(E_share_M4).div(toBN(dec(1, 18)));
+      const E_expectedMAHAGain_M4 = F1_kickbackRate.mul(E_share_M4).div(toBN(dec(1, 18)));
 
       // F1's stake = A + E
-      const F1_expectedLQTYGain_M4 = toBN(dec(1, 18))
+      const F1_expectedMAHAGain_M4 = toBN(dec(1, 18))
         .sub(F1_kickbackRate)
         .mul(A_share_M4.add(E_share_M4))
         .div(toBN(dec(1, 18)));
 
       // F2's stake = B + C
-      const F2_expectedLQTYGain_M4 = toBN(dec(1, 18))
+      const F2_expectedMAHAGain_M4 = toBN(dec(1, 18))
         .sub(F2_kickbackRate)
         .mul(B_share_M4.add(C_share_M4))
         .div(toBN(dec(1, 18)));
 
-      // Get final LQTY balances
-      const A_FinalLQTYBalance = await lqtyToken.balanceOf(A);
-      const B_FinalLQTYBalance = await lqtyToken.balanceOf(B);
-      const C_FinalLQTYBalance = await lqtyToken.balanceOf(C);
-      const D_FinalLQTYBalance = await lqtyToken.balanceOf(D);
-      const E_FinalLQTYBalance = await lqtyToken.balanceOf(E);
-      const F1_FinalLQTYBalance = await lqtyToken.balanceOf(frontEnd_1);
-      const F2_FinalLQTYBalance = await lqtyToken.balanceOf(frontEnd_2);
+      // Get final MAHA balances
+      const A_FinalMAHABalance = await mahaToken.balanceOf(A);
+      const B_FinalMAHABalance = await mahaToken.balanceOf(B);
+      const C_FinalMAHABalance = await mahaToken.balanceOf(C);
+      const D_FinalMAHABalance = await mahaToken.balanceOf(D);
+      const E_FinalMAHABalance = await mahaToken.balanceOf(E);
+      const F1_FinalMAHABalance = await mahaToken.balanceOf(frontEnd_1);
+      const F2_FinalMAHABalance = await mahaToken.balanceOf(frontEnd_2);
 
-      const A_expectedFinalLQTYBalance = A_expectedLQTYGain_M1.add(A_expectedLQTYGain_M2)
-        .add(A_expectedLQTYGain_M3)
-        .add(A_expectedLQTYGain_M4);
+      const A_expectedFinalMAHABalance = A_expectedMAHAGain_M1.add(A_expectedMAHAGain_M2)
+        .add(A_expectedMAHAGain_M3)
+        .add(A_expectedMAHAGain_M4);
 
-      const B_expectedFinalLQTYBalance = B_expectedLQTYGain_M1.add(B_expectedLQTYGain_M2)
-        .add(B_expectedLQTYGain_M3)
-        .add(B_expectedLQTYGain_M4);
+      const B_expectedFinalMAHABalance = B_expectedMAHAGain_M1.add(B_expectedMAHAGain_M2)
+        .add(B_expectedMAHAGain_M3)
+        .add(B_expectedMAHAGain_M4);
 
-      const C_expectedFinalLQTYBalance = C_expectedLQTYGain_M1.add(C_expectedLQTYGain_M2)
-        .add(C_expectedLQTYGain_M3)
-        .add(C_expectedLQTYGain_M4);
+      const C_expectedFinalMAHABalance = C_expectedMAHAGain_M1.add(C_expectedMAHAGain_M2)
+        .add(C_expectedMAHAGain_M3)
+        .add(C_expectedMAHAGain_M4);
 
-      const D_expectedFinalLQTYBalance = D_expectedLQTYGain_M1.add(D_expectedLQTYGain_M2)
-        .add(D_expectedLQTYGain_M3)
-        .add(D_expectedLQTYGain_M4);
+      const D_expectedFinalMAHABalance = D_expectedMAHAGain_M1.add(D_expectedMAHAGain_M2)
+        .add(D_expectedMAHAGain_M3)
+        .add(D_expectedMAHAGain_M4);
 
-      const E_expectedFinalLQTYBalance = E_expectedLQTYGain_M2.add(E_expectedLQTYGain_M3).add(
-        E_expectedLQTYGain_M4
-      );
+      const E_expectedFinalMAHABalance =
+        E_expectedMAHAGain_M2.add(E_expectedMAHAGain_M3).add(E_expectedMAHAGain_M4);
 
-      const F1_expectedFinalLQTYBalance = F1_expectedLQTYGain_M1.add(F1_expectedLQTYGain_M2)
-        .add(F1_expectedLQTYGain_M3)
-        .add(F1_expectedLQTYGain_M4);
+      const F1_expectedFinalMAHABalance = F1_expectedMAHAGain_M1.add(F1_expectedMAHAGain_M2)
+        .add(F1_expectedMAHAGain_M3)
+        .add(F1_expectedMAHAGain_M4);
 
-      const F2_expectedFinalLQTYBalance = F2_expectedLQTYGain_M1.add(F2_expectedLQTYGain_M2)
-        .add(F2_expectedLQTYGain_M3)
-        .add(F2_expectedLQTYGain_M4);
+      const F2_expectedFinalMAHABalance = F2_expectedMAHAGain_M1.add(F2_expectedMAHAGain_M2)
+        .add(F2_expectedMAHAGain_M3)
+        .add(F2_expectedMAHAGain_M4);
 
-      assert.isAtMost(getDifference(A_FinalLQTYBalance, A_expectedFinalLQTYBalance), 1e15);
-      assert.isAtMost(getDifference(B_FinalLQTYBalance, B_expectedFinalLQTYBalance), 1e15);
-      assert.isAtMost(getDifference(C_FinalLQTYBalance, C_expectedFinalLQTYBalance), 1e15);
-      assert.isAtMost(getDifference(D_FinalLQTYBalance, D_expectedFinalLQTYBalance), 1e15);
-      assert.isAtMost(getDifference(E_FinalLQTYBalance, E_expectedFinalLQTYBalance), 1e15);
-      assert.isAtMost(getDifference(F1_FinalLQTYBalance, F1_expectedFinalLQTYBalance), 1e15);
-      assert.isAtMost(getDifference(F2_FinalLQTYBalance, F2_expectedFinalLQTYBalance), 1e15);
+      assert.isAtMost(getDifference(A_FinalMAHABalance, A_expectedFinalMAHABalance), 1e15);
+      assert.isAtMost(getDifference(B_FinalMAHABalance, B_expectedFinalMAHABalance), 1e15);
+      assert.isAtMost(getDifference(C_FinalMAHABalance, C_expectedFinalMAHABalance), 1e15);
+      assert.isAtMost(getDifference(D_FinalMAHABalance, D_expectedFinalMAHABalance), 1e15);
+      assert.isAtMost(getDifference(E_FinalMAHABalance, E_expectedFinalMAHABalance), 1e15);
+      assert.isAtMost(getDifference(F1_FinalMAHABalance, F1_expectedFinalMAHABalance), 1e15);
+      assert.isAtMost(getDifference(F2_FinalMAHABalance, F2_expectedFinalMAHABalance), 1e15);
     });
 
     /* Serial scale changes, with one front end
 
     F1 kickbackRate: 80%
 
-    A, B make deposit 5000 LUSD via F1
-    1 month passes. L1 depletes P: P = 1e-5*P L1:  9999.9 LUSD, 1 ETH.  scale = 0
+    A, B make deposit 5000 ARTH via F1
+    1 month passes. L1 depletes P: P = 1e-5*P L1:  9999.9 ARTH, 1 ETH.  scale = 0
     C makes deposit 10000  via F1
-    1 month passes. L2 depletes P: P = 1e-5*P L2:  9999.9 LUSD, 1 ETH  scale = 1
+    1 month passes. L2 depletes P: P = 1e-5*P L2:  9999.9 ARTH, 1 ETH  scale = 1
     D makes deposit 10000 via F1
-    1 month passes. L3 depletes P: P = 1e-5*P L3:  9999.9 LUSD, 1 ETH scale = 1
+    1 month passes. L3 depletes P: P = 1e-5*P L3:  9999.9 ARTH, 1 ETH scale = 1
     E makes deposit 10000 via F1
-    1 month passes. L3 depletes P: P = 1e-5*P L4:  9999.9 LUSD, 1 ETH scale = 2
+    1 month passes. L3 depletes P: P = 1e-5*P L4:  9999.9 ARTH, 1 ETH scale = 2
     A, B, C, D, E withdraw
 
     =========
-    Expect front end withdraws ~3 month's worth of LQTY */
+    Expect front end withdraws ~3 month's worth of MAHA */
 
-    it("withdrawFromSP(): Several deposits of 10k LUSD span one scale factor change. Depositors withdraw correct LQTY gains", async () => {
+    it("withdrawFromSP(): Several deposits of 10k ARTH span one scale factor change. Depositors withdraw correct MAHA gains", async () => {
       const kickbackRate = toBN(dec(80, 16)); // F1 kicks 80% back to depositor
       await stabilityPool.registerFrontEnd(kickbackRate, { from: frontEnd_1 });
 
@@ -1780,18 +1779,18 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
         // Defaulters 1-4 each withdraw to 9999.9 debt (including gas comp)
         await borrowerOperations.openTrove(
           th._100pct,
-          await getOpenTroveLUSDAmount(dec(99999, 17)),
+          await getOpenTroveARTHAmount(dec(99999, 17)),
           defaulter,
           defaulter,
           { from: defaulter, value: dec(100, "ether") }
         );
       }
 
-      // Confirm all would-be depositors have 0 LQTY
+      // Confirm all would-be depositors have 0 MAHA
       for (const depositor of [A, B, C, D, E]) {
-        assert.equal(await lqtyToken.balanceOf(depositor), "0");
+        assert.equal(await mahaToken.balanceOf(depositor), "0");
       }
-      assert.equal(await lqtyToken.balanceOf(frontEnd_1), "0");
+      assert.equal(await mahaToken.balanceOf(frontEnd_1), "0");
 
       // price drops by 50%
       await priceFeed.setPrice(dec(100, 18));
@@ -1799,7 +1798,7 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       // Check scale is 0
       assert.equal(await stabilityPool.currentScale(), "0");
 
-      // A, B provides 5000 LUSD to SP
+      // A, B provides 5000 ARTH to SP
       await borrowerOperations.openTrove(th._100pct, dec(5000, 18), A, A, {
         from: A,
         value: dec(200, "ether")
@@ -1880,33 +1879,33 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
       assert.equal(await stabilityPool.currentScale(), "2");
 
       /* All depositors withdraw fully from SP.  Withdraw in reverse order, so that the largest remaining
-      deposit (F) withdraws first, and does not get extra LQTY gains from the periods between withdrawals */
+      deposit (F) withdraws first, and does not get extra MAHA gains from the periods between withdrawals */
       for (depositor of [E, D, C, B, A]) {
         await stabilityPool.withdrawFromSP(dec(10000, 18), { from: depositor });
       }
 
-      const LQTYGain_A = await lqtyToken.balanceOf(A);
-      const LQTYGain_B = await lqtyToken.balanceOf(B);
-      const LQTYGain_C = await lqtyToken.balanceOf(C);
-      const LQTYGain_D = await lqtyToken.balanceOf(D);
-      const LQTYGain_E = await lqtyToken.balanceOf(E);
+      const MAHAGain_A = await mahaToken.balanceOf(A);
+      const MAHAGain_B = await mahaToken.balanceOf(B);
+      const MAHAGain_C = await mahaToken.balanceOf(C);
+      const MAHAGain_D = await mahaToken.balanceOf(D);
+      const MAHAGain_E = await mahaToken.balanceOf(E);
 
-      const LQTYGain_F1 = await lqtyToken.balanceOf(frontEnd_1);
+      const MAHAGain_F1 = await mahaToken.balanceOf(frontEnd_1);
 
-      /* Expect each deposit to have earned LQTY issuance for the month in which it was active, prior
+      /* Expect each deposit to have earned MAHA issuance for the month in which it was active, prior
      to the liquidation that mostly depleted it:
 
-     expectedLQTYGain_A:  (k * M1 / 2) + (k * M2 / 2) / 100000
-     expectedLQTYGain_B:  (k * M1 / 2) + (k * M2 / 2) / 100000
+     expectedMAHAGain_A:  (k * M1 / 2) + (k * M2 / 2) / 100000
+     expectedMAHAGain_B:  (k * M1 / 2) + (k * M2 / 2) / 100000
 
-     expectedLQTYGain_C:  ((k * M2)  + (k * M3) / 100000) * 9999.9/10000
-     expectedLQTYGain_D:  ((k * M3)  + (k * M4) / 100000) * 9999.9/10000
-     expectedLQTYGain_E:  (k * M4) * 9999.9/10000
+     expectedMAHAGain_C:  ((k * M2)  + (k * M3) / 100000) * 9999.9/10000
+     expectedMAHAGain_D:  ((k * M3)  + (k * M4) / 100000) * 9999.9/10000
+     expectedMAHAGain_E:  (k * M4) * 9999.9/10000
 
-     expectedLQTYGain_F1:  (1 - k) * (M1 + M2 + M3 + M4)
+     expectedMAHAGain_F1:  (1 - k) * (M1 + M2 + M3 + M4)
      */
 
-      const expectedLQTYGain_A_and_B = kickbackRate
+      const expectedMAHAGain_A_and_B = kickbackRate
         .mul(issuance_M1)
         .div(toBN("2"))
         .div(toBN(dec(1, 18))) // gain from L1
@@ -1918,7 +1917,7 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
             .div(toBN("100000"))
         ); // gain from L2 after deposit depleted
 
-      const expectedLQTYGain_C = kickbackRate
+      const expectedMAHAGain_C = kickbackRate
         .mul(issuance_M2)
         .div(toBN(dec(1, 18))) // gain from L2
         .add(
@@ -1930,7 +1929,7 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
         .mul(toBN("99999"))
         .div(toBN("100000")); // Scale by 9999.9/10000
 
-      const expectedLQTYGain_D = kickbackRate
+      const expectedMAHAGain_D = kickbackRate
         .mul(issuance_M3)
         .div(toBN(dec(1, 18))) // gain from L3
         .add(
@@ -1942,24 +1941,24 @@ contract("StabilityPool - LQTY Rewards", async accounts => {
         .mul(toBN("99999"))
         .div(toBN("100000")); // Scale by 9999.9/10000
 
-      const expectedLQTYGain_E = kickbackRate
+      const expectedMAHAGain_E = kickbackRate
         .mul(issuance_M4)
         .div(toBN(dec(1, 18))) // gain from L4
         .mul(toBN("99999"))
         .div(toBN("100000")); // Scale by 9999.9/10000
 
       const issuance1st4Months = issuance_M1.add(issuance_M2).add(issuance_M3).add(issuance_M4);
-      const expectedLQTYGain_F1 = toBN(dec(1, 18))
+      const expectedMAHAGain_F1 = toBN(dec(1, 18))
         .sub(kickbackRate)
         .mul(issuance1st4Months)
         .div(toBN(dec(1, 18)));
 
-      assert.isAtMost(getDifference(expectedLQTYGain_A_and_B, LQTYGain_A), 1e15);
-      assert.isAtMost(getDifference(expectedLQTYGain_A_and_B, LQTYGain_B), 1e15);
-      assert.isAtMost(getDifference(expectedLQTYGain_C, LQTYGain_C), 1e15);
-      assert.isAtMost(getDifference(expectedLQTYGain_D, LQTYGain_D), 1e15);
-      assert.isAtMost(getDifference(expectedLQTYGain_E, LQTYGain_E), 1e15);
-      assert.isAtMost(getDifference(expectedLQTYGain_F1, LQTYGain_F1), 1e15);
+      assert.isAtMost(getDifference(expectedMAHAGain_A_and_B, MAHAGain_A), 1e15);
+      assert.isAtMost(getDifference(expectedMAHAGain_A_and_B, MAHAGain_B), 1e15);
+      assert.isAtMost(getDifference(expectedMAHAGain_C, MAHAGain_C), 1e15);
+      assert.isAtMost(getDifference(expectedMAHAGain_D, MAHAGain_D), 1e15);
+      assert.isAtMost(getDifference(expectedMAHAGain_E, MAHAGain_E), 1e15);
+      assert.isAtMost(getDifference(expectedMAHAGain_F1, MAHAGain_F1), 1e15);
     });
   });
 });

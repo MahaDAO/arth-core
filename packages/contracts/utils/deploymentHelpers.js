@@ -9,16 +9,12 @@ const GasPool = artifacts.require("./GasPool.sol");
 const CollSurplusPool = artifacts.require("./CollSurplusPool.sol");
 const FunctionCaller = artifacts.require("./TestContracts/FunctionCaller.sol");
 const BorrowerOperations = artifacts.require("./BorrowerOperations.sol");
+const Governance = artifacts.require("./Governance.sol");
 const HintHelpers = artifacts.require("./HintHelpers.sol");
 
-const MAHAStaking = artifacts.require("./MAHAStaking.sol");
-const MAHAToken = artifacts.require("./MAHAToken.sol");
-const LockupContractFactory = artifacts.require("./LockupContractFactory.sol");
+const MAHAToken = artifacts.require("./TestContracts/MockERC20.sol");
 const CommunityIssuance = artifacts.require("./CommunityIssuance.sol");
 
-const Unipool = artifacts.require("./Unipool.sol");
-
-const MAHATokenTester = artifacts.require("./MAHATokenTester.sol");
 const CommunityIssuanceTester = artifacts.require("./CommunityIssuanceTester.sol");
 const StabilityPoolTester = artifacts.require("./StabilityPoolTester.sol");
 const ActivePoolTester = artifacts.require("./ActivePoolTester.sol");
@@ -26,7 +22,7 @@ const DefaultPoolTester = artifacts.require("./DefaultPoolTester.sol");
 const LiquityMathTester = artifacts.require("./LiquityMathTester.sol");
 const BorrowerOperationsTester = artifacts.require("./BorrowerOperationsTester.sol");
 const TroveManagerTester = artifacts.require("./TroveManagerTester.sol");
-const LUSDTokenTester = artifacts.require("./LUSDTokenTester.sol");
+const ARTHTokenTester = artifacts.require("./ARTHTokenTester.sol");
 
 // Proxy scripts
 const BorrowerOperationsScript = artifacts.require("BorrowerOperationsScript");
@@ -34,7 +30,6 @@ const BorrowerWrappersScript = artifacts.require("BorrowerWrappersScript");
 const TroveManagerScript = artifacts.require("TroveManagerScript");
 const StabilityPoolScript = artifacts.require("StabilityPoolScript");
 const TokenScript = artifacts.require("TokenScript");
-const MAHAStakingScript = artifacts.require("MAHAStakingScript");
 const {
   buildUserProxies,
   BorrowerOperationsProxy,
@@ -42,8 +37,7 @@ const {
   TroveManagerProxy,
   StabilityPoolProxy,
   SortedTrovesProxy,
-  TokenProxy,
-  MAHAStakingProxy
+  TokenProxy
 } = require("../utils/proxyHelpers.js");
 
 /* "Liquity core" consists of all contracts in the core Liquity system.
@@ -52,7 +46,6 @@ MAHA contracts consist of only those contracts related to the MAHA Token:
 
 -the MAHA token
 -the Lockup factory and lockup contracts
--the MAHAStaking contract
 -the CommunityIssuance contract
 */
 
@@ -95,13 +88,22 @@ class DeploymentHelper {
     const collSurplusPool = await CollSurplusPool.new();
     const functionCaller = await FunctionCaller.new();
     const borrowerOperations = await BorrowerOperations.new();
-    const hintHelpers = await HintHelpers.new();
-    const lusdToken = await ARTHValuecoin.new(
+    const governance = await Governance.new(
+      "0x0000000000000000000000000000000000000001",
       troveManager.address,
-      stabilityPool.address,
-      borrowerOperations.address
+      borrowerOperations.address,
+      priceFeedTestnet.address,
+      "0x0000000000000000000000000000000000000001",
+      0
     );
-    ARTHValuecoin.setAsDeployed(lusdToken);
+    const hintHelpers = await HintHelpers.new();
+    const arthToken = await ARTHValuecoin.new(governance.address);
+
+    // await arthToken.toggleBorrowerOperations(borrowerOperations.address);
+    // await arthToken.toggleTroveManager(troveManager.address);
+    // await arthToken.toggleStabilityPool(stabilityPool.address);
+
+    ARTHValuecoin.setAsDeployed(arthToken);
     DefaultPool.setAsDeployed(defaultPool);
     PriceFeedTestnet.setAsDeployed(priceFeedTestnet);
     SortedTroves.setAsDeployed(sortedTroves);
@@ -116,11 +118,12 @@ class DeploymentHelper {
 
     const coreContracts = {
       priceFeedTestnet,
-      lusdToken,
+      arthToken,
       sortedTroves,
       troveManager,
       activePool,
       stabilityPool,
+      governance,
       gasPool,
       defaultPool,
       collSurplusPool,
@@ -149,68 +152,48 @@ class DeploymentHelper {
     testerContracts.troveManager = await TroveManagerTester.new();
     testerContracts.functionCaller = await FunctionCaller.new();
     testerContracts.hintHelpers = await HintHelpers.new();
-    testerContracts.lusdToken = await LUSDTokenTester.new(
-      testerContracts.troveManager.address,
-      testerContracts.stabilityPool.address,
-      testerContracts.borrowerOperations.address
+    testerContracts.governance = await Governance.new(
+      "0x0000000000000000000000000000000000000001",
+      troveManager.address,
+      borrowerOperations.address,
+      priceFeedTestnet.address,
+      "0x0000000000000000000000000000000000000001",
+      0
     );
+    testerContracts.arthToken = await ARTHTokenTester.new(testerContracts.governance.address);
     return testerContracts;
   }
 
-  static async deployMAHAContractsHardhat(bountyAddress, lpRewardsAddress, multisigAddress) {
-    const lqtyStaking = await MAHAStaking.new();
-    const lockupContractFactory = await LockupContractFactory.new();
-    const communityIssuance = await CommunityIssuance.new();
+  static async deployMAHAContractsHardhat(stabilityPool) {
+    // Deploy MAHA Token, passing Community Issuance and Factory addresses to the constructor
+    const mahaToken = await MAHAToken.new("MAHA", "MAHA");
+    MAHAToken.setAsDeployed(mahaToken);
 
-    MAHAStaking.setAsDeployed(lqtyStaking);
-    LockupContractFactory.setAsDeployed(lockupContractFactory);
+    const communityIssuance = await CommunityIssuance.new(
+      mahaToken.address,
+      stabilityPool.address,
+      86400 * 1000 * 30
+    );
     CommunityIssuance.setAsDeployed(communityIssuance);
 
-    // Deploy MAHA Token, passing Community Issuance and Factory addresses to the constructor
-    const lqtyToken = await MAHAToken.new(
-      communityIssuance.address,
-      lqtyStaking.address,
-      lockupContractFactory.address,
-      bountyAddress,
-      lpRewardsAddress,
-      multisigAddress
-    );
-    MAHAToken.setAsDeployed(lqtyToken);
-
     const MAHAContracts = {
-      lqtyStaking,
-      lockupContractFactory,
       communityIssuance,
-      lqtyToken
+      mahaToken
     };
     return MAHAContracts;
   }
 
   static async deployMAHATesterContractsHardhat(bountyAddress, lpRewardsAddress, multisigAddress) {
-    const lqtyStaking = await MAHAStaking.new();
-    const lockupContractFactory = await LockupContractFactory.new();
     const communityIssuance = await CommunityIssuanceTester.new();
 
-    MAHAStaking.setAsDeployed(lqtyStaking);
-    LockupContractFactory.setAsDeployed(lockupContractFactory);
     CommunityIssuanceTester.setAsDeployed(communityIssuance);
 
     // Deploy MAHA Token, passing Community Issuance and Factory addresses to the constructor
-    const lqtyToken = await MAHATokenTester.new(
-      communityIssuance.address,
-      lqtyStaking.address,
-      lockupContractFactory.address,
-      bountyAddress,
-      lpRewardsAddress,
-      multisigAddress
-    );
-    MAHATokenTester.setAsDeployed(lqtyToken);
-
+    const mahaToken = await MAHAToken.new("MAHA", "MAHA");
     const MAHAContracts = {
-      lqtyStaking,
       lockupContractFactory,
       communityIssuance,
-      lqtyToken
+      mahaToken
     };
     return MAHAContracts;
   }
@@ -227,14 +210,14 @@ class DeploymentHelper {
     const functionCaller = await FunctionCaller.new();
     const borrowerOperations = await BorrowerOperations.new();
     const hintHelpers = await HintHelpers.new();
-    const lusdToken = await ARTHValuecoin.new(
+    const arthToken = await ARTHValuecoin.new(
       troveManager.address,
       stabilityPool.address,
       borrowerOperations.address
     );
     const coreContracts = {
       priceFeedTestnet,
-      lusdToken,
+      arthToken,
       sortedTroves,
       troveManager,
       activePool,
@@ -250,32 +233,24 @@ class DeploymentHelper {
   }
 
   static async deployMAHAContractsTruffle(bountyAddress, lpRewardsAddress, multisigAddress) {
-    const lqtyStaking = await lqtyStaking.new();
-    const lockupContractFactory = await LockupContractFactory.new();
+    const mahaStaking = await mahaStaking.new();
     const communityIssuance = await CommunityIssuance.new();
 
     /* Deploy MAHA Token, passing Community Issuance,  MAHAStaking, and Factory addresses
     to the constructor  */
-    const lqtyToken = await MAHAToken.new(
-      communityIssuance.address,
-      lqtyStaking.address,
-      lockupContractFactory.address,
-      bountyAddress,
-      lpRewardsAddress,
-      multisigAddress
-    );
+    const mahaToken = await MAHAToken.new("MAHA", "MAHA");
 
     const MAHAContracts = {
-      lqtyStaking,
+      mahaStaking,
       lockupContractFactory,
       communityIssuance,
-      lqtyToken
+      mahaToken
     };
     return MAHAContracts;
   }
 
-  static async deployLUSDToken(contracts) {
-    contracts.lusdToken = await ARTHValuecoin.new(
+  static async deployARTHToken(contracts) {
+    contracts.arthToken = await ARTHValuecoin.new(
       contracts.troveManager.address,
       contracts.stabilityPool.address,
       contracts.borrowerOperations.address
@@ -283,8 +258,8 @@ class DeploymentHelper {
     return contracts;
   }
 
-  static async deployLUSDTokenTester(contracts) {
-    contracts.lusdToken = await LUSDTokenTester.new(
+  static async deployARTHTokenTester(contracts) {
+    contracts.arthToken = await ARTHTokenTester.new(
       contracts.troveManager.address,
       contracts.stabilityPool.address,
       contracts.borrowerOperations.address
@@ -298,7 +273,7 @@ class DeploymentHelper {
     const borrowerWrappersScript = await BorrowerWrappersScript.new(
       contracts.borrowerOperations.address,
       contracts.troveManager.address,
-      MAHAContracts.lqtyStaking.address
+      MAHAContracts.mahaStaking.address
     );
     contracts.borrowerWrappers = new BorrowerWrappersProxy(
       owner,
@@ -334,28 +309,28 @@ class DeploymentHelper {
 
     contracts.sortedTroves = new SortedTrovesProxy(owner, proxies, contracts.sortedTroves);
 
-    const lusdTokenScript = await TokenScript.new(contracts.lusdToken.address);
-    contracts.lusdToken = new TokenProxy(
+    const arthTokenScript = await TokenScript.new(contracts.arthToken.address);
+    contracts.arthToken = new TokenProxy(
       owner,
       proxies,
-      lusdTokenScript.address,
-      contracts.lusdToken
+      arthTokenScript.address,
+      contracts.arthToken
     );
 
-    const lqtyTokenScript = await TokenScript.new(MAHAContracts.lqtyToken.address);
-    MAHAContracts.lqtyToken = new TokenProxy(
+    const mahaTokenScript = await TokenScript.new(MAHAContracts.mahaToken.address);
+    MAHAContracts.mahaToken = new TokenProxy(
       owner,
       proxies,
-      lqtyTokenScript.address,
-      MAHAContracts.lqtyToken
+      mahaTokenScript.address,
+      MAHAContracts.mahaToken
     );
 
-    const lqtyStakingScript = await MAHAStakingScript.new(MAHAContracts.lqtyStaking.address);
-    MAHAContracts.lqtyStaking = new MAHAStakingProxy(
+    const mahaStakingScript = await MAHAStakingScript.new(MAHAContracts.mahaStaking.address);
+    MAHAContracts.mahaStaking = new MAHAStakingProxy(
       owner,
       proxies,
-      lqtyStakingScript.address,
-      MAHAContracts.lqtyStaking
+      mahaStakingScript.address,
+      MAHAContracts.mahaStaking
     );
   }
 
@@ -380,11 +355,9 @@ class DeploymentHelper {
       contracts.stabilityPool.address,
       contracts.gasPool.address,
       contracts.collSurplusPool.address,
-      contracts.priceFeedTestnet.address,
-      contracts.lusdToken.address,
-      contracts.sortedTroves.address,
-      MAHAContracts.lqtyToken.address,
-      MAHAContracts.lqtyStaking.address
+      contracts.governance.address,
+      contracts.arthToken.address,
+      contracts.sortedTroves.address
     );
 
     // set contracts in BorrowerOperations
@@ -395,10 +368,9 @@ class DeploymentHelper {
       contracts.stabilityPool.address,
       contracts.gasPool.address,
       contracts.collSurplusPool.address,
-      contracts.priceFeedTestnet.address,
+      contracts.governance.address,
       contracts.sortedTroves.address,
-      contracts.lusdToken.address,
-      MAHAContracts.lqtyStaking.address
+      contracts.arthToken.address
     );
 
     // set contracts in the Pools
@@ -406,9 +378,9 @@ class DeploymentHelper {
       contracts.borrowerOperations.address,
       contracts.troveManager.address,
       contracts.activePool.address,
-      contracts.lusdToken.address,
+      contracts.arthToken.address,
       contracts.sortedTroves.address,
-      contracts.priceFeedTestnet.address,
+      contracts.governance.address,
       MAHAContracts.communityIssuance.address
     );
 
@@ -435,30 +407,6 @@ class DeploymentHelper {
       contracts.sortedTroves.address,
       contracts.troveManager.address
     );
-  }
-
-  static async connectMAHAContracts(MAHAContracts) {
-    // Set MAHAToken address in LCF
-    await MAHAContracts.lockupContractFactory.setMAHATokenAddress(MAHAContracts.lqtyToken.address);
-  }
-
-  static async connectMAHAContractsToCore(MAHAContracts, coreContracts) {
-    await MAHAContracts.lqtyStaking.setAddresses(
-      MAHAContracts.lqtyToken.address,
-      coreContracts.lusdToken.address,
-      coreContracts.troveManager.address,
-      coreContracts.borrowerOperations.address,
-      coreContracts.activePool.address
-    );
-
-    await MAHAContracts.communityIssuance.setAddresses(
-      MAHAContracts.lqtyToken.address,
-      coreContracts.stabilityPool.address
-    );
-  }
-
-  static async connectUnipool(uniPool, MAHAContracts, uniswapPairAddr, duration) {
-    await uniPool.setParams(MAHAContracts.lqtyToken.address, uniswapPairAddr, duration);
   }
 }
 module.exports = DeploymentHelper;
