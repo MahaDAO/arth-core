@@ -21,8 +21,6 @@ contract("TroveManager", async accounts => {
   const ZERO_ADDRESS = th.ZERO_ADDRESS;
   const [owner, A, B, C, D, E, F] = accounts.slice(0, 7);
 
-  const [bountyAddress, lpRewardsAddress, multisig] = accounts.slice(997, 1000);
-
   let priceFeed;
   let arthToken;
   let sortedTroves;
@@ -49,16 +47,8 @@ contract("TroveManager", async accounts => {
   beforeEach(async () => {
     contracts = await deploymentHelper.deployLiquityCore();
     contracts.troveManager = await TroveManagerTester.new();
-    contracts.arthToken = await ARTHTokenTester.new(
-      contracts.troveManager.address,
-      contracts.stabilityPool.address,
-      contracts.borrowerOperations.address
-    );
-    const MAHAContracts = await deploymentHelper.deployMAHAContracts(
-      bountyAddress,
-      lpRewardsAddress,
-      multisig
-    );
+    contracts.arthToken = await ARTHTokenTester.new(contracts.governance.address);
+    const MAHAContracts = await deploymentHelper.deployMAHAContracts(contracts.stabilityPool);
 
     priceFeed = contracts.priceFeedTestnet;
     arthToken = contracts.arthToken;
@@ -71,14 +61,7 @@ contract("TroveManager", async accounts => {
     borrowerOperations = contracts.borrowerOperations;
     hintHelpers = contracts.hintHelpers;
 
-    mahaStaking = MAHAContracts.mahaStaking;
-    mahaToken = MAHAContracts.mahaToken;
-    communityIssuance = MAHAContracts.communityIssuance;
-    lockupContractFactory = MAHAContracts.lockupContractFactory;
-
     await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
-    await deploymentHelper.connectMAHAContracts(MAHAContracts);
-    await deploymentHelper.connectMAHAContractsToCore(MAHAContracts, contracts);
   });
 
   it("A given trove's stake decline is negligible with adjustments and tiny liquidations", async () => {

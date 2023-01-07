@@ -415,6 +415,7 @@ class TestDeploymentHelper {
         contracts.hintHelpers.setAddresses(
           contracts.sortedTroves.address,
           contracts.troveManager.address,
+          contracts.governance.address,
           { gasPrice }
         )
       ));

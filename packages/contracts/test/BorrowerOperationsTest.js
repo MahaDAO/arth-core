@@ -92,9 +92,7 @@ contract("BorrowerOperations", async accounts => {
         multisig
       );
 
-      await deploymentHelper.connectMAHAContracts(MAHAContracts);
       await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
-      await deploymentHelper.connectMAHAContractsToCore(MAHAContracts, contracts);
 
       if (withProxy) {
         const users = [alice, bob, carol, dennis, whale, A, B, C, D, E];

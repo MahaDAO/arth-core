@@ -808,7 +808,6 @@ class TestHelper {
       const { debt, coll } = await contracts.troveManager.getEntireDebtAndColl(extraParams.from);
       const price = await contracts.priceFeedTestnet.getPrice();
       const targetDebt = coll.mul(price).div(ICR);
-      console.log(targetDebt.toString(), debt.toString());
       assert(targetDebt > debt, "ICR is already greater than or equal to target");
       increasedTotalDebt = targetDebt.sub(debt);
       arthAmount = await this.getNetBorrowingAmount(contracts, increasedTotalDebt);

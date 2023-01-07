@@ -44,9 +44,7 @@ contract(
       communityIssuance = MAHAContracts.communityIssuance;
       lockupContractFactory = MAHAContracts.lockupContractFactory;
 
-      await deploymentHelper.connectMAHAContracts(MAHAContracts);
       await deploymentHelper.connectCoreContracts(coreContracts, MAHAContracts);
-      await deploymentHelper.connectMAHAContractsToCore(MAHAContracts, coreContracts);
     });
 
     it("Sets the correct PriceFeed address in TroveManager", async () => {

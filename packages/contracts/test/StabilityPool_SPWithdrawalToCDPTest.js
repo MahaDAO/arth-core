@@ -58,10 +58,8 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
 
     beforeEach(async () => {
       contracts = await deploymentHelper.deployLiquityCore();
-      const MAHAContracts = await deploymentHelper.deployMAHAContracts(
-        bountyAddress,
-        lpRewardsAddress,
-        multisig
+      const MAHAContracts = await deploymentHelper.deployMAHATesterContractsHardhat(
+        contracts.stabilityPool
       );
       contracts.troveManager = await TroveManagerTester.new();
       contracts = await deploymentHelper.deployARTHToken(contracts);
@@ -75,9 +73,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
       defaultPool = contracts.defaultPool;
       borrowerOperations = contracts.borrowerOperations;
 
-      await deploymentHelper.connectMAHAContracts(MAHAContracts);
       await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
-      await deploymentHelper.connectMAHAContractsToCore(MAHAContracts, contracts);
     });
 
     // --- Compounding tests ---

@@ -79,9 +79,7 @@ contract("TroveManager - Redistribution reward calculations", async accounts => 
     functionCaller = contracts.functionCaller;
     borrowerOperations = contracts.borrowerOperations;
 
-    await deploymentHelper.connectMAHAContracts(MAHAContracts);
     await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
-    await deploymentHelper.connectMAHAContractsToCore(MAHAContracts, contracts);
   });
 
   it("redistribution: A, B Open. B Liquidated. C, D Open. D Liquidated. Distributes correct rewards", async () => {

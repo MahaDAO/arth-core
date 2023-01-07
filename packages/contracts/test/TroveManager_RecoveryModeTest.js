@@ -100,9 +100,7 @@ contract("TroveManager - in Recovery Mode", async accounts => {
     borrowerOperations = contracts.borrowerOperations;
     collSurplusPool = contracts.collSurplusPool;
 
-    await deploymentHelper.connectMAHAContracts(MAHAContracts);
     await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
-    await deploymentHelper.connectMAHAContractsToCore(MAHAContracts, contracts);
   });
 
   it("checkRecoveryMode(): Returns true if TCR falls below CCR", async () => {

@@ -212,9 +212,7 @@ contract("Fee arithmetic tests", async accounts => {
       multisig
     );
 
-    await deploymentHelper.connectMAHAContracts(MAHAContracts);
     await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
-    await deploymentHelper.connectMAHAContractsToCore(MAHAContracts, contracts);
   });
 
   it("minutesPassedSinceLastFeeOp(): returns minutes passed for no time increase", async () => {

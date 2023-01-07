@@ -52,7 +52,7 @@ module.exports = {
       allowUnlimitedContractSize: true,
       gas: 10000000, // tx gas limit
       blockGasLimit: 15000000,
-      gasPrice: 20000000000,
+      gasPrice: 1000000000,
       initialBaseFeePerGas: 0
       // forking: {
       //   url: alchemyUrl()

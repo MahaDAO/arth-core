@@ -65,15 +65,9 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
     beforeEach(async () => {
       contracts = await deploymentHelper.deployLiquityCore();
       contracts.troveManager = await TroveManagerTester.new();
-      contracts.arthToken = await ARTHValuecoin.new(
-        contracts.troveManager.address,
-        contracts.stabilityPool.address,
-        contracts.borrowerOperations.address
-      );
+      contracts.arthToken = await ARTHValuecoin.new(contracts.governance.address);
       const MAHAContracts = await deploymentHelper.deployMAHATesterContractsHardhat(
-        bountyAddress,
-        lpRewardsAddress,
-        multisig
+        contracts.stabilityPool
       );
 
       priceFeed = contracts.priceFeedTestnet;
@@ -87,9 +81,7 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
       mahaToken = MAHAContracts.mahaToken;
       communityIssuanceTester = MAHAContracts.communityIssuance;
 
-      await deploymentHelper.connectMAHAContracts(MAHAContracts);
       await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
-      await deploymentHelper.connectMAHAContractsToCore(MAHAContracts, contracts);
 
       // Check community issuance starts with 32 million MAHA
       communityMAHASupply = toBN(await mahaToken.balanceOf(communityIssuanceTester.address));

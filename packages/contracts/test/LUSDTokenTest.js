@@ -100,8 +100,6 @@ contract("ARTHValuecoin", async accounts => {
       );
 
       await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
-      await deploymentHelper.connectMAHAContracts(MAHAContracts);
-      await deploymentHelper.connectMAHAContractsToCore(MAHAContracts, contracts);
 
       arthTokenOriginal = contracts.arthToken;
       if (withProxy) {

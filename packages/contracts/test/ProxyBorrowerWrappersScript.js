@@ -77,14 +77,10 @@ contract("BorrowerWrappers", async accounts => {
     contracts.troveManager = await TroveManagerTester.new();
     contracts = await deploymentHelper.deployARTHToken(contracts);
     const MAHAContracts = await deploymentHelper.deployMAHATesterContractsHardhat(
-      bountyAddress,
-      lpRewardsAddress,
-      multisig
+      contracts.stabilityPool
     );
 
-    await deploymentHelper.connectMAHAContracts(MAHAContracts);
     await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
-    await deploymentHelper.connectMAHAContractsToCore(MAHAContracts, contracts);
 
     troveManagerOriginal = contracts.troveManager;
     mahaTokenOriginal = MAHAContracts.mahaToken;

@@ -80,16 +80,8 @@ contract("SortedTroves", async accounts => {
     beforeEach(async () => {
       contracts = await deploymentHelper.deployLiquityCore();
       contracts.troveManager = await TroveManagerTester.new();
-      contracts.arthToken = await ARTHValuecoin.new(
-        contracts.troveManager.address,
-        contracts.stabilityPool.address,
-        contracts.borrowerOperations.address
-      );
-      const MAHAContracts = await deploymentHelper.deployMAHAContracts(
-        bountyAddress,
-        lpRewardsAddress,
-        multisig
-      );
+      contracts.arthToken = await ARTHValuecoin.new(contracts.governance.address);
+      const MAHAContracts = await deploymentHelper.deployMAHAContracts(contracts.stabilityPool);
 
       priceFeed = contracts.priceFeedTestnet;
       sortedTroves = contracts.sortedTroves;
@@ -97,9 +89,7 @@ contract("SortedTroves", async accounts => {
       borrowerOperations = contracts.borrowerOperations;
       arthToken = contracts.arthToken;
 
-      await deploymentHelper.connectMAHAContracts(MAHAContracts);
       await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
-      await deploymentHelper.connectMAHAContractsToCore(MAHAContracts, contracts);
     });
 
     it("contains(): returns true for addresses that have opened troves", async () => {

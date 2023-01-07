@@ -26,7 +26,6 @@ contract("Deploying the MAHA contracts: LCF, CI, MAHAStaking, and MAHAToken ", a
       lpRewardsAddress,
       multisig
     );
-    await deploymentHelper.connectMAHAContracts(MAHAContracts);
 
     mahaStaking = MAHAContracts.mahaStaking;
     mahaToken = MAHAContracts.mahaToken;

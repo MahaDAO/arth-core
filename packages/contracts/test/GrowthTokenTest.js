@@ -157,9 +157,7 @@ contract("MAHA Token", async accounts => {
     tokenVersion = await mahaTokenTester.version();
     chainId = await mahaTokenTester.getChainId();
 
-    await deploymentHelper.connectMAHAContracts(MAHAContracts);
     await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
-    await deploymentHelper.connectMAHAContractsToCore(MAHAContracts, contracts);
   });
 
   it("balanceOf(): gets the balance of the account", async () => {

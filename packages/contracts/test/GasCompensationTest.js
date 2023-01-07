@@ -87,9 +87,7 @@ contract("Gas compensation tests", async accounts => {
     defaultPool = contracts.defaultPool;
     borrowerOperations = contracts.borrowerOperations;
 
-    await deploymentHelper.connectMAHAContracts(MAHAContracts);
     await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
-    await deploymentHelper.connectMAHAContractsToCore(MAHAContracts, contracts);
   });
 
   // --- Raw gas compensation calculations ---

@@ -65,15 +65,15 @@ class DeploymentHelper {
     }
   }
 
-  static async deployMAHAContracts(bountyAddress, lpRewardsAddress, multisigAddress) {
+  static async deployMAHAContracts(stabilityPool) {
     const cmdLineArgs = process.argv;
     const frameworkPath = cmdLineArgs[1];
     // console.log(`Framework used:  ${frameworkPath}`)
 
     if (frameworkPath.includes("hardhat")) {
-      return this.deployMAHAContractsHardhat(bountyAddress, lpRewardsAddress, multisigAddress);
+      return this.deployMAHAContractsHardhat(stabilityPool);
     } else if (frameworkPath.includes("truffle")) {
-      return this.deployMAHAContractsTruffle(bountyAddress, lpRewardsAddress, multisigAddress);
+      return this.deployMAHAContractsTruffle();
     }
   }
 
@@ -232,16 +232,14 @@ class DeploymentHelper {
     return coreContracts;
   }
 
-  static async deployMAHAContractsTruffle(bountyAddress, lpRewardsAddress, multisigAddress) {
-    const mahaStaking = await mahaStaking.new();
+  static async deployMAHAContractsTruffle() {
     const communityIssuance = await CommunityIssuance.new();
 
-    /* Deploy MAHA Token, passing Community Issuance,  MAHAStaking, and Factory addresses
+    /* Deploy MAHA Token, passing Community Issuance, and Factory addresses
     to the constructor  */
     const mahaToken = await MAHAToken.new("MAHA", "MAHA");
 
     const MAHAContracts = {
-      mahaStaking,
       lockupContractFactory,
       communityIssuance,
       mahaToken
@@ -250,20 +248,12 @@ class DeploymentHelper {
   }
 
   static async deployARTHToken(contracts) {
-    contracts.arthToken = await ARTHValuecoin.new(
-      contracts.troveManager.address,
-      contracts.stabilityPool.address,
-      contracts.borrowerOperations.address
-    );
+    contracts.arthToken = await ARTHValuecoin.new(contracts.governance.address);
     return contracts;
   }
 
   static async deployARTHTokenTester(contracts) {
-    contracts.arthToken = await ARTHTokenTester.new(
-      contracts.troveManager.address,
-      contracts.stabilityPool.address,
-      contracts.borrowerOperations.address
-    );
+    contracts.arthToken = await ARTHTokenTester.new(contracts.governance.address);
     return contracts;
   }
 
@@ -272,8 +262,7 @@ class DeploymentHelper {
 
     const borrowerWrappersScript = await BorrowerWrappersScript.new(
       contracts.borrowerOperations.address,
-      contracts.troveManager.address,
-      MAHAContracts.mahaStaking.address
+      contracts.troveManager.address
     );
     contracts.borrowerWrappers = new BorrowerWrappersProxy(
       owner,
@@ -323,14 +312,6 @@ class DeploymentHelper {
       proxies,
       mahaTokenScript.address,
       MAHAContracts.mahaToken
-    );
-
-    const mahaStakingScript = await MAHAStakingScript.new(MAHAContracts.mahaStaking.address);
-    MAHAContracts.mahaStaking = new MAHAStakingProxy(
-      owner,
-      proxies,
-      mahaStakingScript.address,
-      MAHAContracts.mahaStaking
     );
   }
 
@@ -405,7 +386,8 @@ class DeploymentHelper {
     // set contracts in HintHelpers
     await contracts.hintHelpers.setAddresses(
       contracts.sortedTroves.address,
-      contracts.troveManager.address
+      contracts.troveManager.address,
+      contracts.governance.address
     );
   }
 }

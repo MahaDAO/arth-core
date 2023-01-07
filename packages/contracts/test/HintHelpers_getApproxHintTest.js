@@ -101,8 +101,6 @@ contract("HintHelpers", async accounts => {
     priceFeed = contracts.priceFeedTestnet;
 
     await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
-    await deploymentHelper.connectMAHAContracts(MAHAContracts);
-    await deploymentHelper.connectMAHAContractsToCore(MAHAContracts, contracts);
 
     numAccounts = 10;
 
