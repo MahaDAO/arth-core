@@ -84,9 +84,6 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         address _sortedTrovesAddress,
         address _arthTokenAddress
     ) external override onlyOwner {
-        // This makes impossible to open a trove with zero withdrawn ARTH
-        assert(MIN_NET_DEBT() > 0);
-
         checkContract(_troveManagerAddress);
         checkContract(_activePoolAddress);
         checkContract(_defaultPoolAddress);
@@ -116,6 +113,9 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         emit GovernanceAddressChanged(_governanceAddress);
         emit SortedTrovesAddressChanged(_sortedTrovesAddress);
         emit ARTHTokenAddressChanged(_arthTokenAddress);
+
+        // This makes impossible to open a trove with zero withdrawn ARTH
+        assert(MIN_NET_DEBT() > 0);
 
         _renounceOwnership(); // renounce ownership after migration is done (openTroveFor)
     }
