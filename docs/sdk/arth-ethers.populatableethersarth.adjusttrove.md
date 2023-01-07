@@ -4,6 +4,7 @@
 
 ## PopulatableEthersARTH.adjustTrove() method
 
+Adjust existing Trove by changing its collateral, debt, or both.
 
 <b>Signature:</b>
 
@@ -15,11 +16,17 @@ adjustTrove(params: TroveAdjustmentParams<Decimalish>, maxBorrowingRateOrOptiona
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  params | [TroveAdjustmentParams](./arth-base.troveadjustmentparams.md)<!-- -->&lt;[Decimalish](./arth-base.decimalish.md)<!-- -->&gt; |  |
+|  params | [TroveAdjustmentParams](./arth-base.troveadjustmentparams.md)<!-- -->&lt;[Decimalish](./arth-base.decimalish.md)<!-- -->&gt; | Parameters of the adjustment. |
 |  maxBorrowingRateOrOptionalParams | [Decimalish](./arth-base.decimalish.md) \| [BorrowingOperationOptionalParams](./arth-ethers.borrowingoperationoptionalparams.md) |  |
 |  overrides | [EthersTransactionOverrides](./arth-ethers.etherstransactionoverrides.md) |  |
 
 <b>Returns:</b>
 
 Promise&lt;[PopulatedEthersARTHTransaction](./arth-ethers.populatedethersarthtransaction.md)<!-- -->&lt;[TroveAdjustmentDetails](./arth-base.troveadjustmentdetails.md)<!-- -->&gt;&gt;
+
+## Remarks
+
+The transaction will fail if the Trove's debt would fall below [ARTH\_MINIMUM\_DEBT](./arth-base.arth_minimum_debt.md)<!-- -->.
+
+If `maxBorrowingRate` is omitted, the current borrowing rate plus 0.5% is used as maximum acceptable rate.
 

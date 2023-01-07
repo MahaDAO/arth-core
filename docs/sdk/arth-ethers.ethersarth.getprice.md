@@ -4,6 +4,7 @@
 
 ## EthersARTH.getPrice() method
 
+Get the current price of the native currency (e.g. Ether) in USD.
 
 <b>Signature:</b>
 

@@ -4,12 +4,12 @@
 
 ## Trove.create() method
 
-Calculate the result of an [openTrove()](./arth-base.transactableliquity.opentrove.md) transaction.
+Calculate the result of an [openTrove()](./arth-base.transactablearth.opentrove.md) transaction.
 
 <b>Signature:</b>
 
 ```typescript
-static create(params: TroveCreationParams<Decimalish>, borrowingRate?: Decimalish): Trove;
+static create(params: TroveCreationParams<Decimalish>, borrowingRate?: Decimalish): Promise<Trove>;
 ```
 
 ## Parameters
@@ -21,5 +21,5 @@ static create(params: TroveCreationParams<Decimalish>, borrowingRate?: Decimalis
 
 <b>Returns:</b>
 
-[Trove](./arth-base.trove.md)
+Promise&lt;[Trove](./arth-base.trove.md)<!-- -->&gt;
 

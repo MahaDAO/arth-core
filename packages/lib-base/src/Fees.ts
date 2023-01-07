@@ -1,11 +1,14 @@
+import { Signer } from '@ethersproject/abstract-signer';
 import assert from "assert";
 
 import { Decimal, Decimalish } from "./Decimal";
+import { Provider } from '@ethersproject/abstract-provider'
 
 import {
-  MAXIMUM_BORROWING_RATE,
-  MINIMUM_BORROWING_RATE,
-  MINIMUM_REDEMPTION_RATE
+  // MAXIMUM_BORROWING_RATE,
+  // MINIMUM_BORROWING_RATE,
+  // MINIMUM_REDEMPTION_RATE,
+  BorrowingRate
 } from "./constants";
 
 /**
@@ -112,10 +115,10 @@ export class Fees {
    * const borrowingFeeARTH = borrowingRate.mul(borrowedARTHAmount);
    * ```
    */
-  borrowingRate(when?: Date): Decimal {
+  async borrowingRate(governAddr: string, provider: Provider | Signer, when?: Date): Promise<Decimal> {
     return this._recoveryMode
       ? Decimal.ZERO
-      : Decimal.min(MINIMUM_BORROWING_RATE.add(this.baseRate(when)), MAXIMUM_BORROWING_RATE);
+      : Decimal.min((await BorrowingRate.minBorrowingRate(governAddr, provider)).add(this.baseRate(when)), (await BorrowingRate.maxBorrowingRate(governAddr, provider)));
   }
 
   /**
@@ -147,14 +150,13 @@ export class Fees {
    * const redemptionFeeARTH = redemptionRate.mul(redeemedARTHAmount);
    * ```
    */
-  redemptionRate(redeemedFractionOfSupply: Decimalish = Decimal.ZERO, when?: Date): Decimal {
+  async redemptionRate(governAddr: string, provider:Provider | Signer, redeemedFractionOfSupply: Decimalish = Decimal.ZERO, when?: Date): Promise<Decimal> {
     redeemedFractionOfSupply = Decimal.from(redeemedFractionOfSupply);
     let baseRate = this.baseRate(when);
 
     if (redeemedFractionOfSupply.nonZero) {
       baseRate = redeemedFractionOfSupply.div(this._beta).add(baseRate);
     }
-
-    return Decimal.min(MINIMUM_REDEMPTION_RATE.add(baseRate), Decimal.ONE);
+    return Decimal.min((await BorrowingRate.minRedemptionRate(governAddr, provider)).add(baseRate), Decimal.ONE);
   }
 }

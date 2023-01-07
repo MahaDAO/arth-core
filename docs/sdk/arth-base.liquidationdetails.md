@@ -4,7 +4,7 @@
 
 ## LiquidationDetails interface
 
-Details of a [liquidate()](./arth-base.transactableliquity.liquidate.md) or [liquidateUpTo()](./arth-base.transactableliquity.liquidateupto.md) transaction.
+Details of a [liquidate()](./arth-base.transactablearth.liquidate.md) or [liquidateUpTo()](./arth-base.transactablearth.liquidateupto.md) transaction.
 
 <b>Signature:</b>
 

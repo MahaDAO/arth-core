@@ -24,11 +24,11 @@ boolean
 
 ## Example
 
-Can be used to check whether the Liquity protocol is in recovery mode by using it on the return value of [getTotal()](./arth-base.readableliquity.gettotal.md)<!-- -->. For example:
+Can be used to check whether the ARTH protocol is in recovery mode by using it on the return value of [getTotal()](./arth-base.readablearth.gettotal.md)<!-- -->. For example:
 
 ```typescript
-const total = await liquity.getTotal();
-const price = await liquity.getPrice();
+const total = await arth.getTotal();
+const price = await arth.getPrice();
 
 if (total.collateralRatioIsBelowCritical(price)) {
   // Recovery mode is active

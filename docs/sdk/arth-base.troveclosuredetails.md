@@ -4,7 +4,7 @@
 
 ## TroveClosureDetails interface
 
-Details of a [closeTrove()](./arth-base.transactableliquity.closetrove.md) transaction.
+Details of a [closeTrove()](./arth-base.transactablearth.closetrove.md) transaction.
 
 <b>Signature:</b>
 

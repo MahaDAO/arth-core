@@ -4,6 +4,7 @@
 
 ## PopulatableEthersARTH.closeTrove() method
 
+Close existing Trove by repaying all debt and withdrawing all collateral.
 
 <b>Signature:</b>
 

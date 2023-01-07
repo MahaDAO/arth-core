@@ -4,7 +4,7 @@
 
 ## TroveAdjustmentDetails interface
 
-Details of an [adjustTrove()](./arth-base.transactableliquity.adjusttrove.md) transaction.
+Details of an [adjustTrove()](./arth-base.transactablearth.adjusttrove.md) transaction.
 
 <b>Signature:</b>
 

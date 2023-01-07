@@ -4,7 +4,7 @@
 
 ## TransactionFailedError class
 
-Thrown by [TransactableLiquity](./arth-base.transactableliquity.md) functions in case of transaction failure.
+Thrown by [TransactableARTH](./arth-base.transactablearth.md) functions in case of transaction failure.
 
 <b>Signature:</b>
 

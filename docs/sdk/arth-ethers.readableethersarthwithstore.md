@@ -4,7 +4,7 @@
 
 ## ReadableEthersARTHWithStore interface
 
-Variant of [ReadableEthersARTH](./arth-ethers.readableethersarth.md) that exposes a .
+Variant of [ReadableEthersARTH](./arth-ethers.readableethersarth.md) that exposes a [ARTHStore](./arth-base.arthstore.md)<!-- -->.
 
 <b>Signature:</b>
 

@@ -4,6 +4,7 @@
 
 ## PopulatedEthersARTHTransaction.send() method
 
+Send the transaction.
 
 <b>Signature:</b>
 
@@ -13,4 +14,6 @@ send(): Promise<SentEthersARTHTransaction<T>>;
 <b>Returns:</b>
 
 Promise&lt;[SentEthersARTHTransaction](./arth-ethers.sentethersarthtransaction.md)<!-- -->&lt;T&gt;&gt;
+
+An object that implements [SentARTHTransaction](./arth-base.sentarthtransaction.md)<!-- -->.
 

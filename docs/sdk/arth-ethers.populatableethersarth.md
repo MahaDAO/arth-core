@@ -4,14 +4,14 @@
 
 ## PopulatableEthersARTH class
 
-Ethers-based implementation of .
+Ethers-based implementation of [PopulatableARTH](./arth-base.populatablearth.md)<!-- -->.
 
 <b>Signature:</b>
 
 ```typescript
 export declare class PopulatableEthersARTH implements PopulatableARTH<EthersTransactionReceipt, EthersTransactionResponse, EthersPopulatedTransaction> 
 ```
-<b>Implements:</b> PopulatableARTH&lt;[EthersTransactionReceipt](./arth-ethers.etherstransactionreceipt.md)<!-- -->, [EthersTransactionResponse](./arth-ethers.etherstransactionresponse.md)<!-- -->, [EthersPopulatedTransaction](./arth-ethers.etherspopulatedtransaction.md)<!-- -->&gt;
+<b>Implements:</b> [PopulatableARTH](./arth-base.populatablearth.md)<!-- -->&lt;[EthersTransactionReceipt](./arth-ethers.etherstransactionreceipt.md)<!-- -->, [EthersTransactionResponse](./arth-ethers.etherstransactionresponse.md)<!-- -->, [EthersPopulatedTransaction](./arth-ethers.etherspopulatedtransaction.md)<!-- -->&gt;
 
 ## Constructors
 
@@ -23,22 +23,22 @@ export declare class PopulatableEthersARTH implements PopulatableARTH<EthersTran
 
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
-|  [adjustTrove(params, maxBorrowingRateOrOptionalParams, overrides)](./arth-ethers.populatableethersarth.adjusttrove.md) |  |  |
-|  [borrowARTH(amount, maxBorrowingRate, overrides)](./arth-ethers.populatableethersarth.borrowarth.md) |  |  |
-|  [claimCollateralSurplus(overrides)](./arth-ethers.populatableethersarth.claimcollateralsurplus.md) |  |  |
-|  [closeTrove(overrides)](./arth-ethers.populatableethersarth.closetrove.md) |  |  |
-|  [depositARTHInStabilityPool(amount, frontendTag, overrides)](./arth-ethers.populatableethersarth.depositarthinstabilitypool.md) |  |  |
-|  [depositCollateral(amount, overrides)](./arth-ethers.populatableethersarth.depositcollateral.md) |  |  |
-|  [liquidate(address, overrides)](./arth-ethers.populatableethersarth.liquidate.md) |  |  |
-|  [liquidateUpTo(maximumNumberOfTrovesToLiquidate, overrides)](./arth-ethers.populatableethersarth.liquidateupto.md) |  |  |
-|  [openTrove(params, maxBorrowingRateOrOptionalParams, overrides)](./arth-ethers.populatableethersarth.opentrove.md) |  |  |
-|  [redeemARTH(amount, maxRedemptionRate, overrides)](./arth-ethers.populatableethersarth.redeemarth.md) |  |  |
-|  [registerFrontend(kickbackRate, overrides)](./arth-ethers.populatableethersarth.registerfrontend.md) |  |  |
-|  [repayARTH(amount, overrides)](./arth-ethers.populatableethersarth.repayarth.md) |  |  |
-|  [sendARTH(toAddress, amount, overrides)](./arth-ethers.populatableethersarth.sendarth.md) |  |  |
-|  [sendMAHA(toAddress, amount, overrides)](./arth-ethers.populatableethersarth.sendmaha.md) |  |  |
-|  [transferCollateralGainToTrove(overrides)](./arth-ethers.populatableethersarth.transfercollateralgaintotrove.md) |  |  |
-|  [withdrawARTHFromStabilityPool(amount, overrides)](./arth-ethers.populatableethersarth.withdrawarthfromstabilitypool.md) |  |  |
-|  [withdrawCollateral(amount, overrides)](./arth-ethers.populatableethersarth.withdrawcollateral.md) |  |  |
-|  [withdrawGainsFromStabilityPool(overrides)](./arth-ethers.populatableethersarth.withdrawgainsfromstabilitypool.md) |  |  |
+|  [adjustTrove(params, maxBorrowingRateOrOptionalParams, overrides)](./arth-ethers.populatableethersarth.adjusttrove.md) |  | Adjust existing Trove by changing its collateral, debt, or both. |
+|  [borrowARTH(amount, maxBorrowingRate, overrides)](./arth-ethers.populatableethersarth.borrowarth.md) |  | Adjust existing Trove by borrowing more ARTH. |
+|  [claimCollateralSurplus(overrides)](./arth-ethers.populatableethersarth.claimcollateralsurplus.md) |  | Claim leftover collateral after a liquidation or redemption. |
+|  [closeTrove(overrides)](./arth-ethers.populatableethersarth.closetrove.md) |  | Close existing Trove by repaying all debt and withdrawing all collateral. |
+|  [depositARTHInStabilityPool(amount, frontendTag, overrides)](./arth-ethers.populatableethersarth.depositarthinstabilitypool.md) |  | Make a new Stability Deposit, or top up existing one. |
+|  [depositCollateral(amount, overrides)](./arth-ethers.populatableethersarth.depositcollateral.md) |  | Adjust existing Trove by depositing more collateral. |
+|  [liquidate(address, overrides)](./arth-ethers.populatableethersarth.liquidate.md) |  | Liquidate one or more undercollateralized Troves. |
+|  [liquidateUpTo(maximumNumberOfTrovesToLiquidate, overrides)](./arth-ethers.populatableethersarth.liquidateupto.md) |  | Liquidate the least collateralized Troves up to a maximum number. |
+|  [openTrove(params, maxBorrowingRateOrOptionalParams, overrides)](./arth-ethers.populatableethersarth.opentrove.md) |  | Open a new Trove by depositing collateral and borrowing ARTH. |
+|  [redeemARTH(amount, maxRedemptionRate, overrides)](./arth-ethers.populatableethersarth.redeemarth.md) |  | Redeem ARTH to native currency (e.g. Ether) at face value. |
+|  [registerFrontend(kickbackRate, overrides)](./arth-ethers.populatableethersarth.registerfrontend.md) |  | Register current wallet address as a ARTH frontend. |
+|  [repayARTH(amount, overrides)](./arth-ethers.populatableethersarth.repayarth.md) |  | Adjust existing Trove by repaying some of its debt. |
+|  [sendARTH(toAddress, amount, overrides)](./arth-ethers.populatableethersarth.sendarth.md) |  | Send ARTH tokens to an address. |
+|  [sendMAHA(toAddress, amount, overrides)](./arth-ethers.populatableethersarth.sendmaha.md) |  | Send MAHA tokens to an address. |
+|  [transferCollateralGainToTrove(overrides)](./arth-ethers.populatableethersarth.transfercollateralgaintotrove.md) |  | Transfer [collateral gain](./arth-base.stabilitydeposit.collateralgain.md) from Stability Deposit to Trove. |
+|  [withdrawARTHFromStabilityPool(amount, overrides)](./arth-ethers.populatableethersarth.withdrawarthfromstabilitypool.md) |  | Withdraw ARTH from Stability Deposit. |
+|  [withdrawCollateral(amount, overrides)](./arth-ethers.populatableethersarth.withdrawcollateral.md) |  | Adjust existing Trove by withdrawing some of its collateral. |
+|  [withdrawGainsFromStabilityPool(overrides)](./arth-ethers.populatableethersarth.withdrawgainsfromstabilitypool.md) |  | Withdraw [collateral gain](./arth-base.stabilitydeposit.collateralgain.md) and [MAHA reward](./arth-base.stabilitydeposit.mahareward.md) from Stability Deposit. |
 

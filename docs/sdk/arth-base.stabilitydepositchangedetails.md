@@ -4,7 +4,7 @@
 
 ## StabilityDepositChangeDetails interface
 
-Details of a [depositARTHInStabilityPool()](./arth-base.transactableliquity.depositarthinstabilitypool.md) or [withdrawARTHFromStabilityPool()](./arth-base.transactableliquity.withdrawarthfromstabilitypool.md) transaction.
+Details of a [depositARTHInStabilityPool()](./arth-base.transactablearth.depositarthinstabilitypool.md) or [withdrawARTHFromStabilityPool()](./arth-base.transactablearth.withdrawarthfromstabilitypool.md) transaction.
 
 <b>Signature:</b>
 

@@ -4,6 +4,7 @@
 
 ## SendableEthersARTH.withdrawCollateral() method
 
+Adjust existing Trove by withdrawing some of its collateral.
 
 <b>Signature:</b>
 
@@ -15,10 +16,19 @@ withdrawCollateral(amount: Decimalish, overrides?: EthersTransactionOverrides): 
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  amount | [Decimalish](./arth-base.decimalish.md) |  |
+|  amount | [Decimalish](./arth-base.decimalish.md) | The amount of collateral to withdraw from the Trove. |
 |  overrides | [EthersTransactionOverrides](./arth-ethers.etherstransactionoverrides.md) |  |
 
 <b>Returns:</b>
 
 Promise&lt;[SentEthersARTHTransaction](./arth-ethers.sentethersarthtransaction.md)<!-- -->&lt;[TroveAdjustmentDetails](./arth-base.troveadjustmentdetails.md)<!-- -->&gt;&gt;
+
+## Remarks
+
+Equivalent to:
+
+```typescript
+adjustTrove({ withdrawCollateral: amount })
+
+```
 

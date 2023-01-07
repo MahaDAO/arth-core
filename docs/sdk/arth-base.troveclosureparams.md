@@ -4,7 +4,7 @@
 
 ## TroveClosureParams type
 
-Parameters of a [closeTrove()](./arth-base.transactableliquity.closetrove.md) transaction.
+Parameters of a [closeTrove()](./arth-base.transactablearth.closetrove.md) transaction.
 
 <b>Signature:</b>
 

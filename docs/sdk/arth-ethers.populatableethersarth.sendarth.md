@@ -4,6 +4,7 @@
 
 ## PopulatableEthersARTH.sendARTH() method
 
+Send ARTH tokens to an address.
 
 <b>Signature:</b>
 
@@ -15,8 +16,8 @@ sendARTH(toAddress: string, amount: Decimalish, overrides?: EthersTransactionOve
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  toAddress | string |  |
-|  amount | [Decimalish](./arth-base.decimalish.md) |  |
+|  toAddress | string | Address of receipient. |
+|  amount | [Decimalish](./arth-base.decimalish.md) | Amount of ARTH to send. |
 |  overrides | [EthersTransactionOverrides](./arth-ethers.etherstransactionoverrides.md) |  |
 
 <b>Returns:</b>

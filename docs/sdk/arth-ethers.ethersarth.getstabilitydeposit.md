@@ -4,6 +4,7 @@
 
 ## EthersARTH.getStabilityDeposit() method
 
+Get the current state of a Stability Deposit.
 
 <b>Signature:</b>
 
@@ -15,7 +16,7 @@ getStabilityDeposit(address?: string, overrides?: EthersCallOverrides): Promise<
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  address | string |  |
+|  address | string | Address that owns the Stability Deposit. |
 |  overrides | [EthersCallOverrides](./arth-ethers.etherscalloverrides.md) |  |
 
 <b>Returns:</b>

@@ -18,5 +18,5 @@ export interface EthersARTHConnectionOptionalParams
 |  --- | --- | --- |
 |  [frontendTag?](./arth-ethers.ethersarthconnectionoptionalparams.frontendtag.md) | string | <i>(Optional)</i> Address that will receive MAHA rewards from newly created Stability Deposits by default. |
 |  [userAddress?](./arth-ethers.ethersarthconnectionoptionalparams.useraddress.md) | string | <i>(Optional)</i> Address whose Trove, Stability Deposit, MAHA Stake and balances will be read by default. |
-|  [useStore?](./arth-ethers.ethersarthconnectionoptionalparams.usestore.md) | [EthersARTHStoreOption](./arth-ethers.ethersarthstoreoption.md) | <i>(Optional)</i> Create a  and expose it as the <code>store</code> property. |
+|  [useStore?](./arth-ethers.ethersarthconnectionoptionalparams.usestore.md) | [EthersARTHStoreOption](./arth-ethers.ethersarthstoreoption.md) | <i>(Optional)</i> Create a [ARTHStore](./arth-base.arthstore.md) and expose it as the <code>store</code> property. |
 

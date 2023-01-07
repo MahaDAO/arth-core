@@ -4,6 +4,8 @@
 
 ## EthersARTH.withdrawGainsFromStabilityPool() method
 
+Withdraw [collateral gain](./arth-base.stabilitydeposit.collateralgain.md) and [MAHA reward](./arth-base.stabilitydeposit.mahareward.md) from Stability Deposit.
+
 <b>Signature:</b>
 
 ```typescript

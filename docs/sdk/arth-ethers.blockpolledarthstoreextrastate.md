@@ -4,7 +4,7 @@
 
 ## BlockPolledARTHStoreExtraState interface
 
-Extra state added to  by [BlockPolledARTHStore](./arth-ethers.blockpolledarthstore.md)<!-- -->.
+Extra state added to [ARTHStoreState](./arth-base.arthstorestate.md) by [BlockPolledARTHStore](./arth-ethers.blockpolledarthstore.md)<!-- -->.
 
 <b>Signature:</b>
 

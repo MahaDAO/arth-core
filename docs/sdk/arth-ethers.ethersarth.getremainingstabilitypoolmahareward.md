@@ -4,6 +4,7 @@
 
 ## EthersARTH.getRemainingStabilityPoolMAHAReward() method
 
+Get the remaining MAHA that will be collectively rewarded to stability depositors.
 
 <b>Signature:</b>
 

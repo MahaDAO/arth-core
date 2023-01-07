@@ -49,7 +49,6 @@ module.exports = {
   },
   networks: {
     hardhat: {
-      chainId: 1337,
       accounts: [
         {
           balance: "100000000000000000000",
@@ -59,7 +58,10 @@ module.exports = {
       gas: 10000000, // tx gas limit
       blockGasLimit: 15000000,
       gasPrice: 20000000000,
-      initialBaseFeePerGas: 0
+      initialBaseFeePerGas: 0,
+      forking: {
+        url: alchemyUrl()
+      }
     },
     local: {
       url: "http://127.0.0.1:8545/",

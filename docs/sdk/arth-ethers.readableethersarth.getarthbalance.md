@@ -4,6 +4,7 @@
 
 ## ReadableEthersARTH.getARTHBalance() method
 
+Get the amount of ARTH held by an address.
 
 <b>Signature:</b>
 
@@ -15,7 +16,7 @@ getARTHBalance(address?: string, overrides?: EthersCallOverrides): Promise<Decim
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  address | string |  |
+|  address | string | Address whose balance should be retrieved. |
 |  overrides | [EthersCallOverrides](./arth-ethers.etherscalloverrides.md) |  |
 
 <b>Returns:</b>

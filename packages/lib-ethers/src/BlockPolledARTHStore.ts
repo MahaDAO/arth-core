@@ -12,7 +12,7 @@ import {
 
 import { decimalify, promiseAllValues } from "./_utils";
 import { ReadableEthersARTH } from "./ReadableEthersARTH";
-import { EthersARTHConnection, _getProvider } from "./EthersARTHConnection";
+import { EthersARTHConnection, _getProvider, _getContracts } from "./EthersARTHConnection";
 import { EthersCallOverrides, EthersProvider } from "./types";
 
 /**
@@ -86,7 +86,8 @@ export class BlockPolledARTHStore extends ARTHStore<BlockPolledARTHStoreExtraSta
     blockTag?: number
   ): Promise<[baseState: ARTHStoreBaseState, extraState: BlockPolledARTHStoreExtraState]> {
     const { userAddress, frontendTag } = this.connection;
-
+    const { governance } = _getContracts(this.connection);
+    console.log("**dev --------------- _get() Function addressess-------------", governance.address)
     const { blockTimestamp, _feesFactory, ...baseState } = await promiseAllValues({
       blockTimestamp: this._readable._getBlockTimestamp(blockTag),
       _feesFactory: this._readable._getFeesFactory({ blockTag }),
@@ -100,7 +101,8 @@ export class BlockPolledARTHStore extends ARTHStore<BlockPolledARTHStoreExtraSta
       remainingStabilityPoolMAHAReward: this._readable.getRemainingStabilityPoolMAHAReward({
         blockTag
       }),
-
+      governanceAddress: governance.address,
+      provider: this._provider,
       frontend: frontendTag
         ? this._readable.getFrontendStatus(frontendTag, { blockTag })
         : { status: "unregistered" as const },
@@ -116,7 +118,7 @@ export class BlockPolledARTHStore extends ARTHStore<BlockPolledARTHStoreExtraSta
               blockTag
             }),
             stabilityDeposit: this._readable.getStabilityDeposit(userAddress, { blockTag }),
-            ownFrontend: this._readable.getFrontendStatus(userAddress, { blockTag })
+            ownFrontend: this._readable.getFrontendStatus(userAddress, { blockTag }),
           }
         : {
             accountBalance: Decimal.ZERO,
@@ -133,14 +135,14 @@ export class BlockPolledARTHStore extends ARTHStore<BlockPolledARTHStoreExtraSta
               Decimal.ZERO,
               AddressZero
             ),
-            ownFrontend: { status: "unregistered" as const }
+            ownFrontend: { status: "unregistered" as const },
           })
     });
 
     return [
       {
         ...baseState,
-        _feesInNormalMode: _feesFactory(blockTimestamp, false)
+        _feesInNormalMode: _feesFactory(blockTimestamp, false),
       },
       {
         blockTag,

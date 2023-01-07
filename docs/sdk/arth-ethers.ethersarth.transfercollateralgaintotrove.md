@@ -4,6 +4,8 @@
 
 ## EthersARTH.transferCollateralGainToTrove() method
 
+Transfer [collateral gain](./arth-base.stabilitydeposit.collateralgain.md) from Stability Deposit to Trove.
+
 <b>Signature:</b>
 
 ```typescript
@@ -23,4 +25,10 @@ Promise&lt;[CollateralGainTransferDetails](./arth-base.collateralgaintransferdet
 ## Exceptions
 
 Throws [EthersTransactionFailedError](./arth-ethers.etherstransactionfailederror.md) in case of transaction failure. Throws [EthersTransactionCancelledError](./arth-ethers.etherstransactioncancellederror.md) if the transaction is cancelled or replaced.
+
+## Remarks
+
+The collateral gain is transfered to the Trove as additional collateral.
+
+As a side-effect, the transaction will also pay out the Stability Deposit's [MAHA reward](./arth-base.stabilitydeposit.mahareward.md)<!-- -->.
 

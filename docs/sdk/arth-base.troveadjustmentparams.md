@@ -4,7 +4,7 @@
 
 ## TroveAdjustmentParams type
 
-Parameters of an [adjustTrove()](./arth-base.transactableliquity.adjusttrove.md) transaction.
+Parameters of an [adjustTrove()](./arth-base.transactablearth.adjusttrove.md) transaction.
 
 <b>Signature:</b>
 

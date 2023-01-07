@@ -509,6 +509,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         if (ARTHFee > 0) {
             uint256 feeForEcosystemFund = ARTHFee;
 
+            // give 50% to ecosystem and frontend
             if (_frontEndTag != address(0)) {
                 feeForEcosystemFund = ARTHFee.mul(50).div(100);
                 uint256 _fee = ARTHFee.sub(feeForEcosystemFund);
@@ -603,6 +604,11 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         uint256 _ARTHAmount,
         uint256 _netDebtIncrease
     ) internal {
+        require(
+            _activePool.getARTHDebt() + _ARTHAmount <= governance.getMaxDebtCeiling(),
+            "mint > max debt"
+        );
+        require(governance.getAllowMinting(), "!minting");
         _activePool.increaseARTHDebt(_netDebtIncrease);
         _arthToken.mint(_account, _ARTHAmount);
     }

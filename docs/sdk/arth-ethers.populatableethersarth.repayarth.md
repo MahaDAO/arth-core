@@ -4,6 +4,7 @@
 
 ## PopulatableEthersARTH.repayARTH() method
 
+Adjust existing Trove by repaying some of its debt.
 
 <b>Signature:</b>
 
@@ -15,10 +16,19 @@ repayARTH(amount: Decimalish, overrides?: EthersTransactionOverrides): Promise<P
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  amount | [Decimalish](./arth-base.decimalish.md) |  |
+|  amount | [Decimalish](./arth-base.decimalish.md) | The amount of ARTH to repay. |
 |  overrides | [EthersTransactionOverrides](./arth-ethers.etherstransactionoverrides.md) |  |
 
 <b>Returns:</b>
 
 Promise&lt;[PopulatedEthersARTHTransaction](./arth-ethers.populatedethersarthtransaction.md)<!-- -->&lt;[TroveAdjustmentDetails](./arth-base.troveadjustmentdetails.md)<!-- -->&gt;&gt;
+
+## Remarks
+
+Equivalent to:
+
+```typescript
+adjustTrove({ repayARTH: amount })
+
+```
 

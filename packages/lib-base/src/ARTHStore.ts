@@ -5,6 +5,7 @@ import { StabilityDeposit } from "./StabilityDeposit";
 import { Trove, TroveWithPendingRedistribution, UserTrove } from "./Trove";
 import { Fees } from "./Fees";
 import { FrontendStatus } from "./ReadableARTH";
+import { Provider } from '@ethersproject/abstract-provider'
 
 /**
  * State variables read from the blockchain.
@@ -73,6 +74,9 @@ export interface ARTHStoreBaseState {
 
   /** @internal */
   _riskiestTroveBeforeRedistribution: TroveWithPendingRedistribution;
+
+  governanceAddress: string;
+  provider: Provider
 }
 
 /**
@@ -389,25 +393,29 @@ export abstract class ARTHStore<T = unknown> {
         equals,
         baseState._riskiestTroveBeforeRedistribution,
         baseStateUpdate._riskiestTroveBeforeRedistribution
-      )
+      ),
+      governanceAddress: baseState.governanceAddress,
+      provider: baseState.provider
     };
   }
 
-  private _derive({
+  private async _derive({
     troveBeforeRedistribution,
     totalRedistributed,
     _feesInNormalMode,
     total,
     price,
-    _riskiestTroveBeforeRedistribution
-  }: ARTHStoreBaseState): ARTHStoreDerivedState {
+    _riskiestTroveBeforeRedistribution,
+    governanceAddress,
+    provider
+  }: ARTHStoreBaseState): Promise<ARTHStoreDerivedState> {
     const fees = _feesInNormalMode._setRecoveryMode(total.collateralRatioIsBelowCritical(price));
 
     return {
       trove: troveBeforeRedistribution.applyRedistribution(totalRedistributed),
       fees,
-      borrowingRate: fees.borrowingRate(),
-      redemptionRate: fees.redemptionRate(),
+      borrowingRate: await fees.borrowingRate(governanceAddress, provider),
+      redemptionRate: await fees.redemptionRate(governanceAddress, provider),
       haveUndercollateralizedTroves: _riskiestTroveBeforeRedistribution
         .applyRedistribution(totalRedistributed)
         .collateralRatioIsBelowMinimum(price)
@@ -478,11 +486,11 @@ export abstract class ARTHStore<T = unknown> {
   }
 
   /** @internal */
-  protected _load(baseState: ARTHStoreBaseState, extraState?: T): void {
+  protected async _load(baseState: ARTHStoreBaseState, extraState?: T): Promise<void> {
     assert(!this._loaded);
 
     this._baseState = baseState;
-    this._derivedState = this._derive(baseState);
+    this._derivedState = await this._derive(baseState);
     this._extraState = extraState;
     this._loaded = true;
 
@@ -494,10 +502,10 @@ export abstract class ARTHStore<T = unknown> {
   }
 
   /** @internal */
-  protected _update(
+  protected async _update(
     baseStateUpdate?: Partial<ARTHStoreBaseState>,
     extraStateUpdate?: Partial<T>
-  ): void {
+  ): Promise<void> {
     assert(this._baseState && this._derivedState);
 
     const oldState = this.state;
@@ -507,7 +515,7 @@ export abstract class ARTHStore<T = unknown> {
     }
 
     // Always running this lets us derive state based on passage of time, like baseRate decay
-    this._derivedState = this._reduceDerived(this._derivedState, this._derive(this._baseState));
+    this._derivedState = this._reduceDerived(this._derivedState, await this._derive(this._baseState));
 
     if (extraStateUpdate) {
       assert(this._extraState);

@@ -4,6 +4,8 @@
 
 ## EthersARTH.depositCollateral() method
 
+Adjust existing Trove by depositing more collateral.
+
 <b>Signature:</b>
 
 ```typescript
@@ -14,7 +16,7 @@ depositCollateral(amount: Decimalish, overrides?: EthersTransactionOverrides): P
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  amount | [Decimalish](./arth-base.decimalish.md) |  |
+|  amount | [Decimalish](./arth-base.decimalish.md) | The amount of collateral to add to the Trove's existing collateral. |
 |  overrides | [EthersTransactionOverrides](./arth-ethers.etherstransactionoverrides.md) |  |
 
 <b>Returns:</b>
@@ -24,4 +26,13 @@ Promise&lt;[TroveAdjustmentDetails](./arth-base.troveadjustmentdetails.md)<!-- -
 ## Exceptions
 
 Throws [EthersTransactionFailedError](./arth-ethers.etherstransactionfailederror.md) in case of transaction failure. Throws [EthersTransactionCancelledError](./arth-ethers.etherstransactioncancellederror.md) if the transaction is cancelled or replaced.
+
+## Remarks
+
+Equivalent to:
+
+```typescript
+adjustTrove({ depositCollateral: amount })
+
+```
 

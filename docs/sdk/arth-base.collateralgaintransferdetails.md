@@ -4,7 +4,7 @@
 
 ## CollateralGainTransferDetails interface
 
-Details of a [transferCollateralGainToTrove()](./arth-base.transactableliquity.transfercollateralgaintotrove.md) transaction.
+Details of a [transferCollateralGainToTrove()](./arth-base.transactablearth.transfercollateralgaintotrove.md) transaction.
 
 <b>Signature:</b>
 

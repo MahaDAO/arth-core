@@ -4,6 +4,8 @@
 
 ## EthersARTH.sendMAHA() method
 
+Send MAHA tokens to an address.
+
 <b>Signature:</b>
 
 ```typescript
@@ -14,8 +16,8 @@ sendMAHA(toAddress: string, amount: Decimalish, overrides?: EthersTransactionOve
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  toAddress | string |  |
-|  amount | [Decimalish](./arth-base.decimalish.md) |  |
+|  toAddress | string | Address of receipient. |
+|  amount | [Decimalish](./arth-base.decimalish.md) | Amount of MAHA to send. |
 |  overrides | [EthersTransactionOverrides](./arth-ethers.etherstransactionoverrides.md) |  |
 
 <b>Returns:</b>

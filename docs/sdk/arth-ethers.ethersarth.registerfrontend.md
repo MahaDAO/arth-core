@@ -4,6 +4,8 @@
 
 ## EthersARTH.registerFrontend() method
 
+Register current wallet address as a ARTH frontend.
+
 <b>Signature:</b>
 
 ```typescript
@@ -14,7 +16,7 @@ registerFrontend(kickbackRate: Decimalish, overrides?: EthersTransactionOverride
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  kickbackRate | [Decimalish](./arth-base.decimalish.md) |  |
+|  kickbackRate | [Decimalish](./arth-base.decimalish.md) | The portion of MAHA rewards to pass onto users of the frontend (between 0 and 1). |
 |  overrides | [EthersTransactionOverrides](./arth-ethers.etherstransactionoverrides.md) |  |
 
 <b>Returns:</b>

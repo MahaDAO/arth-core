@@ -14,7 +14,7 @@ export declare class Fees
 
 ## Remarks
 
-Returned by the [getFees()](./arth-base.readableliquity.getfees.md) function.
+Returned by the [getFees()](./arth-base.readablearth.getfees.md) function.
 
 The constructor for this class is marked as internal. Third-party code should not call the constructor directly or create subclasses that extend the `Fees` class.
 
@@ -22,7 +22,7 @@ The constructor for this class is marked as internal. Third-party code should no
 
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
-|  [borrowingRate(when)](./arth-base.fees.borrowingrate.md) |  | Calculate the current borrowing rate. |
+|  [borrowingRate(governAddr, provider, when)](./arth-base.fees.borrowingrate.md) |  | Calculate the current borrowing rate. |
 |  [equals(that)](./arth-base.fees.equals.md) |  | Compare to another instance of <code>Fees</code>. |
-|  [redemptionRate(redeemedFractionOfSupply, when)](./arth-base.fees.redemptionrate.md) |  | Calculate the current redemption rate. |
+|  [redemptionRate(governAddr, provider, redeemedFractionOfSupply, when)](./arth-base.fees.redemptionrate.md) |  | Calculate the current redemption rate. |
 

@@ -4,6 +4,7 @@
 
 ## EthersARTH.getTroves() method
 
+Get a slice from the list of Troves.
 
 <b>Signature:</b>
 
@@ -15,10 +16,12 @@ getTroves(params: TroveListingParams, overrides?: EthersCallOverrides): Promise<
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  params | [TroveListingParams](./arth-base.trovelistingparams.md) |  |
+|  params | [TroveListingParams](./arth-base.trovelistingparams.md) | Controls how the list is sorted, and where the slice begins and ends. |
 |  overrides | [EthersCallOverrides](./arth-ethers.etherscalloverrides.md) |  |
 
 <b>Returns:</b>
 
 Promise&lt;[UserTrove](./arth-base.usertrove.md)<!-- -->\[\]&gt;
+
+Pairs of owner addresses and their Troves.
 
