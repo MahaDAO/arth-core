@@ -11,7 +11,6 @@ import "../Interfaces/IStabilityPool.sol";
 import "../Interfaces/IPriceFeed.sol";
 import "./BorrowerOperationsScript.sol";
 import "./ETHTransferScript.sol";
-import "../Dependencies/console.sol";
 import "../Interfaces/IGovernance.sol";
 
 contract BorrowerWrappersScript is BorrowerOperationsScript, ETHTransferScript {
