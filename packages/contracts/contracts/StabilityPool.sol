@@ -270,7 +270,7 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
         emit GovernanceAddressChanged(_governanceAddress);
         emit CommunityIssuanceAddressChanged(_communityIssuanceAddress);
 
-        // _renounceOwnership(); renounce ownership after migration is done
+        _renounceOwnership(); // renounce ownership after migration is done
     }
 
     // --- Getters for public variables. Required by IPool interface ---

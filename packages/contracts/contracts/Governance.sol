@@ -23,9 +23,15 @@ contract Governance is BaseMath, Ownable, IGovernance {
     string public constant NAME = "Governance";
     uint256 public constant _100pct = 1000000000000000000; // 1e18 == 100%
 
-    uint256 private BORROWING_FEE_FLOOR = (DECIMAL_PRECISION / 1000) * 0; // 0%
-    uint256 private REDEMPTION_FEE_FLOOR = (DECIMAL_PRECISION / 1000) * 1; // 0.1%
-    uint256 private MAX_BORROWING_FEE = (DECIMAL_PRECISION / 100) * 0; // 0%
+    uint256 private BORROWING_FEE_FLOOR = (DECIMAL_PRECISION / 1000) * 5; // 0.5%
+    uint256 private REDEMPTION_FEE_FLOOR = (DECIMAL_PRECISION / 1000) * 5; // 0.5%
+    uint256 private MAX_BORROWING_FEE = (DECIMAL_PRECISION / 100) * 5; // 5%
+
+    // Amount of ARTH to be locked in gas pool on opening troves
+    uint256 private immutable ARTH_GAS_COMPENSATION;
+
+    // Minimum amount of net ARTH debt a trove must have
+    uint256 private immutable MIN_NET_DEBT;
 
     address public immutable troveManagerAddress;
     address public immutable borrowerOperationAddress;
@@ -66,6 +72,9 @@ contract Governance is BaseMath, Ownable, IGovernance {
         priceFeed = IPriceFeed(_priceFeed);
         fund = address(_fund);
         if (_maxDebtCeiling > 0) maxDebtCeiling = _maxDebtCeiling;
+
+        ARTH_GAS_COMPENSATION = 200e18;
+        MIN_NET_DEBT = 1800e18;
 
         transferOwnership(_timelock);
     }
@@ -146,6 +155,14 @@ contract Governance is BaseMath, Ownable, IGovernance {
 
     function getMaxDebtCeiling() external view override returns (uint256) {
         return maxDebtCeiling;
+    }
+
+    function getGasCompensation() external view override returns (uint256) {
+        return ARTH_GAS_COMPENSATION;
+    }
+
+    function getMinNetDebt() external view override returns (uint256) {
+        return MIN_NET_DEBT;
     }
 
     function getFund() external view override returns (address) {

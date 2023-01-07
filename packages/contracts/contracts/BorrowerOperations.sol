@@ -85,7 +85,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         address _arthTokenAddress
     ) external override onlyOwner {
         // This makes impossible to open a trove with zero withdrawn ARTH
-        assert(MIN_NET_DEBT > 0);
+        assert(MIN_NET_DEBT() > 0);
 
         checkContract(_troveManagerAddress);
         checkContract(_activePoolAddress);
@@ -117,7 +117,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         emit SortedTrovesAddressChanged(_sortedTrovesAddress);
         emit ARTHTokenAddressChanged(_arthTokenAddress);
 
-        // _renounceOwnership(); renounce ownership after migration is done (openTroveFor)
+        _renounceOwnership(); // renounce ownership after migration is done (openTroveFor)
     }
 
     // --- Borrower Trove Operations ---
@@ -250,8 +250,8 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
             contractsCache.activePool,
             contractsCache.arthToken,
             gasPoolAddress,
-            ARTH_GAS_COMPENSATION,
-            ARTH_GAS_COMPENSATION
+            ARTH_GAS_COMPENSATION(),
+            ARTH_GAS_COMPENSATION()
         );
 
         emit TroveUpdated(
@@ -465,7 +465,11 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         uint256 coll = troveManagerCached.getTroveColl(msg.sender);
         uint256 debt = troveManagerCached.getTroveDebt(msg.sender);
 
-        _requireSufficientARTHBalance(arthTokenCached, msg.sender, debt.sub(ARTH_GAS_COMPENSATION));
+        _requireSufficientARTHBalance(
+            arthTokenCached,
+            msg.sender,
+            debt.sub(ARTH_GAS_COMPENSATION())
+        );
 
         uint256 newTCR = _getNewTCRFromTroveChange(coll, false, debt, false, price);
         _requireNewTCRisAboveCCR(newTCR);
@@ -476,8 +480,8 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         emit TroveUpdated(msg.sender, 0, 0, 0, BorrowerOperation.closeTrove);
 
         // Burn the repaid ARTH from the user's balance and the gas compensation from the Gas Pool
-        _repayARTH(activePoolCached, arthTokenCached, msg.sender, debt.sub(ARTH_GAS_COMPENSATION));
-        _repayARTH(activePoolCached, arthTokenCached, gasPoolAddress, ARTH_GAS_COMPENSATION);
+        _repayARTH(activePoolCached, arthTokenCached, msg.sender, debt.sub(ARTH_GAS_COMPENSATION()));
+        _repayARTH(activePoolCached, arthTokenCached, gasPoolAddress, ARTH_GAS_COMPENSATION());
 
         // Send the collateral back to the user
         activePoolCached.sendETH(msg.sender, coll);
@@ -752,16 +756,16 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         );
     }
 
-    function _requireAtLeastMinNetDebt(uint256 _netDebt) internal pure {
+    function _requireAtLeastMinNetDebt(uint256 _netDebt) internal view {
         require(
-            _netDebt >= MIN_NET_DEBT,
+            _netDebt >= MIN_NET_DEBT(),
             "BorrowerOps: Trove's net debt must be greater than minimum"
         );
     }
 
-    function _requireValidARTHRepayment(uint256 _currentDebt, uint256 _debtRepayment) internal pure {
+    function _requireValidARTHRepayment(uint256 _currentDebt, uint256 _debtRepayment) internal view {
         require(
-            _debtRepayment <= _currentDebt.sub(ARTH_GAS_COMPENSATION),
+            _debtRepayment <= _currentDebt.sub(ARTH_GAS_COMPENSATION()),
             "BorrowerOps: Amount repaid must not be larger than the Trove's debt"
         );
     }
@@ -880,7 +884,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         return newTCR;
     }
 
-    function getCompositeDebt(uint256 _debt) external pure override returns (uint256) {
+    function getCompositeDebt(uint256 _debt) external view override returns (uint256) {
         return _getCompositeDebt(_debt);
     }
 }

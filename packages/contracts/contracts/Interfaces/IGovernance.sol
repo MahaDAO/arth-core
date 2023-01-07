@@ -43,4 +43,8 @@ interface IGovernance {
     function getFund() external view returns (address);
 
     function chargeStabilityFee(address who, uint256 LUSDAmount) external;
+
+    function getGasCompensation() external view returns (uint256);
+
+    function getMinNetDebt() external view returns (uint256);
 }

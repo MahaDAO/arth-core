@@ -25,12 +25,12 @@ contract LiquityBase is BaseMath, ILiquityBase {
     // Critical system collateral ratio. If the system's total collateral ratio (TCR) falls below the CCR, Recovery Mode is triggered.
     uint256 public constant CCR = 1500000000000000000; // 150%
 
-    // Amount of ARTH to be locked in gas pool on opening troves
-    uint256 public constant ARTH_GAS_COMPENSATION = 50e18;
+    // // Amount of ARTH to be locked in gas pool on opening troves
+    // uint256 public constant ARTH_GAS_COMPENSATION = 200e18;
 
-    // Minimum amount of net ARTH debt a trove must have
-    uint256 public constant MIN_NET_DEBT = 250e18;
-    // uint constant public MIN_NET_DEBT = 0;
+    // // Minimum amount of net ARTH debt a trove must have
+    // uint256 public constant MIN_NET_DEBT = 1800e18;
+    // // uint constant public MIN_NET_DEBT = 0;
 
     uint256 MAX_INT = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff;
 
@@ -63,12 +63,12 @@ contract LiquityBase is BaseMath, ILiquityBase {
     }
 
     // Returns the composite debt (drawn debt + gas compensation) of a trove, for the purpose of ICR calculation
-    function _getCompositeDebt(uint256 _debt) internal pure returns (uint256) {
-        return _debt.add(ARTH_GAS_COMPENSATION);
+    function _getCompositeDebt(uint256 _debt) internal view returns (uint256) {
+        return _debt.add(ARTH_GAS_COMPENSATION());
     }
 
-    function _getNetDebt(uint256 _debt) internal pure returns (uint256) {
-        return _debt.sub(ARTH_GAS_COMPENSATION);
+    function _getNetDebt(uint256 _debt) internal view returns (uint256) {
+        return _debt.sub(ARTH_GAS_COMPENSATION());
     }
 
     // Return the amount of ETH to be drawn from a trove's collateral and sent as gas compensation.
@@ -86,6 +86,14 @@ contract LiquityBase is BaseMath, ILiquityBase {
         uint256 activeDebt = activePool.getARTHDebt();
         uint256 closedDebt = defaultPool.getARTHDebt();
         return activeDebt.add(closedDebt);
+    }
+
+    function ARTH_GAS_COMPENSATION() public view returns (uint256) {
+        return governance.getGasCompensation();
+    }
+
+    function MIN_NET_DEBT() public view returns (uint256) {
+        return governance.getMinNetDebt();
     }
 
     function _getTCR(uint256 _price) internal view returns (uint256 TCR) {
