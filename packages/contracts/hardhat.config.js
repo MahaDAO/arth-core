@@ -53,7 +53,8 @@ module.exports = {
       gas: 10000000, // tx gas limit
       blockGasLimit: 15000000,
       gasPrice: 1000000000,
-      initialBaseFeePerGas: 0
+      initialBaseFeePerGas: 0,
+      accounts: accountsList
       // forking: {
       //   url: alchemyUrl()
       // }

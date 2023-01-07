@@ -174,6 +174,8 @@ class TestDeploymentHelper {
       deploymentState
     );
 
+    console.log("fuck it");
+
     const mahaTokenParams = ["MahaDAO", "MAHA"];
     const mahaToken = await this.loadOrDeploy(
       mockERC20Factory,
@@ -436,6 +438,13 @@ class TestDeploymentHelper {
         { gasPrice }
       )
     );
+
+    await this.sendAndWaitForTransaction(
+      contracts.communityIssuance.notifyRewardAmount(BigNumber.from(10).pow(18).mul(1000), {
+        gasPrice
+      })
+    );
+    console.log("fuck");
   }
 
   // --- Verify on Ethrescan ---

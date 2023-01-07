@@ -30,6 +30,7 @@ const BorrowerWrappersScript = artifacts.require("BorrowerWrappersScript");
 const TroveManagerScript = artifacts.require("TroveManagerScript");
 const StabilityPoolScript = artifacts.require("StabilityPoolScript");
 const TokenScript = artifacts.require("TokenScript");
+const { BigNumber } = require("ethers");
 const {
   buildUserProxies,
   BorrowerOperationsProxy,
@@ -175,6 +176,9 @@ class DeploymentHelper {
       86400 * 1000 * 30
     );
     CommunityIssuance.setAsDeployed(communityIssuance);
+
+    await mahaToken.mint(communityIssuance.address, BigNumber.from(10).pow(18).mul(1000));
+    await communityIssuance.notifyRewardAmount(BigNumber.from(10).pow(18).mul(1000));
 
     const MAHAContracts = {
       communityIssuance,
