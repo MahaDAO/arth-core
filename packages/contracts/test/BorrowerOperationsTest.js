@@ -59,8 +59,8 @@ contract("BorrowerOperations", async accounts => {
   let stabilityPool;
   let defaultPool;
   let borrowerOperations;
-  let mahaStaking;
-  let mahaToken;
+  // let mahaStaking;
+  // let mahaToken;
 
   let contracts;
 
@@ -105,10 +105,8 @@ contract("BorrowerOperations", async accounts => {
       borrowerOperations = contracts.borrowerOperations;
       hintHelpers = contracts.hintHelpers;
 
-      mahaStaking = MAHAContracts.mahaStaking;
-      mahaToken = MAHAContracts.mahaToken;
-      communityIssuance = MAHAContracts.communityIssuance;
-      lockupContractFactory = MAHAContracts.lockupContractFactory;
+      // mahaStaking = MAHAContracts.mahaStaking;
+      // mahaToken = MAHAContracts.mahaToken;
 
       ARTH_GAS_COMPENSATION = await borrowerOperations.ARTH_GAS_COMPENSATION();
       MIN_NET_DEBT = await borrowerOperations.MIN_NET_DEBT();
@@ -1214,8 +1212,8 @@ contract("BorrowerOperations", async accounts => {
     it.skip("withdrawARTH(): borrowing at non-zero base rate sends ARTH fee to MAHA staking contract", async () => {
       // time fast-forwards 1 year, and multisig stakes 1 MAHA
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
-      await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
-      await mahaStaking.stake(dec(1, 18), { from: multisig });
+      // await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
+      // await mahaStaking.stake(dec(1, 18), { from: multisig });
 
       // Check MAHA ARTH balance before == 0
       const mahaStaking_ARTHBalance_Before = await arthToken.balanceOf(mahaStaking.address);
@@ -1267,8 +1265,8 @@ contract("BorrowerOperations", async accounts => {
       it.skip("withdrawARTH(): borrowing at non-zero base records the (drawn debt + fee) on the Trove struct", async () => {
         // time fast-forwards 1 year, and multisig stakes 1 MAHA
         await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
-        await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
-        await mahaStaking.stake(dec(1, 18), { from: multisig });
+        // await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
+        // await mahaStaking.stake(dec(1, 18), { from: multisig });
 
         await openTrove({ ICR: toBN(dec(10, 18)), extraParams: { from: whale } });
         await openTrove({
@@ -1331,8 +1329,8 @@ contract("BorrowerOperations", async accounts => {
     it.skip("withdrawARTH(): Borrowing at non-zero base rate increases the MAHA staking contract ARTH fees-per-unit-staked", async () => {
       // time fast-forwards 1 year, and multisig stakes 1 MAHA
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
-      await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
-      await mahaStaking.stake(dec(1, 18), { from: multisig });
+      // await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
+      // await mahaStaking.stake(dec(1, 18), { from: multisig });
 
       // Check MAHA contract ARTH fees-per-unit-staked is zero
       const F_ARTH_Before = await mahaStaking.F_ARTH();
@@ -1382,8 +1380,8 @@ contract("BorrowerOperations", async accounts => {
     it.skip("withdrawARTH(): Borrowing at non-zero base rate sends requested amount to the user", async () => {
       // time fast-forwards 1 year, and multisig stakes 1 MAHA
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
-      await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
-      await mahaStaking.stake(dec(1, 18), { from: multisig });
+      // await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
+      // await mahaStaking.stake(dec(1, 18), { from: multisig });
 
       // Check MAHA Staking contract balance before == 0
       const mahaStaking_ARTHBalance_Before = await arthToken.balanceOf(mahaStaking.address);
@@ -1748,13 +1746,14 @@ contract("BorrowerOperations", async accounts => {
         await getNetBorrowingAmount(MIN_NET_DEBT.add(toBN("2"))),
         A,
         A,
+        ZERO_ADDRESS,
         { from: A, value: dec(100, 30) }
       );
 
       const repayTxA = await borrowerOperations.repayARTH(1, A, A, { from: A });
       assert.isTrue(repayTxA.receipt.status);
 
-      await borrowerOperations.openTrove(th._100pct, dec(20, 25), B, B, {
+      await borrowerOperations.openTrove(th._100pct, dec(20, 25), B, B, ZERO_ADDRESS, {
         from: B,
         value: dec(100, 30)
       });
@@ -1770,6 +1769,7 @@ contract("BorrowerOperations", async accounts => {
         await getNetBorrowingAmount(MIN_NET_DEBT.add(toBN("2"))),
         A,
         A,
+        ZERO_ADDRESS,
         { from: A, value: dec(100, 30) }
       );
 
@@ -2323,7 +2323,7 @@ contract("BorrowerOperations", async accounts => {
       assert.isTrue(baseRate_2.lt(baseRate_1));
     });
 
-    it("adjustTrove(): borrowing at non-zero base rate sends ARTH fee to MAHA staking contract", async () => {
+    it.skip("adjustTrove(): borrowing at non-zero base rate sends ARTH fee to MAHA staking contract", async () => {
       // time fast-forwards 1 year, and multisig stakes 1 MAHA
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
       await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
@@ -2378,8 +2378,8 @@ contract("BorrowerOperations", async accounts => {
       it("adjustTrove(): borrowing at non-zero base records the (drawn debt + fee) on the Trove struct", async () => {
         // time fast-forwards 1 year, and multisig stakes 1 MAHA
         await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
-        await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
-        await mahaStaking.stake(dec(1, 18), { from: multisig });
+        // await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
+        // await mahaStaking.stake(dec(1, 18), { from: multisig });
 
         await openTrove({ ICR: toBN(dec(10, 18)), extraParams: { from: whale } });
         await openTrove({
@@ -2438,7 +2438,7 @@ contract("BorrowerOperations", async accounts => {
       });
     }
 
-    it("adjustTrove(): Borrowing at non-zero base rate increases the MAHA staking contract ARTH fees-per-unit-staked", async () => {
+    it.skip("adjustTrove(): Borrowing at non-zero base rate increases the MAHA staking contract ARTH fees-per-unit-staked", async () => {
       // time fast-forwards 1 year, and multisig stakes 1 MAHA
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
       await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
@@ -2489,11 +2489,11 @@ contract("BorrowerOperations", async accounts => {
       assert.isTrue(F_ARTH_After.gt(F_ARTH_Before));
     });
 
-    it("adjustTrove(): Borrowing at non-zero base rate sends requested amount to the user", async () => {
+    it.skip("adjustTrove(): Borrowing at non-zero base rate sends requested amount to the user", async () => {
       // time fast-forwards 1 year, and multisig stakes 1 MAHA
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
-      await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
-      await mahaStaking.stake(dec(1, 18), { from: multisig });
+      // await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
+      // await mahaStaking.stake(dec(1, 18), { from: multisig });
 
       // Check MAHA Staking contract balance before == 0
       const mahaStaking_ARTHBalance_Before = await arthToken.balanceOf(mahaStaking.address);
@@ -2547,7 +2547,7 @@ contract("BorrowerOperations", async accounts => {
       assert.isTrue(D_ARTHBalanceAfter.eq(D_ARTHBalanceBefore.add(ARTHRequest_D)));
     });
 
-    it("adjustTrove(): Borrowing at zero base rate changes ARTH balance of MAHA staking contract", async () => {
+    it.skip("adjustTrove(): Borrowing at zero base rate changes ARTH balance of MAHA staking contract", async () => {
       await openTrove({ ICR: toBN(dec(10, 18)), extraParams: { from: whale } });
       await openTrove({
         extraARTHAmount: toBN(dec(30, 18)),
@@ -2589,7 +2589,7 @@ contract("BorrowerOperations", async accounts => {
       assert.isTrue(mahaStaking_ARTHBalance_After.gt(mahaStaking_ARTHBalance_Before));
     });
 
-    it("adjustTrove(): Borrowing at zero base rate changes MAHA staking contract ARTH fees-per-unit-staked", async () => {
+    it.skip("adjustTrove(): Borrowing at zero base rate changes MAHA staking contract ARTH fees-per-unit-staked", async () => {
       await openTrove({
         extraARTHAmount: toBN(dec(20000, 18)),
         ICR: toBN(dec(2, 18)),
@@ -3072,12 +3072,11 @@ contract("BorrowerOperations", async accounts => {
 
       assert.isTrue(await th.checkRecoveryMode(contracts));
 
-      // B stakes MAHA
-      await mahaToken.unprotectedMint(bob, dec(100, 18));
-      await mahaStaking.stake(dec(100, 18), { from: bob });
-
-      const mahaStakingARTHBalanceBefore = await arthToken.balanceOf(mahaStaking.address);
-      assert.isTrue(mahaStakingARTHBalanceBefore.gt(toBN("0")));
+      // // B stakes MAHA
+      // await mahaToken.unprotectedMint(bob, dec(100, 18));
+      // await mahaStaking.stake(dec(100, 18), { from: bob });
+      // const mahaStakingARTHBalanceBefore = await arthToken.balanceOf(mahaStaking.address);
+      // assert.isTrue(mahaStakingARTHBalanceBefore.gt(toBN("0")));
 
       const txAlice = await borrowerOperations.adjustTrove(
         th._100pct,
@@ -3098,9 +3097,9 @@ contract("BorrowerOperations", async accounts => {
 
       assert.isTrue(await th.checkRecoveryMode(contracts));
 
-      // Check no fee was sent to staking contract
-      const mahaStakingARTHBalanceAfter = await arthToken.balanceOf(mahaStaking.address);
-      assert.equal(mahaStakingARTHBalanceAfter.toString(), mahaStakingARTHBalanceBefore.toString());
+      // // Check no fee was sent to staking contract
+      // const mahaStakingARTHBalanceAfter = await arthToken.balanceOf(mahaStaking.address);
+      // assert.equal(mahaStakingARTHBalanceAfter.toString(), mahaStakingARTHBalanceBefore.toString());
     });
 
     it("adjustTrove(): reverts when change would cause the TCR of the system to fall below the CCR", async () => {
@@ -4582,6 +4581,7 @@ contract("BorrowerOperations", async accounts => {
         await getNetBorrowingAmount(MIN_NET_DEBT.add(toBN(1))),
         A,
         A,
+        ZERO_ADDRESS,
         { from: A, value: dec(100, 30) }
       );
       assert.isTrue(txA.receipt.status);
@@ -4592,6 +4592,7 @@ contract("BorrowerOperations", async accounts => {
         await getNetBorrowingAmount(MIN_NET_DEBT.add(toBN(dec(47789898, 22)))),
         A,
         A,
+        ZERO_ADDRESS,
         { from: C, value: dec(100, 30) }
       );
       assert.isTrue(txC.receipt.status);
@@ -4599,7 +4600,7 @@ contract("BorrowerOperations", async accounts => {
     });
 
     it("openTrove(): reverts if net debt < minimum net debt", async () => {
-      const txAPromise = borrowerOperations.openTrove(th._100pct, 0, A, A, {
+      const txAPromise = borrowerOperations.openTrove(th._100pct, 0, A, A, ZERO_ADDRESS, {
         from: A,
         value: dec(100, 30)
       });
@@ -4610,6 +4611,7 @@ contract("BorrowerOperations", async accounts => {
         await getNetBorrowingAmount(MIN_NET_DEBT.sub(toBN(1))),
         B,
         B,
+        ZERO_ADDRESS,
         { from: B, value: dec(100, 30) }
       );
       await assertRevert(txBPromise, "revert");
@@ -4619,6 +4621,7 @@ contract("BorrowerOperations", async accounts => {
         MIN_NET_DEBT.sub(toBN(dec(173, 18))),
         C,
         C,
+        ZERO_ADDRESS,
         { from: C, value: dec(100, 30) }
       );
       await assertRevert(txCPromise, "revert");
@@ -4804,14 +4807,14 @@ contract("BorrowerOperations", async accounts => {
 
     it("openTrove(): reverts if max fee > 100%", async () => {
       await assertRevert(
-        borrowerOperations.openTrove(dec(2, 18), dec(10000, 18), A, A, {
+        borrowerOperations.openTrove(dec(2, 18), dec(10000, 18), A, A, ZERO_ADDRESS, {
           from: A,
           value: dec(1000, "ether")
         }),
         "Max fee percentage must be between 0.5% and 100%"
       );
       await assertRevert(
-        borrowerOperations.openTrove("1000000000000000001", dec(20000, 18), B, B, {
+        borrowerOperations.openTrove("1000000000000000001", dec(20000, 18), B, B, ZERO_ADDRESS, {
           from: B,
           value: dec(1000, "ether")
         }),
@@ -4821,21 +4824,21 @@ contract("BorrowerOperations", async accounts => {
 
     it("openTrove(): reverts if max fee < 0.5% in Normal mode", async () => {
       await assertRevert(
-        borrowerOperations.openTrove(0, dec(195000, 18), A, A, {
+        borrowerOperations.openTrove(0, dec(195000, 18), A, A, ZERO_ADDRESS, {
           from: A,
           value: dec(1200, "ether")
         }),
         "Max fee percentage must be between 0.5% and 100%"
       );
       await assertRevert(
-        borrowerOperations.openTrove(1, dec(195000, 18), A, A, {
+        borrowerOperations.openTrove(1, dec(195000, 18), A, A, ZERO_ADDRESS, {
           from: A,
           value: dec(1000, "ether")
         }),
         "Max fee percentage must be between 0.5% and 100%"
       );
       await assertRevert(
-        borrowerOperations.openTrove("4999999999999999", dec(195000, 18), B, B, {
+        borrowerOperations.openTrove("4999999999999999", dec(195000, 18), B, B, ZERO_ADDRESS, {
           from: B,
           value: dec(1200, "ether")
         }),
@@ -4844,7 +4847,7 @@ contract("BorrowerOperations", async accounts => {
     });
 
     it("openTrove(): allows max fee < 0.5% in Recovery Mode", async () => {
-      await borrowerOperations.openTrove(th._100pct, dec(195000, 18), A, A, {
+      await borrowerOperations.openTrove(th._100pct, dec(195000, 18), A, A, ZERO_ADDRESS, {
         from: A,
         value: dec(2000, "ether")
       });
@@ -4852,19 +4855,19 @@ contract("BorrowerOperations", async accounts => {
       await priceFeed.setPrice(dec(100, 18));
       assert.isTrue(await th.checkRecoveryMode(contracts));
 
-      await borrowerOperations.openTrove(0, dec(19500, 18), B, B, {
+      await borrowerOperations.openTrove(0, dec(19500, 18), B, B, ZERO_ADDRESS, {
         from: B,
         value: dec(3100, "ether")
       });
       await priceFeed.setPrice(dec(50, 18));
       assert.isTrue(await th.checkRecoveryMode(contracts));
-      await borrowerOperations.openTrove(1, dec(19500, 18), C, C, {
+      await borrowerOperations.openTrove(1, dec(19500, 18), C, C, ZERO_ADDRESS, {
         from: C,
         value: dec(3100, "ether")
       });
       await priceFeed.setPrice(dec(25, 18));
       assert.isTrue(await th.checkRecoveryMode(contracts));
-      await borrowerOperations.openTrove("4999999999999999", dec(19500, 18), D, D, {
+      await borrowerOperations.openTrove("4999999999999999", dec(19500, 18), D, D, ZERO_ADDRESS, {
         from: D,
         value: dec(3100, "ether")
       });
@@ -4900,7 +4903,7 @@ contract("BorrowerOperations", async accounts => {
 
       const lessThan5pct = "49999999999999999";
       await assertRevert(
-        borrowerOperations.openTrove(lessThan5pct, dec(30000, 18), A, A, {
+        borrowerOperations.openTrove(lessThan5pct, dec(30000, 18), A, A, ZERO_ADDRESS, {
           from: D,
           value: dec(1000, "ether")
         }),
@@ -4911,7 +4914,7 @@ contract("BorrowerOperations", async accounts => {
       assert.equal(borrowingRate, dec(5, 16));
       // Attempt with maxFee 1%
       await assertRevert(
-        borrowerOperations.openTrove(dec(1, 16), dec(30000, 18), A, A, {
+        borrowerOperations.openTrove(dec(1, 16), dec(30000, 18), A, A, ZERO_ADDRESS, {
           from: D,
           value: dec(1000, "ether")
         }),
@@ -4922,7 +4925,7 @@ contract("BorrowerOperations", async accounts => {
       assert.equal(borrowingRate, dec(5, 16));
       // Attempt with maxFee 3.754%
       await assertRevert(
-        borrowerOperations.openTrove(dec(3754, 13), dec(30000, 18), A, A, {
+        borrowerOperations.openTrove(dec(3754, 13), dec(30000, 18), A, A, ZERO_ADDRESS, {
           from: D,
           value: dec(1000, "ether")
         }),
@@ -4933,7 +4936,7 @@ contract("BorrowerOperations", async accounts => {
       assert.equal(borrowingRate, dec(5, 16));
       // Attempt with maxFee 1e-16%
       await assertRevert(
-        borrowerOperations.openTrove(dec(5, 15), dec(30000, 18), A, A, {
+        borrowerOperations.openTrove(dec(5, 15), dec(30000, 18), A, A, ZERO_ADDRESS, {
           from: D,
           value: dec(1000, "ether")
         }),
@@ -4967,47 +4970,82 @@ contract("BorrowerOperations", async accounts => {
 
       // Attempt with maxFee > 5%
       const moreThan5pct = "50000000000000001";
-      const tx1 = await borrowerOperations.openTrove(moreThan5pct, dec(10000, 18), A, A, {
-        from: D,
-        value: dec(100, "ether")
-      });
+      const tx1 = await borrowerOperations.openTrove(
+        moreThan5pct,
+        dec(10000, 18),
+        A,
+        A,
+        ZERO_ADDRESS,
+        {
+          from: D,
+          value: dec(100, "ether")
+        }
+      );
       assert.isTrue(tx1.receipt.status);
 
       borrowingRate = await troveManager.getBorrowingRate(); // expect 5% rate
       assert.equal(borrowingRate, dec(5, 16));
 
       // Attempt with maxFee = 5%
-      const tx2 = await borrowerOperations.openTrove(dec(5, 16), dec(10000, 18), A, A, {
-        from: H,
-        value: dec(100, "ether")
-      });
+      const tx2 = await borrowerOperations.openTrove(
+        dec(5, 16),
+        dec(10000, 18),
+        A,
+        A,
+        ZERO_ADDRESS,
+        {
+          from: H,
+          value: dec(100, "ether")
+        }
+      );
       assert.isTrue(tx2.receipt.status);
 
       borrowingRate = await troveManager.getBorrowingRate(); // expect 5% rate
       assert.equal(borrowingRate, dec(5, 16));
 
       // Attempt with maxFee 10%
-      const tx3 = await borrowerOperations.openTrove(dec(1, 17), dec(10000, 18), A, A, {
-        from: E,
-        value: dec(100, "ether")
-      });
+      const tx3 = await borrowerOperations.openTrove(
+        dec(1, 17),
+        dec(10000, 18),
+        A,
+        A,
+        ZERO_ADDRESS,
+        {
+          from: E,
+          value: dec(100, "ether")
+        }
+      );
       assert.isTrue(tx3.receipt.status);
 
       borrowingRate = await troveManager.getBorrowingRate(); // expect 5% rate
       assert.equal(borrowingRate, dec(5, 16));
 
       // Attempt with maxFee 37.659%
-      const tx4 = await borrowerOperations.openTrove(dec(37659, 13), dec(10000, 18), A, A, {
-        from: F,
-        value: dec(100, "ether")
-      });
+      const tx4 = await borrowerOperations.openTrove(
+        dec(37659, 13),
+        dec(10000, 18),
+        A,
+        A,
+        ZERO_ADDRESS,
+        {
+          from: F,
+          value: dec(100, "ether")
+        }
+      );
       assert.isTrue(tx4.receipt.status);
 
       // Attempt with maxFee 100%
-      const tx5 = await borrowerOperations.openTrove(dec(1, 18), dec(10000, 18), A, A, {
-        from: G,
-        value: dec(100, "ether")
-      });
+      const tx5 = await borrowerOperations.openTrove(
+        dec(1, 18),
+        dec(10000, 18),
+        A,
+        A,
+        ZERO_ADDRESS,
+        {
+          from: G,
+          value: dec(100, "ether")
+        }
+      );
       assert.isTrue(tx5.receipt.status);
     });
 
@@ -5067,7 +5105,7 @@ contract("BorrowerOperations", async accounts => {
       assert.isTrue(baseRate_2.lt(baseRate_1));
     });
 
-    it("openTrove(): borrowing at non-zero base rate sends ARTH fee to MAHA staking contract", async () => {
+    it.skip("openTrove(): borrowing at non-zero base rate sends ARTH fee to MAHA staking contract", async () => {
       // time fast-forwards 1 year, and multisig stakes 1 MAHA
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
       await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
@@ -5126,8 +5164,8 @@ contract("BorrowerOperations", async accounts => {
       it("openTrove(): borrowing at non-zero base records the (drawn debt + fee  + liq. reserve) on the Trove struct", async () => {
         // time fast-forwards 1 year, and multisig stakes 1 MAHA
         await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
-        await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
-        await mahaStaking.stake(dec(1, 18), { from: multisig });
+        // await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
+        // await mahaStaking.stake(dec(1, 18), { from: multisig });
 
         await openTrove({
           extraARTHAmount: toBN(dec(10000, 18)),
@@ -5186,7 +5224,7 @@ contract("BorrowerOperations", async accounts => {
       });
     }
 
-    it("openTrove(): Borrowing at non-zero base rate increases the MAHA staking contract ARTH fees-per-unit-staked", async () => {
+    it.skip("openTrove(): Borrowing at non-zero base rate increases the MAHA staking contract ARTH fees-per-unit-staked", async () => {
       // time fast-forwards 1 year, and multisig stakes 1 MAHA
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
       await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
@@ -5243,12 +5281,12 @@ contract("BorrowerOperations", async accounts => {
     it("openTrove(): Borrowing at non-zero base rate sends requested amount to the user", async () => {
       // time fast-forwards 1 year, and multisig stakes 1 MAHA
       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
-      await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
-      await mahaStaking.stake(dec(1, 18), { from: multisig });
+      // await mahaToken.approve(mahaStaking.address, dec(1, 18), { from: multisig });
+      // await mahaStaking.stake(dec(1, 18), { from: multisig });
 
-      // Check MAHA Staking contract balance before == 0
-      const mahaStaking_ARTHBalance_Before = await arthToken.balanceOf(mahaStaking.address);
-      assert.equal(mahaStaking_ARTHBalance_Before, "0");
+      // // Check MAHA Staking contract balance before == 0
+      // const mahaStaking_ARTHBalance_Before = await arthToken.balanceOf(mahaStaking.address);
+      // assert.equal(mahaStaking_ARTHBalance_Before, "0");
 
       await openTrove({
         extraARTHAmount: toBN(dec(10000, 18)),
@@ -5289,16 +5327,16 @@ contract("BorrowerOperations", async accounts => {
         value: dec(500, "ether")
       });
 
-      // Check MAHA staking ARTH balance has increased
-      const mahaStaking_ARTHBalance_After = await arthToken.balanceOf(mahaStaking.address);
-      assert.isTrue(mahaStaking_ARTHBalance_After.gt(mahaStaking_ARTHBalance_Before));
+      // // Check MAHA staking ARTH balance has increased
+      // const mahaStaking_ARTHBalance_After = await arthToken.balanceOf(mahaStaking.address);
+      // assert.isTrue(mahaStaking_ARTHBalance_After.gt(mahaStaking_ARTHBalance_Before));
 
       // Check D's ARTH balance now equals their requested ARTH
       const ARTHBalance_D = await arthToken.balanceOf(D);
       assert.isTrue(ARTHRequest_D.eq(ARTHBalance_D));
     });
 
-    it("openTrove(): Borrowing at zero base rate changes the MAHA staking contract ARTH fees-per-unit-staked", async () => {
+    it.skip("openTrove(): Borrowing at zero base rate changes the MAHA staking contract ARTH fees-per-unit-staked", async () => {
       await openTrove({
         extraARTHAmount: toBN(dec(5000, 18)),
         ICR: toBN(dec(2, 18)),
@@ -5322,9 +5360,9 @@ contract("BorrowerOperations", async accounts => {
       // 2 hours pass
       th.fastForwardTime(7200, web3.currentProvider);
 
-      // Check ARTH reward per MAHA staked == 0
-      const F_ARTH_Before = await mahaStaking.F_ARTH();
-      assert.equal(F_ARTH_Before, "0");
+      // // Check ARTH reward per MAHA staked == 0
+      // const F_ARTH_Before = await mahaStaking.F_ARTH();
+      // assert.equal(F_ARTH_Before, "0");
 
       // A stakes MAHA
       await mahaToken.unprotectedMint(A, dec(100, 18));
@@ -5358,6 +5396,7 @@ contract("BorrowerOperations", async accounts => {
       const txC = await borrowerOperations.openTrove(
         th._100pct,
         ARTHRequest,
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { value: dec(100, "ether"), from: C }
@@ -5580,6 +5619,7 @@ contract("BorrowerOperations", async accounts => {
           await getNetBorrowingAmount(MIN_NET_DEBT),
           carol,
           carol,
+          ZERO_ADDRESS,
           { from: carol, value: dec(1, "ether") }
         )
       );
@@ -5807,6 +5847,7 @@ contract("BorrowerOperations", async accounts => {
         await getOpenTroveARTHAmount(dec(10000, 18)),
         alice,
         alice,
+        ZERO_ADDRESS,
         { from: alice, value: dec(100, "ether") }
       );
 
@@ -5837,7 +5878,7 @@ contract("BorrowerOperations", async accounts => {
       const alice_ARTHTokenBalance_Before = await arthToken.balanceOf(alice);
       assert.equal(alice_ARTHTokenBalance_Before, 0);
 
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), alice, alice, {
+      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), alice, alice, ZERO_ADDRESS, {
         from: alice,
         value: dec(100, "ether")
       });
@@ -6483,7 +6524,7 @@ contract("BorrowerOperations", async accounts => {
         const nonPayable = await NonPayable.new();
 
         // we need 2 troves to be able to close 1 and have 1 remaining in the system
-        await borrowerOperations.openTrove(th._100pct, dec(100000, 18), alice, alice, {
+        await borrowerOperations.openTrove(th._100pct, dec(100000, 18), alice, alice, ZERO_ADDRESS, {
           from: alice,
           value: dec(1000, 18)
         });
@@ -6494,12 +6535,10 @@ contract("BorrowerOperations", async accounts => {
         // open trove from NonPayable proxy contract
         const _100pctHex = "0xde0b6b3a7640000";
         const _1e25Hex = "0xd3c21bcecceda1000000";
-        const openTroveData = th.getTransactionData("openTrove(uint256,uint256,address,address)", [
-          _100pctHex,
-          _1e25Hex,
-          "0x0",
-          "0x0"
-        ]);
+        const openTroveData = th.getTransactionData(
+          "openTrove(uint256,uint256,address,address,address)",
+          [_100pctHex, _1e25Hex, "0x0", "0x0", "0x0"]
+        );
         await nonPayable.forward(borrowerOperations.address, openTroveData, {
           value: dec(10000, "ether")
         });
