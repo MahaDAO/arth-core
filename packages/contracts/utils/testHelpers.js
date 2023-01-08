@@ -294,14 +294,12 @@ class TestHelper {
   // Given a composite debt, returns the actual debt  - i.e. subtracts the virtual debt.
   // Virtual debt = 50 ARTH.
   static async getActualDebtFromComposite(compositeDebt, contracts) {
-    const issuedDebt = await contracts.troveManager.getActualDebtFromComposite(compositeDebt);
-    return issuedDebt;
+    return await contracts.troveManager.getActualDebtFromComposite(compositeDebt);
   }
 
   // Adds the gas compensation (50 ARTH)
   static async getCompositeDebt(contracts, debt) {
-    const compositeDebt = contracts.borrowerOperations.getCompositeDebt(debt);
-    return compositeDebt;
+    return contracts.borrowerOperations.getCompositeDebt(debt);
   }
 
   static async getTroveEntireColl(contracts, trove) {

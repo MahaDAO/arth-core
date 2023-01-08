@@ -161,7 +161,12 @@ class DeploymentHelper {
       "0x0000000000000000000000000000000000000001",
       0
     );
-    testerContracts.arthToken = await ARTHTokenTester.new(testerContracts.governance.address);
+    testerContracts.arthToken = await ARTHTokenTester.new(
+      testerContracts.governance.address,
+      testerContracts.borrowerOperations.address,
+      testerContracts.stabilityPool.address,
+      testerContracts.troveManager.address
+    );
     return testerContracts;
   }
 
@@ -187,19 +192,24 @@ class DeploymentHelper {
     return MAHAContracts;
   }
 
-  static async deployMAHATesterContractsHardhat(bountyAddress, lpRewardsAddress, multisigAddress) {
-    const communityIssuance = await CommunityIssuanceTester.new();
-
-    CommunityIssuanceTester.setAsDeployed(communityIssuance);
-
+  static async deployMAHATesterContractsHardhat(stabilityPool) {
     // Deploy MAHA Token, passing Community Issuance and Factory addresses to the constructor
     const mahaToken = await MAHAToken.new("MAHA", "MAHA");
-    const MAHAContracts = {
-      lockupContractFactory,
+
+    const communityIssuance = await CommunityIssuanceTester.new(
+      mahaToken.address,
+      stabilityPool.address,
+      86400 * 30 * 1000
+    );
+    CommunityIssuanceTester.setAsDeployed(communityIssuance);
+
+    await mahaToken.mint(communityIssuance.address, BigNumber.from(10).pow(18).mul(1000));
+    await communityIssuance.notifyRewardAmount(BigNumber.from(10).pow(18).mul(1000));
+
+    return {
       communityIssuance,
       mahaToken
     };
-    return MAHAContracts;
   }
 
   static async deployLiquityCoreTruffle() {
@@ -257,7 +267,12 @@ class DeploymentHelper {
   }
 
   static async deployARTHTokenTester(contracts) {
-    contracts.arthToken = await ARTHTokenTester.new(contracts.governance.address);
+    contracts.arthToken = await ARTHTokenTester.new(
+      contracts.governance.address,
+      contracts.borrowerOperations.address,
+      contracts.stabilityPool.address,
+      contracts.troveManager.address
+    );
     return contracts;
   }
 

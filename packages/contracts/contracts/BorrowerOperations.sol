@@ -887,4 +887,8 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
     function getCompositeDebt(uint256 _debt) external view override returns (uint256) {
         return _getCompositeDebt(_debt);
     }
+
+    function BORROWING_FEE_FLOOR() external view returns (uint256) {
+        return getBorrowingFeeFloor();
+    }
 }

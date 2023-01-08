@@ -1480,6 +1480,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 

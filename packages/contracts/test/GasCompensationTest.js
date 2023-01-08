@@ -67,16 +67,8 @@ contract("Gas compensation tests", async accounts => {
   beforeEach(async () => {
     contracts = await deploymentHelper.deployLiquityCore();
     contracts.troveManager = await TroveManagerTester.new();
-    contracts.arthToken = await ARTHValuecoin.new(
-      contracts.troveManager.address,
-      contracts.stabilityPool.address,
-      contracts.borrowerOperations.address
-    );
-    const MAHAContracts = await deploymentHelper.deployMAHAContracts(
-      bountyAddress,
-      lpRewardsAddress,
-      multisig
-    );
+    contracts.arthToken = await ARTHValuecoin.new(contracts.governance.address);
+    const MAHAContracts = await deploymentHelper.deployMAHAContracts(contracts.stabilityPool);
 
     priceFeed = contracts.priceFeedTestnet;
     arthToken = contracts.arthToken;

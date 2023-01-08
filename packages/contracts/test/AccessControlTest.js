@@ -42,11 +42,7 @@ contract(
       coreContracts = await deploymentHelper.deployLiquityCore(owner);
       coreContracts.troveManager = await TroveManagerTester.new();
       coreContracts = await deploymentHelper.deployARTHTokenTester(coreContracts);
-      const MAHAContracts = await deploymentHelper.deployMAHATesterContractsHardhat(
-        bountyAddress,
-        lpRewardsAddress,
-        multisig
-      );
+      const MAHAContracts = await deploymentHelper.deployMAHAContracts(coreContracts.stabilityPool);
 
       priceFeed = coreContracts.priceFeed;
       arthToken = coreContracts.arthToken;

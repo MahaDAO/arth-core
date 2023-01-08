@@ -32,8 +32,6 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
     F
   ] = accounts;
 
-  const [bountyAddress, lpRewardsAddress, multisig] = accounts.slice(997, 1000);
-
   let contracts;
 
   let priceFeed;
@@ -88,6 +86,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -97,6 +96,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -104,11 +104,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
@@ -127,6 +129,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
 
@@ -186,6 +189,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -195,6 +199,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -202,11 +207,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
@@ -225,6 +232,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -232,6 +240,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(100, "ether") }
       );
 
@@ -291,6 +300,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -300,6 +310,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -307,11 +318,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
@@ -330,6 +343,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -337,6 +351,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -344,6 +359,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_3,
         defaulter_3,
+        ZERO_ADDRESS,
         { from: defaulter_3, value: dec(100, "ether") }
       );
 
@@ -397,6 +413,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -406,6 +423,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -413,11 +431,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
@@ -436,6 +456,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(5000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: "50000000000000000000" }
       );
       await borrowerOperations.openTrove(
@@ -443,6 +464,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(7000, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: "70000000000000000000" }
       );
 
@@ -504,6 +526,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -513,6 +536,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -520,11 +544,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
@@ -543,6 +569,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(5000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: "50000000000000000000" }
       );
       await borrowerOperations.openTrove(
@@ -550,6 +577,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(6000, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: "60000000000000000000" }
       );
       await borrowerOperations.openTrove(
@@ -557,6 +585,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(7000, 18)),
         defaulter_3,
         defaulter_3,
+        ZERO_ADDRESS,
         { from: defaulter_3, value: "70000000000000000000" }
       );
 
@@ -620,6 +649,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -629,6 +659,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -636,11 +667,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
@@ -660,6 +693,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -667,6 +701,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(100, "ether") }
       );
 
@@ -727,6 +762,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -736,6 +772,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -743,11 +780,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
@@ -767,6 +806,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -774,6 +814,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -781,6 +822,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_3,
         defaulter_3,
+        ZERO_ADDRESS,
         { from: defaulter_3, value: dec(100, "ether") }
       );
 
@@ -843,6 +885,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(1000000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(1000000, "ether") }
       );
 
@@ -852,6 +895,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -859,11 +903,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
@@ -892,6 +938,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount("207000000000000000000000"),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(2160, 18) }
       );
       await borrowerOperations.openTrove(
@@ -899,6 +946,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(5, 21)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(50, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -906,6 +954,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount("46700000000000000000000"),
         defaulter_3,
         defaulter_3,
+        ZERO_ADDRESS,
         { from: defaulter_3, value: dec(500, "ether") }
       );
 
@@ -971,6 +1020,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -980,11 +1030,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
@@ -994,11 +1046,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: dennis, value: dec(10000, "ether") }
@@ -1017,6 +1071,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1024,6 +1079,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1031,6 +1087,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_3,
         defaulter_3,
+        ZERO_ADDRESS,
         { from: defaulter_3, value: dec(100, "ether") }
       );
 
@@ -1067,7 +1124,6 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
       const carol_ETHWithdrawn = th.getEventArgByName(txC, "ETHGainWithdrawn", "_ETH").toString();
       const dennis_ETHWithdrawn = th.getEventArgByName(txD, "ETHGainWithdrawn", "_ETH").toString();
 
-      console.log();
       assert.isAtMost(
         th.getDifference(
           (await stabilityPool.getCompoundedARTHDeposit(alice)).toString(),
@@ -1112,6 +1168,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -1121,11 +1178,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
@@ -1135,11 +1194,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: dennis, value: dec(10000, "ether") }
@@ -1158,6 +1219,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1165,6 +1227,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1172,6 +1235,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_3,
         defaulter_3,
+        ZERO_ADDRESS,
         { from: defaulter_3, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1179,6 +1243,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_4,
         defaulter_4,
+        ZERO_ADDRESS,
         { from: defaulter_4, value: dec(100, "ether") }
       );
 
@@ -1246,6 +1311,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(1000000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(1000000, "ether") }
       );
 
@@ -1255,11 +1321,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
@@ -1269,11 +1337,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: dennis, value: dec(10000, "ether") }
@@ -1303,6 +1373,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1310,6 +1381,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(25000, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: "250000000000000000000" }
       );
       await borrowerOperations.openTrove(
@@ -1317,6 +1389,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(5000, 18)),
         defaulter_3,
         defaulter_3,
+        ZERO_ADDRESS,
         { from: defaulter_3, value: "50000000000000000000" }
       );
       await borrowerOperations.openTrove(
@@ -1324,6 +1397,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(40000, 18)),
         defaulter_4,
         defaulter_4,
+        ZERO_ADDRESS,
         { from: defaulter_4, value: dec(400, "ether") }
       );
 
@@ -1407,6 +1481,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -1416,11 +1491,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
@@ -1430,11 +1507,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: dennis, value: dec(10000, "ether") }
@@ -1453,6 +1532,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1460,6 +1540,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1467,6 +1548,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_3,
         defaulter_3,
+        ZERO_ADDRESS,
         { from: defaulter_3, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1474,6 +1556,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_4,
         defaulter_4,
+        ZERO_ADDRESS,
         { from: defaulter_4, value: dec(100, "ether") }
       );
 
@@ -1546,6 +1629,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -1555,6 +1639,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1562,11 +1647,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
@@ -1578,6 +1665,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
       Carol: 12500 ARTH
       Dennis: 40000 ARTH
       */
+
       // Whale transfers ARTH to  A, B,C and D respectively who then deposit it to the SP
       await arthToken.transfer(alice, dec(20000, 18), { from: whale });
       await stabilityPool.provideToSP(dec(20000, 18), ZERO_ADDRESS, { from: alice });
@@ -1599,6 +1687,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1699,6 +1788,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -1708,6 +1798,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1715,11 +1806,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
@@ -1738,6 +1831,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1745,6 +1839,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1752,6 +1847,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_3,
         defaulter_3,
+        ZERO_ADDRESS,
         { from: defaulter_3, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1759,6 +1855,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(5000, 18)),
         defaulter_4,
         defaulter_4,
+        ZERO_ADDRESS,
         { from: defaulter_4, value: "50000000000000000000" }
       );
 
@@ -1848,6 +1945,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -1857,11 +1955,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
@@ -1871,11 +1971,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: dennis, value: dec(10000, "ether") }
@@ -1894,6 +1996,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(20000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(200, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1901,6 +2004,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(100, "ether") }
       );
 
@@ -1989,6 +2093,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -1998,11 +2103,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
@@ -2012,11 +2119,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: dennis, value: dec(10000, "ether") }
@@ -2035,6 +2144,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -2042,6 +2152,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -2049,6 +2160,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_3,
         defaulter_3,
+        ZERO_ADDRESS,
         { from: defaulter_3, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -2056,6 +2168,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_4,
         defaulter_4,
+        ZERO_ADDRESS,
         { from: defaulter_4, value: dec(100, "ether") }
       );
 
@@ -2140,6 +2253,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -2149,11 +2263,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
@@ -2163,6 +2279,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -2170,11 +2287,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: dennis, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: erin, value: dec(10000, "ether") }
@@ -2193,6 +2312,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(20000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(200, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -2200,6 +2320,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(100, "ether") }
       );
 
@@ -2296,6 +2417,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -2305,11 +2427,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
@@ -2319,11 +2443,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: dennis, value: dec(10000, "ether") }
@@ -2338,6 +2464,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -2345,6 +2472,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -2352,6 +2480,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_3,
         defaulter_3,
+        ZERO_ADDRESS,
         { from: defaulter_3, value: dec(100, "ether") }
       );
 
@@ -2397,6 +2526,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -2406,11 +2536,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
@@ -2420,11 +2552,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: dennis, value: dec(10000, "ether") }
@@ -2434,11 +2568,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: erin, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: flyn, value: dec(10000, "ether") }
@@ -2448,11 +2584,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: harriet, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: graham, value: dec(10000, "ether") }
@@ -2464,6 +2602,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(20000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(200, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -2471,6 +2610,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(20000, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(200, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -2478,6 +2618,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(20000, 18)),
         defaulter_3,
         defaulter_3,
+        ZERO_ADDRESS,
         { from: defaulter_3, value: dec(200, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -2485,6 +2626,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(20000, 18)),
         defaulter_4,
         defaulter_4,
+        ZERO_ADDRESS,
         { from: defaulter_4, value: dec(200, "ether") }
       );
 
@@ -2631,6 +2773,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -2639,11 +2782,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
@@ -2658,6 +2803,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount("9999999910000000000000"),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
 
@@ -2669,6 +2815,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(9900, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(60, "ether") }
       );
 
@@ -2730,12 +2877,14 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
@@ -2745,6 +2894,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -2752,11 +2902,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: dennis, value: dec(10000, "ether") }
@@ -2771,6 +2923,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount("9999999910000000000000"),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
 
@@ -2780,6 +2933,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount("59400000000000000000000"),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(330, "ether") }
       );
 
@@ -2886,12 +3040,14 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
@@ -2901,11 +3057,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
@@ -2920,6 +3078,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(99999, 17)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -2927,6 +3086,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(99999, 17)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(100, "ether") }
       );
 
@@ -2985,12 +3145,14 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
@@ -3000,6 +3162,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -3007,11 +3170,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: dennis, value: dec(10000, "ether") }
@@ -3026,6 +3191,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount("9999900000000000000000"),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -3033,6 +3199,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount("59999400000000000000000"),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(600, "ether") }
       );
 
@@ -3122,12 +3289,14 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
@@ -3137,6 +3306,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -3144,11 +3314,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: dennis, value: dec(10000, "ether") }
@@ -3160,6 +3332,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount("9999999999900000000000"),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
 
@@ -3197,12 +3370,14 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: alice, value: dec(10000, "ether") }
@@ -3212,6 +3387,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: bob, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -3219,11 +3395,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: carol, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: dennis, value: dec(10000, "ether") }
@@ -3235,6 +3413,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount("9999900000000000000000"),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -3242,6 +3421,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount("9999900000000000000000"),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -3249,6 +3429,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount("9999900000000000000000"),
         defaulter_3,
         defaulter_3,
+        ZERO_ADDRESS,
         { from: defaulter_3, value: dec(100, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -3256,6 +3437,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount("9999900000000000000000"),
         defaulter_4,
         defaulter_4,
+        ZERO_ADDRESS,
         { from: defaulter_4, value: dec(100, "ether") }
       );
 
@@ -3375,12 +3557,14 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: A, value: dec(10000, "ether") }
@@ -3390,11 +3574,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: B, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: C, value: dec(10000, "ether") }
@@ -3404,6 +3590,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: D, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -3411,11 +3598,13 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(10000, 18)),
         ZERO_ADDRESS,
         ZERO_ADDRESS,
+        ZERO_ADDRESS,
         { from: E, value: dec(10000, "ether") }
       );
       await borrowerOperations.openTrove(
         th._100pct,
         await getOpenTroveARTHAmount(dec(10000, 18)),
+        ZERO_ADDRESS,
         ZERO_ADDRESS,
         ZERO_ADDRESS,
         { from: F, value: dec(10000, "ether") }
@@ -3427,6 +3616,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(24100, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(200, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -3434,6 +3624,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(24300, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(200, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -3441,6 +3632,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(24500, 18)),
         defaulter_3,
         defaulter_3,
+        ZERO_ADDRESS,
         { from: defaulter_3, value: dec(200, "ether") }
       );
 
@@ -3582,6 +3774,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -3590,7 +3783,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
 
       const depositors = [alice, bob];
       for (account of depositors) {
-        await borrowerOperations.openTrove(th._100pct, dec(1, 36), account, account, {
+        await borrowerOperations.openTrove(th._100pct, dec(1, 36), account, account, ZERO_ADDRESS, {
           from: account,
           value: dec(2, 27)
         });
@@ -3603,6 +3796,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(1, 36)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(1, 27) }
       );
 
@@ -3655,6 +3849,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(100000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100000, "ether") }
       );
 
@@ -3664,7 +3859,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
 
       const depositors = [alice, bob];
       for (account of depositors) {
-        await borrowerOperations.openTrove(th._100pct, dec(1, 38), account, account, {
+        await borrowerOperations.openTrove(th._100pct, dec(1, 38), account, account, ZERO_ADDRESS, {
           from: account,
           value: dec(2, 29)
         });
@@ -3677,6 +3872,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
         await getOpenTroveARTHAmount(dec(5000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: "5000000000000" }
       );
 
