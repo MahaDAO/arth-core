@@ -133,6 +133,23 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         uint256 _maxFeePercentage,
         uint256 _ARTHAmount,
         address _upperHint,
+        address _lowerHint
+    ) external payable override {
+        _openTrove(
+            msg.sender,
+            msg.sender,
+            _maxFeePercentage,
+            _ARTHAmount,
+            _upperHint,
+            _lowerHint,
+            address(0)
+        );
+    }
+
+    function openTrove(
+        uint256 _maxFeePercentage,
+        uint256 _ARTHAmount,
+        address _upperHint,
         address _lowerHint,
         address _frontEndTag
     ) external payable override {

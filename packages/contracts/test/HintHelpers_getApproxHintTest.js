@@ -84,7 +84,7 @@ contract("HintHelpers", async accounts => {
     contracts = await deploymentHelper.deployLiquityCore();
     contracts.troveManager = await TroveManagerTester.new();
     contracts.arthToken = await ARTHValuecoin.new(contracts.governance.address);
-    const MAHAContracts = await deploymentHelper.deployMAHAContracts(contracts.stabilityPool);
+    const MAHAContracts = await deploymentHelper.deployMAHAContracts(contracts);
 
     sortedTroves = contracts.sortedTroves;
     troveManager = contracts.troveManager;

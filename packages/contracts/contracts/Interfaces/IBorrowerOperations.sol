@@ -59,6 +59,13 @@ interface IBorrowerOperations {
         address _frontEndTag
     ) external payable;
 
+    function openTrove(
+        uint256 _maxFee,
+        uint256 _ARTHAmount,
+        address _upperHint,
+        address _lowerHint
+    ) external payable;
+
     function addColl(address _upperHint, address _lowerHint) external payable;
 
     function moveETHGainToTrove(

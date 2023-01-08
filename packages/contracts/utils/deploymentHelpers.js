@@ -88,8 +88,11 @@ class DeploymentHelper {
     const defaultPool = await DefaultPool.new();
     const collSurplusPool = await CollSurplusPool.new();
     const functionCaller = await FunctionCaller.new();
+    const mahaToken = await MAHAToken.new("MAHA", "MAHA");
+
     const borrowerOperations = await BorrowerOperations.new();
     const governance = await Governance.new(
+      mahaToken.address,
       "0x0000000000000000000000000000000000000001",
       troveManager.address,
       borrowerOperations.address,
@@ -104,6 +107,7 @@ class DeploymentHelper {
     // await arthToken.toggleTroveManager(troveManager.address);
     // await arthToken.toggleStabilityPool(stabilityPool.address);
 
+    MAHAToken.setAsDeployed(mahaToken);
     ARTHValuecoin.setAsDeployed(arthToken);
     DefaultPool.setAsDeployed(defaultPool);
     PriceFeedTestnet.setAsDeployed(priceFeedTestnet);
@@ -123,6 +127,7 @@ class DeploymentHelper {
       sortedTroves,
       troveManager,
       activePool,
+      mahaToken,
       stabilityPool,
       governance,
       gasPool,
@@ -147,6 +152,7 @@ class DeploymentHelper {
     testerContracts.defaultPool = await DefaultPoolTester.new();
     testerContracts.stabilityPool = await StabilityPoolTester.new();
     testerContracts.gasPool = await GasPool.new();
+    testerContracts.mahaToken = await MAHAToken.new("MAHA", "MAHA");
     testerContracts.collSurplusPool = await CollSurplusPool.new();
     testerContracts.math = await LiquityMathTester.new();
     testerContracts.borrowerOperations = await BorrowerOperationsTester.new();
@@ -154,10 +160,11 @@ class DeploymentHelper {
     testerContracts.functionCaller = await FunctionCaller.new();
     testerContracts.hintHelpers = await HintHelpers.new();
     testerContracts.governance = await Governance.new(
+      testerContracts.mahaToken.address,
       "0x0000000000000000000000000000000000000001",
-      troveManager.address,
-      borrowerOperations.address,
-      priceFeedTestnet.address,
+      testerContracts.troveManager.address,
+      testerContracts.borrowerOperations.address,
+      testerContracts.priceFeedTestnet.address,
       "0x0000000000000000000000000000000000000001",
       0
     );
@@ -170,35 +177,33 @@ class DeploymentHelper {
     return testerContracts;
   }
 
-  static async deployMAHAContractsHardhat(stabilityPool) {
+  static async deployMAHAContractsHardhat(contracts) {
     // Deploy MAHA Token, passing Community Issuance and Factory addresses to the constructor
-    const mahaToken = await MAHAToken.new("MAHA", "MAHA");
-    MAHAToken.setAsDeployed(mahaToken);
+    const mahaToken = contracts.mahaToken;
 
-    const communityIssuance = await CommunityIssuance.new(
-      mahaToken.address,
-      stabilityPool.address,
-      86400 * 1000 * 30
+    const communityIssuance = await CommunityIssuanceTester.new(
+      contracts.governance.address,
+      contracts.stabilityPool.address,
+      86400 * 30 * 1000
     );
-    CommunityIssuance.setAsDeployed(communityIssuance);
+    CommunityIssuanceTester.setAsDeployed(communityIssuance);
 
     await mahaToken.mint(communityIssuance.address, BigNumber.from(10).pow(18).mul(1000));
     await communityIssuance.notifyRewardAmount(BigNumber.from(10).pow(18).mul(1000));
 
-    const MAHAContracts = {
+    return {
       communityIssuance,
       mahaToken
     };
-    return MAHAContracts;
   }
 
-  static async deployMAHATesterContractsHardhat(stabilityPool) {
+  static async deployMAHATesterContractsHardhat(contracts) {
     // Deploy MAHA Token, passing Community Issuance and Factory addresses to the constructor
-    const mahaToken = await MAHAToken.new("MAHA", "MAHA");
+    const mahaToken = contracts.mahaToken;
 
     const communityIssuance = await CommunityIssuanceTester.new(
-      mahaToken.address,
-      stabilityPool.address,
+      contracts.governance.address,
+      contracts.stabilityPool.address,
       86400 * 30 * 1000
     );
     CommunityIssuanceTester.setAsDeployed(communityIssuance);

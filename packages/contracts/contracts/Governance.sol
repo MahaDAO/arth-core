@@ -47,10 +47,13 @@ contract Governance is BaseMath, Ownable, IGovernance {
     // The fund which recieves all the fees.
     address private fund;
 
+    address private maha;
+
     uint256 private maxDebtCeiling =
         0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff; // infinity
 
     constructor(
+        address _maha,
         address _timelock,
         address _troveManagerAddress,
         address _borrowerOperationAddress,
@@ -62,6 +65,7 @@ contract Governance is BaseMath, Ownable, IGovernance {
         borrowerOperationAddress = _borrowerOperationAddress;
         DEPLOYMENT_START_TIME = block.timestamp;
 
+        maha = _maha;
         priceFeed = IPriceFeed(_priceFeed);
         fund = address(_fund);
         if (_maxDebtCeiling > 0) maxDebtCeiling = _maxDebtCeiling;
@@ -102,6 +106,12 @@ contract Governance is BaseMath, Ownable, IGovernance {
         emit FundAddressChanged(oldAddress, _newFund, block.timestamp);
     }
 
+    function setMAHA(address _maha) public onlyOwner {
+        address oldAddress = address(maha);
+        maha = address(_maha);
+        emit MAHAChanged(oldAddress, _maha, block.timestamp);
+    }
+
     function setPriceFeed(address _feed) public onlyOwner {
         address oldAddress = address(priceFeed);
         priceFeed = IPriceFeed(_feed);
@@ -116,6 +126,10 @@ contract Governance is BaseMath, Ownable, IGovernance {
 
     function getDeploymentStartTime() external view override returns (uint256) {
         return DEPLOYMENT_START_TIME;
+    }
+
+    function getMAHA() external view override returns (IERC20) {
+        return IERC20(maha);
     }
 
     function getBorrowingFeeFloor() external view override returns (uint256) {

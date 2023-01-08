@@ -11,6 +11,7 @@ interface IGovernance {
     event BorrowingFeeFloorChanged(uint256 oldValue, uint256 newValue, uint256 timestamp);
     event FundAddressChanged(address oldAddress, address newAddress, uint256 timestamp);
     event MaxBorrowingFeeChanged(uint256 oldValue, uint256 newValue, uint256 timestamp);
+    event MAHAChanged(address oldAddress, address newAddress, uint256 timestamp);
     event MaxDebtCeilingChanged(uint256 oldValue, uint256 newValue, uint256 timestamp);
     event PriceFeedChanged(address oldAddress, address newAddress, uint256 timestamp);
     event RedemptionFeeFloorChanged(uint256 oldValue, uint256 newValue, uint256 timestamp);
@@ -23,6 +24,8 @@ interface IGovernance {
     function getDeploymentStartTime() external view returns (uint256);
 
     function getFund() external view returns (address);
+
+    function getMAHA() external view returns (IERC20);
 
     function getGasCompensation() external view returns (uint256);
 

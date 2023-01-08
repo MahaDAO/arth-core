@@ -8,17 +8,24 @@ contract ARTHTokenTester is ARTHValuecoin {
     bytes32 private immutable _PERMIT_TYPEHASH =
         0x6e71edae12b1b97f4d1f60370fef10105fa2faae0126114a169c64845d6126c9;
 
-    constructor(address _governance) ARTHValuecoin(_governance) {}
+    constructor(
+        address _governance,
+        address _bo,
+        address _sp,
+        address _tm
+    ) ARTHValuecoin(_governance) {
+        borrowerOperationAddresses[_bo] = true;
+        troveManagerAddresses[_sp] = true;
+        stabilityPoolAddresses[_tm] = true;
+    }
 
     function unprotectedMint(address _account, uint256 _amount) external {
         // No check on caller here
-
         _mint(_account, _amount);
     }
 
     function unprotectedBurn(address _account, uint256 _amount) external {
         // No check on caller here
-
         _burn(_account, _amount);
     }
 

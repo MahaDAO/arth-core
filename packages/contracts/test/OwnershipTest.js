@@ -27,7 +27,7 @@ contract("All Liquity functions with onlyOwner modifier", async accounts => {
     contracts = await deploymentHelper.deployLiquityCore();
     contracts.borrowerOperations = await BorrowerOperationsTester.new();
     contracts = await deploymentHelper.deployARTHToken(contracts);
-    const MAHAContracts = await deploymentHelper.deployMAHAContracts(contracts.stabilityPool);
+    const MAHAContracts = await deploymentHelper.deployMAHAContracts(contracts);
 
     arthToken = contracts.arthToken;
     sortedTroves = contracts.sortedTroves;

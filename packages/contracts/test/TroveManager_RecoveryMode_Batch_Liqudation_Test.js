@@ -47,7 +47,7 @@ contract("TroveManager - in Recovery Mode - back to normal mode in 1 tx", async 
     contracts.troveManager = await TroveManagerTester.new();
     contracts.arthToken = await ARTHValuecoin.new(contracts.governance.address);
 
-    const MAHAContracts = await deploymentHelper.deployMAHAContracts(contracts.stabilityPool);
+    const MAHAContracts = await deploymentHelper.deployMAHAContracts(contracts);
 
     troveManager = contracts.troveManager;
     stabilityPool = contracts.stabilityPool;

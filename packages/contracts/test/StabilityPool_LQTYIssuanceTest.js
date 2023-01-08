@@ -61,14 +61,12 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
   const getOpenTroveARTHAmount = async totalDebt => th.getOpenTroveARTHAmount(contracts, totalDebt);
 
   const openTrove = async params => th.openTrove(contracts, params);
-  describe("MAHA Rewards", async () => {
+  describe.only("MAHA Rewards", async () => {
     beforeEach(async () => {
       contracts = await deploymentHelper.deployLiquityCore();
       contracts.troveManager = await TroveManagerTester.new();
       contracts.arthToken = await ARTHValuecoin.new(contracts.governance.address);
-      const MAHAContracts = await deploymentHelper.deployMAHATesterContractsHardhat(
-        contracts.stabilityPool
-      );
+      const MAHAContracts = await deploymentHelper.deployMAHATesterContractsHardhat(contracts);
 
       priceFeed = contracts.priceFeedTestnet;
       arthToken = contracts.arthToken;
@@ -83,9 +81,9 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
 
       await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
 
-      // Check community issuance starts with 32 million MAHA
+      // Check community issuance starts with 1000 MAHA
       communityMAHASupply = toBN(await mahaToken.balanceOf(communityIssuanceTester.address));
-      assert.isAtMost(getDifference(communityMAHASupply, "32000000000000000000000000"), 1000);
+      assert.isAtMost(getDifference(communityMAHASupply, "1000000000000000000000"), 1000);
 
       /* Monthly MAHA issuance
 
@@ -175,7 +173,7 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
     });
 
     it("withdrawFromSP(): reward term G does not update when no MAHA is issued", async () => {
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), A, A, {
+      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), A, A, ZERO_ADDRESS, {
         from: A,
         value: dec(1000, "ether")
       });
@@ -190,6 +188,7 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(100, "ether") }
       );
 
@@ -334,7 +333,7 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
         { from: whale, value: dec(10000, "ether") }
       );
 
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), A, A, {
+      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), A, A, ZERO_ADDRESS, {
         from: A,
         value: dec(200, "ether")
       });
@@ -342,7 +341,7 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
         from: B,
         value: dec(300, "ether")
       });
-      await borrowerOperations.openTrove(th._100pct, dec(30000, 18), C, C, {
+      await borrowerOperations.openTrove(th._100pct, dec(30000, 18), C, C, ZERO_ADDRESS, {
         from: C,
         value: dec(400, "ether")
       });
@@ -449,7 +448,7 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
         value: dec(10000, "ether")
       });
 
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), A, A, {
+      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), A, A, ZERO_ADDRESS, {
         from: A,
         value: dec(200, "ether")
       });
@@ -457,11 +456,11 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
         from: B,
         value: dec(300, "ether")
       });
-      await borrowerOperations.openTrove(th._100pct, dec(30000, 18), C, C, {
+      await borrowerOperations.openTrove(th._100pct, dec(30000, 18), C, C, ZERO_ADDRESS, {
         from: C,
         value: dec(400, "ether")
       });
-      await borrowerOperations.openTrove(th._100pct, dec(40000, 18), D, D, {
+      await borrowerOperations.openTrove(th._100pct, dec(40000, 18), D, D, ZERO_ADDRESS, {
         from: D,
         value: dec(500, "ether")
       });
@@ -765,15 +764,15 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
     it("MAHA issuance for a given period is not obtainable if the SP was empty during the period", async () => {
       const CIBalanceBefore = await mahaToken.balanceOf(communityIssuanceTester.address);
 
-      await borrowerOperations.openTrove(th._100pct, dec(16000, 18), A, A, {
+      await borrowerOperations.openTrove(th._100pct, dec(16000, 18), A, A, ZERO_ADDRESS, {
         from: A,
         value: dec(200, "ether")
       });
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), B, B, {
+      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), B, B, ZERO_ADDRESS, {
         from: B,
         value: dec(100, "ether")
       });
-      await borrowerOperations.openTrove(th._100pct, dec(16000, 18), C, C, {
+      await borrowerOperations.openTrove(th._100pct, dec(16000, 18), C, C, ZERO_ADDRESS, {
         from: C,
         value: dec(200, "ether")
       });
@@ -889,35 +888,78 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
         await getOpenTroveARTHAmount(dec(10000, 18)),
         whale,
         whale,
+        ZERO_ADDRESS,
         { from: whale, value: dec(100, "ether") }
       );
 
       const fiveDefaulters = [defaulter_1, defaulter_2, defaulter_3, defaulter_4, defaulter_5];
 
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), ZERO_ADDRESS, ZERO_ADDRESS, {
-        from: A,
-        value: dec(10000, "ether")
-      });
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), ZERO_ADDRESS, ZERO_ADDRESS, {
-        from: B,
-        value: dec(10000, "ether")
-      });
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), ZERO_ADDRESS, ZERO_ADDRESS, {
-        from: C,
-        value: dec(10000, "ether")
-      });
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), ZERO_ADDRESS, ZERO_ADDRESS, {
-        from: D,
-        value: dec(10000, "ether")
-      });
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), ZERO_ADDRESS, ZERO_ADDRESS, {
-        from: E,
-        value: dec(10000, "ether")
-      });
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), ZERO_ADDRESS, ZERO_ADDRESS, {
-        from: F,
-        value: dec(10000, "ether")
-      });
+      await borrowerOperations.openTrove(
+        th._100pct,
+        dec(10000, 18),
+        ZERO_ADDRESS,
+        ZERO_ADDRESS,
+        ZERO_ADDRESS,
+        {
+          from: A,
+          value: dec(10000, "ether")
+        }
+      );
+      await borrowerOperations.openTrove(
+        th._100pct,
+        dec(10000, 18),
+        ZERO_ADDRESS,
+        ZERO_ADDRESS,
+        ZERO_ADDRESS,
+        {
+          from: B,
+          value: dec(10000, "ether")
+        }
+      );
+      await borrowerOperations.openTrove(
+        th._100pct,
+        dec(10000, 18),
+        ZERO_ADDRESS,
+        ZERO_ADDRESS,
+        ZERO_ADDRESS,
+        {
+          from: C,
+          value: dec(10000, "ether")
+        }
+      );
+      await borrowerOperations.openTrove(
+        th._100pct,
+        dec(10000, 18),
+        ZERO_ADDRESS,
+        ZERO_ADDRESS,
+        ZERO_ADDRESS,
+        {
+          from: D,
+          value: dec(10000, "ether")
+        }
+      );
+      await borrowerOperations.openTrove(
+        th._100pct,
+        dec(10000, 18),
+        ZERO_ADDRESS,
+        ZERO_ADDRESS,
+        ZERO_ADDRESS,
+        {
+          from: E,
+          value: dec(10000, "ether")
+        }
+      );
+      await borrowerOperations.openTrove(
+        th._100pct,
+        dec(10000, 18),
+        ZERO_ADDRESS,
+        ZERO_ADDRESS,
+        ZERO_ADDRESS,
+        {
+          from: F,
+          value: dec(10000, "ether")
+        }
+      );
 
       for (const defaulter of fiveDefaulters) {
         // Defaulters 1-5 each withdraw to 9999.9 debt (including gas comp)
@@ -926,6 +968,7 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
           await getOpenTroveARTHAmount("9999900000000000000000"),
           defaulter,
           defaulter,
+          ZERO_ADDRESS,
           { from: defaulter, value: dec(100, "ether") }
         );
       }
@@ -936,6 +979,7 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_6,
         defaulter_6,
+        ZERO_ADDRESS,
         { from: defaulter_6, value: dec(100, "ether") }
       );
 
@@ -1107,28 +1151,28 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
       assert.equal(initialIssuance, 0);
 
       // Whale opens Trove with 10k ETH
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), whale, whale, {
+      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), whale, whale, ZERO_ADDRESS, {
         from: whale,
         value: dec(10000, "ether")
       });
 
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), A, A, {
+      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), A, A, ZERO_ADDRESS, {
         from: A,
         value: dec(100, "ether")
       });
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), B, B, {
+      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), B, B, ZERO_ADDRESS, {
         from: B,
         value: dec(100, "ether")
       });
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), C, C, {
+      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), C, C, ZERO_ADDRESS, {
         from: C,
         value: dec(100, "ether")
       });
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), D, D, {
+      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), D, D, ZERO_ADDRESS, {
         from: D,
         value: dec(100, "ether")
       });
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), E, E, {
+      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), E, E, ZERO_ADDRESS, {
         from: E,
         value: dec(100, "ether")
       });
@@ -1304,29 +1348,29 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
       assert.equal(initialIssuance, 0);
 
       // Whale opens Trove with 10k ETH
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), whale, whale, {
+      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), whale, whale, ZERO_ADDRESS, {
         from: whale,
         value: dec(10000, "ether")
       });
 
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), A, A, {
+      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), A, A, ZERO_ADDRESS, {
         from: A,
         value: dec(200, "ether")
       });
-      await borrowerOperations.openTrove(th._100pct, dec(60000, 18), B, B, {
+      await borrowerOperations.openTrove(th._100pct, dec(60000, 18), B, B, ZERO_ADDRESS, {
         from: B,
         value: dec(800, "ether")
       });
-      await borrowerOperations.openTrove(th._100pct, dec(30000, 18), C, C, {
+      await borrowerOperations.openTrove(th._100pct, dec(30000, 18), C, C, ZERO_ADDRESS, {
         from: C,
         value: dec(400, "ether")
       });
-      await borrowerOperations.openTrove(th._100pct, dec(40000, 18), D, D, {
+      await borrowerOperations.openTrove(th._100pct, dec(40000, 18), D, D, ZERO_ADDRESS, {
         from: D,
         value: dec(500, "ether")
       });
 
-      await borrowerOperations.openTrove(th._100pct, dec(30000, 18), E, E, {
+      await borrowerOperations.openTrove(th._100pct, dec(30000, 18), E, E, ZERO_ADDRESS, {
         from: E,
         value: dec(400, "ether")
       });
@@ -1337,6 +1381,7 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
         await getOpenTroveARTHAmount(dec(50000, 18)),
         defaulter_1,
         defaulter_1,
+        ZERO_ADDRESS,
         { from: defaulter_1, value: dec(500, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1344,6 +1389,7 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
         await getOpenTroveARTHAmount(dec(20000, 18)),
         defaulter_2,
         defaulter_2,
+        ZERO_ADDRESS,
         { from: defaulter_2, value: dec(200, "ether") }
       );
       await borrowerOperations.openTrove(
@@ -1351,6 +1397,7 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
         await getOpenTroveARTHAmount(dec(10000, 18)),
         defaulter_3,
         defaulter_3,
+        ZERO_ADDRESS,
         { from: defaulter_3, value: dec(100, "ether") }
       );
 
@@ -1760,7 +1807,7 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
       await stabilityPool.registerFrontEnd(kickbackRate, { from: frontEnd_1 });
 
       // Whale opens Trove with 10k ETH
-      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), whale, whale, {
+      await borrowerOperations.openTrove(th._100pct, dec(10000, 18), whale, whale, ZERO_ADDRESS, {
         from: whale,
         value: dec(10000, "ether")
       });
@@ -1774,6 +1821,7 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
           await getOpenTroveARTHAmount(dec(99999, 17)),
           defaulter,
           defaulter,
+          ZERO_ADDRESS,
           { from: defaulter, value: dec(100, "ether") }
         );
       }
@@ -1791,12 +1839,12 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
       assert.equal(await stabilityPool.currentScale(), "0");
 
       // A, B provides 5000 ARTH to SP
-      await borrowerOperations.openTrove(th._100pct, dec(5000, 18), A, A, {
+      await borrowerOperations.openTrove(th._100pct, dec(5000, 18), A, A, ZERO_ADDRESS, {
         from: A,
         value: dec(200, "ether")
       });
       await stabilityPool.provideToSP(dec(5000, 18), frontEnd_1, { from: A });
-      await borrowerOperations.openTrove(th._100pct, dec(5000, 18), B, B, {
+      await borrowerOperations.openTrove(th._100pct, dec(5000, 18), B, B, ZERO_ADDRESS, {
         from: B,
         value: dec(200, "ether")
       });
@@ -1817,7 +1865,7 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
       assert.equal(await stabilityPool.currentScale(), "0");
 
       // C provides to SP
-      await borrowerOperations.openTrove(th._100pct, dec(99999, 17), C, C, {
+      await borrowerOperations.openTrove(th._100pct, dec(99999, 17), C, C, ZERO_ADDRESS, {
         from: C,
         value: dec(200, "ether")
       });
@@ -1835,7 +1883,7 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
       assert.equal(await stabilityPool.currentScale(), "1");
 
       // D provides to SP
-      await borrowerOperations.openTrove(th._100pct, dec(99999, 17), D, D, {
+      await borrowerOperations.openTrove(th._100pct, dec(99999, 17), D, D, ZERO_ADDRESS, {
         from: D,
         value: dec(200, "ether")
       });
@@ -1853,7 +1901,7 @@ contract("StabilityPool - MAHA Rewards", async accounts => {
       assert.equal(await stabilityPool.currentScale(), "1");
 
       // E provides to SP
-      await borrowerOperations.openTrove(th._100pct, dec(99999, 17), E, E, {
+      await borrowerOperations.openTrove(th._100pct, dec(99999, 17), E, E, ZERO_ADDRESS, {
         from: E,
         value: dec(200, "ether")
       });

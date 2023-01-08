@@ -1,3 +1,4 @@
+const exp = require("constants");
 const deploymentHelper = require("../utils/deploymentHelpers.js");
 const testHelpers = require("../utils/testHelpers.js");
 
@@ -86,7 +87,7 @@ contract("BorrowerOperations", async accounts => {
       contracts.borrowerOperations = await BorrowerOperationsTester.new();
       contracts.troveManager = await TroveManagerTester.new();
       contracts = await deploymentHelper.deployARTHTokenTester(contracts);
-      const MAHAContracts = await deploymentHelper.deployMAHAContracts(contracts.stabilityPool);
+      const MAHAContracts = await deploymentHelper.deployMAHAContracts(contracts);
 
       await deploymentHelper.connectCoreContracts(contracts, MAHAContracts);
 
@@ -5207,6 +5208,7 @@ contract("BorrowerOperations", async accounts => {
           D_ARTHRequest,
           ZERO_ADDRESS,
           ZERO_ADDRESS,
+          ZERO_ADDRESS,
           { from: D, value: dec(200, "ether") }
         );
 
@@ -5322,7 +5324,7 @@ contract("BorrowerOperations", async accounts => {
 
       // D opens trove
       const ARTHRequest_D = toBN(dec(40000, 18));
-      await borrowerOperations.openTrove(th._100pct, ARTHRequest_D, D, D, {
+      await borrowerOperations.openTrove(th._100pct, ARTHRequest_D, D, D, ZERO_ADDRESS, {
         from: D,
         value: dec(500, "ether")
       });
@@ -5638,7 +5640,7 @@ contract("BorrowerOperations", async accounts => {
       assert.equal(status_Before, 0);
 
       const ARTHRequest = MIN_NET_DEBT;
-      borrowerOperations.openTrove(th._100pct, MIN_NET_DEBT, carol, carol, {
+      await borrowerOperations.openTrove(th._100pct, MIN_NET_DEBT, carol, carol, ZERO_ADDRESS, {
         from: alice,
         value: dec(100, "ether")
       });
@@ -5655,7 +5657,6 @@ contract("BorrowerOperations", async accounts => {
       // check coll and debt after
       assert.isTrue(coll_After.gt("0"));
       assert.isTrue(debt_After.gt("0"));
-
       assert.isTrue(debt_After.eq(expectedDebt));
 
       // check active status
@@ -6561,7 +6562,7 @@ contract("BorrowerOperations", async accounts => {
     }
   };
 
-  describe.only("Without proxy", async () => {
+  describe("Without proxy", async () => {
     testCorpus({ withProxy: false });
   });
 

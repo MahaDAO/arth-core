@@ -58,9 +58,7 @@ contract("StabilityPool - Withdrawal of stability deposit - Reward calculations"
 
     beforeEach(async () => {
       contracts = await deploymentHelper.deployLiquityCore();
-      const MAHAContracts = await deploymentHelper.deployMAHATesterContractsHardhat(
-        contracts.stabilityPool
-      );
+      const MAHAContracts = await deploymentHelper.deployMAHATesterContractsHardhat(contracts);
       contracts.troveManager = await TroveManagerTester.new();
       contracts = await deploymentHelper.deployARTHToken(contracts);
 
