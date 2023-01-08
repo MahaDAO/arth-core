@@ -53,9 +53,7 @@ async function deploy(configParams, network) {
   console.log("getMaxBorrowingFee", await liquityCore.governance.getMaxBorrowingFee());
   console.log("getMaxDebtCeiling", await liquityCore.governance.getMaxDebtCeiling());
   console.log("getFund", await liquityCore.governance.getFund());
-  console.log("getStabilityFee", await liquityCore.governance.getStabilityFee());
   console.log("getAllowMinting", await liquityCore.governance.getAllowMinting());
-  console.log("getStabilityFeeToken", await liquityCore.governance.getStabilityFeeToken());
   console.log("getPriceFeed", await liquityCore.governance.getPriceFeed());
 
   const price = await liquityCore.troveManager.callStatic.fetchPriceFeedPrice();

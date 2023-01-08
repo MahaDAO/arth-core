@@ -12,7 +12,7 @@ const OUTPUT_FILE = "./deployment/output/ethereum.json";
 const delay = ms => new Promise(res => setTimeout(res, ms));
 const waitFunction = async () => delay(90000); // wait 90s
 
-const COMMUNITY_ISSUANCE_REWARDS_DURATION = 30 * 86400; // 5 days
+const COMMUNITY_ISSUANCE_REWARDS_DURATION = 30 * 86400; // 30 days
 const BOOTSTRAP_PERIOD = 7 * 86400; // 7 days
 const GAS_PRICE = 20 * 1000000000; // 20 Gwei
 const TX_CONFIRMATIONS = 1;

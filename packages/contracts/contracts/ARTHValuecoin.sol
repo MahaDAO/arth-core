@@ -85,12 +85,12 @@ contract ARTHValuecoin is CheckContract, Ownable, IARTHValuecoin {
     // --- Functions for intra-Liquity calls ---
 
     function mint(address _account, uint256 _amount) external override {
-        // _requireCallerIsBorrowerOperations();
+        _requireCallerIsBorrowerOperations();
         _mint(_account, _amount);
     }
 
     function burn(address _account, uint256 _amount) external override {
-        // _requireCallerIsBOorTroveMorSP();
+        _requireCallerIsBOorTroveMorSP();
         _burn(_account, _amount);
     }
 
@@ -99,7 +99,7 @@ contract ARTHValuecoin is CheckContract, Ownable, IARTHValuecoin {
         address _poolAddress,
         uint256 _amount
     ) external override {
-        // _requireCallerIsStabilityPool();
+        _requireCallerIsStabilityPool();
         _transfer(_sender, _poolAddress, _amount);
     }
 
@@ -108,7 +108,7 @@ contract ARTHValuecoin is CheckContract, Ownable, IARTHValuecoin {
         address _receiver,
         uint256 _amount
     ) external override {
-        // _requireCallerIsTroveMorSP();
+        _requireCallerIsTroveMorSP();
         _transfer(_poolAddress, _receiver, _amount);
     }
 

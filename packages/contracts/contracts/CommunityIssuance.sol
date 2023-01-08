@@ -88,7 +88,6 @@ contract CommunityIssuance is ICommunityIssuance, Ownable, CheckContract, BaseMa
 
     function _getCumulativeIssuance() internal view returns (uint256) {
         uint256 rewards = rewardRate.mul(lastTimeRewardApplicable().sub(lastUpdateTime));
-
         return LiquityMath._min(rewards, governance.getMAHA().balanceOf(address(this)));
     }
 

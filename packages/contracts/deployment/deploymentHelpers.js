@@ -184,6 +184,7 @@ class MainnetDeploymentHelper {
     );
 
     const governanceParams = [
+      this.configParams.externalAddrs.MAHA,
       this.configParams.externalAddrs.TIMELOCK,
       troveManager.address,
       borrowerOperations.address,
@@ -201,7 +202,7 @@ class MainnetDeploymentHelper {
     );
 
     const communityIssuanceParams = [
-      mahaToken.address,
+      governance.address,
       stabilityPool.address,
       this.configParams.COMMUNITY_ISSUANCE_REWARDS_DURATION
     ];
@@ -429,6 +430,7 @@ class MainnetDeploymentHelper {
         contracts.hintHelpers.setAddresses(
           contracts.sortedTroves.address,
           contracts.troveManager.address,
+          contracts.governance.address,
           { gasPrice }
         )
       ));

@@ -55,9 +55,6 @@ module.exports = {
       gasPrice: 1000000000,
       initialBaseFeePerGas: 0,
       accounts: accountsList
-      // forking: {
-      //   url: alchemyUrl()
-      // }
     },
     local: {
       url: "http://127.0.0.1:8545/",
