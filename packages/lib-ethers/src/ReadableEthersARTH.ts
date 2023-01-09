@@ -259,7 +259,6 @@ export class ReadableEthersARTH implements ReadableARTH {
         stabilityPool.getDepositorETHGain(address, { ...overrides }),
         stabilityPool.getDepositorMAHAGain(address, { ...overrides })
       ]);
-
     return new StabilityDeposit(
       decimalify(initialValue),
       decimalify(currentARTH),

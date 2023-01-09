@@ -70,6 +70,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         IARTHValuecoin arthToken;
     }
 
+
     mapping(address => bool) public frontEnds;
 
     // --- Dependency setters ---

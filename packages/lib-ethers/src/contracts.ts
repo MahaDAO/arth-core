@@ -27,6 +27,7 @@ import priceFeedTestnetAbi from "../abi/PriceFeedTestnet.json";
 import sortedTrovesAbi from "../abi/SortedTroves.json";
 import stabilityPoolAbi from "../abi/StabilityPool.json";
 import troveManagerAbi from "../abi/TroveManager.json";
+import governanceAbi from "../abi/Governance.json";
 
 import {
   ActivePool,
@@ -43,7 +44,8 @@ import {
   PriceFeedTestnet,
   SortedTroves,
   StabilityPool,
-  GasPool
+  GasPool,
+  Governance
 } from "../types";
 
 import { EthersProvider, EthersSigner } from "./types";
@@ -168,6 +170,7 @@ export interface _ARTHContracts {
   sortedTroves: SortedTroves;
   stabilityPool: StabilityPool;
   gasPool: GasPool;
+  governance: Governance
 }
 
 /** @internal */
@@ -196,7 +199,8 @@ const getAbi = (priceFeedIsTestnet: boolean): ARTHContractAbis => ({
   priceFeed: priceFeedIsTestnet ? priceFeedTestnetAbi : priceFeedAbi,
   sortedTroves: sortedTrovesAbi,
   stabilityPool: stabilityPoolAbi,
-  gasPool: gasPoolAbi
+  gasPool: gasPoolAbi,
+  governance: governanceAbi
 });
 
 const mapARTHContracts = <T, U>(
