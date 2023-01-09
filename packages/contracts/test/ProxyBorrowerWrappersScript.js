@@ -2,7 +2,7 @@ const deploymentHelper = require("../utils/deploymentHelpers.js")
 const testHelpers = require("../utils/testHelpers.js")
 
 const TroveManagerTester = artifacts.require("TroveManagerTester")
-const LQTYTokenTester = artifacts.require("LQTYTokenTester")
+// const LQTYTokenTester = artifacts.require("LQTYTokenTester")
 
 const th = testHelpers.TestHelper
 
@@ -18,7 +18,7 @@ const GAS_PRICE = 10000000
 
 
 const {
-  buildUserProxies,
+  // buildUserProxies,
   BorrowerOperationsProxy,
   BorrowerWrappersProxy,
   TroveManagerProxy,

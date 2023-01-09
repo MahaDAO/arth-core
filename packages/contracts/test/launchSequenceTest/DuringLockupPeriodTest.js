@@ -1,5 +1,5 @@
 const LockupContract = artifacts.require("./LockupContract.sol")
-const LockupContractFactory = artifacts.require("./LockupContractFactory.sol")
+// const LockupContractFactory = artifacts.require("./LockupContractFactory.sol")
 const deploymentHelper = require("../../utils/deploymentHelpers.js")
 
 const { TestHelper: th, TimeValues: timeValues } = require("../../utils/testHelpers.js")
@@ -412,22 +412,22 @@ contract('During the initial lockup period', async accounts => {
   })
   // --- LCF ---
 
-  describe('Lockup Contract Factory negative tests', async accounts => {
-    it("deployLockupContract(): reverts when LQTY token address is not set", async () => {
-      // Fund F
-      await lqtyToken.unprotectedMint(F, dec(20, 24))
+  // describe('Lockup Contract Factory negative tests', async accounts => {
+  //   it("deployLockupContract(): reverts when LQTY token address is not set", async () => {
+  //     // Fund F
+  //     await lqtyToken.unprotectedMint(F, dec(20, 24))
 
-      // deploy new LCF
-      const LCFNew = await LockupContractFactory.new()
+  //     // deploy new LCF
+  //     const LCFNew = await LockupContractFactory.new()
 
-      // Check LQTYToken address not registered
-      const registeredLQTYTokenAddr = await LCFNew.lqtyTokenAddress()
-      assert.equal(registeredLQTYTokenAddr, ZERO_ADDRESS)
+  //     // Check LQTYToken address not registered
+  //     const registeredLQTYTokenAddr = await LCFNew.lqtyTokenAddress()
+  //     assert.equal(registeredLQTYTokenAddr, ZERO_ADDRESS)
 
-      const tx = LCFNew.deployLockupContract(A, oneYearFromSystemDeployment, { from: F })
-      await assertRevert(tx)
-    })
-  })
+  //     const tx = LCFNew.deployLockupContract(A, oneYearFromSystemDeployment, { from: F })
+  //     await assertRevert(tx)
+  //   })
+  // })
 
   // --- LCs ---
   describe('Transferring LQTY to LCs', async accounts => {

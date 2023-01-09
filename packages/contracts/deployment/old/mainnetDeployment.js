@@ -79,16 +79,16 @@ async function mainnetDeploy(configParams) {
     assert.equal(WETHLUSDPairAddr, LUSDWETHPairAddr);
   }
 
-  // Deploy Unipool
-  const unipool = await mdh.deployUnipoolMainnet(deploymentState);
+  // // Deploy Unipool
+  // const unipool = await mdh.deployUnipoolMainnet(deploymentState);
 
-  // Deploy LQTY Contracts
-  const LQTYContracts = await mdh.deployLQTYContractsMainnet(
-    configParams.liquityAddrs.GENERAL_SAFE, // bounty address
-    unipool.address, // lp rewards address
-    configParams.liquityAddrs.LQTY_SAFE, // multisig LQTY endowment address
-    deploymentState
-  );
+  // // Deploy LQTY Contracts
+  // const LQTYContracts = await mdh.deployLQTYContractsMainnet(
+  //   configParams.liquityAddrs.GENERAL_SAFE, // bounty address
+  //   unipool.address, // lp rewards address
+  //   configParams.liquityAddrs.LQTY_SAFE, // multisig LQTY endowment address
+  //   deploymentState
+  // );
 
   // Connect all core contracts up
   await mdh.connectCoreContractsMainnet(

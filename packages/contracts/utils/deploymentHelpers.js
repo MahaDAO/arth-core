@@ -11,14 +11,14 @@ const FunctionCaller = artifacts.require("./TestContracts/FunctionCaller.sol");
 const BorrowerOperations = artifacts.require("./BorrowerOperations.sol");
 const HintHelpers = artifacts.require("./HintHelpers.sol");
 
-const MAHAStaking = artifacts.require("./MAHAStaking.sol");
-const MAHAToken = artifacts.require("./MAHAToken.sol");
-const LockupContractFactory = artifacts.require("./LockupContractFactory.sol");
+// const MAHAStaking = artifacts.require("./MAHAStaking.sol");
+const MAHAToken = artifacts.require("./MockERC20.sol");
+// const LockupContractFactory = artifacts.require("./LockupContractFactory.sol");
 const CommunityIssuance = artifacts.require("./CommunityIssuance.sol");
 
-const Unipool = artifacts.require("./Unipool.sol");
+// const Unipool = artifacts.require("./Unipool.sol");
 
-const MAHATokenTester = artifacts.require("./MAHATokenTester.sol");
+// const MAHATokenTester = artifacts.require("./MAHATokenTester.sol");
 const CommunityIssuanceTester = artifacts.require("./CommunityIssuanceTester.sol");
 const StabilityPoolTester = artifacts.require("./StabilityPoolTester.sol");
 const ActivePoolTester = artifacts.require("./ActivePoolTester.sol");
@@ -26,7 +26,7 @@ const DefaultPoolTester = artifacts.require("./DefaultPoolTester.sol");
 const LiquityMathTester = artifacts.require("./LiquityMathTester.sol");
 const BorrowerOperationsTester = artifacts.require("./BorrowerOperationsTester.sol");
 const TroveManagerTester = artifacts.require("./TroveManagerTester.sol");
-const LUSDTokenTester = artifacts.require("./LUSDTokenTester.sol");
+const LUSDTokenTester = artifacts.require("./ARTHTokenTester.sol");
 
 // Proxy scripts
 const BorrowerOperationsScript = artifacts.require("BorrowerOperationsScript");
@@ -34,7 +34,7 @@ const BorrowerWrappersScript = artifacts.require("BorrowerWrappersScript");
 const TroveManagerScript = artifacts.require("TroveManagerScript");
 const StabilityPoolScript = artifacts.require("StabilityPoolScript");
 const TokenScript = artifacts.require("TokenScript");
-const MAHAStakingScript = artifacts.require("MAHAStakingScript");
+// const MAHAStakingScript = artifacts.require("MAHAStakingScript");
 const {
   buildUserProxies,
   BorrowerOperationsProxy,
@@ -43,7 +43,7 @@ const {
   StabilityPoolProxy,
   SortedTrovesProxy,
   TokenProxy,
-  MAHAStakingProxy
+  // MAHAStakingProxy
 } = require("../utils/proxyHelpers.js");
 
 /* "Liquity core" consists of all contracts in the core Liquity system.
@@ -72,17 +72,17 @@ class DeploymentHelper {
     }
   }
 
-  static async deployMAHAContracts(bountyAddress, lpRewardsAddress, multisigAddress) {
-    const cmdLineArgs = process.argv;
-    const frameworkPath = cmdLineArgs[1];
-    // console.log(`Framework used:  ${frameworkPath}`)
+  // static async deployMAHAContracts(bountyAddress, lpRewardsAddress, multisigAddress) {
+  //   const cmdLineArgs = process.argv;
+  //   const frameworkPath = cmdLineArgs[1];
+  //   // console.log(`Framework used:  ${frameworkPath}`)
 
-    if (frameworkPath.includes("hardhat")) {
-      return this.deployMAHAContractsHardhat(bountyAddress, lpRewardsAddress, multisigAddress);
-    } else if (frameworkPath.includes("truffle")) {
-      return this.deployMAHAContractsTruffle(bountyAddress, lpRewardsAddress, multisigAddress);
-    }
-  }
+  //   if (frameworkPath.includes("hardhat")) {
+  //     return this.deployMAHAContractsHardhat(bountyAddress, lpRewardsAddress, multisigAddress);
+  //   } else if (frameworkPath.includes("truffle")) {
+  //     return this.deployMAHAContractsTruffle(bountyAddress, lpRewardsAddress, multisigAddress);
+  //   }
+  // }
 
   static async deployLiquityCoreHardhat() {
     const priceFeedTestnet = await PriceFeedTestnet.new();
@@ -157,63 +157,63 @@ class DeploymentHelper {
     return testerContracts;
   }
 
-  static async deployMAHAContractsHardhat(bountyAddress, lpRewardsAddress, multisigAddress) {
-    const lqtyStaking = await MAHAStaking.new();
-    const lockupContractFactory = await LockupContractFactory.new();
-    const communityIssuance = await CommunityIssuance.new();
+  // static async deployMAHAContractsHardhat(bountyAddress, lpRewardsAddress, multisigAddress) {
+  //   // const lqtyStaking = await MAHAStaking.new();
+  //   const lockupContractFactory = await LockupContractFactory.new();
+  //   const communityIssuance = await CommunityIssuance.new();
 
-    MAHAStaking.setAsDeployed(lqtyStaking);
-    LockupContractFactory.setAsDeployed(lockupContractFactory);
-    CommunityIssuance.setAsDeployed(communityIssuance);
+  //   // MAHAStaking.setAsDeployed(lqtyStaking);
+  //   LockupContractFactory.setAsDeployed(lockupContractFactory);
+  //   CommunityIssuance.setAsDeployed(communityIssuance);
 
-    // Deploy MAHA Token, passing Community Issuance and Factory addresses to the constructor
-    const lqtyToken = await MAHAToken.new(
-      communityIssuance.address,
-      lqtyStaking.address,
-      lockupContractFactory.address,
-      bountyAddress,
-      lpRewardsAddress,
-      multisigAddress
-    );
-    MAHAToken.setAsDeployed(lqtyToken);
+  //   // Deploy MAHA Token, passing Community Issuance and Factory addresses to the constructor
+  //   const lqtyToken = await MAHAToken.new(
+  //     communityIssuance.address,
+  //     lqtyStaking.address,
+  //     lockupContractFactory.address,
+  //     bountyAddress,
+  //     lpRewardsAddress,
+  //     multisigAddress
+  //   );
+  //   MAHAToken.setAsDeployed(lqtyToken);
 
-    const MAHAContracts = {
-      lqtyStaking,
-      lockupContractFactory,
-      communityIssuance,
-      lqtyToken
-    };
-    return MAHAContracts;
-  }
+  //   const MAHAContracts = {
+  //     lqtyStaking,
+  //     lockupContractFactory,
+  //     communityIssuance,
+  //     lqtyToken
+  //   };
+  //   return MAHAContracts;
+  // }
 
-  static async deployMAHATesterContractsHardhat(bountyAddress, lpRewardsAddress, multisigAddress) {
-    const lqtyStaking = await MAHAStaking.new();
-    const lockupContractFactory = await LockupContractFactory.new();
-    const communityIssuance = await CommunityIssuanceTester.new();
+  // static async deployMAHATesterContractsHardhat(bountyAddress, lpRewardsAddress, multisigAddress) {
+  //   // const lqtyStaking = await MAHAStaking.new();
+  //   const lockupContractFactory = await LockupContractFactory.new();
+  //   const communityIssuance = await CommunityIssuanceTester.new();
 
-    MAHAStaking.setAsDeployed(lqtyStaking);
-    LockupContractFactory.setAsDeployed(lockupContractFactory);
-    CommunityIssuanceTester.setAsDeployed(communityIssuance);
+  //   // MAHAStaking.setAsDeployed(lqtyStaking);
+  //   LockupContractFactory.setAsDeployed(lockupContractFactory);
+  //   CommunityIssuanceTester.setAsDeployed(communityIssuance);
 
-    // Deploy MAHA Token, passing Community Issuance and Factory addresses to the constructor
-    const lqtyToken = await MAHATokenTester.new(
-      communityIssuance.address,
-      lqtyStaking.address,
-      lockupContractFactory.address,
-      bountyAddress,
-      lpRewardsAddress,
-      multisigAddress
-    );
-    MAHATokenTester.setAsDeployed(lqtyToken);
+  //   // Deploy MAHA Token, passing Community Issuance and Factory addresses to the constructor
+  //   const lqtyToken = await MAHATokenTester.new(
+  //     communityIssuance.address,
+  //     lqtyStaking.address,
+  //     lockupContractFactory.address,
+  //     bountyAddress,
+  //     lpRewardsAddress,
+  //     multisigAddress
+  //   );
+  //   MAHATokenTester.setAsDeployed(lqtyToken);
 
-    const MAHAContracts = {
-      lqtyStaking,
-      lockupContractFactory,
-      communityIssuance,
-      lqtyToken
-    };
-    return MAHAContracts;
-  }
+  //   const MAHAContracts = {
+  //     lqtyStaking,
+  //     lockupContractFactory,
+  //     communityIssuance,
+  //     lqtyToken
+  //   };
+  //   return MAHAContracts;
+  // }
 
   static async deployLiquityCoreTruffle() {
     const priceFeedTestnet = await PriceFeedTestnet.new();
@@ -249,30 +249,30 @@ class DeploymentHelper {
     return coreContracts;
   }
 
-  static async deployMAHAContractsTruffle(bountyAddress, lpRewardsAddress, multisigAddress) {
-    const lqtyStaking = await lqtyStaking.new();
-    const lockupContractFactory = await LockupContractFactory.new();
-    const communityIssuance = await CommunityIssuance.new();
+  // static async deployMAHAContractsTruffle(bountyAddress, lpRewardsAddress, multisigAddress) {
+  //   const lqtyStaking = await lqtyStaking.new();
+  //   const lockupContractFactory = await LockupContractFactory.new();
+  //   const communityIssuance = await CommunityIssuance.new();
 
-    /* Deploy MAHA Token, passing Community Issuance,  MAHAStaking, and Factory addresses
-    to the constructor  */
-    const lqtyToken = await MAHAToken.new(
-      communityIssuance.address,
-      lqtyStaking.address,
-      lockupContractFactory.address,
-      bountyAddress,
-      lpRewardsAddress,
-      multisigAddress
-    );
+  //   /* Deploy MAHA Token, passing Community Issuance,  MAHAStaking, and Factory addresses
+  //   to the constructor  */
+  //   const lqtyToken = await MAHAToken.new(
+  //     communityIssuance.address,
+  //     lqtyStaking.address,
+  //     lockupContractFactory.address,
+  //     bountyAddress,
+  //     lpRewardsAddress,
+  //     multisigAddress
+  //   );
 
-    const MAHAContracts = {
-      lqtyStaking,
-      lockupContractFactory,
-      communityIssuance,
-      lqtyToken
-    };
-    return MAHAContracts;
-  }
+  //   const MAHAContracts = {
+  //     lqtyStaking,
+  //     lockupContractFactory,
+  //     communityIssuance,
+  //     lqtyToken
+  //   };
+  //   return MAHAContracts;
+  // }
 
   static async deployLUSDToken(contracts) {
     contracts.lusdToken = await ARTHValuecoin.new(
@@ -350,13 +350,13 @@ class DeploymentHelper {
       MAHAContracts.lqtyToken
     );
 
-    const lqtyStakingScript = await MAHAStakingScript.new(MAHAContracts.lqtyStaking.address);
-    MAHAContracts.lqtyStaking = new MAHAStakingProxy(
-      owner,
-      proxies,
-      lqtyStakingScript.address,
-      MAHAContracts.lqtyStaking
-    );
+    // const lqtyStakingScript = await MAHAStakingScript.new(MAHAContracts.lqtyStaking.address);
+    // MAHAContracts.lqtyStaking = new MAHAStakingProxy(
+    //   owner,
+    //   proxies,
+    //   lqtyStakingScript.address,
+    //   MAHAContracts.lqtyStaking
+    // );
   }
 
   // Connect contracts to their dependencies
