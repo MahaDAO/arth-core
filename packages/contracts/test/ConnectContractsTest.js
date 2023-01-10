@@ -19,7 +19,7 @@ contract(
     let lqtyStaking;
     let lqtyToken;
     let communityIssuance;
-    let lockupContractFactory;
+    // let lockupContractFactory;
 
     before(async () => {
       const coreContracts = await deploymentHelper.deployLiquityCore();
@@ -42,7 +42,7 @@ contract(
       lqtyStaking = LQTYContracts.lqtyStaking;
       lqtyToken = LQTYContracts.lqtyToken;
       communityIssuance = LQTYContracts.communityIssuance;
-      lockupContractFactory = LQTYContracts.lockupContractFactory;
+      // lockupContractFactory = LQTYContracts.lockupContractFactory;
 
       await deploymentHelper.connectLQTYContracts(LQTYContracts);
       await deploymentHelper.connectCoreContracts(coreContracts, LQTYContracts);
@@ -108,13 +108,13 @@ contract(
       assert.equal(stabilityPoolAddress, recordedStabilityPoolAddresss);
     });
 
-    // LQTY Staking in TroveM
-    it("Sets the correct LQTYStaking address in TroveManager", async () => {
-      const lqtyStakingAddress = lqtyStaking.address;
+    // // LQTY Staking in TroveM
+    // it("Sets the correct LQTYStaking address in TroveManager", async () => {
+    //   const lqtyStakingAddress = lqtyStaking.address;
 
-      const recordedLQTYStakingAddress = await troveManager.lqtyStaking();
-      assert.equal(lqtyStakingAddress, recordedLQTYStakingAddress);
-    });
+    //   const recordedLQTYStakingAddress = await troveManager.lqtyStaking();
+    //   assert.equal(lqtyStakingAddress, recordedLQTYStakingAddress);
+    // });
 
     // Active Pool
 
@@ -253,101 +253,101 @@ contract(
       assert.equal(defaultPoolAddress, recordedDefaultPoolAddress);
     });
 
-    // LQTY Staking in BO
-    it("Sets the correct LQTYStaking address in BorrowerOperations", async () => {
-      const lqtyStakingAddress = lqtyStaking.address;
+    // // LQTY Staking in BO
+    // it("Sets the correct LQTYStaking address in BorrowerOperations", async () => {
+    //   const lqtyStakingAddress = lqtyStaking.address;
 
-      const recordedLQTYStakingAddress = await borrowerOperations.lqtyStakingAddress();
-      assert.equal(lqtyStakingAddress, recordedLQTYStakingAddress);
-    });
+    //   const recordedLQTYStakingAddress = await borrowerOperations.lqtyStakingAddress();
+    //   assert.equal(lqtyStakingAddress, recordedLQTYStakingAddress);
+    // });
 
-    // --- LQTY Staking ---
+    // // --- LQTY Staking ---
 
-    // Sets LQTYToken in LQTYStaking
-    it("Sets the correct LQTYToken address in LQTYStaking", async () => {
-      const lqtyTokenAddress = lqtyToken.address;
+    // // Sets LQTYToken in LQTYStaking
+    // it("Sets the correct LQTYToken address in LQTYStaking", async () => {
+    //   const lqtyTokenAddress = lqtyToken.address;
 
-      const recordedLQTYTokenAddress = await lqtyStaking.lqtyToken();
-      assert.equal(lqtyTokenAddress, recordedLQTYTokenAddress);
-    });
+    //   const recordedLQTYTokenAddress = await lqtyStaking.lqtyToken();
+    //   assert.equal(lqtyTokenAddress, recordedLQTYTokenAddress);
+    // });
 
-    // Sets ActivePool in LQTYStaking
-    it("Sets the correct ActivePool address in LQTYStaking", async () => {
-      const activePoolAddress = activePool.address;
+    // // Sets ActivePool in LQTYStaking
+    // it("Sets the correct ActivePool address in LQTYStaking", async () => {
+    //   const activePoolAddress = activePool.address;
 
-      const recordedActivePoolAddress = await lqtyStaking.activePoolAddress();
-      assert.equal(activePoolAddress, recordedActivePoolAddress);
-    });
+    //   const recordedActivePoolAddress = await lqtyStaking.activePoolAddress();
+    //   assert.equal(activePoolAddress, recordedActivePoolAddress);
+    // });
 
-    // Sets ARTHValuecoin in LQTYStaking
-    it("Sets the correct ActivePool address in LQTYStaking", async () => {
-      const lusdTokenAddress = lusdToken.address;
+    // // Sets ARTHValuecoin in LQTYStaking
+    // it("Sets the correct ActivePool address in LQTYStaking", async () => {
+    //   const lusdTokenAddress = lusdToken.address;
 
-      const recordedLUSDTokenAddress = await lqtyStaking.lusdToken();
-      assert.equal(lusdTokenAddress, recordedLUSDTokenAddress);
-    });
+    //   const recordedLUSDTokenAddress = await lqtyStaking.lusdToken();
+    //   assert.equal(lusdTokenAddress, recordedLUSDTokenAddress);
+    // });
 
-    // Sets TroveManager in LQTYStaking
-    it("Sets the correct ActivePool address in LQTYStaking", async () => {
-      const troveManagerAddress = troveManager.address;
+    // // Sets TroveManager in LQTYStaking
+    // it("Sets the correct ActivePool address in LQTYStaking", async () => {
+    //   const troveManagerAddress = troveManager.address;
 
-      const recordedTroveManagerAddress = await lqtyStaking.troveManagerAddress();
-      assert.equal(troveManagerAddress, recordedTroveManagerAddress);
-    });
+    //   const recordedTroveManagerAddress = await lqtyStaking.troveManagerAddress();
+    //   assert.equal(troveManagerAddress, recordedTroveManagerAddress);
+    // });
 
-    // Sets BorrowerOperations in LQTYStaking
-    it("Sets the correct BorrowerOperations address in LQTYStaking", async () => {
-      const borrowerOperationsAddress = borrowerOperations.address;
+    // // Sets BorrowerOperations in LQTYStaking
+    // it("Sets the correct BorrowerOperations address in LQTYStaking", async () => {
+    //   const borrowerOperationsAddress = borrowerOperations.address;
 
-      const recordedBorrowerOperationsAddress = await lqtyStaking.borrowerOperationsAddress();
-      assert.equal(borrowerOperationsAddress, recordedBorrowerOperationsAddress);
-    });
+    //   const recordedBorrowerOperationsAddress = await lqtyStaking.borrowerOperationsAddress();
+    //   assert.equal(borrowerOperationsAddress, recordedBorrowerOperationsAddress);
+    // });
 
     // ---  LQTYToken ---
 
-    // Sets CI in LQTYToken
-    it("Sets the correct CommunityIssuance address in LQTYToken", async () => {
-      const communityIssuanceAddress = communityIssuance.address;
+    // // Sets CI in LQTYToken
+    // it("Sets the correct CommunityIssuance address in LQTYToken", async () => {
+    //   const communityIssuanceAddress = communityIssuance.address;
 
-      const recordedcommunityIssuanceAddress = await lqtyToken.communityIssuanceAddress();
-      assert.equal(communityIssuanceAddress, recordedcommunityIssuanceAddress);
-    });
+    //   const recordedcommunityIssuanceAddress = await lqtyToken.communityIssuanceAddress();
+    //   assert.equal(communityIssuanceAddress, recordedcommunityIssuanceAddress);
+    // });
 
-    // Sets LQTYStaking in LQTYToken
-    it("Sets the correct LQTYStaking address in LQTYToken", async () => {
-      const lqtyStakingAddress = lqtyStaking.address;
+    // // Sets LQTYStaking in LQTYToken
+    // it("Sets the correct LQTYStaking address in LQTYToken", async () => {
+    //   const lqtyStakingAddress = lqtyStaking.address;
 
-      const recordedLQTYStakingAddress = await lqtyToken.lqtyStakingAddress();
-      assert.equal(lqtyStakingAddress, recordedLQTYStakingAddress);
-    });
+    //   const recordedLQTYStakingAddress = await lqtyToken.lqtyStakingAddress();
+    //   assert.equal(lqtyStakingAddress, recordedLQTYStakingAddress);
+    // });
 
-    // Sets LCF in LQTYToken
-    it("Sets the correct LockupContractFactory address in LQTYToken", async () => {
-      const LCFAddress = lockupContractFactory.address;
+    // // Sets LCF in LQTYToken
+    // it("Sets the correct LockupContractFactory address in LQTYToken", async () => {
+    //   const LCFAddress = lockupContractFactory.address;
 
-      const recordedLCFAddress = await lqtyToken.lockupContractFactory();
-      assert.equal(LCFAddress, recordedLCFAddress);
-    });
+    //   const recordedLCFAddress = await lqtyToken.lockupContractFactory();
+    //   assert.equal(LCFAddress, recordedLCFAddress);
+    // });
 
     // --- LCF  ---
 
-    // Sets LQTYToken in LockupContractFactory
-    it("Sets the correct LQTYToken address in LockupContractFactory", async () => {
-      const lqtyTokenAddress = lqtyToken.address;
+    // // Sets LQTYToken in LockupContractFactory
+    // it("Sets the correct LQTYToken address in LockupContractFactory", async () => {
+    //   const lqtyTokenAddress = lqtyToken.address;
 
-      const recordedLQTYTokenAddress = await lockupContractFactory.lqtyTokenAddress();
-      assert.equal(lqtyTokenAddress, recordedLQTYTokenAddress);
-    });
+    //   const recordedLQTYTokenAddress = await lockupContractFactory.lqtyTokenAddress();
+    //   assert.equal(lqtyTokenAddress, recordedLQTYTokenAddress);
+    // });
 
     // --- CI ---
 
-    // Sets LQTYToken in CommunityIssuance
-    it("Sets the correct LQTYToken address in CommunityIssuance", async () => {
-      const lqtyTokenAddress = lqtyToken.address;
+    // // Sets LQTYToken in CommunityIssuance
+    // it("Sets the correct LQTYToken address in CommunityIssuance", async () => {
+    //   const lqtyTokenAddress = lqtyToken.address;
 
-      const recordedLQTYTokenAddress = await communityIssuance.lqtyToken();
-      assert.equal(lqtyTokenAddress, recordedLQTYTokenAddress);
-    });
+    //   const recordedLQTYTokenAddress = await communityIssuance.lqtyToken();
+    //   assert.equal(lqtyTokenAddress, recordedLQTYTokenAddress);
+    // });
 
     it("Sets the correct StabilityPool address in CommunityIssuance", async () => {
       const stabilityPoolAddress = stabilityPool.address;

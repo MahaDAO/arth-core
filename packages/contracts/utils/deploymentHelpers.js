@@ -292,72 +292,71 @@ class DeploymentHelper {
     return contracts;
   }
 
-  static async deployProxyScripts(contracts, MAHAContracts, owner, users) {
-    const proxies = await buildUserProxies(users);
+  // static async deployProxyScripts(contracts, MAHAContracts, owner, users) {
+  //   const proxies = await buildUserProxies(users);
 
-    const borrowerWrappersScript = await BorrowerWrappersScript.new(
-      contracts.borrowerOperations.address,
-      contracts.troveManager.address,
-      MAHAContracts.lqtyStaking.address
-    );
-    contracts.borrowerWrappers = new BorrowerWrappersProxy(
-      owner,
-      proxies,
-      borrowerWrappersScript.address
-    );
+  //   const borrowerWrappersScript = await BorrowerWrappersScript.new(
+  //     contracts.borrowerOperations.address,
+  //     contracts.troveManager.address,
+  //   );
+  //   contracts.borrowerWrappers = new BorrowerWrappersProxy(
+  //     owner,
+  //     proxies,
+  //     borrowerWrappersScript.address
+  //   );
 
-    const borrowerOperationsScript = await BorrowerOperationsScript.new(
-      contracts.borrowerOperations.address
-    );
-    contracts.borrowerOperations = new BorrowerOperationsProxy(
-      owner,
-      proxies,
-      borrowerOperationsScript.address,
-      contracts.borrowerOperations
-    );
+  //   const borrowerOperationsScript = await BorrowerOperationsScript.new(
+  //     contracts.borrowerOperations.address
+  //   );
+  //   contracts.borrowerOperations = new BorrowerOperationsProxy(
+  //     owner,
+  //     proxies,
+  //     borrowerOperationsScript.address,
+  //     contracts.borrowerOperations
+  //   );
 
-    const troveManagerScript = await TroveManagerScript.new(contracts.troveManager.address);
-    contracts.troveManager = new TroveManagerProxy(
-      owner,
-      proxies,
-      troveManagerScript.address,
-      contracts.troveManager
-    );
+  //   const troveManagerScript = await TroveManagerScript.new(contracts.troveManager.address);
+  //   contracts.troveManager = new TroveManagerProxy(
+  //     owner,
+  //     proxies,
+  //     troveManagerScript.address,
+  //     contracts.troveManager
+  //   );
 
-    const stabilityPoolScript = await StabilityPoolScript.new(contracts.stabilityPool.address);
-    contracts.stabilityPool = new StabilityPoolProxy(
-      owner,
-      proxies,
-      stabilityPoolScript.address,
-      contracts.stabilityPool
-    );
+  //   const stabilityPoolScript = await StabilityPoolScript.new(contracts.stabilityPool.address);
+  //   contracts.stabilityPool = new StabilityPoolProxy(
+  //     owner,
+  //     proxies,
+  //     stabilityPoolScript.address,
+  //     contracts.stabilityPool
+  //   );
 
-    contracts.sortedTroves = new SortedTrovesProxy(owner, proxies, contracts.sortedTroves);
+  //   contracts.sortedTroves = new SortedTrovesProxy(owner, proxies, contracts.sortedTroves);
 
-    const lusdTokenScript = await TokenScript.new(contracts.lusdToken.address);
-    contracts.lusdToken = new TokenProxy(
-      owner,
-      proxies,
-      lusdTokenScript.address,
-      contracts.lusdToken
-    );
+  //   const lusdTokenScript = await TokenScript.new(contracts.lusdToken.address);
+  //   contracts.lusdToken = new TokenProxy(
+  //     owner,
+  //     proxies,
+  //     lusdTokenScript.address,
+  //     contracts.lusdToken
+  //   );
 
-    const lqtyTokenScript = await TokenScript.new(MAHAContracts.lqtyToken.address);
-    MAHAContracts.lqtyToken = new TokenProxy(
-      owner,
-      proxies,
-      lqtyTokenScript.address,
-      MAHAContracts.lqtyToken
-    );
+  //   const lqtyTokenScript = await TokenScript.new(MAHAContracts.lqtyToken.address);
+  //   MAHAContracts.lqtyToken = new TokenProxy(
+  //     owner,
+  //     proxies,
+  //     lqtyTokenScript.address,
+  //     MAHAContracts.lqtyToken
+  //   );
 
-    // const lqtyStakingScript = await MAHAStakingScript.new(MAHAContracts.lqtyStaking.address);
-    // MAHAContracts.lqtyStaking = new MAHAStakingProxy(
-    //   owner,
-    //   proxies,
-    //   lqtyStakingScript.address,
-    //   MAHAContracts.lqtyStaking
-    // );
-  }
+  //   // const lqtyStakingScript = await MAHAStakingScript.new(MAHAContracts.lqtyStaking.address);
+  //   // MAHAContracts.lqtyStaking = new MAHAStakingProxy(
+  //   //   owner,
+  //   //   proxies,
+  //   //   lqtyStakingScript.address,
+  //   //   MAHAContracts.lqtyStaking
+  //   // );
+  // }
 
   // Connect contracts to their dependencies
   static async connectCoreContracts(contracts, MAHAContracts) {

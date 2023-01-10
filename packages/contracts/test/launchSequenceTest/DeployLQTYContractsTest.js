@@ -28,7 +28,7 @@ contract('Deploying the LQTY contracts: LCF, CI, LQTYStaking, and LQTYToken ', a
     lqtyStaking = LQTYContracts.lqtyStaking
     lqtyToken = LQTYContracts.lqtyToken
     communityIssuance = LQTYContracts.communityIssuance
-    lockupContractFactory = LQTYContracts.lockupContractFactory
+    // lockupContractFactory = LQTYContracts.lockupContractFactory
 
     //LQTY Staking and CommunityIssuance have not yet had their setters called, so are not yet
     // connected to the rest of the system
@@ -64,11 +64,11 @@ contract('Deploying the LQTY contracts: LCF, CI, LQTYStaking, and LQTYToken ', a
       assert.equal(communityIssuance.address, storedCIAddress)
     })
 
-    it("Stores the LockupContractFactory address", async () => {
-      const storedLCFAddress = await lqtyToken.lockupContractFactory()
+    // it("Stores the LockupContractFactory address", async () => {
+    //   const storedLCFAddress = await lqtyToken.lockupContractFactory()
 
-      assert.equal(lockupContractFactory.address, storedLCFAddress)
-    })
+    //   assert.equal(lockupContractFactory.address, storedLCFAddress)
+    // })
 
     it("Mints the correct LQTY amount to the multisig's address: (64.66 million)", async () => {
       const multisigLQTYEntitlement = await lqtyToken.balanceOf(multisig)
@@ -170,12 +170,12 @@ contract('Deploying the LQTY contracts: LCF, CI, LQTYStaking, and LQTYToken ', a
       assert.equal(lqtyTokenAddress, recordedLQTYTokenAddress)
     })
 
-    it('sets the correct LQTYToken address in LockupContractFactory', async () => {
-      const lqtyTokenAddress = lqtyToken.address
+    // it('sets the correct LQTYToken address in LockupContractFactory', async () => {
+    //   const lqtyTokenAddress = lqtyToken.address
 
-      const recordedLQTYTokenAddress = await lockupContractFactory.lqtyTokenAddress()
-      assert.equal(lqtyTokenAddress, recordedLQTYTokenAddress)
-    })
+    //   const recordedLQTYTokenAddress = await lockupContractFactory.lqtyTokenAddress()
+    //   assert.equal(lqtyTokenAddress, recordedLQTYTokenAddress)
+    // })
 
     it('sets the correct LQTYToken address in CommunityIssuance', async () => {
       // Deploy core contracts and set the LQTYToken address in the CI and LQTYStaking

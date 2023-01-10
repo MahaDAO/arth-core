@@ -25,7 +25,7 @@ const {
   StabilityPoolProxy,
   SortedTrovesProxy,
   TokenProxy,
-  LQTYStakingProxy
+  // LQTYStakingProxy
 } = require('../utils/proxyHelpers.js')
 
 contract('BorrowerWrappers', async accounts => {

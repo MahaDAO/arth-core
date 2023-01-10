@@ -119,57 +119,57 @@ async function mainnetDeploy(configParams) {
   ).toString();
   console.log(`time oneYearFromDeployment: ${oneYearFromDeployment}`);
 
-  // Deploy LockupContracts - one for each beneficiary
-  const lockupContracts = {};
+  // // Deploy LockupContracts - one for each beneficiary
+  // const lockupContracts = {};
 
-  for (const [investor, investorAddr] of Object.entries(configParams.beneficiaries)) {
-    const lockupContractEthersFactory = await ethers.getContractFactory(
-      "LockupContract",
-      deployerWallet
-    );
-    if (deploymentState[investor] && deploymentState[investor].address) {
-      console.log(
-        `Using previously deployed ${investor} lockup contract at address ${deploymentState[investor].address}`
-      );
-      lockupContracts[investor] = new ethers.Contract(
-        deploymentState[investor].address,
-        lockupContractEthersFactory.interface,
-        deployerWallet
-      );
-    } else {
-      const txReceipt = await mdh.sendAndWaitForTransaction(
-        LQTYContracts.lockupContractFactory.deployLockupContract(
-          investorAddr,
-          oneYearFromDeployment,
-          { gasPrice }
-        )
-      );
+  // for (const [investor, investorAddr] of Object.entries(configParams.beneficiaries)) {
+  //   const lockupContractEthersFactory = await ethers.getContractFactory(
+  //     "LockupContract",
+  //     deployerWallet
+  //   );
+  //   if (deploymentState[investor] && deploymentState[investor].address) {
+  //     console.log(
+  //       `Using previously deployed ${investor} lockup contract at address ${deploymentState[investor].address}`
+  //     );
+  //     lockupContracts[investor] = new ethers.Contract(
+  //       deploymentState[investor].address,
+  //       lockupContractEthersFactory.interface,
+  //       deployerWallet
+  //     );
+  //   } else {
+  //     const txReceipt = await mdh.sendAndWaitForTransaction(
+  //       LQTYContracts.lockupContractFactory.deployLockupContract(
+  //         investorAddr,
+  //         oneYearFromDeployment,
+  //         { gasPrice }
+  //       )
+  //     );
 
-      const address = await txReceipt.logs[0].address; // The deployment event emitted from the LC itself is is the first of two events, so this is its address
-      lockupContracts[investor] = new ethers.Contract(
-        address,
-        lockupContractEthersFactory.interface,
-        deployerWallet
-      );
+  //     const address = await txReceipt.logs[0].address; // The deployment event emitted from the LC itself is is the first of two events, so this is its address
+  //     lockupContracts[investor] = new ethers.Contract(
+  //       address,
+  //       lockupContractEthersFactory.interface,
+  //       deployerWallet
+  //     );
 
-      deploymentState[investor] = {
-        address: address,
-        txHash: txReceipt.transactionHash
-      };
+  //     deploymentState[investor] = {
+  //       address: address,
+  //       txHash: txReceipt.transactionHash
+  //     };
 
-      mdh.saveDeployment(deploymentState);
-    }
+  //     mdh.saveDeployment(deploymentState);
+  //   }
 
-    const lqtyTokenAddr = LQTYContracts.lqtyToken.address;
-    // verify
-    if (configParams.ETHERSCAN_BASE_URL) {
-      await mdh.verifyContract(investor, deploymentState, [
-        lqtyTokenAddr,
-        investorAddr,
-        oneYearFromDeployment
-      ]);
-    }
-  }
+  //   const lqtyTokenAddr = LQTYContracts.lqtyToken.address;
+  //   // verify
+  //   if (configParams.ETHERSCAN_BASE_URL) {
+  //     await mdh.verifyContract(investor, deploymentState, [
+  //       lqtyTokenAddr,
+  //       investorAddr,
+  //       oneYearFromDeployment
+  //     ]);
+  //   }
+  // }
 
   // // --- TESTS AND CHECKS  ---
 
@@ -200,34 +200,34 @@ async function mainnetDeploy(configParams) {
   console.log(`current Tellor price: ${tellorPriceResponse[1]}`);
   console.log(`current Tellor timestamp: ${tellorPriceResponse[2]}`);
 
-  // // --- Lockup Contracts ---
-  console.log("LOCKUP CONTRACT CHECKS");
-  // Check lockup contracts exist for each beneficiary with correct unlock time
-  for (investor of Object.keys(lockupContracts)) {
-    const lockupContract = lockupContracts[investor];
-    // check LC references correct LQTYToken
-    const storedLQTYTokenAddr = await lockupContract.lqtyToken();
-    assert.equal(LQTYContracts.lqtyToken.address, storedLQTYTokenAddr);
-    // Check contract has stored correct beneficary
-    const onChainBeneficiary = await lockupContract.beneficiary();
-    assert.equal(
-      configParams.beneficiaries[investor].toLowerCase(),
-      onChainBeneficiary.toLowerCase()
-    );
-    // Check correct unlock time (1 yr from deployment)
-    const unlockTime = await lockupContract.unlockTime();
-    assert.equal(oneYearFromDeployment, unlockTime);
+  // // // --- Lockup Contracts ---
+  // console.log("LOCKUP CONTRACT CHECKS");
+  // // Check lockup contracts exist for each beneficiary with correct unlock time
+  // for (investor of Object.keys(lockupContracts)) {
+  //   const lockupContract = lockupContracts[investor];
+  //   // check LC references correct LQTYToken
+  //   const storedLQTYTokenAddr = await lockupContract.lqtyToken();
+  //   assert.equal(LQTYContracts.lqtyToken.address, storedLQTYTokenAddr);
+  //   // Check contract has stored correct beneficary
+  //   const onChainBeneficiary = await lockupContract.beneficiary();
+  //   assert.equal(
+  //     configParams.beneficiaries[investor].toLowerCase(),
+  //     onChainBeneficiary.toLowerCase()
+  //   );
+  //   // Check correct unlock time (1 yr from deployment)
+  //   const unlockTime = await lockupContract.unlockTime();
+  //   assert.equal(oneYearFromDeployment, unlockTime);
 
-    console.log(
-      `lockupContract addr: ${lockupContract.address},
-            stored LQTYToken addr: ${storedLQTYTokenAddr}
-            beneficiary: ${investor},
-            beneficiary addr: ${configParams.beneficiaries[investor]},
-            on-chain beneficiary addr: ${onChainBeneficiary},
-            unlockTime: ${unlockTime}
-            `
-    );
-  }
+  //   console.log(
+  //     `lockupContract addr: ${lockupContract.address},
+  //           stored LQTYToken addr: ${storedLQTYTokenAddr}
+  //           beneficiary: ${investor},
+  //           beneficiary addr: ${configParams.beneficiaries[investor]},
+  //           on-chain beneficiary addr: ${onChainBeneficiary},
+  //           unlockTime: ${unlockTime}
+  //           `
+  //   );
+  // }
 
   // // --- Check correct addresses set in LQTYToken
   // console.log("STORED ADDRESSES IN LQTY TOKEN")

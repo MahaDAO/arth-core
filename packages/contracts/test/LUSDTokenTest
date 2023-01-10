@@ -104,10 +104,10 @@ contract("ARTHValuecoin", async accounts => {
       await deploymentHelper.connectLQTYContractsToCore(LQTYContracts, contracts);
 
       lusdTokenOriginal = contracts.lusdToken;
-      if (withProxy) {
-        const users = [alice, bob, carol, dennis];
-        await deploymentHelper.deployProxyScripts(contracts, LQTYContracts, owner, users);
-      }
+      // if (withProxy) {
+      //   const users = [alice, bob, carol, dennis];
+      //   await deploymentHelper.deployProxyScripts(contracts, LQTYContracts, owner, users);
+      // }
 
       lusdTokenTester = contracts.lusdToken;
       // for some reason this doesn’t work with coverage network

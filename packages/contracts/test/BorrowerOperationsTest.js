@@ -96,10 +96,10 @@ contract("BorrowerOperations", async accounts => {
       await deploymentHelper.connectCoreContracts(contracts, LQTYContracts);
       await deploymentHelper.connectLQTYContractsToCore(LQTYContracts, contracts);
 
-      if (withProxy) {
-        const users = [alice, bob, carol, dennis, whale, A, B, C, D, E];
-        await deploymentHelper.deployProxyScripts(contracts, LQTYContracts, owner, users);
-      }
+      // if (withProxy) {
+      //   const users = [alice, bob, carol, dennis, whale, A, B, C, D, E];
+      //   await deploymentHelper.deployProxyScripts(contracts, LQTYContracts, owner, users);
+      // }
 
       priceFeed = contracts.priceFeedTestnet;
       lusdToken = contracts.lusdToken;
@@ -114,7 +114,7 @@ contract("BorrowerOperations", async accounts => {
       lqtyStaking = LQTYContracts.lqtyStaking;
       lqtyToken = LQTYContracts.lqtyToken;
       communityIssuance = LQTYContracts.communityIssuance;
-      lockupContractFactory = LQTYContracts.lockupContractFactory;
+      // lockupContractFactory = LQTYContracts.lockupContractFactory;
 
       LUSD_GAS_COMPENSATION = await borrowerOperations.LUSD_GAS_COMPENSATION();
       MIN_NET_DEBT = await borrowerOperations.MIN_NET_DEBT();
