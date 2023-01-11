@@ -34,7 +34,7 @@ contract(
     let borrowerOperations;
 
     let lqtyStaking;
-    let lqtyToken;
+    let mahaToken;
     let communityIssuance;
     // let lockupContractFactory;
 
@@ -48,6 +48,7 @@ contract(
       //   multisig
       // );
 
+
       priceFeed = coreContracts.priceFeed;
       arthToken = coreContracts.arthToken;
       sortedTroves = coreContracts.sortedTroves;
@@ -60,7 +61,7 @@ contract(
       borrowerOperations = coreContracts.borrowerOperations;
 
       // lqtyStaking = LQTYContracts.lqtyStaking;
-      // lqtyToken = LQTYContracts.lqtyToken;
+      mahaToken = coreContracts.mahaToken;
       // communityIssuance = LQTYContracts.communityIssuance;
       // lockupContractFactory = LQTYContracts.lockupContractFactory;
       // await deploymentHelper.connectLQTYContracts(LQTYContracts);
@@ -69,7 +70,7 @@ contract(
 
       for (account of accounts.slice(0, 10)) {
         await th.openTrove(coreContracts, {
-          extraLUSDAmount: toBN(dec(20000, 18)),
+          extraARTHAmount: toBN(dec(20000, 18)),
           ICR: toBN(dec(2, 18)),
           extraParams: { from: account }
         });
@@ -78,7 +79,7 @@ contract(
       const expectedCISupplyCap = "32000000000000000000000000"; // 32mil
 
       // Check CI has been properly funded
-      // const bal = await lqtyToken.balanceOf(communityIssuance.address);
+      // const bal = await mahaToken.balanceOf(communityIssuance.address);
       assert.equal(bal, expectedCISupplyCap);
     });
 
@@ -232,22 +233,22 @@ contract(
         }
       });
 
-      // increaseLUSD
-      it("increaseLUSDDebt(): reverts when called by an account that is not BO nor TroveM", async () => {
+      // increaseARTH
+      it("increaseARTHDebt(): reverts when called by an account that is not BO nor TroveM", async () => {
         // Attempt call from alice
         try {
-          const txAlice = await activePool.increaseLUSDDebt(100, { from: alice });
+          const txAlice = await activePool.increaseARTHDebt(100, { from: alice });
         } catch (err) {
           assert.include(err.message, "revert");
           assert.include(err.message, "Caller is neither BorrowerOperations nor TroveManager");
         }
       });
 
-      // decreaseLUSD
-      it("decreaseLUSDDebt(): reverts when called by an account that is not BO nor TroveM nor SP", async () => {
+      // decreaseARTH
+      it("decreaseARTHDebt(): reverts when called by an account that is not BO nor TroveM nor SP", async () => {
         // Attempt call from alice
         try {
-          const txAlice = await activePool.decreaseLUSDDebt(100, { from: alice });
+          const txAlice = await activePool.decreaseARTHDebt(100, { from: alice });
         } catch (err) {
           assert.include(err.message, "revert");
           assert.include(
@@ -285,22 +286,22 @@ contract(
         }
       });
 
-      // increaseLUSD
-      it("increaseLUSDDebt(): reverts when called by an account that is not TroveManager", async () => {
+      // increaseARTH
+      it("increaseARTHDebt(): reverts when called by an account that is not TroveManager", async () => {
         // Attempt call from alice
         try {
-          const txAlice = await defaultPool.increaseLUSDDebt(100, { from: alice });
+          const txAlice = await defaultPool.increaseARTHDebt(100, { from: alice });
         } catch (err) {
           assert.include(err.message, "revert");
           assert.include(err.message, "Caller is not the TroveManager");
         }
       });
 
-      // decreaseLUSD
-      it("decreaseLUSD(): reverts when called by an account that is not TroveManager", async () => {
+      // decreaseARTH
+      it("decreaseARTH(): reverts when called by an account that is not TroveManager", async () => {
         // Attempt call from alice
         try {
-          const txAlice = await defaultPool.decreaseLUSDDebt(100, { from: alice });
+          const txAlice = await defaultPool.decreaseARTHDebt(100, { from: alice });
         } catch (err) {
           assert.include(err.message, "revert");
           assert.include(err.message, "Caller is not the TroveManager");
@@ -445,7 +446,7 @@ contract(
     // describe("LockupContract", async accounts => {
     //   it("withdrawLQTY(): reverts when caller is not beneficiary", async () => {
     //     // deploy new LC with Carol as beneficiary
-    //     const unlockTime = (await lqtyToken.getDeploymentStartTime()).add(
+    //     const unlockTime = (await mahaToken.getDeploymentStartTime()).add(
     //       toBN(timeValues.SECONDS_IN_ONE_YEAR)
     //     );
     //     const deployedLCtx = await lockupContractFactory.deployLockupContract(carol, unlockTime, {
@@ -455,7 +456,7 @@ contract(
     //     const LC = await th.getLCFromDeploymentTx(deployedLCtx);
 
     //     // LQTY Multisig funds the LC
-    //     await lqtyToken.transfer(LC.address, dec(100, 18), { from: multisig });
+    //     await mahaToken.transfer(LC.address, dec(100, 18), { from: multisig });
 
     //     // Fast-forward one year, so that beneficiary can withdraw
     //     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
@@ -474,9 +475,9 @@ contract(
     // });
 
     // describe("LQTYStaking", async accounts => {
-    //   it("increaseF_LUSD(): reverts when caller is not TroveManager", async () => {
+    //   it("increaseF_ARTH(): reverts when caller is not TroveManager", async () => {
     //     try {
-    //       const txAlice = await lqtyStaking.increaseF_LUSD(dec(1, 18), { from: alice });
+    //       const txAlice = await lqtyStaking.increaseF_ARTH(dec(1, 18), { from: alice });
     //     } catch (err) {
     //       assert.include(err.message, "revert");
     //     }
@@ -486,11 +487,11 @@ contract(
     // describe("LQTYToken", async accounts => {
     //   it("sendToLQTYStaking(): reverts when caller is not the LQTYSstaking", async () => {
     //     // Check multisig has some LQTY
-    //     assert.isTrue((await lqtyToken.balanceOf(multisig)).gt(toBN("0")));
+    //     assert.isTrue((await mahaToken.balanceOf(multisig)).gt(toBN("0")));
 
     //     // multisig tries to call it
     //     try {
-    //       const tx = await lqtyToken.sendToLQTYStaking(multisig, 1, { from: multisig });
+    //       const tx = await mahaToken.sendToLQTYStaking(multisig, 1, { from: multisig });
     //     } catch (err) {
     //       assert.include(err.message, "revert");
     //     }
@@ -499,12 +500,12 @@ contract(
     //     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
 
     //     // Owner transfers 1 LQTY to bob
-    //     await lqtyToken.transfer(bob, dec(1, 18), { from: multisig });
-    //     assert.equal(await lqtyToken.balanceOf(bob), dec(1, 18));
+    //     await mahaToken.transfer(bob, dec(1, 18), { from: multisig });
+    //     assert.equal(await mahaToken.balanceOf(bob), dec(1, 18));
 
     //     // Bob tries to call it
     //     try {
-    //       const tx = await lqtyToken.sendToLQTYStaking(bob, dec(1, 18), { from: bob });
+    //       const tx = await mahaToken.sendToLQTYStaking(bob, dec(1, 18), { from: bob });
     //     } catch (err) {
     //       assert.include(err.message, "revert");
     //     }

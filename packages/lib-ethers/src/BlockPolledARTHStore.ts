@@ -87,7 +87,6 @@ export class BlockPolledARTHStore extends ARTHStore<BlockPolledARTHStoreExtraSta
   ): Promise<[baseState: ARTHStoreBaseState, extraState: BlockPolledARTHStoreExtraState]> {
     const { userAddress, frontendTag } = this.connection;
     const { governance } = _getContracts(this.connection);
-    console.log("**dev --------------- _get() Function addressess-------------", governance.address)
     const { blockTimestamp, _feesFactory, ...baseState } = await promiseAllValues({
       blockTimestamp: this._readable._getBlockTimestamp(blockTag),
       _feesFactory: this._readable._getFeesFactory({ blockTag }),

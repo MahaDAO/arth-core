@@ -22,7 +22,7 @@
 
 //   let contracts;
 
-//   const getOpenTroveLUSDAmount = async totalDebt => th.getOpenTroveLUSDAmount(contracts, totalDebt);
+//   const getOpenTroveARTHAmount = async totalDebt => th.getOpenTroveARTHAmount(contracts, totalDebt);
 //   const openTrove = async params => th.openTrove(contracts, params);
 
 //   beforeEach(async () => {
@@ -39,7 +39,7 @@
 //       multisig
 //     );
 
-//     priceFeed = contracts.priceFeedTestnet;
+//     priceFeed = contracts.priceFeed;
 //     collSurplusPool = contracts.collSurplusPool;
 //     borrowerOperations = contracts.borrowerOperations;
 
@@ -60,7 +60,7 @@
 //       extraParams: { from: B }
 //     });
 //     await openTrove({
-//       extraLUSDAmount: B_netDebt,
+//       extraARTHAmount: B_netDebt,
 //       extraParams: { from: A, value: dec(3000, "ether") }
 //     });
 
@@ -106,7 +106,7 @@
 //     ]);
 //     await nonPayable.forward(borrowerOperations.address, openTroveData, { value: B_coll });
 //     await openTrove({
-//       extraLUSDAmount: B_netDebt,
+//       extraARTHAmount: B_netDebt,
 //       extraParams: { from: A, value: dec(3000, "ether") }
 //     });
 

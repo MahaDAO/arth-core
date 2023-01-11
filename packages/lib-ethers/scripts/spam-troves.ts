@@ -3,7 +3,7 @@ import { TransactionResponse } from "@ethersproject/abstract-provider";
 import { JsonRpcProvider } from "@ethersproject/providers";
 import { Wallet } from "@ethersproject/wallet";
 
-import { Decimal, LUSD_MINIMUM_DEBT, Trove } from "@mahadao/arth-base";
+import { Decimal, ARTH_MINIMUM_DEBT, Trove } from "@mahadao/arth-base";
 import { EthersARTH, EthersARTHWithStore, BlockPolledARTHStore } from "@mahadao/arth-ethers";
 
 import {
@@ -37,7 +37,7 @@ const waitForSuccess = (tx: TransactionResponse) =>
 const createTrove = async (nominalCollateralRatio: Decimal) => {
   const randomWallet = Wallet.createRandom().connect(provider);
 
-  const debt = LUSD_MINIMUM_DEBT.mul(2);
+  const debt = ARTH_MINIMUM_DEBT.mul(2);
   const collateral = debt.mul(nominalCollateralRatio);
 
   await funder
@@ -49,7 +49,7 @@ const createTrove = async (nominalCollateralRatio: Decimal) => {
 
   await liquity.populate
     .openTrove(
-      Trove.recreate(new Trove(collateral, debt), liquity.store.state.borrowingRate),
+      await Trove.recreate(new Trove(collateral, debt), liquity.store.state.borrowingRate),
       {},
       { from: randomWallet.address }
     )

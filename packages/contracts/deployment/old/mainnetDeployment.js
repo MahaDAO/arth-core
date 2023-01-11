@@ -44,7 +44,7 @@ async function mainnetDeploy(configParams) {
   );
   await mdh.logContractObjects(liquityCore);
 
-  // Check Uniswap Pair LUSD-ETH pair before pair creation
+  // Check Uniswap Pair ARTH-ETH pair before pair creation
   let LUSDWETHPairAddr = await uniswapV2Factory.getPair(
     liquityCore.lusdToken.address,
     configParams.externalAddrs.WETH_ERC20
@@ -56,7 +56,7 @@ async function mainnetDeploy(configParams) {
   assert.equal(LUSDWETHPairAddr, WETHLUSDPairAddr);
 
   if (LUSDWETHPairAddr == th.ZERO_ADDRESS) {
-    // Deploy Unipool for LUSD-WETH
+    // Deploy Unipool for ARTH-WETH
     await mdh.sendAndWaitForTransaction(
       uniswapV2Factory.createPair(
         configParams.externalAddrs.WETH_ERC20,
@@ -65,7 +65,7 @@ async function mainnetDeploy(configParams) {
       )
     );
 
-    // Check Uniswap Pair LUSD-WETH pair after pair creation (forwards and backwards should have same address)
+    // Check Uniswap Pair ARTH-WETH pair after pair creation (forwards and backwards should have same address)
     LUSDWETHPairAddr = await uniswapV2Factory.getPair(
       liquityCore.lusdToken.address,
       configParams.externalAddrs.WETH_ERC20
@@ -75,7 +75,7 @@ async function mainnetDeploy(configParams) {
       configParams.externalAddrs.WETH_ERC20,
       liquityCore.lusdToken.address
     );
-    console.log(`LUSD-WETH pair contract address after Uniswap pair creation: ${LUSDWETHPairAddr}`);
+    console.log(`ARTH-WETH pair contract address after Uniswap pair creation: ${LUSDWETHPairAddr}`);
     assert.equal(WETHLUSDPairAddr, LUSDWETHPairAddr);
   }
 
@@ -102,7 +102,7 @@ async function mainnetDeploy(configParams) {
   // Deploy a read-only multi-trove getter
   const multiTroveGetter = await mdh.deployMultiTroveGetterMainnet(liquityCore, deploymentState);
 
-  // Connect Unipool to LQTYToken and the LUSD-WETH pair address, with a 6 week duration
+  // Connect Unipool to LQTYToken and the ARTH-WETH pair address, with a 6 week duration
   const LPRewardsDuration = timeVals.SECONDS_IN_SIX_WEEKS;
   await mdh.connectUnipoolMainnet(unipool, LQTYContracts, LUSDWETHPairAddr, LPRewardsDuration);
 
@@ -173,7 +173,7 @@ async function mainnetDeploy(configParams) {
 
   // // --- TESTS AND CHECKS  ---
 
-  // Deployer repay LUSD
+  // Deployer repay ARTH
   // console.log(`deployer trove debt before repaying: ${await liquityCore.troveManager.getTroveDebt(deployerWallet.address)}`)
   // await mdh.sendAndWaitForTransaction(liquityCore.borrowerOperations.repayLUSD(dec(800, 18), th.ZERO_ADDRESS, th.ZERO_ADDRESS, {gasPrice, gasLimit: 1000000}))
   // console.log(`deployer trove debt after repaying: ${await liquityCore.troveManager.getTroveDebt(deployerWallet.address)}`)
@@ -278,9 +278,9 @@ async function mainnetDeploy(configParams) {
 
   // // --- Unipool ---
 
-  // // Check Unipool's LUSD-ETH Uniswap Pair address
+  // // Check Unipool's ARTH-ETH Uniswap Pair address
   // const unipoolUniswapPairAddr = await unipool.uniToken()
-  // console.log(`Unipool's stored LUSD-ETH Uniswap Pair address: ${unipoolUniswapPairAddr}`)
+  // console.log(`Unipool's stored ARTH-ETH Uniswap Pair address: ${unipoolUniswapPairAddr}`)
 
   // console.log("SYSTEM GLOBAL VARS CHECKS")
   // // --- Sorted Troves ---
@@ -297,12 +297,12 @@ async function mainnetDeploy(configParams) {
   // th.logBN('system liquidation reserve', liqReserve)
   // th.logBN('system min net debt      ', minNetDebt)
 
-  // // --- Make first LUSD-ETH liquidity provision ---
+  // // --- Make first ARTH-ETH liquidity provision ---
 
   // // Open trove if not yet opened
   // const troveStatus = await liquityCore.troveManager.getTroveStatus(deployerWallet.address)
   // if (troveStatus.toString() != '1') {
-  //   let _3kLUSDWithdrawal = th.dec(3000, 18) // 3000 LUSD
+  //   let _3kLUSDWithdrawal = th.dec(3000, 18) // 3000 ARTH
   //   let _3ETHcoll = th.dec(3, 'ether') // 3 ETH
   //   console.log('Opening trove...')
   //   await mdh.sendAndWaitForTransaction(
@@ -327,24 +327,24 @@ async function mainnetDeploy(configParams) {
   // th.logBN('deployer stake', deployerTrove[2])
   // console.log(`deployer's trove status: ${deployerTrove[3]}`)
 
-  // // Check deployer has LUSD
+  // // Check deployer has ARTH
   // let deployerLUSDBal = await liquityCore.lusdToken.balanceOf(deployerWallet.address)
-  // th.logBN("deployer's LUSD balance", deployerLUSDBal)
+  // th.logBN("deployer's ARTH balance", deployerLUSDBal)
 
-  // // Check Uniswap pool has LUSD and WETH tokens
+  // // Check Uniswap pool has ARTH and WETH tokens
   const LUSDETHPair = await new ethers.Contract(LUSDWETHPairAddr, UniswapV2Pair.abi, deployerWallet);
 
   // const token0Addr = await LUSDETHPair.token0()
   // const token1Addr = await LUSDETHPair.token1()
-  // console.log(`LUSD-ETH Pair token 0: ${th.squeezeAddr(token0Addr)},
+  // console.log(`ARTH-ETH Pair token 0: ${th.squeezeAddr(token0Addr)},
   //       ARTHValuecoin contract addr: ${th.squeezeAddr(liquityCore.lusdToken.address)}`)
-  // console.log(`LUSD-ETH Pair token 1: ${th.squeezeAddr(token1Addr)},
+  // console.log(`ARTH-ETH Pair token 1: ${th.squeezeAddr(token1Addr)},
   //       WETH ERC20 contract addr: ${th.squeezeAddr(configParams.externalAddrs.WETH_ERC20)}`)
 
-  // // Check initial LUSD-ETH pair reserves before provision
+  // // Check initial ARTH-ETH pair reserves before provision
   // let reserves = await LUSDETHPair.getReserves()
-  // th.logBN("LUSD-ETH Pair's LUSD reserves before provision", reserves[0])
-  // th.logBN("LUSD-ETH Pair's ETH reserves before provision", reserves[1])
+  // th.logBN("ARTH-ETH Pair's ARTH reserves before provision", reserves[0])
+  // th.logBN("ARTH-ETH Pair's ETH reserves before provision", reserves[1])
 
   // // Get the UniswapV2Router contract
   // const uniswapV2Router02 = new ethers.Contract(
@@ -353,16 +353,16 @@ async function mainnetDeploy(configParams) {
   //   deployerWallet
   // )
 
-  // // --- Provide liquidity to LUSD-ETH pair if not yet done so ---
+  // // --- Provide liquidity to ARTH-ETH pair if not yet done so ---
   // let deployerLPTokenBal = await LUSDETHPair.balanceOf(deployerWallet.address)
   // if (deployerLPTokenBal.toString() == '0') {
   //   console.log('Providing liquidity to Uniswap...')
-  //   // Give router an allowance for LUSD
+  //   // Give router an allowance for ARTH
   //   await liquityCore.lusdToken.increaseAllowance(uniswapV2Router02.address, dec(10000, 18))
 
   //   // Check Router's spending allowance
   //   const routerLUSDAllowanceFromDeployer = await liquityCore.lusdToken.allowance(deployerWallet.address, uniswapV2Router02.address)
-  //   th.logBN("router's spending allowance for deployer's LUSD", routerLUSDAllowanceFromDeployer)
+  //   th.logBN("router's spending allowance for deployer's ARTH", routerLUSDAllowanceFromDeployer)
 
   //   // Get amounts for liquidity provision
   //   const LP_ETH = dec(1, 'ether')
@@ -379,12 +379,12 @@ async function mainnetDeploy(configParams) {
   //   now = (await ethers.provider.getBlock(latestBlock)).timestamp
   //   let tenMinsFromNow = now + (60 * 60 * 10)
 
-  //   // Provide liquidity to LUSD-ETH pair
+  //   // Provide liquidity to ARTH-ETH pair
   //   await mdh.sendAndWaitForTransaction(
   //     uniswapV2Router02.addLiquidityETH(
-  //       liquityCore.lusdToken.address, // address of LUSD token
-  //       LUSDAmount, // LUSD provision
-  //       minLUSDAmount, // minimum LUSD provision
+  //       liquityCore.lusdToken.address, // address of ARTH token
+  //       LUSDAmount, // ARTH provision
+  //       minLUSDAmount, // minimum ARTH provision
   //       LP_ETH, // minimum ETH provision
   //       deployerWallet.address, // address to send LP tokens to
   //       tenMinsFromNow, // deadline for this tx
@@ -398,10 +398,10 @@ async function mainnetDeploy(configParams) {
   // } else {
   //   console.log('Liquidity already provided to Uniswap')
   // }
-  // // Check LUSD-ETH reserves after liquidity provision:
+  // // Check ARTH-ETH reserves after liquidity provision:
   // reserves = await LUSDETHPair.getReserves()
-  // th.logBN("LUSD-ETH Pair's LUSD reserves after provision", reserves[0])
-  // th.logBN("LUSD-ETH Pair's ETH reserves after provision", reserves[1])
+  // th.logBN("ARTH-ETH Pair's ARTH reserves after provision", reserves[0])
+  // th.logBN("ARTH-ETH Pair's ETH reserves after provision", reserves[1])
 
   // // ---  Check LP staking  ---
   // console.log("CHECK LP STAKING EARNS LQTY")
@@ -450,7 +450,7 @@ async function mainnetDeploy(configParams) {
 
   // // Get SP deposit
   // SPDeposit = await liquityCore.stabilityPool.getCompoundedLUSDDeposit(deployerWallet.address)
-  // th.logBN("deployer SP deposit after depositing 15 LUSD", SPDeposit)
+  // th.logBN("deployer SP deposit after depositing 15 ARTH", SPDeposit)
 
   // console.log("wait 90 seconds before withdrawing...")
   // // wait 90 seconds
@@ -513,13 +513,13 @@ async function mainnetDeploy(configParams) {
 
   // // Log deployer rev share immediately after staking
   // let deployerLUSDRevShare = await LQTYContracts.lqtyStaking.getPendingLUSDGain(deployerWallet.address)
-  // th.logBN("deployer pending LUSD revenue share", deployerLUSDRevShare)
+  // th.logBN("deployer pending ARTH revenue share", deployerLUSDRevShare)
 
   // // --- 2nd Account opens trove ---
   // const trove2Status = await liquityCore.troveManager.getTroveStatus(account2Wallet.address)
   // if (trove2Status.toString() != '1') {
   //   console.log("Acct 2 opens a trove ...")
-  //   let _2kLUSDWithdrawal = th.dec(2000, 18) // 2000 LUSD
+  //   let _2kLUSDWithdrawal = th.dec(2000, 18) // 2000 ARTH
   //   let _1pt5_ETHcoll = th.dec(15, 17) // 1.5 ETH
   //   const borrowerOpsEthersFactory = await ethers.getContractFactory("BorrowerOperations", account2Wallet)
   //   const borrowerOpsAcct2 = await new ethers.Contract(liquityCore.borrowerOperations.address, borrowerOpsEthersFactory.interface, account2Wallet)
@@ -535,30 +535,30 @@ async function mainnetDeploy(configParams) {
   // th.logBN('acct2 stake', acct2Trove[2])
   // console.log(`acct2 trove status: ${acct2Trove[3]}`)
 
-  // // Log deployer's pending LUSD gain - check fees went to staker (deloyer)
+  // // Log deployer's pending ARTH gain - check fees went to staker (deloyer)
   // deployerLUSDRevShare = await LQTYContracts.lqtyStaking.getPendingLUSDGain(deployerWallet.address)
-  // th.logBN("deployer pending LUSD revenue share from staking, after acct 2 opened trove", deployerLUSDRevShare)
+  // th.logBN("deployer pending ARTH revenue share from staking, after acct 2 opened trove", deployerLUSDRevShare)
 
   // //  --- deployer withdraws staking gains ---
   // console.log("CHECK DEPLOYER WITHDRAWING STAKING GAINS")
 
-  // // check deployer's LUSD balance before withdrawing staking gains
+  // // check deployer's ARTH balance before withdrawing staking gains
   // deployerLUSDBal = await liquityCore.lusdToken.balanceOf(deployerWallet.address)
-  // th.logBN('deployer LUSD bal before withdrawing staking gains', deployerLUSDBal)
+  // th.logBN('deployer ARTH bal before withdrawing staking gains', deployerLUSDBal)
 
   // // Deployer withdraws staking gains
   // await mdh.sendAndWaitForTransaction(LQTYContracts.lqtyStaking.unstake(0, { gasPrice, gasLimit: 1000000 }))
 
-  // // check deployer's LUSD balance after withdrawing staking gains
+  // // check deployer's ARTH balance after withdrawing staking gains
   // deployerLUSDBal = await liquityCore.lusdToken.balanceOf(deployerWallet.address)
-  // th.logBN('deployer LUSD bal after withdrawing staking gains', deployerLUSDBal)
+  // th.logBN('deployer ARTH bal after withdrawing staking gains', deployerLUSDBal)
 
   // // --- System stats  ---
 
-  // Uniswap LUSD-ETH pool size
+  // Uniswap ARTH-ETH pool size
   reserves = await LUSDETHPair.getReserves();
-  th.logBN("LUSD-ETH Pair's current LUSD reserves", reserves[0]);
-  th.logBN("LUSD-ETH Pair's current ETH reserves", reserves[1]);
+  th.logBN("ARTH-ETH Pair's current ARTH reserves", reserves[0]);
+  th.logBN("ARTH-ETH Pair's current ETH reserves", reserves[1]);
 
   // Number of troves
   const numTroves = await liquityCore.troveManager.getTroveOwnersCount();
@@ -586,7 +586,7 @@ async function mainnetDeploy(configParams) {
 
   // total SP deposits
   const totalSPDeposits = await liquityCore.stabilityPool.getTotalLUSDDeposits();
-  th.logBN("Total LUSD SP deposits", totalSPDeposits);
+  th.logBN("Total ARTH SP deposits", totalSPDeposits);
 
   // total LQTY Staked in LQTYStaking
   const totalLQTYStaked = await LQTYContracts.lqtyStaking.totalLQTYStaked();
@@ -594,7 +594,7 @@ async function mainnetDeploy(configParams) {
 
   // total LP tokens staked in Unipool
   const totalLPTokensStaked = await unipool.totalSupply();
-  th.logBN("Total LP (LUSD-ETH) tokens staked in unipool", totalLPTokensStaked);
+  th.logBN("Total LP (ARTH-ETH) tokens staked in unipool", totalLPTokensStaked);
 
   // --- State variables ---
 

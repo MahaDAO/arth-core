@@ -13,7 +13,7 @@ const mv = testHelpers.MoneyValues;
 
 contract("SortedTroves", async accounts => {
   const assertSortedListIsOrdered = async contracts => {
-    const price = await contracts.priceFeedTestnet.getPrice();
+    const price = await contracts.priceFeed.getPrice();
 
     let trove = await contracts.sortedTroves.getLast();
     while (trove !== (await contracts.sortedTroves.getFirst())) {
@@ -73,7 +73,7 @@ contract("SortedTroves", async accounts => {
 
   let contracts;
 
-  const getOpenTroveLUSDAmount = async totalDebt => th.getOpenTroveLUSDAmount(contracts, totalDebt);
+  const getOpenTroveARTHAmount = async totalDebt => th.getOpenTroveARTHAmount(contracts, totalDebt);
   const openTrove = async params => th.openTrove(contracts, params);
 
   // describe("SortedTroves", () => {
@@ -91,7 +91,7 @@ contract("SortedTroves", async accounts => {
   //       multisig
   //     );
 
-  //     priceFeed = contracts.priceFeedTestnet;
+  //     priceFeed = contracts.priceFeed;
   //     sortedTroves = contracts.sortedTroves;
   //     troveManager = contracts.troveManager;
   //     borrowerOperations = contracts.borrowerOperations;
@@ -135,7 +135,7 @@ contract("SortedTroves", async accounts => {
   //   it("contains(): returns false for addresses that opened and then closed a trove", async () => {
   //     await openTrove({
   //       ICR: toBN(dec(1000, 18)),
-  //       extraLUSDAmount: toBN(dec(3000, 18)),
+  //       extraARTHAmount: toBN(dec(3000, 18)),
   //       extraParams: { from: whale }
   //     });
 
@@ -168,7 +168,7 @@ contract("SortedTroves", async accounts => {
   //   it("contains(): returns true for addresses that opened, closed and then re-opened a trove", async () => {
   //     await openTrove({
   //       ICR: toBN(dec(1000, 18)),
-  //       extraLUSDAmount: toBN(dec(3000, 18)),
+  //       extraARTHAmount: toBN(dec(3000, 18)),
   //       extraParams: { from: whale }
   //     });
 

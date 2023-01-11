@@ -47,7 +47,7 @@
 //   let troveManagerTester;
 //   let borrowerOperationsTester;
 
-//   const getOpenTroveLUSDAmount = async totalDebt => th.getOpenTroveLUSDAmount(contracts, totalDebt);
+//   const getOpenTroveARTHAmount = async totalDebt => th.getOpenTroveARTHAmount(contracts, totalDebt);
 //   const openTrove = async params => th.openTrove(contracts, params);
 
 //   const logICRs = ICRList => {
@@ -78,7 +78,7 @@
 //       multisig
 //     );
 
-//     priceFeed = contracts.priceFeedTestnet;
+//     priceFeed = contracts.priceFeed;
 //     arthToken = contracts.arthToken;
 //     sortedTroves = contracts.sortedTroves;
 //     troveManager = contracts.troveManager;
@@ -245,25 +245,25 @@
 //     /*
 //     ETH:USD price = 200
 //     coll = 9.999 ETH
-//     debt = 10 LUSD
+//     debt = 10 ARTH
 //     0.5% of coll = 0.04995 ETH. USD value: $9.99
-//     -> Expect composite debt = 10 + 200  = 2100 LUSD*/
+//     -> Expect composite debt = 10 + 200  = 2100 ARTH*/
 //     const compositeDebt_1 = await troveManagerTester.getCompositeDebt(dec(10, 18));
 //     assert.equal(compositeDebt_1, dec(210, 18));
 
 //     /* ETH:USD price = 200
 //      coll = 0.055 ETH
-//      debt = 0 LUSD
+//      debt = 0 ARTH
 //      0.5% of coll = 0.000275 ETH. USD value: $0.055
-//      -> Expect composite debt = 0 + 200 = 200 LUSD*/
+//      -> Expect composite debt = 0 + 200 = 200 ARTH*/
 //     const compositeDebt_2 = await troveManagerTester.getCompositeDebt(0);
 //     assert.equal(compositeDebt_2, dec(200, 18));
 
 //     // /* ETH:USD price = 200
 //     // coll = 6.09232408808723580 ETH
-//     // debt = 200 LUSD
+//     // debt = 200 ARTH
 //     // 0.5% of coll = 0.004995 ETH. USD value: $6.09
-//     // -> Expect  composite debt =  200 + 200 = 400  LUSD */
+//     // -> Expect  composite debt =  200 + 200 = 400  ARTH */
 //     const compositeDebt_3 = await troveManagerTester.getCompositeDebt(dec(200, 18));
 //     assert.equal(compositeDebt_3, "400000000000000000000");
 //   });
@@ -276,9 +276,9 @@
 //     /*
 //     ETH:USD price = 200
 //     coll = 10 ETH
-//     debt = 123.45 LUSD
+//     debt = 123.45 ARTH
 //     0.5% of coll = 0.5 ETH. USD value: $10
-//     -> Expect composite debt = (123.45 + 200) = 323.45 LUSD  */
+//     -> Expect composite debt = (123.45 + 200) = 323.45 ARTH  */
 //     const compositeDebt = await troveManagerTester.getCompositeDebt("123450000000000000000");
 //     assert.equal(compositeDebt, "323450000000000000000");
 //   });
@@ -293,32 +293,32 @@
 //     /*
 //     ETH:USD price = 200 $/E
 //     coll = 100 ETH
-//     debt = 2000 LUSD
-//     -> Expect composite debt = (2000 + 200) = 2200 LUSD  */
+//     debt = 2000 ARTH
+//     -> Expect composite debt = (2000 + 200) = 2200 ARTH  */
 //     const compositeDebt_1 = (await troveManagerTester.getCompositeDebt(dec(2000, 18))).toString();
 //     assert.equal(compositeDebt_1, "2200000000000000000000");
 
 //     /*
 //     ETH:USD price = 200 $/E
 //     coll = 10.001 ETH
-//     debt = 200 LUSD
-//     -> Expect composite debt = (200 + 200) = 400 LUSD  */
+//     debt = 200 ARTH
+//     -> Expect composite debt = (200 + 200) = 400 ARTH  */
 //     const compositeDebt_2 = (await troveManagerTester.getCompositeDebt(dec(200, 18))).toString();
 //     assert.equal(compositeDebt_2, "400000000000000000000");
 
 //     /*
 //     ETH:USD price = 200 $/E
 //     coll = 37.5 ETH
-//     debt = 500 LUSD
-//     -> Expect composite debt = (500 + 200) = 700 LUSD  */
+//     debt = 500 ARTH
+//     -> Expect composite debt = (500 + 200) = 700 ARTH  */
 //     const compositeDebt_3 = (await troveManagerTester.getCompositeDebt(dec(500, 18))).toString();
 //     assert.equal(compositeDebt_3, "700000000000000000000");
 
 //     /*
 //     ETH:USD price = 45323.54542 $/E
 //     coll = 94758.230582309850 ETH
-//     debt = 1 billion LUSD
-//     -> Expect composite debt = (1000000000 + 200) = 1000000200 LUSD  */
+//     debt = 1 billion ARTH
+//     -> Expect composite debt = (1000000000 + 200) = 1000000200 ARTH  */
 //     await priceFeed.setPrice("45323545420000000000000");
 //     const price_2 = await priceFeed.getPrice();
 //     const compositeDebt_4 = (await troveManagerTester.getCompositeDebt(dec(1, 27))).toString();
@@ -327,8 +327,8 @@
 //     /*
 //     ETH:USD price = 1000000 $/E (1 million)
 //     coll = 300000000 ETH   (300 million)
-//     debt = 54321.123456789 LUSD
-//    -> Expect composite debt = (54321.123456789 + 200) = 54521.123456789 LUSD */
+//     debt = 54321.123456789 ARTH
+//    -> Expect composite debt = (54321.123456789 + 200) = 54521.123456789 ARTH */
 //     await priceFeed.setPrice(dec(1, 24));
 //     const price_3 = await priceFeed.getPrice();
 //     const compositeDebt_5 = (
@@ -342,47 +342,47 @@
 //     const price = await priceFeed.getPrice();
 //     await openTrove({ ICR: toBN(dec(200, 18)), extraParams: { from: whale } });
 
-//     // A opens with 1 ETH, 110 LUSD
+//     // A opens with 1 ETH, 110 ARTH
 //     await openTrove({ ICR: toBN("1818181818181818181"), extraParams: { from: alice } });
 //     const alice_ICR = (await troveManager.getCurrentICR(alice, price)).toString();
 //     // Expect aliceICR = (1 * 200) / (110) = 181.81%
 //     assert.isAtMost(th.getDifference(alice_ICR, "1818181818181818181"), 1000);
 
-//     // B opens with 0.5 ETH, 50 LUSD
+//     // B opens with 0.5 ETH, 50 ARTH
 //     await openTrove({ ICR: toBN(dec(2, 18)), extraParams: { from: bob } });
 //     const bob_ICR = (await troveManager.getCurrentICR(bob, price)).toString();
 //     // Expect Bob's ICR = (0.5 * 200) / 50 = 200%
 //     assert.isAtMost(th.getDifference(bob_ICR, dec(2, 18)), 1000);
 
-//     // F opens with 1 ETH, 100 LUSD
+//     // F opens with 1 ETH, 100 ARTH
 //     await openTrove({
 //       ICR: toBN(dec(2, 18)),
-//       extraLUSDAmount: dec(100, 18),
+//       extraARTHAmount: dec(100, 18),
 //       extraParams: { from: flyn }
 //     });
 //     const flyn_ICR = (await troveManager.getCurrentICR(flyn, price)).toString();
 //     // Expect Flyn's ICR = (1 * 200) / 100 = 200%
 //     assert.isAtMost(th.getDifference(flyn_ICR, dec(2, 18)), 1000);
 
-//     // C opens with 2.5 ETH, 160 LUSD
+//     // C opens with 2.5 ETH, 160 ARTH
 //     await openTrove({ ICR: toBN(dec(3125, 15)), extraParams: { from: carol } });
 //     const carol_ICR = (await troveManager.getCurrentICR(carol, price)).toString();
 //     // Expect Carol's ICR = (2.5 * 200) / (160) = 312.50%
 //     assert.isAtMost(th.getDifference(carol_ICR, "3125000000000000000"), 1000);
 
-//     // D opens with 1 ETH, 0 LUSD
+//     // D opens with 1 ETH, 0 ARTH
 //     await openTrove({ ICR: toBN(dec(4, 18)), extraParams: { from: dennis } });
 //     const dennis_ICR = (await troveManager.getCurrentICR(dennis, price)).toString();
 //     // Expect Dennis's ICR = (1 * 200) / (50) = 400.00%
 //     assert.isAtMost(th.getDifference(dennis_ICR, dec(4, 18)), 1000);
 
-//     // E opens with 4405.45 ETH, 32598.35 LUSD
+//     // E opens with 4405.45 ETH, 32598.35 ARTH
 //     await openTrove({ ICR: toBN("27028668628933700000"), extraParams: { from: erin } });
 //     const erin_ICR = (await troveManager.getCurrentICR(erin, price)).toString();
 //     // Expect Erin's ICR = (4405.45 * 200) / (32598.35) = 2702.87%
 //     assert.isAtMost(th.getDifference(erin_ICR, "27028668628933700000"), 100000);
 
-//     // H opens with 1 ETH, 180 LUSD
+//     // H opens with 1 ETH, 180 ARTH
 //     await openTrove({ ICR: toBN("1111111111111111111"), extraParams: { from: harriet } });
 //     const harriet_ICR = (await troveManager.getCurrentICR(harriet, price)).toString();
 //     // Expect Harriet's ICR = (1 * 200) / (180) = 111.11%
@@ -397,31 +397,31 @@
 //     // A-E open troves
 //     const { totalDebt: A_totalDebt } = await openTrove({
 //       ICR: toBN(dec(2, 18)),
-//       extraLUSDAmount: dec(100, 18),
+//       extraARTHAmount: dec(100, 18),
 //       extraParams: { from: alice }
 //     });
 //     const { totalDebt: B_totalDebt } = await openTrove({
 //       ICR: toBN(dec(2, 18)),
-//       extraLUSDAmount: dec(200, 18),
+//       extraARTHAmount: dec(200, 18),
 //       extraParams: { from: bob }
 //     });
 //     const { totalDebt: C_totalDebt } = await openTrove({
 //       ICR: toBN(dec(2, 18)),
-//       extraLUSDAmount: dec(300, 18),
+//       extraARTHAmount: dec(300, 18),
 //       extraParams: { from: carol }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(2, 18)),
-//       extraLUSDAmount: A_totalDebt,
+//       extraARTHAmount: A_totalDebt,
 //       extraParams: { from: dennis }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(2, 18)),
-//       extraLUSDAmount: B_totalDebt.add(C_totalDebt),
+//       extraARTHAmount: B_totalDebt.add(C_totalDebt),
 //       extraParams: { from: erin }
 //     });
 
-//     // D, E each provide LUSD to SP
+//     // D, E each provide ARTH to SP
 //     await stabilityPool.provideToSP(A_totalDebt, ZERO_ADDRESS, {
 //       from: dennis,
 //       gasPrice: GAS_PRICE
@@ -431,7 +431,7 @@
 //       gasPrice: GAS_PRICE
 //     });
 
-//     const LUSDinSP_0 = await stabilityPool.getTotalLUSDDeposits();
+//     const ARTHinSP_0 = await stabilityPool.getTotalARTHDeposits();
 
 //     // --- Price drops to 9.99 ---
 //     await priceFeed.setPrice("9990000000000000000");
@@ -461,9 +461,9 @@
 //     const _0pt5percent_aliceColl = aliceColl.div(web3.utils.toBN("200"));
 //     assert.equal(compensationReceived_A, _0pt5percent_aliceColl);
 
-//     // Check SP LUSD has decreased due to the liquidation
-//     const LUSDinSP_A = await stabilityPool.getTotalLUSDDeposits();
-//     assert.isTrue(LUSDinSP_A.lte(LUSDinSP_0));
+//     // Check SP ARTH has decreased due to the liquidation
+//     const ARTHinSP_A = await stabilityPool.getTotalARTHDeposits();
+//     assert.isTrue(ARTHinSP_A.lte(ARTHinSP_0));
 
 //     // Check ETH in SP has received the liquidation
 //     const ETHinSP_A = await stabilityPool.getETH();
@@ -496,9 +496,9 @@
 //     const _0pt5percent_bobColl = bobColl.div(web3.utils.toBN("200"));
 //     assert.equal(compensationReceived_B, _0pt5percent_bobColl); // 0.5% of 2 ETH
 
-//     // Check SP LUSD has decreased due to the liquidation of B
-//     const LUSDinSP_B = await stabilityPool.getTotalLUSDDeposits();
-//     assert.isTrue(LUSDinSP_B.lt(LUSDinSP_A));
+//     // Check SP ARTH has decreased due to the liquidation of B
+//     const ARTHinSP_B = await stabilityPool.getTotalARTHDeposits();
+//     assert.isTrue(ARTHinSP_B.lt(ARTHinSP_A));
 
 //     // Check ETH in SP has received the liquidation
 //     const ETHinSP_B = await stabilityPool.getETH();
@@ -535,9 +535,9 @@
 //     const _0pt5percent_carolColl = carolColl.div(web3.utils.toBN("200"));
 //     assert.equal(compensationReceived_C, _0pt5percent_carolColl);
 
-//     // Check SP LUSD has decreased due to the liquidation of C
-//     const LUSDinSP_C = await stabilityPool.getTotalLUSDDeposits();
-//     assert.isTrue(LUSDinSP_C.lt(LUSDinSP_B));
+//     // Check SP ARTH has decreased due to the liquidation of C
+//     const ARTHinSP_C = await stabilityPool.getTotalARTHDeposits();
+//     assert.isTrue(ARTHinSP_C.lt(ARTHinSP_B));
 
 //     // Check ETH in SP has not changed due to the lquidation of C
 //     const ETHinSP_C = await stabilityPool.getETH();
@@ -559,35 +559,35 @@
 //     // A-E open troves
 //     await openTrove({
 //       ICR: toBN(dec(2, 18)),
-//       extraLUSDAmount: dec(200, 18),
+//       extraARTHAmount: dec(200, 18),
 //       extraParams: { from: alice }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(120, 16)),
-//       extraLUSDAmount: dec(5000, 18),
+//       extraARTHAmount: dec(5000, 18),
 //       extraParams: { from: bob }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(60, 18)),
-//       extraLUSDAmount: dec(600, 18),
+//       extraARTHAmount: dec(600, 18),
 //       extraParams: { from: carol }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(80, 18)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: dennis }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(80, 18)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: erin }
 //     });
 
-//     // D, E each provide 10000 LUSD to SP
+//     // D, E each provide 10000 ARTH to SP
 //     await stabilityPool.provideToSP(dec(1, 23), ZERO_ADDRESS, { from: dennis, gasPrice: GAS_PRICE });
 //     await stabilityPool.provideToSP(dec(1, 23), ZERO_ADDRESS, { from: erin, gasPrice: GAS_PRICE });
 
-//     const LUSDinSP_0 = await stabilityPool.getTotalLUSDDeposits();
+//     const ARTHinSP_0 = await stabilityPool.getTotalARTHDeposits();
 //     const ETHinSP_0 = await stabilityPool.getETH();
 
 //     // --- Price drops to 199.999 ---
@@ -625,9 +625,9 @@
 //     const _0pt5percent_aliceColl = aliceColl.div(web3.utils.toBN("200"));
 //     assert.equal(compensationReceived_A, _0pt5percent_aliceColl);
 
-//     // Check SP LUSD has decreased due to the liquidation of A
-//     const LUSDinSP_A = await stabilityPool.getTotalLUSDDeposits();
-//     assert.isTrue(LUSDinSP_A.lt(LUSDinSP_0));
+//     // Check SP ARTH has decreased due to the liquidation of A
+//     const ARTHinSP_A = await stabilityPool.getTotalARTHDeposits();
+//     assert.isTrue(ARTHinSP_A.lt(ARTHinSP_0));
 
 //     // Check ETH in SP has increased by the remainder of B's coll
 //     const collRemainder_A = aliceColl.sub(_0pt5percent_aliceColl);
@@ -672,9 +672,9 @@
 //       .toString();
 //     assert.equal(compensationReceived_B, _0pt5percent_bobColl);
 
-//     // Check SP LUSD has decreased due to the liquidation of B
-//     const LUSDinSP_B = await stabilityPool.getTotalLUSDDeposits();
-//     assert.isTrue(LUSDinSP_B.lt(LUSDinSP_A));
+//     // Check SP ARTH has decreased due to the liquidation of B
+//     const ARTHinSP_B = await stabilityPool.getTotalARTHDeposits();
+//     assert.isTrue(ARTHinSP_B.lt(ARTHinSP_A));
 
 //     // Check ETH in SP has increased by the remainder of B's coll
 //     const collRemainder_B = bobColl.sub(_0pt5percent_bobColl);
@@ -693,35 +693,35 @@
 //     // A-E open troves
 //     await openTrove({
 //       ICR: toBN(dec(2, 18)),
-//       extraLUSDAmount: dec(2000, 18),
+//       extraARTHAmount: dec(2000, 18),
 //       extraParams: { from: alice }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(1875, 15)),
-//       extraLUSDAmount: dec(8000, 18),
+//       extraARTHAmount: dec(8000, 18),
 //       extraParams: { from: bob }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(2, 18)),
-//       extraLUSDAmount: dec(600, 18),
+//       extraARTHAmount: dec(600, 18),
 //       extraParams: { from: carol }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(4, 18)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: dennis }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(4, 18)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: erin }
 //     });
 
-//     // D, E each provide 10000 LUSD to SP
+//     // D, E each provide 10000 ARTH to SP
 //     await stabilityPool.provideToSP(dec(1, 23), ZERO_ADDRESS, { from: dennis, gasPrice: GAS_PRICE });
 //     await stabilityPool.provideToSP(dec(1, 23), ZERO_ADDRESS, { from: erin, gasPrice: GAS_PRICE });
 
-//     const LUSDinSP_0 = await stabilityPool.getTotalLUSDDeposits();
+//     const ARTHinSP_0 = await stabilityPool.getTotalARTHDeposits();
 //     const ETHinSP_0 = await stabilityPool.getETH();
 
 //     await priceFeed.setPrice(dec(200, 18));
@@ -758,9 +758,9 @@
 //       .toString();
 //     assert.equal(compensationReceived_A, _0pt5percent_aliceColl);
 
-//     // Check SP LUSD has decreased due to the liquidation of A
-//     const LUSDinSP_A = await stabilityPool.getTotalLUSDDeposits();
-//     assert.isTrue(LUSDinSP_A.lt(LUSDinSP_0));
+//     // Check SP ARTH has decreased due to the liquidation of A
+//     const ARTHinSP_A = await stabilityPool.getTotalARTHDeposits();
+//     assert.isTrue(ARTHinSP_A.lt(ARTHinSP_0));
 
 //     // Check ETH in SP has increased by the remainder of A's coll
 //     const collRemainder_A = aliceColl.sub(_0pt5percent_aliceColl);
@@ -801,9 +801,9 @@
 //       .toString();
 //     assert.equal(compensationReceived_B, _0pt5percent_bobColl);
 
-//     // Check SP LUSD has decreased due to the liquidation of B
-//     const LUSDinSP_B = await stabilityPool.getTotalLUSDDeposits();
-//     assert.isTrue(LUSDinSP_B.lt(LUSDinSP_A));
+//     // Check SP ARTH has decreased due to the liquidation of B
+//     const ARTHinSP_B = await stabilityPool.getTotalARTHDeposits();
+//     assert.isTrue(ARTHinSP_B.lt(ARTHinSP_A));
 
 //     // Check ETH in SP has increased by the remainder of B's coll
 //     const collRemainder_B = bobColl.sub(_0pt5percent_bobColl);
@@ -822,35 +822,35 @@
 //     // A-E open troves
 //     const { totalDebt: A_totalDebt } = await openTrove({
 //       ICR: toBN(dec(2, 18)),
-//       extraLUSDAmount: dec(100, 18),
+//       extraARTHAmount: dec(100, 18),
 //       extraParams: { from: alice }
 //     });
 //     const { totalDebt: B_totalDebt } = await openTrove({
 //       ICR: toBN(dec(2, 18)),
-//       extraLUSDAmount: dec(200, 18),
+//       extraARTHAmount: dec(200, 18),
 //       extraParams: { from: bob }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(2, 18)),
-//       extraLUSDAmount: dec(300, 18),
+//       extraARTHAmount: dec(300, 18),
 //       extraParams: { from: carol }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(2, 18)),
-//       extraLUSDAmount: A_totalDebt,
+//       extraARTHAmount: A_totalDebt,
 //       extraParams: { from: dennis }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(2, 18)),
-//       extraLUSDAmount: B_totalDebt,
+//       extraARTHAmount: B_totalDebt,
 //       extraParams: { from: erin }
 //     });
 
-//     // D, E each provide LUSD to SP
+//     // D, E each provide ARTH to SP
 //     await stabilityPool.provideToSP(A_totalDebt, ZERO_ADDRESS, { from: dennis });
 //     await stabilityPool.provideToSP(B_totalDebt, ZERO_ADDRESS, { from: erin });
 
-//     const LUSDinSP_0 = await stabilityPool.getTotalLUSDDeposits();
+//     const ARTHinSP_0 = await stabilityPool.getTotalARTHDeposits();
 
 //     // th.logBN('TCR', await troveManager.getTCR(await priceFeed.getPrice()))
 //     // --- Price drops to 9.99 ---
@@ -925,35 +925,35 @@
 //     // A-E open troves
 //     await openTrove({
 //       ICR: toBN(dec(2, 18)),
-//       extraLUSDAmount: dec(200, 18),
+//       extraARTHAmount: dec(200, 18),
 //       extraParams: { from: alice }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(120, 16)),
-//       extraLUSDAmount: dec(5000, 18),
+//       extraARTHAmount: dec(5000, 18),
 //       extraParams: { from: bob }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(60, 18)),
-//       extraLUSDAmount: dec(600, 18),
+//       extraARTHAmount: dec(600, 18),
 //       extraParams: { from: carol }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(80, 18)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: dennis }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(80, 18)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: erin }
 //     });
 
-//     // D, E each provide 10000 LUSD to SP
+//     // D, E each provide 10000 ARTH to SP
 //     await stabilityPool.provideToSP(dec(1, 23), ZERO_ADDRESS, { from: dennis });
 //     await stabilityPool.provideToSP(dec(1, 23), ZERO_ADDRESS, { from: erin });
 
-//     const LUSDinSP_0 = await stabilityPool.getTotalLUSDDeposits();
+//     const ARTHinSP_0 = await stabilityPool.getTotalARTHDeposits();
 //     const ETHinSP_0 = await stabilityPool.getETH();
 
 //     // --- Price drops to 199.999 ---
@@ -1049,35 +1049,35 @@
 //     // A-E open troves
 //     await openTrove({
 //       ICR: toBN(dec(2, 18)),
-//       extraLUSDAmount: dec(2000, 18),
+//       extraARTHAmount: dec(2000, 18),
 //       extraParams: { from: alice }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(1875, 15)),
-//       extraLUSDAmount: dec(8000, 18),
+//       extraARTHAmount: dec(8000, 18),
 //       extraParams: { from: bob }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(2, 18)),
-//       extraLUSDAmount: dec(600, 18),
+//       extraARTHAmount: dec(600, 18),
 //       extraParams: { from: carol }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(4, 18)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: dennis }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(4, 18)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: erin }
 //     });
 
-//     // D, E each provide 10000 LUSD to SP
+//     // D, E each provide 10000 ARTH to SP
 //     await stabilityPool.provideToSP(dec(1, 23), ZERO_ADDRESS, { from: dennis });
 //     await stabilityPool.provideToSP(dec(1, 23), ZERO_ADDRESS, { from: erin });
 
-//     const LUSDinSP_0 = await stabilityPool.getTotalLUSDDeposits();
+//     const ARTHinSP_0 = await stabilityPool.getTotalARTHDeposits();
 //     const ETHinSP_0 = await stabilityPool.getETH();
 
 //     await priceFeed.setPrice(dec(200, 18));
@@ -1157,40 +1157,40 @@
 //     // A-F open troves
 //     await openTrove({
 //       ICR: toBN(dec(118, 16)),
-//       extraLUSDAmount: dec(2000, 18),
+//       extraARTHAmount: dec(2000, 18),
 //       extraParams: { from: alice }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(526, 16)),
-//       extraLUSDAmount: dec(8000, 18),
+//       extraARTHAmount: dec(8000, 18),
 //       extraParams: { from: bob }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(488, 16)),
-//       extraLUSDAmount: dec(600, 18),
+//       extraARTHAmount: dec(600, 18),
 //       extraParams: { from: carol }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(545, 16)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: dennis }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(10, 18)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: erin }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(10, 18)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: flyn }
 //     });
 
-//     // D, E each provide 10000 LUSD to SP
+//     // D, E each provide 10000 ARTH to SP
 //     await stabilityPool.provideToSP(dec(1, 23), ZERO_ADDRESS, { from: erin });
 //     await stabilityPool.provideToSP(dec(1, 23), ZERO_ADDRESS, { from: flyn });
 
-//     const LUSDinSP_0 = await stabilityPool.getTotalLUSDDeposits();
+//     const ARTHinSP_0 = await stabilityPool.getTotalARTHDeposits();
 
 //     // price drops to 200
 //     await priceFeed.setPrice(dec(200, 18));
@@ -1249,9 +1249,9 @@
 //     );
 //     const liquidatorBalance_after = web3.utils.toBN(await web3.eth.getBalance(liquidator));
 
-//     // Check LUSD in SP has decreased
-//     const LUSDinSP_1 = await stabilityPool.getTotalLUSDDeposits();
-//     assert.isTrue(LUSDinSP_1.lt(LUSDinSP_0));
+//     // Check ARTH in SP has decreased
+//     const ARTHinSP_1 = await stabilityPool.getTotalARTHDeposits();
+//     assert.isTrue(ARTHinSP_1.lt(ARTHinSP_0));
 
 //     // Check liquidator's balance has increased by the expected compensation amount
 //     const compensationReceived = liquidatorBalance_after
@@ -1274,26 +1274,26 @@
 //     // A-D open troves
 //     await openTrove({
 //       ICR: toBN(dec(118, 16)),
-//       extraLUSDAmount: dec(2000, 18),
+//       extraARTHAmount: dec(2000, 18),
 //       extraParams: { from: alice }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(526, 16)),
-//       extraLUSDAmount: dec(8000, 18),
+//       extraARTHAmount: dec(8000, 18),
 //       extraParams: { from: bob }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(488, 16)),
-//       extraLUSDAmount: dec(600, 18),
+//       extraARTHAmount: dec(600, 18),
 //       extraParams: { from: carol }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(545, 16)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: dennis }
 //     });
 
-//     const LUSDinDefaultPool_0 = await defaultPool.getLUSDDebt();
+//     const ARTHinDefaultPool_0 = await defaultPool.getARTHDebt();
 
 //     // price drops to 200
 //     await priceFeed.setPrice(dec(200, 18));
@@ -1347,9 +1347,9 @@
 //     );
 //     const liquidatorBalance_after = web3.utils.toBN(await web3.eth.getBalance(liquidator));
 
-//     // Check LUSD in DefaultPool has decreased
-//     const LUSDinDefaultPool_1 = await defaultPool.getLUSDDebt();
-//     assert.isTrue(LUSDinDefaultPool_1.gt(LUSDinDefaultPool_0));
+//     // Check ARTH in DefaultPool has decreased
+//     const ARTHinDefaultPool_1 = await defaultPool.getARTHDebt();
+//     assert.isTrue(ARTHinDefaultPool_1.gt(ARTHinDefaultPool_0));
 
 //     // Check liquidator's balance has increased by the expected compensation amount
 //     const compensationReceived = liquidatorBalance_after
@@ -1373,40 +1373,40 @@
 //     // A-F open troves
 //     const { totalDebt: A_totalDebt } = await openTrove({
 //       ICR: toBN(dec(118, 16)),
-//       extraLUSDAmount: dec(2000, 18),
+//       extraARTHAmount: dec(2000, 18),
 //       extraParams: { from: alice }
 //     });
 //     const { totalDebt: B_totalDebt } = await openTrove({
 //       ICR: toBN(dec(526, 16)),
-//       extraLUSDAmount: dec(8000, 18),
+//       extraARTHAmount: dec(8000, 18),
 //       extraParams: { from: bob }
 //     });
 //     const { totalDebt: C_totalDebt } = await openTrove({
 //       ICR: toBN(dec(488, 16)),
-//       extraLUSDAmount: dec(600, 18),
+//       extraARTHAmount: dec(600, 18),
 //       extraParams: { from: carol }
 //     });
 //     const { totalDebt: D_totalDebt } = await openTrove({
 //       ICR: toBN(dec(545, 16)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: dennis }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(10, 18)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: erin }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(10, 18)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: flyn }
 //     });
 
-//     // D, E each provide 10000 LUSD to SP
+//     // D, E each provide 10000 ARTH to SP
 //     await stabilityPool.provideToSP(dec(1, 23), ZERO_ADDRESS, { from: erin });
 //     await stabilityPool.provideToSP(dec(1, 23), ZERO_ADDRESS, { from: flyn });
 
-//     const LUSDinSP_0 = await stabilityPool.getTotalLUSDDeposits();
+//     const ARTHinSP_0 = await stabilityPool.getTotalARTHDeposits();
 
 //     // price drops to 200
 //     await priceFeed.setPrice(dec(200, 18));
@@ -1457,7 +1457,7 @@
 //       .add(carolColl.sub(_0pt5percent_carolColl))
 //       .add(dennisColl.sub(_0pt5percent_dennisColl));
 
-//     // Expect liquidatedDebt = 51 + 190 + 1025 + 13510 = 14646 LUSD
+//     // Expect liquidatedDebt = 51 + 190 + 1025 + 13510 = 14646 ARTH
 //     const expectedLiquidatedDebt = A_totalDebt.add(B_totalDebt).add(C_totalDebt).add(D_totalDebt);
 
 //     // Liquidate troves A-D
@@ -1484,36 +1484,36 @@
 //     // A-F open troves
 //     const { totalDebt: A_totalDebt } = await openTrove({
 //       ICR: toBN(dec(118, 16)),
-//       extraLUSDAmount: dec(2000, 18),
+//       extraARTHAmount: dec(2000, 18),
 //       extraParams: { from: alice }
 //     });
 //     const { totalDebt: B_totalDebt } = await openTrove({
 //       ICR: toBN(dec(526, 16)),
-//       extraLUSDAmount: dec(8000, 18),
+//       extraARTHAmount: dec(8000, 18),
 //       extraParams: { from: bob }
 //     });
 //     const { totalDebt: C_totalDebt } = await openTrove({
 //       ICR: toBN(dec(488, 16)),
-//       extraLUSDAmount: dec(600, 18),
+//       extraARTHAmount: dec(600, 18),
 //       extraParams: { from: carol }
 //     });
 //     const { totalDebt: D_totalDebt } = await openTrove({
 //       ICR: toBN(dec(545, 16)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: dennis }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(10, 18)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: erin }
 //     });
 //     await openTrove({
 //       ICR: toBN(dec(10, 18)),
-//       extraLUSDAmount: dec(1, 23),
+//       extraARTHAmount: dec(1, 23),
 //       extraParams: { from: flyn }
 //     });
 
-//     const LUSDinDefaultPool_0 = await defaultPool.getLUSDDebt();
+//     const ARTHinDefaultPool_0 = await defaultPool.getARTHDebt();
 
 //     // price drops to 200
 //     await priceFeed.setPrice(dec(200, 18));
@@ -1557,7 +1557,7 @@
 //       .add(carolColl.sub(_0pt5percent_carolColl))
 //       .add(dennisColl.sub(_0pt5percent_dennisColl));
 
-//     // Expect liquidatedDebt = 51 + 190 + 1025 + 13510 = 14646 LUSD
+//     // Expect liquidatedDebt = 51 + 190 + 1025 + 13510 = 14646 ARTH
 //     const expectedLiquidatedDebt = A_totalDebt.add(B_totalDebt).add(C_totalDebt).add(D_totalDebt);
 
 //     // Liquidate troves A-D
@@ -1582,11 +1582,11 @@
 //     const _10_accounts = accounts.slice(1, 11);
 
 //     let debt = 50;
-//     // create 10 troves, constant coll, descending debt 100 to 90 LUSD
+//     // create 10 troves, constant coll, descending debt 100 to 90 ARTH
 //     for (const account of _10_accounts) {
 //       const debtString = debt.toString().concat("000000000000000000");
 //       await openTrove({
-//         extraLUSDAmount: debtString,
+//         extraARTHAmount: debtString,
 //         extraParams: { from: account, value: dec(30, "ether") }
 //       });
 
@@ -1641,11 +1641,11 @@
 //     const _20_accounts = accounts.slice(1, 21);
 
 //     let coll = 50;
-//     // create 20 troves, increasing collateral, constant debt = 100LUSD
+//     // create 20 troves, increasing collateral, constant debt = 100ARTH
 //     for (const account of _20_accounts) {
 //       const collString = coll.toString().concat("000000000000000000");
 //       await openTrove({
-//         extraLUSDAmount: dec(100, 18),
+//         extraARTHAmount: dec(100, 18),
 //         extraParams: { from: account, value: collString }
 //       });
 
@@ -1710,7 +1710,7 @@
 //       const account = accountsList[accountIdx];
 //       const collString = coll.toString().concat("000000000000000000");
 //       await openTrove({
-//         extraLUSDAmount: dec(100, 18),
+//         extraARTHAmount: dec(100, 18),
 //         extraParams: { from: account, value: collString }
 //       });
 

@@ -30,8 +30,8 @@
 //     assert.equal(recordedETHBalance, 0)
 //   })
 
-//   it('getTotalLUSDDeposits(): gets the recorded LUSD balance', async () => {
-//     const recordedETHBalance = await stabilityPool.getTotalLUSDDeposits()
+//   it('getTotalARTHDeposits(): gets the recorded ARTH balance', async () => {
+//     const recordedETHBalance = await stabilityPool.getTotalARTHDeposits()
 //     assert.equal(recordedETHBalance, 0)
 //   })
 // })
@@ -53,39 +53,39 @@
 //     assert.equal(recordedETHBalance, 0)
 //   })
 
-//   it('getLUSDDebt(): gets the recorded LUSD balance', async () => {
-//     const recordedETHBalance = await activePool.getLUSDDebt()
+//   it('getARTHDebt(): gets the recorded ARTH balance', async () => {
+//     const recordedETHBalance = await activePool.getARTHDebt()
 //     assert.equal(recordedETHBalance, 0)
 //   })
  
-//   it('increaseLUSD(): increases the recorded LUSD balance by the correct amount', async () => {
-//     const recordedLUSD_balanceBefore = await activePool.getLUSDDebt()
-//     assert.equal(recordedLUSD_balanceBefore, 0)
+//   it('increaseARTH(): increases the recorded ARTH balance by the correct amount', async () => {
+//     const recordedARTH_balanceBefore = await activePool.getARTHDebt()
+//     assert.equal(recordedARTH_balanceBefore, 0)
 
-//     // await activePool.increaseLUSDDebt(100, { from: mockBorrowerOperationsAddress })
-//     const increaseLUSDDebtData = th.getTransactionData('increaseLUSDDebt(uint256)', ['0x64'])
-//     const tx = await mockBorrowerOperations.forward(activePool.address, increaseLUSDDebtData)
+//     // await activePool.increaseARTHDebt(100, { from: mockBorrowerOperationsAddress })
+//     const increaseARTHDebtData = th.getTransactionData('increaseARTHDebt(uint256)', ['0x64'])
+//     const tx = await mockBorrowerOperations.forward(activePool.address, increaseARTHDebtData)
 //     assert.isTrue(tx.receipt.status)
-//     const recordedLUSD_balanceAfter = await activePool.getLUSDDebt()
-//     assert.equal(recordedLUSD_balanceAfter, 100)
+//     const recordedARTH_balanceAfter = await activePool.getARTHDebt()
+//     assert.equal(recordedARTH_balanceAfter, 100)
 //   })
 //   // Decrease
-//   it('decreaseLUSD(): decreases the recorded LUSD balance by the correct amount', async () => {
+//   it('decreaseARTH(): decreases the recorded ARTH balance by the correct amount', async () => {
 //     // start the pool on 100 wei
-//     //await activePool.increaseLUSDDebt(100, { from: mockBorrowerOperationsAddress })
-//     const increaseLUSDDebtData = th.getTransactionData('increaseLUSDDebt(uint256)', ['0x64'])
-//     const tx1 = await mockBorrowerOperations.forward(activePool.address, increaseLUSDDebtData)
+//     //await activePool.increaseARTHDebt(100, { from: mockBorrowerOperationsAddress })
+//     const increaseARTHDebtData = th.getTransactionData('increaseARTHDebt(uint256)', ['0x64'])
+//     const tx1 = await mockBorrowerOperations.forward(activePool.address, increaseARTHDebtData)
 //     assert.isTrue(tx1.receipt.status)
 
-//     const recordedLUSD_balanceBefore = await activePool.getLUSDDebt()
-//     assert.equal(recordedLUSD_balanceBefore, 100)
+//     const recordedARTH_balanceBefore = await activePool.getARTHDebt()
+//     assert.equal(recordedARTH_balanceBefore, 100)
 
-//     //await activePool.decreaseLUSDDebt(100, { from: mockBorrowerOperationsAddress })
-//     const decreaseLUSDDebtData = th.getTransactionData('decreaseLUSDDebt(uint256)', ['0x64'])
-//     const tx2 = await mockBorrowerOperations.forward(activePool.address, decreaseLUSDDebtData)
+//     //await activePool.decreaseARTHDebt(100, { from: mockBorrowerOperationsAddress })
+//     const decreaseARTHDebtData = th.getTransactionData('decreaseARTHDebt(uint256)', ['0x64'])
+//     const tx2 = await mockBorrowerOperations.forward(activePool.address, decreaseARTHDebtData)
 //     assert.isTrue(tx2.receipt.status)
-//     const recordedLUSD_balanceAfter = await activePool.getLUSDDebt()
-//     assert.equal(recordedLUSD_balanceAfter, 0)
+//     const recordedARTH_balanceAfter = await activePool.getARTHDebt()
+//     assert.equal(recordedARTH_balanceAfter, 0)
 //   })
 
 //   // send raw ether
@@ -131,46 +131,46 @@
 //     await defaultPool.setAddresses(mockTroveManager.address, mockActivePool.address)
 //   })
 
-//   it('getETH(): gets the recorded LUSD balance', async () => {
+//   it('getETH(): gets the recorded ARTH balance', async () => {
 //     const recordedETHBalance = await defaultPool.getETH()
 //     assert.equal(recordedETHBalance, 0)
 //   })
 
-//   it('getLUSDDebt(): gets the recorded LUSD balance', async () => {
-//     const recordedETHBalance = await defaultPool.getLUSDDebt()
+//   it('getARTHDebt(): gets the recorded ARTH balance', async () => {
+//     const recordedETHBalance = await defaultPool.getARTHDebt()
 //     assert.equal(recordedETHBalance, 0)
 //   })
  
-//   it('increaseLUSD(): increases the recorded LUSD balance by the correct amount', async () => {
-//     const recordedLUSD_balanceBefore = await defaultPool.getLUSDDebt()
-//     assert.equal(recordedLUSD_balanceBefore, 0)
+//   it('increaseARTH(): increases the recorded ARTH balance by the correct amount', async () => {
+//     const recordedARTH_balanceBefore = await defaultPool.getARTHDebt()
+//     assert.equal(recordedARTH_balanceBefore, 0)
 
-//     // await defaultPool.increaseLUSDDebt(100, { from: mockTroveManagerAddress })
-//     const increaseLUSDDebtData = th.getTransactionData('increaseLUSDDebt(uint256)', ['0x64'])
-//     const tx = await mockTroveManager.forward(defaultPool.address, increaseLUSDDebtData)
+//     // await defaultPool.increaseARTHDebt(100, { from: mockTroveManagerAddress })
+//     const increaseARTHDebtData = th.getTransactionData('increaseARTHDebt(uint256)', ['0x64'])
+//     const tx = await mockTroveManager.forward(defaultPool.address, increaseARTHDebtData)
 //     assert.isTrue(tx.receipt.status)
 
-//     const recordedLUSD_balanceAfter = await defaultPool.getLUSDDebt()
-//     assert.equal(recordedLUSD_balanceAfter, 100)
+//     const recordedARTH_balanceAfter = await defaultPool.getARTHDebt()
+//     assert.equal(recordedARTH_balanceAfter, 100)
 //   })
   
-//   it('decreaseLUSD(): decreases the recorded LUSD balance by the correct amount', async () => {
+//   it('decreaseARTH(): decreases the recorded ARTH balance by the correct amount', async () => {
 //     // start the pool on 100 wei
-//     //await defaultPool.increaseLUSDDebt(100, { from: mockTroveManagerAddress })
-//     const increaseLUSDDebtData = th.getTransactionData('increaseLUSDDebt(uint256)', ['0x64'])
-//     const tx1 = await mockTroveManager.forward(defaultPool.address, increaseLUSDDebtData)
+//     //await defaultPool.increaseARTHDebt(100, { from: mockTroveManagerAddress })
+//     const increaseARTHDebtData = th.getTransactionData('increaseARTHDebt(uint256)', ['0x64'])
+//     const tx1 = await mockTroveManager.forward(defaultPool.address, increaseARTHDebtData)
 //     assert.isTrue(tx1.receipt.status)
 
-//     const recordedLUSD_balanceBefore = await defaultPool.getLUSDDebt()
-//     assert.equal(recordedLUSD_balanceBefore, 100)
+//     const recordedARTH_balanceBefore = await defaultPool.getARTHDebt()
+//     assert.equal(recordedARTH_balanceBefore, 100)
 
-//     // await defaultPool.decreaseLUSDDebt(100, { from: mockTroveManagerAddress })
-//     const decreaseLUSDDebtData = th.getTransactionData('decreaseLUSDDebt(uint256)', ['0x64'])
-//     const tx2 = await mockTroveManager.forward(defaultPool.address, decreaseLUSDDebtData)
+//     // await defaultPool.decreaseARTHDebt(100, { from: mockTroveManagerAddress })
+//     const decreaseARTHDebtData = th.getTransactionData('decreaseARTHDebt(uint256)', ['0x64'])
+//     const tx2 = await mockTroveManager.forward(defaultPool.address, decreaseARTHDebtData)
 //     assert.isTrue(tx2.receipt.status)
 
-//     const recordedLUSD_balanceAfter = await defaultPool.getLUSDDebt()
-//     assert.equal(recordedLUSD_balanceAfter, 0)
+//     const recordedARTH_balanceAfter = await defaultPool.getARTHDebt()
+//     assert.equal(recordedARTH_balanceAfter, 0)
 //   })
 
 //   // send raw ether

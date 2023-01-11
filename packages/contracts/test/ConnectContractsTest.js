@@ -17,7 +17,7 @@
 //     let functionCaller;
 //     let borrowerOperations;
 //     let lqtyStaking;
-//     let lqtyToken;
+//     let mahaToken;
 //     let communityIssuance;
 //     // let lockupContractFactory;
 
@@ -29,7 +29,7 @@
 //         multisig
 //       );
 
-//       priceFeed = coreContracts.priceFeedTestnet;
+//       priceFeed = coreContracts.priceFeed;
 //       arthToken = coreContracts.arthToken;
 //       sortedTroves = coreContracts.sortedTroves;
 //       troveManager = coreContracts.troveManager;
@@ -40,7 +40,7 @@
 //       borrowerOperations = coreContracts.borrowerOperations;
 
 //       lqtyStaking = LQTYContracts.lqtyStaking;
-//       lqtyToken = LQTYContracts.lqtyToken;
+//       mahaToken = LQTYContracts.mahaToken;
 //       communityIssuance = LQTYContracts.communityIssuance;
 //       // lockupContractFactory = LQTYContracts.lockupContractFactory;
 
@@ -265,10 +265,10 @@
 
 //     // // Sets LQTYToken in LQTYStaking
 //     // it("Sets the correct LQTYToken address in LQTYStaking", async () => {
-//     //   const lqtyTokenAddress = lqtyToken.address;
+//     //   const mahaTokenAddress = mahaToken.address;
 
-//     //   const recordedLQTYTokenAddress = await lqtyStaking.lqtyToken();
-//     //   assert.equal(lqtyTokenAddress, recordedLQTYTokenAddress);
+//     //   const recordedLQTYTokenAddress = await lqtyStaking.mahaToken();
+//     //   assert.equal(mahaTokenAddress, recordedLQTYTokenAddress);
 //     // });
 
 //     // // Sets ActivePool in LQTYStaking
@@ -309,7 +309,7 @@
 //     // it("Sets the correct CommunityIssuance address in LQTYToken", async () => {
 //     //   const communityIssuanceAddress = communityIssuance.address;
 
-//     //   const recordedcommunityIssuanceAddress = await lqtyToken.communityIssuanceAddress();
+//     //   const recordedcommunityIssuanceAddress = await mahaToken.communityIssuanceAddress();
 //     //   assert.equal(communityIssuanceAddress, recordedcommunityIssuanceAddress);
 //     // });
 
@@ -317,7 +317,7 @@
 //     // it("Sets the correct LQTYStaking address in LQTYToken", async () => {
 //     //   const lqtyStakingAddress = lqtyStaking.address;
 
-//     //   const recordedLQTYStakingAddress = await lqtyToken.lqtyStakingAddress();
+//     //   const recordedLQTYStakingAddress = await mahaToken.lqtyStakingAddress();
 //     //   assert.equal(lqtyStakingAddress, recordedLQTYStakingAddress);
 //     // });
 
@@ -325,7 +325,7 @@
 //     // it("Sets the correct LockupContractFactory address in LQTYToken", async () => {
 //     //   const LCFAddress = lockupContractFactory.address;
 
-//     //   const recordedLCFAddress = await lqtyToken.lockupContractFactory();
+//     //   const recordedLCFAddress = await mahaToken.lockupContractFactory();
 //     //   assert.equal(LCFAddress, recordedLCFAddress);
 //     // });
 
@@ -333,20 +333,20 @@
 
 //     // // Sets LQTYToken in LockupContractFactory
 //     // it("Sets the correct LQTYToken address in LockupContractFactory", async () => {
-//     //   const lqtyTokenAddress = lqtyToken.address;
+//     //   const mahaTokenAddress = mahaToken.address;
 
-//     //   const recordedLQTYTokenAddress = await lockupContractFactory.lqtyTokenAddress();
-//     //   assert.equal(lqtyTokenAddress, recordedLQTYTokenAddress);
+//     //   const recordedLQTYTokenAddress = await lockupContractFactory.mahaTokenAddress();
+//     //   assert.equal(mahaTokenAddress, recordedLQTYTokenAddress);
 //     // });
 
 //     // --- CI ---
 
 //     // // Sets LQTYToken in CommunityIssuance
 //     // it("Sets the correct LQTYToken address in CommunityIssuance", async () => {
-//     //   const lqtyTokenAddress = lqtyToken.address;
+//     //   const mahaTokenAddress = mahaToken.address;
 
-//     //   const recordedLQTYTokenAddress = await communityIssuance.lqtyToken();
-//     //   assert.equal(lqtyTokenAddress, recordedLQTYTokenAddress);
+//     //   const recordedLQTYTokenAddress = await communityIssuance.mahaToken();
+//     //   assert.equal(mahaTokenAddress, recordedLQTYTokenAddress);
 //     // });
 
 //     it("Sets the correct StabilityPool address in CommunityIssuance", async () => {

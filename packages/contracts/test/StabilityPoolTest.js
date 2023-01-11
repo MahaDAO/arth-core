@@ -56,12 +56,12 @@
 //   let stabilityPool;
 //   let defaultPool;
 //   let borrowerOperations;
-//   let lqtyToken;
+//   let mahaToken;
 //   let communityIssuance;
 
 //   let gasPriceInWei;
 
-//   const getOpenTroveLUSDAmount = async totalDebt => th.getOpenTroveLUSDAmount(contracts, totalDebt);
+//   const getOpenTroveARTHAmount = async totalDebt => th.getOpenTroveARTHAmount(contracts, totalDebt);
 //   const openTrove = async params => th.openTrove(contracts, params);
 //   const assertRevert = th.assertRevert;
 
@@ -84,7 +84,7 @@
 //         multisig
 //       );
 
-//       priceFeed = contracts.priceFeedTestnet;
+//       priceFeed = contracts.priceFeed;
 //       arthToken = contracts.arthToken;
 //       sortedTroves = contracts.sortedTroves;
 //       troveManager = contracts.troveManager;
@@ -94,7 +94,7 @@
 //       borrowerOperations = contracts.borrowerOperations;
 //       hintHelpers = contracts.hintHelpers;
 
-//       lqtyToken = LQTYContracts.lqtyToken;
+//       mahaToken = LQTYContracts.mahaToken;
 //       communityIssuance = LQTYContracts.communityIssuance;
 
 //       await deploymentHelper.connectLQTYContracts(LQTYContracts);
@@ -106,11 +106,11 @@
 //     });
 
 //     // --- provideToSP() ---
-//     // increases recorded LUSD at Stability Pool
-//     it("provideToSP(): increases the Stability Pool LUSD balance", async () => {
+//     // increases recorded ARTH at Stability Pool
+//     it("provideToSP(): increases the Stability Pool ARTH balance", async () => {
 //       // --- SETUP --- Give Alice a least 200
 //       await openTrove({
-//         extraLUSDAmount: toBN(200),
+//         extraARTHAmount: toBN(200),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
@@ -120,15 +120,15 @@
 //       // provideToSP()
 //       await stabilityPool.provideToSP(200, ZERO_ADDRESS, { from: alice });
 
-//       // check LUSD balances after
-//       const stabilityPool_LUSD_After = await stabilityPool.getTotalLUSDDeposits();
-//       assert.equal(stabilityPool_LUSD_After, 200);
+//       // check ARTH balances after
+//       const stabilityPool_ARTH_After = await stabilityPool.getTotalARTHDeposits();
+//       assert.equal(stabilityPool_ARTH_After, 200);
 //     });
 
 //     it("provideToSP(): updates the user's deposit record in StabilityPool", async () => {
 //       // --- SETUP --- Give Alice a least 200
 //       await openTrove({
-//         extraLUSDAmount: toBN(200),
+//         extraARTHAmount: toBN(200),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
@@ -146,39 +146,39 @@
 //       assert.equal(alice_depositRecord_After, 200);
 //     });
 
-//     it("provideToSP(): reduces the user's LUSD balance by the correct amount", async () => {
+//     it("provideToSP(): reduces the user's ARTH balance by the correct amount", async () => {
 //       // --- SETUP --- Give Alice a least 200
 //       await openTrove({
-//         extraLUSDAmount: toBN(200),
+//         extraARTHAmount: toBN(200),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 
 //       // --- TEST ---
 //       // get user's deposit record before
-//       const alice_LUSDBalance_Before = await arthToken.balanceOf(alice);
+//       const alice_ARTHBalance_Before = await arthToken.balanceOf(alice);
 
 //       // provideToSP()
 //       await stabilityPool.provideToSP(200, frontEnd_1, { from: alice });
 
-//       // check user's LUSD balance change
-//       const alice_LUSDBalance_After = await arthToken.balanceOf(alice);
-//       assert.equal(alice_LUSDBalance_Before.sub(alice_LUSDBalance_After), "200");
+//       // check user's ARTH balance change
+//       const alice_ARTHBalance_After = await arthToken.balanceOf(alice);
+//       assert.equal(alice_ARTHBalance_Before.sub(alice_ARTHBalance_After), "200");
 //     });
 
-//     it("provideToSP(): increases totalLUSDDeposits by correct amount", async () => {
+//     it("provideToSP(): increases totalARTHDeposits by correct amount", async () => {
 //       // --- SETUP ---
 
-//       // Whale opens Trove with 50 ETH, adds 2000 LUSD to StabilityPool
+//       // Whale opens Trove with 50 ETH, adds 2000 ARTH to StabilityPool
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale }
 //       });
 //       await stabilityPool.provideToSP(dec(2000, 18), frontEnd_1, { from: whale });
 
-//       const totalLUSDDeposits = await stabilityPool.getTotalLUSDDeposits();
-//       assert.equal(totalLUSDDeposits, dec(2000, 18));
+//       const totalARTHDeposits = await stabilityPool.getTotalARTHDeposits();
+//       assert.equal(totalARTHDeposits, dec(2000, 18));
 //     });
 
 //     it("provideToSP(): Correctly updates user snapshots of accumulated rewards per unit staked", async () => {
@@ -186,28 +186,28 @@
 
 //       // Whale opens Trove and deposits to SP
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale, value: dec(50, "ether") }
 //       });
-//       const whaleLUSD = await arthToken.balanceOf(whale);
-//       await stabilityPool.provideToSP(whaleLUSD, frontEnd_1, { from: whale });
+//       const whaleARTH = await arthToken.balanceOf(whale);
+//       await stabilityPool.provideToSP(whaleARTH, frontEnd_1, { from: whale });
 
 //       // 2 Troves opened, each withdraws minimum debt
 //       await openTrove({
-//         extraLUSDAmount: 0,
+//         extraARTHAmount: 0,
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: defaulter_1 }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: 0,
+//         extraARTHAmount: 0,
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: defaulter_2 }
 //       });
 
-//       // Alice makes Trove and withdraws 100 LUSD
+//       // Alice makes Trove and withdraws 100 ARTH
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100, 18)),
+//         extraARTHAmount: toBN(dec(100, 18)),
 //         ICR: toBN(dec(5, 18)),
 //         extraParams: { from: alice, value: dec(50, "ether") }
 //       });
@@ -215,7 +215,7 @@
 //       // price drops: defaulter's Troves fall below MCR, whale doesn't
 //       await priceFeed.setPrice(dec(105, 18));
 
-//       const SPLUSD_Before = await stabilityPool.getTotalLUSDDeposits();
+//       const SPARTH_Before = await stabilityPool.getTotalARTHDeposits();
 
 //       // Troves are closed
 //       await troveManager.liquidate(defaulter_1, { from: owner });
@@ -224,8 +224,8 @@
 //       assert.isFalse(await sortedTroves.contains(defaulter_2));
 
 //       // Confirm SP has decreased
-//       const SPLUSD_After = await stabilityPool.getTotalLUSDDeposits();
-//       assert.isTrue(SPLUSD_After.lt(SPLUSD_Before));
+//       const SPARTH_After = await stabilityPool.getTotalARTHDeposits();
+//       assert.isTrue(SPARTH_After.lt(SPARTH_Before));
 
 //       // --- TEST ---
 //       const P_Before = await stabilityPool.P();
@@ -261,35 +261,35 @@
 //       // --- SETUP ---
 //       // Whale opens Trove and deposits to SP
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale, value: dec(50, "ether") }
 //       });
-//       const whaleLUSD = await arthToken.balanceOf(whale);
-//       await stabilityPool.provideToSP(whaleLUSD, frontEnd_1, { from: whale });
+//       const whaleARTH = await arthToken.balanceOf(whale);
+//       await stabilityPool.provideToSP(whaleARTH, frontEnd_1, { from: whale });
 
-//       // 3 Troves opened. Two users withdraw 160 LUSD each
+//       // 3 Troves opened. Two users withdraw 160 ARTH each
 //       await openTrove({
-//         extraLUSDAmount: 0,
+//         extraARTHAmount: 0,
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: defaulter_1, value: dec(50, "ether") }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: 0,
+//         extraARTHAmount: 0,
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: defaulter_2, value: dec(50, "ether") }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: 0,
+//         extraARTHAmount: 0,
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: defaulter_3, value: dec(50, "ether") }
 //       });
 
 //       // --- TEST ---
 
-//       // Alice makes deposit #1: 150 LUSD
+//       // Alice makes deposit #1: 150 ARTH
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(250, 18)),
+//         extraARTHAmount: toBN(dec(250, 18)),
 //         ICR: toBN(dec(3, 18)),
 //         extraParams: { from: alice }
 //       });
@@ -304,11 +304,11 @@
 //       // price drops: defaulters' Troves fall below MCR, alice and whale Trove remain active
 //       await priceFeed.setPrice(dec(105, 18));
 
-//       // 2 users with Trove with 180 LUSD drawn are closed
-//       await troveManager.liquidate(defaulter_1, { from: owner }); // 180 LUSD closed
-//       await troveManager.liquidate(defaulter_2, { from: owner }); // 180 LUSD closed
+//       // 2 users with Trove with 180 ARTH drawn are closed
+//       await troveManager.liquidate(defaulter_1, { from: owner }); // 180 ARTH closed
+//       await troveManager.liquidate(defaulter_2, { from: owner }); // 180 ARTH closed
 
-//       const alice_compoundedDeposit_1 = await stabilityPool.getCompoundedLUSDDeposit(alice);
+//       const alice_compoundedDeposit_1 = await stabilityPool.getCompoundedARTHDeposit(alice);
 
 //       // Alice makes deposit #2
 //       const alice_topUp_1 = toBN(dec(100, 18));
@@ -330,9 +330,9 @@
 //       assert.isTrue(alice_Snapshot_S_1.eq(S_1));
 //       assert.isTrue(alice_Snapshot_P_1.eq(P_1));
 
-//       // Bob withdraws LUSD and deposits to StabilityPool
+//       // Bob withdraws ARTH and deposits to StabilityPool
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
@@ -341,14 +341,14 @@
 //       // Defaulter 3 Trove is closed
 //       await troveManager.liquidate(defaulter_3, { from: owner });
 
-//       const alice_compoundedDeposit_2 = await stabilityPool.getCompoundedLUSDDeposit(alice);
+//       const alice_compoundedDeposit_2 = await stabilityPool.getCompoundedARTHDeposit(alice);
 
 //       const P_2 = await stabilityPool.P();
 //       const S_2 = await stabilityPool.epochToScaleToSum(0, 0);
 //       assert.isTrue(P_2.lt(P_1));
 //       assert.isTrue(S_2.gt(S_1));
 
-//       // Alice makes deposit #3:  100LUSD
+//       // Alice makes deposit #3:  100ARTH
 //       await stabilityPool.provideToSP(dec(100, 18), frontEnd_1, { from: alice });
 
 //       // check Alice's new snapshot is correct
@@ -359,29 +359,29 @@
 //       assert.isTrue(alice_Snapshot_P_2.eq(P_2));
 //     });
 
-//     it("provideToSP(): reverts if user tries to provide more than their LUSD balance", async () => {
+//     it("provideToSP(): reverts if user tries to provide more than their ARTH balance", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale, value: dec(50, "ether") }
 //       });
 
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice, value: dec(50, "ether") }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob, value: dec(50, "ether") }
 //       });
-//       const aliceLUSDbal = await arthToken.balanceOf(alice);
-//       const bobLUSDbal = await arthToken.balanceOf(bob);
+//       const aliceARTHbal = await arthToken.balanceOf(alice);
+//       const bobARTHbal = await arthToken.balanceOf(bob);
 
 //       // Alice, attempts to deposit 1 wei more than her balance
 
-//       const aliceTxPromise = stabilityPool.provideToSP(aliceLUSDbal.add(toBN(1)), frontEnd_1, {
+//       const aliceTxPromise = stabilityPool.provideToSP(aliceARTHbal.add(toBN(1)), frontEnd_1, {
 //         from: alice
 //       });
 //       await assertRevert(aliceTxPromise, "revert");
@@ -389,26 +389,26 @@
 //       // Bob, attempts to deposit 235534 more than his balance
 
 //       const bobTxPromise = stabilityPool.provideToSP(
-//         bobLUSDbal.add(toBN(dec(235534, 18))),
+//         bobARTHbal.add(toBN(dec(235534, 18))),
 //         frontEnd_1,
 //         { from: bob }
 //       );
 //       await assertRevert(bobTxPromise, "revert");
 //     });
 
-//     it("provideToSP(): reverts if user tries to provide 2^256-1 LUSD, which exceeds their balance", async () => {
+//     it("provideToSP(): reverts if user tries to provide 2^256-1 ARTH, which exceeds their balance", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale, value: dec(50, "ether") }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice, value: dec(50, "ether") }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob, value: dec(50, "ether") }
 //       });
@@ -417,7 +417,7 @@
 //         "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
 //       );
 
-//       // Alice attempts to deposit 2^256-1 LUSD
+//       // Alice attempts to deposit 2^256-1 ARTH
 //       try {
 //         aliceTx = await stabilityPool.provideToSP(maxBytes32, frontEnd_1, { from: alice });
 //         assert.isFalse(tx.receipt.status);
@@ -428,9 +428,9 @@
 
 //     it("provideToSP(): reverts if cannot receive ETH Gain", async () => {
 //       // --- SETUP ---
-//       // Whale deposits 1850 LUSD in StabilityPool
+//       // Whale deposits 1850 ARTH in StabilityPool
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale, value: dec(50, "ether") }
 //       });
@@ -438,12 +438,12 @@
 
 //       // Defaulter Troves opened
 //       await openTrove({
-//         extraLUSDAmount: 0,
+//         extraARTHAmount: 0,
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: defaulter_1 }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: 0,
+//         extraARTHAmount: 0,
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: defaulter_2 }
 //       });
@@ -453,7 +453,7 @@
 //       const nonPayable = await NonPayable.new();
 //       await arthToken.transfer(nonPayable.address, dec(250, 18), { from: whale });
 
-//       // NonPayable makes deposit #1: 150 LUSD
+//       // NonPayable makes deposit #1: 150 ARTH
 //       const txData1 = th.getTransactionData("provideToSP(uint256,address)", [
 //         web3.utils.toHex(dec(150, 18)),
 //         frontEnd_1
@@ -473,7 +473,7 @@
 //       const gain_1 = await stabilityPool.getDepositorETHGain(nonPayable.address);
 //       assert.isTrue(gain_1.gt(toBN(0)), "NonPayable should have some accumulated gains");
 
-//       // NonPayable tries to make deposit #2: 100LUSD (which also attempts to withdraw ETH gain)
+//       // NonPayable tries to make deposit #2: 100ARTH (which also attempts to withdraw ETH gain)
 //       const txData2 = th.getTransactionData("provideToSP(uint256,address)", [
 //         web3.utils.toHex(dec(100, 18)),
 //         frontEnd_1
@@ -486,24 +486,24 @@
 
 //     it("provideToSP(): doesn't impact other users' deposits or ETH gains", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale, value: dec(50, "ether") }
 //       });
 
 //       // A, B, C open troves and make Stability Pool deposits
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: carol }
 //       });
@@ -514,19 +514,19 @@
 
 //       // D opens a trove
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(300, 18)),
+//         extraARTHAmount: toBN(dec(300, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: dennis }
 //       });
 
 //       // Would-be defaulters open troves
 //       await openTrove({
-//         extraLUSDAmount: 0,
+//         extraARTHAmount: 0,
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: defaulter_1 }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: 0,
+//         extraARTHAmount: 0,
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: defaulter_2 }
 //       });
@@ -540,34 +540,34 @@
 //       assert.isFalse(await sortedTroves.contains(defaulter_1));
 //       assert.isFalse(await sortedTroves.contains(defaulter_2));
 
-//       const alice_LUSDDeposit_Before = (
-//         await stabilityPool.getCompoundedLUSDDeposit(alice)
+//       const alice_ARTHDeposit_Before = (
+//         await stabilityPool.getCompoundedARTHDeposit(alice)
 //       ).toString();
-//       const bob_LUSDDeposit_Before = (await stabilityPool.getCompoundedLUSDDeposit(bob)).toString();
-//       const carol_LUSDDeposit_Before = (
-//         await stabilityPool.getCompoundedLUSDDeposit(carol)
+//       const bob_ARTHDeposit_Before = (await stabilityPool.getCompoundedARTHDeposit(bob)).toString();
+//       const carol_ARTHDeposit_Before = (
+//         await stabilityPool.getCompoundedARTHDeposit(carol)
 //       ).toString();
 
 //       const alice_ETHGain_Before = (await stabilityPool.getDepositorETHGain(alice)).toString();
 //       const bob_ETHGain_Before = (await stabilityPool.getDepositorETHGain(bob)).toString();
 //       const carol_ETHGain_Before = (await stabilityPool.getDepositorETHGain(carol)).toString();
 
-//       //check non-zero LUSD and ETHGain in the Stability Pool
-//       const LUSDinSP = await stabilityPool.getTotalLUSDDeposits();
+//       //check non-zero ARTH and ETHGain in the Stability Pool
+//       const ARTHinSP = await stabilityPool.getTotalARTHDeposits();
 //       const ETHinSP = await stabilityPool.getETH();
-//       assert.isTrue(LUSDinSP.gt(mv._zeroBN));
+//       assert.isTrue(ARTHinSP.gt(mv._zeroBN));
 //       assert.isTrue(ETHinSP.gt(mv._zeroBN));
 
 //       // D makes an SP deposit
 //       await stabilityPool.provideToSP(dec(1000, 18), frontEnd_1, { from: dennis });
-//       assert.equal((await stabilityPool.getCompoundedLUSDDeposit(dennis)).toString(), dec(1000, 18));
+//       assert.equal((await stabilityPool.getCompoundedARTHDeposit(dennis)).toString(), dec(1000, 18));
 
-//       const alice_LUSDDeposit_After = (
-//         await stabilityPool.getCompoundedLUSDDeposit(alice)
+//       const alice_ARTHDeposit_After = (
+//         await stabilityPool.getCompoundedARTHDeposit(alice)
 //       ).toString();
-//       const bob_LUSDDeposit_After = (await stabilityPool.getCompoundedLUSDDeposit(bob)).toString();
-//       const carol_LUSDDeposit_After = (
-//         await stabilityPool.getCompoundedLUSDDeposit(carol)
+//       const bob_ARTHDeposit_After = (await stabilityPool.getCompoundedARTHDeposit(bob)).toString();
+//       const carol_ARTHDeposit_After = (
+//         await stabilityPool.getCompoundedARTHDeposit(carol)
 //       ).toString();
 
 //       const alice_ETHGain_After = (await stabilityPool.getDepositorETHGain(alice)).toString();
@@ -575,9 +575,9 @@
 //       const carol_ETHGain_After = (await stabilityPool.getDepositorETHGain(carol)).toString();
 
 //       // Check compounded deposits and ETH gains for A, B and C have not changed
-//       assert.equal(alice_LUSDDeposit_Before, alice_LUSDDeposit_After);
-//       assert.equal(bob_LUSDDeposit_Before, bob_LUSDDeposit_After);
-//       assert.equal(carol_LUSDDeposit_Before, carol_LUSDDeposit_After);
+//       assert.equal(alice_ARTHDeposit_Before, alice_ARTHDeposit_After);
+//       assert.equal(bob_ARTHDeposit_Before, bob_ARTHDeposit_After);
+//       assert.equal(carol_ARTHDeposit_Before, carol_ARTHDeposit_After);
 
 //       assert.equal(alice_ETHGain_Before, alice_ETHGain_After);
 //       assert.equal(bob_ETHGain_Before, bob_ETHGain_After);
@@ -586,24 +586,24 @@
 
 //     it("provideToSP(): doesn't impact system debt, collateral or TCR", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale, value: dec(50, "ether") }
 //       });
 
 //       // A, B, C open troves and make Stability Pool deposits
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: carol }
 //       });
@@ -614,19 +614,19 @@
 
 //       // D opens a trove
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: dennis }
 //       });
 
 //       // Would-be defaulters open troves
 //       await openTrove({
-//         extraLUSDAmount: 0,
+//         extraARTHAmount: 0,
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: defaulter_1 }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: 0,
+//         extraARTHAmount: 0,
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: defaulter_2 }
 //       });
@@ -640,18 +640,18 @@
 //       assert.isFalse(await sortedTroves.contains(defaulter_1));
 //       assert.isFalse(await sortedTroves.contains(defaulter_2));
 
-//       const activeDebt_Before = (await activePool.getLUSDDebt()).toString();
-//       const defaultedDebt_Before = (await defaultPool.getLUSDDebt()).toString();
+//       const activeDebt_Before = (await activePool.getARTHDebt()).toString();
+//       const defaultedDebt_Before = (await defaultPool.getARTHDebt()).toString();
 //       const activeColl_Before = (await activePool.getETH()).toString();
 //       const defaultedColl_Before = (await defaultPool.getETH()).toString();
 //       const TCR_Before = (await th.getTCR(contracts)).toString();
 
 //       // D makes an SP deposit
 //       await stabilityPool.provideToSP(dec(1000, 18), frontEnd_1, { from: dennis });
-//       assert.equal((await stabilityPool.getCompoundedLUSDDeposit(dennis)).toString(), dec(1000, 18));
+//       assert.equal((await stabilityPool.getCompoundedARTHDeposit(dennis)).toString(), dec(1000, 18));
 
-//       const activeDebt_After = (await activePool.getLUSDDebt()).toString();
-//       const defaultedDebt_After = (await defaultPool.getLUSDDebt()).toString();
+//       const activeDebt_After = (await activePool.getARTHDebt()).toString();
+//       const defaultedDebt_After = (await defaultPool.getARTHDebt()).toString();
 //       const activeColl_After = (await activePool.getETH()).toString();
 //       const defaultedColl_After = (await defaultPool.getETH()).toString();
 //       const TCR_After = (await th.getTCR(contracts)).toString();
@@ -666,24 +666,24 @@
 
 //     it("provideToSP(): doesn't impact any troves, including the caller's trove", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale, value: dec(50, "ether") }
 //       });
 
 //       // A, B, C open troves and make Stability Pool deposits
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: carol }
 //       });
@@ -694,7 +694,7 @@
 
 //       // D opens a trove
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: dennis }
 //       });
@@ -724,7 +724,7 @@
 
 //       // D makes an SP deposit
 //       await stabilityPool.provideToSP(dec(1000, 18), frontEnd_1, { from: dennis });
-//       assert.equal((await stabilityPool.getCompoundedLUSDDeposit(dennis)).toString(), dec(1000, 18));
+//       assert.equal((await stabilityPool.getCompoundedARTHDeposit(dennis)).toString(), dec(1000, 18));
 
 //       const whale_Debt_After = (await troveManager.Troves(whale))[0].toString();
 //       const alice_Debt_After = (await troveManager.Troves(alice))[0].toString();
@@ -765,29 +765,29 @@
 
 //     it("provideToSP(): doesn't protect the depositor's trove from liquidation", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale, value: dec(50, "ether") }
 //       });
 
 //       // A, B, C open troves and make Stability Pool deposits
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: carol }
 //       });
 
-//       // A, B provide 100 LUSD to SP
+//       // A, B provide 100 ARTH to SP
 //       await stabilityPool.provideToSP(dec(1000, 18), frontEnd_1, { from: alice });
 //       await stabilityPool.provideToSP(dec(1000, 18), frontEnd_1, { from: bob });
 
@@ -796,7 +796,7 @@
 //       assert.equal((await troveManager.getTroveStatus(bob)).toString(), "1"); // Confirm Bob's trove status is active
 
 //       // Confirm Bob has a Stability deposit
-//       assert.equal((await stabilityPool.getCompoundedLUSDDeposit(bob)).toString(), dec(1000, 18));
+//       assert.equal((await stabilityPool.getCompoundedARTHDeposit(bob)).toString(), dec(1000, 18));
 
 //       // Price drops
 //       await priceFeed.setPrice(dec(105, 18));
@@ -810,42 +810,42 @@
 //       assert.equal((await troveManager.getTroveStatus(bob)).toString(), "3"); // check Bob's trove status was closed by liquidation
 //     });
 
-//     it("provideToSP(): providing 0 LUSD reverts", async () => {
+//     it("provideToSP(): providing 0 ARTH reverts", async () => {
 //       // --- SETUP ---
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale, value: dec(50, "ether") }
 //       });
 
 //       // A, B, C open troves and make Stability Pool deposits
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: carol }
 //       });
 
-//       // A, B, C provides 100, 50, 30 LUSD to SP
+//       // A, B, C provides 100, 50, 30 ARTH to SP
 //       await stabilityPool.provideToSP(dec(100, 18), frontEnd_1, { from: alice });
 //       await stabilityPool.provideToSP(dec(50, 18), frontEnd_1, { from: bob });
 //       await stabilityPool.provideToSP(dec(30, 18), frontEnd_1, { from: carol });
 
-//       const bob_Deposit_Before = (await stabilityPool.getCompoundedLUSDDeposit(bob)).toString();
-//       const LUSDinSP_Before = (await stabilityPool.getTotalLUSDDeposits()).toString();
+//       const bob_Deposit_Before = (await stabilityPool.getCompoundedARTHDeposit(bob)).toString();
+//       const ARTHinSP_Before = (await stabilityPool.getTotalARTHDeposits()).toString();
 
-//       assert.equal(LUSDinSP_Before, dec(180, 18));
+//       assert.equal(ARTHinSP_Before, dec(180, 18));
 
-//       // Bob provides 0 LUSD to the Stability Pool
+//       // Bob provides 0 ARTH to the Stability Pool
 //       const txPromise_B = stabilityPool.provideToSP(0, frontEnd_1, { from: bob });
 //       await th.assertRevert(txPromise_B);
 //     });
@@ -853,24 +853,24 @@
 //     // --- LQTY functionality ---
 //     it("provideToSP(), new deposit: when SP > 0, triggers LQTY reward event - increases the sum G", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale, value: dec(50, "ether") }
 //       });
 
 //       // A, B, C open troves and make Stability Pool deposits
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
@@ -897,24 +897,24 @@
 
 //     it("provideToSP(), new deposit: when SP is empty, doesn't update G", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale, value: dec(50, "ether") }
 //       });
 
 //       // A, B, C open troves and make Stability Pool deposits
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
@@ -928,7 +928,7 @@
 //       await stabilityPool.withdrawFromSP(dec(1000, 18), { from: A });
 
 //       // Check SP is empty
-//       assert.equal(await stabilityPool.getTotalLUSDDeposits(), "0");
+//       assert.equal(await stabilityPool.getTotalARTHDeposits(), "0");
 
 //       // Check G is non-zero
 //       let currentEpoch = await stabilityPool.currentEpoch();
@@ -952,29 +952,29 @@
 
 //     it("provideToSP(), new deposit: sets the correct front end tag", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale, value: dec(50, "ether") }
 //       });
 
 //       // A, B, C, D open troves and make Stability Pool deposits
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: D }
 //       });
@@ -1011,26 +1011,26 @@
 
 //     it("provideToSP(), new deposit: depositor does not receive any LQTY rewards", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale, value: dec(50, "ether") }
 //       });
 
 //       // A, B, open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 
 //       // Get A, B, C LQTY balances before and confirm they're zero
-//       const A_LQTYBalance_Before = await lqtyToken.balanceOf(A);
-//       const B_LQTYBalance_Before = await lqtyToken.balanceOf(B);
+//       const A_LQTYBalance_Before = await mahaToken.balanceOf(A);
+//       const B_LQTYBalance_Before = await mahaToken.balanceOf(B);
 
 //       assert.equal(A_LQTYBalance_Before, "0");
 //       assert.equal(B_LQTYBalance_Before, "0");
@@ -1042,8 +1042,8 @@
 //       await stabilityPool.provideToSP(dec(2000, 18), ZERO_ADDRESS, { from: B });
 
 //       // Get A, B, C LQTY balances after, and confirm they're still zero
-//       const A_LQTYBalance_After = await lqtyToken.balanceOf(A);
-//       const B_LQTYBalance_After = await lqtyToken.balanceOf(B);
+//       const A_LQTYBalance_After = await mahaToken.balanceOf(A);
+//       const B_LQTYBalance_After = await mahaToken.balanceOf(B);
 
 //       assert.equal(A_LQTYBalance_After, "0");
 //       assert.equal(B_LQTYBalance_After, "0");
@@ -1051,29 +1051,29 @@
 
 //     it("provideToSP(), new deposit after past full withdrawal: depositor does not receive any LQTY rewards", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C, open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(4000, 18)),
+//         extraARTHAmount: toBN(dec(4000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: D }
 //       });
@@ -1110,8 +1110,8 @@
 //       // --- TEST ---
 
 //       // Get A, B, C LQTY balances before and confirm they're non-zero
-//       const A_LQTYBalance_Before = await lqtyToken.balanceOf(A);
-//       const B_LQTYBalance_Before = await lqtyToken.balanceOf(B);
+//       const A_LQTYBalance_Before = await mahaToken.balanceOf(A);
+//       const B_LQTYBalance_Before = await mahaToken.balanceOf(B);
 //       assert.isTrue(A_LQTYBalance_Before.gt(toBN("0")));
 //       assert.isTrue(B_LQTYBalance_Before.gt(toBN("0")));
 
@@ -1122,8 +1122,8 @@
 //       await stabilityPool.provideToSP(dec(200, 18), ZERO_ADDRESS, { from: B });
 
 //       // Get A, B, C LQTY balances after, and confirm they have not changed
-//       const A_LQTYBalance_After = await lqtyToken.balanceOf(A);
-//       const B_LQTYBalance_After = await lqtyToken.balanceOf(B);
+//       const A_LQTYBalance_After = await mahaToken.balanceOf(A);
+//       const B_LQTYBalance_After = await mahaToken.balanceOf(B);
 
 //       assert.isTrue(A_LQTYBalance_After.eq(A_LQTYBalance_Before));
 //       assert.isTrue(B_LQTYBalance_After.eq(B_LQTYBalance_Before));
@@ -1131,39 +1131,39 @@
 
 //     it("provideToSP(), new eligible deposit: tagged front end receives LQTY rewards", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C, open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: D }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: E }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: F }
 //       });
@@ -1174,9 +1174,9 @@
 //       await stabilityPool.provideToSP(dec(3000, 18), frontEnd_3, { from: F });
 
 //       // Get F1, F2, F3 LQTY balances before, and confirm they're zero
-//       const frontEnd_1_LQTYBalance_Before = await lqtyToken.balanceOf(frontEnd_1);
-//       const frontEnd_2_LQTYBalance_Before = await lqtyToken.balanceOf(frontEnd_2);
-//       const frontEnd_3_LQTYBalance_Before = await lqtyToken.balanceOf(frontEnd_3);
+//       const frontEnd_1_LQTYBalance_Before = await mahaToken.balanceOf(frontEnd_1);
+//       const frontEnd_2_LQTYBalance_Before = await mahaToken.balanceOf(frontEnd_2);
+//       const frontEnd_3_LQTYBalance_Before = await mahaToken.balanceOf(frontEnd_3);
 
 //       assert.equal(frontEnd_1_LQTYBalance_Before, "0");
 //       assert.equal(frontEnd_2_LQTYBalance_Before, "0");
@@ -1186,7 +1186,7 @@
 
 //       // console.log(`LQTYSupplyCap before: ${await communityIssuance.LQTYSupplyCap()}`)
 //       // console.log(`totalLQTYIssued before: ${await communityIssuance.totalLQTYIssued()}`)
-//       // console.log(`LQTY balance of CI before: ${await lqtyToken.balanceOf(communityIssuance.address)}`)
+//       // console.log(`LQTY balance of CI before: ${await mahaToken.balanceOf(communityIssuance.address)}`)
 
 //       // A, B, C provide to SP
 //       await stabilityPool.provideToSP(dec(1000, 18), frontEnd_1, { from: A });
@@ -1195,12 +1195,12 @@
 
 //       // console.log(`LQTYSupplyCap after: ${await communityIssuance.LQTYSupplyCap()}`)
 //       // console.log(`totalLQTYIssued after: ${await communityIssuance.totalLQTYIssued()}`)
-//       // console.log(`LQTY balance of CI after: ${await lqtyToken.balanceOf(communityIssuance.address)}`)
+//       // console.log(`LQTY balance of CI after: ${await mahaToken.balanceOf(communityIssuance.address)}`)
 
 //       // Get F1, F2, F3 LQTY balances after, and confirm they have increased
-//       const frontEnd_1_LQTYBalance_After = await lqtyToken.balanceOf(frontEnd_1);
-//       const frontEnd_2_LQTYBalance_After = await lqtyToken.balanceOf(frontEnd_2);
-//       const frontEnd_3_LQTYBalance_After = await lqtyToken.balanceOf(frontEnd_3);
+//       const frontEnd_1_LQTYBalance_After = await mahaToken.balanceOf(frontEnd_1);
+//       const frontEnd_2_LQTYBalance_After = await mahaToken.balanceOf(frontEnd_2);
+//       const frontEnd_3_LQTYBalance_After = await mahaToken.balanceOf(frontEnd_3);
 
 //       assert.isTrue(frontEnd_1_LQTYBalance_After.gt(frontEnd_1_LQTYBalance_Before));
 //       assert.isTrue(frontEnd_2_LQTYBalance_After.gt(frontEnd_2_LQTYBalance_Before));
@@ -1209,24 +1209,24 @@
 
 //     it("provideToSP(), new eligible deposit: tagged front end's stake increases", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C, open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
@@ -1262,31 +1262,31 @@
 
 //     it("provideToSP(), new eligible deposit: tagged front end's snapshots update", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C, open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
 
 //       // D opens trove
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(4000, 18)),
+//         extraARTHAmount: toBN(dec(4000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: D }
 //       });
@@ -1368,23 +1368,23 @@
 
 //     it("provideToSP(), new deposit: depositor does not receive ETH gains", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
-//       // Whale transfers LUSD to A, B
+//       // Whale transfers ARTH to A, B
 //       await arthToken.transfer(A, dec(100, 18), { from: whale });
 //       await arthToken.transfer(B, dec(200, 18), { from: whale });
 
 //       // C, D open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: D }
 //       });
@@ -1432,23 +1432,23 @@
 
 //     it("provideToSP(), new deposit after past full withdrawal: depositor does not receive ETH gains", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
-//       // Whale transfers LUSD to A, B
+//       // Whale transfers ARTH to A, B
 //       await arthToken.transfer(A, dec(1000, 18), { from: whale });
 //       await arthToken.transfer(B, dec(1000, 18), { from: whale });
 
 //       // C, D open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(4000, 18)),
+//         extraARTHAmount: toBN(dec(4000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(5000, 18)),
+//         extraARTHAmount: toBN(dec(5000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: D }
 //       });
@@ -1542,24 +1542,24 @@
 
 //     it("provideToSP(), topup: triggers LQTY reward event - increases the sum G", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
@@ -1586,7 +1586,7 @@
 
 //     it("provideToSP(), topup from different front end: doesn't change the front end tag", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -1597,17 +1597,17 @@
 
 //       // A, B, C open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100, 18)),
+//         extraARTHAmount: toBN(dec(100, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(200, 18)),
+//         extraARTHAmount: toBN(dec(200, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(300, 18)),
+//         extraARTHAmount: toBN(dec(300, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
@@ -1644,24 +1644,24 @@
 
 //     it("provideToSP(), topup: depositor receives LQTY rewards", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100, 18)),
+//         extraARTHAmount: toBN(dec(100, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(200, 18)),
+//         extraARTHAmount: toBN(dec(200, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(300, 18)),
+//         extraARTHAmount: toBN(dec(300, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
@@ -1674,9 +1674,9 @@
 //       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_HOUR, web3.currentProvider);
 
 //       // Get A, B, C LQTY balance before
-//       const A_LQTYBalance_Before = await lqtyToken.balanceOf(A);
-//       const B_LQTYBalance_Before = await lqtyToken.balanceOf(B);
-//       const C_LQTYBalance_Before = await lqtyToken.balanceOf(C);
+//       const A_LQTYBalance_Before = await mahaToken.balanceOf(A);
+//       const B_LQTYBalance_Before = await mahaToken.balanceOf(B);
+//       const C_LQTYBalance_Before = await mahaToken.balanceOf(C);
 
 //       // A, B, C top up
 //       await stabilityPool.provideToSP(dec(10, 18), frontEnd_1, { from: A });
@@ -1684,9 +1684,9 @@
 //       await stabilityPool.provideToSP(dec(30, 18), ZERO_ADDRESS, { from: C });
 
 //       // Get LQTY balance after
-//       const A_LQTYBalance_After = await lqtyToken.balanceOf(A);
-//       const B_LQTYBalance_After = await lqtyToken.balanceOf(B);
-//       const C_LQTYBalance_After = await lqtyToken.balanceOf(C);
+//       const A_LQTYBalance_After = await mahaToken.balanceOf(A);
+//       const B_LQTYBalance_After = await mahaToken.balanceOf(B);
+//       const C_LQTYBalance_After = await mahaToken.balanceOf(C);
 
 //       // Check LQTY Balance of A, B, C has increased
 //       assert.isTrue(A_LQTYBalance_After.gt(A_LQTYBalance_Before));
@@ -1696,24 +1696,24 @@
 
 //     it("provideToSP(), topup: tagged front end receives LQTY rewards", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100, 18)),
+//         extraARTHAmount: toBN(dec(100, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(200, 18)),
+//         extraARTHAmount: toBN(dec(200, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(300, 18)),
+//         extraARTHAmount: toBN(dec(300, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
@@ -1726,9 +1726,9 @@
 //       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_HOUR, web3.currentProvider);
 
 //       // Get front ends' LQTY balance before
-//       const F1_LQTYBalance_Before = await lqtyToken.balanceOf(frontEnd_1);
-//       const F2_LQTYBalance_Before = await lqtyToken.balanceOf(frontEnd_2);
-//       const F3_LQTYBalance_Before = await lqtyToken.balanceOf(frontEnd_3);
+//       const F1_LQTYBalance_Before = await mahaToken.balanceOf(frontEnd_1);
+//       const F2_LQTYBalance_Before = await mahaToken.balanceOf(frontEnd_2);
+//       const F3_LQTYBalance_Before = await mahaToken.balanceOf(frontEnd_3);
 
 //       // A, B, C top up  (front end param passed here is irrelevant)
 //       await stabilityPool.provideToSP(dec(10, 18), ZERO_ADDRESS, { from: A }); // provides no front end param
@@ -1736,9 +1736,9 @@
 //       await stabilityPool.provideToSP(dec(30, 18), frontEnd_3, { from: C }); // provides front end that matches his tag
 
 //       // Get front ends' LQTY balance after
-//       const F1_LQTYBalance_After = await lqtyToken.balanceOf(A);
-//       const F2_LQTYBalance_After = await lqtyToken.balanceOf(B);
-//       const F3_LQTYBalance_After = await lqtyToken.balanceOf(C);
+//       const F1_LQTYBalance_After = await mahaToken.balanceOf(A);
+//       const F2_LQTYBalance_After = await mahaToken.balanceOf(B);
+//       const F3_LQTYBalance_After = await mahaToken.balanceOf(C);
 
 //       // Check LQTY Balance of front ends has increased
 //       assert.isTrue(F1_LQTYBalance_After.gt(F1_LQTYBalance_Before));
@@ -1748,39 +1748,39 @@
 
 //     it("provideToSP(), topup: tagged front end's stake increases", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C, D, E, F open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100, 18)),
+//         extraARTHAmount: toBN(dec(100, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(200, 18)),
+//         extraARTHAmount: toBN(dec(200, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(300, 18)),
+//         extraARTHAmount: toBN(dec(300, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100, 18)),
+//         extraARTHAmount: toBN(dec(100, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: D }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(200, 18)),
+//         extraARTHAmount: toBN(dec(200, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: E }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(300, 18)),
+//         extraARTHAmount: toBN(dec(300, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: F }
 //       });
@@ -1818,31 +1818,31 @@
 
 //     it("provideToSP(), topup: tagged front end's snapshots update", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C, open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(200, 18)),
+//         extraARTHAmount: toBN(dec(200, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(400, 18)),
+//         extraARTHAmount: toBN(dec(400, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(600, 18)),
+//         extraARTHAmount: toBN(dec(600, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
 
 //       // D opens trove
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: D }
 //       });
@@ -1929,23 +1929,23 @@
 
 //     it("provideToSP(): reverts when amount is zero", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000, 18)),
+//         extraARTHAmount: toBN(dec(1000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(2000, 18)),
+//         extraARTHAmount: toBN(dec(2000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 
-//       // Whale transfers LUSD to C, D
+//       // Whale transfers ARTH to C, D
 //       await arthToken.transfer(C, dec(100, 18), { from: whale });
 //       await arthToken.transfer(D, dec(100, 18), { from: whale });
 
@@ -1963,22 +1963,22 @@
 //     it("provideToSP(): reverts if user is a registered front end", async () => {
 //       // C, D, E, F open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30, 18)),
+//         extraARTHAmount: toBN(dec(30, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30, 18)),
+//         extraARTHAmount: toBN(dec(30, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: D }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30, 18)),
+//         extraARTHAmount: toBN(dec(30, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: E }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30, 18)),
+//         extraARTHAmount: toBN(dec(30, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: F }
 //       });
@@ -2010,17 +2010,17 @@
 
 //     it("provideToSP(): reverts if provided tag is not a registered front end", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30, 18)),
+//         extraARTHAmount: toBN(dec(30, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30, 18)),
+//         extraARTHAmount: toBN(dec(30, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: D }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30, 18)),
+//         extraARTHAmount: toBN(dec(30, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: E }
 //       });
@@ -2052,12 +2052,12 @@
 
 //     it("withdrawFromSP(): reverts when user has no active deposit", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100, 18)),
+//         extraARTHAmount: toBN(dec(100, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100, 18)),
+//         extraARTHAmount: toBN(dec(100, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
@@ -2085,7 +2085,7 @@
 
 //     it("withdrawFromSP(): reverts when amount > 0 and system has an undercollateralized trove", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100, 18)),
+//         extraARTHAmount: toBN(dec(100, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
@@ -2104,11 +2104,11 @@
 //       await th.assertRevert(stabilityPool.withdrawFromSP(dec(100, 18), { from: alice }));
 //     });
 
-//     it("withdrawFromSP(): partial retrieval - retrieves correct LUSD amount and the entire ETH Gain, and updates deposit", async () => {
+//     it("withdrawFromSP(): partial retrieval - retrieves correct ARTH amount and the entire ETH Gain, and updates deposit", async () => {
 //       // --- SETUP ---
-//       // Whale deposits 185000 LUSD in StabilityPool
+//       // Whale deposits 185000 ARTH in StabilityPool
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1, 24)),
+//         extraARTHAmount: toBN(dec(1, 24)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -2120,9 +2120,9 @@
 
 //       // --- TEST ---
 
-//       // Alice makes deposit #1: 15000 LUSD
+//       // Alice makes deposit #1: 15000 ARTH
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(15000, 18)),
+//         extraARTHAmount: toBN(dec(15000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: alice }
 //       });
@@ -2131,31 +2131,31 @@
 //       // price drops: defaulters' Troves fall below MCR, alice and whale Trove remain active
 //       await priceFeed.setPrice(dec(105, 18));
 
-//       // 2 users with Trove with 170 LUSD drawn are closed
-//       const liquidationTX_1 = await troveManager.liquidate(defaulter_1, { from: owner }); // 170 LUSD closed
-//       const liquidationTX_2 = await troveManager.liquidate(defaulter_2, { from: owner }); // 170 LUSD closed
+//       // 2 users with Trove with 170 ARTH drawn are closed
+//       const liquidationTX_1 = await troveManager.liquidate(defaulter_1, { from: owner }); // 170 ARTH closed
+//       const liquidationTX_2 = await troveManager.liquidate(defaulter_2, { from: owner }); // 170 ARTH closed
 
 //       const [liquidatedDebt_1] = await th.getEmittedLiquidationValues(liquidationTX_1);
 //       const [liquidatedDebt_2] = await th.getEmittedLiquidationValues(liquidationTX_2);
 
-//       // Alice LUSDLoss is ((15000/200000) * liquidatedDebt), for each liquidation
-//       const expectedLUSDLoss_A = liquidatedDebt_1
+//       // Alice ARTHLoss is ((15000/200000) * liquidatedDebt), for each liquidation
+//       const expectedARTHLoss_A = liquidatedDebt_1
 //         .mul(toBN(dec(15000, 18)))
 //         .div(toBN(dec(200000, 18)))
 //         .add(liquidatedDebt_2.mul(toBN(dec(15000, 18))).div(toBN(dec(200000, 18))));
 
-//       const expectedCompoundedLUSDDeposit_A = toBN(dec(15000, 18)).sub(expectedLUSDLoss_A);
-//       const compoundedLUSDDeposit_A = await stabilityPool.getCompoundedLUSDDeposit(alice);
+//       const expectedCompoundedARTHDeposit_A = toBN(dec(15000, 18)).sub(expectedARTHLoss_A);
+//       const compoundedARTHDeposit_A = await stabilityPool.getCompoundedARTHDeposit(alice);
 
 //       assert.isAtMost(
-//         th.getDifference(expectedCompoundedLUSDDeposit_A, compoundedLUSDDeposit_A),
+//         th.getDifference(expectedCompoundedARTHDeposit_A, compoundedARTHDeposit_A),
 //         100000
 //       );
 
-//       // Alice retrieves part of her entitled LUSD: 9000 LUSD
+//       // Alice retrieves part of her entitled ARTH: 9000 ARTH
 //       await stabilityPool.withdrawFromSP(dec(9000, 18), { from: alice });
 
-//       const expectedNewDeposit_A = compoundedLUSDDeposit_A.sub(toBN(dec(9000, 18)));
+//       const expectedNewDeposit_A = compoundedARTHDeposit_A.sub(toBN(dec(9000, 18)));
 
 //       // check Alice's deposit has been updated to equal her compounded deposit minus her withdrawal */
 //       const newDeposit = (await stabilityPool.deposits(alice))[0].toString();
@@ -2166,11 +2166,11 @@
 //       assert.equal(alice_pendingETHGain, 0);
 //     });
 
-//     it("withdrawFromSP(): partial retrieval - leaves the correct amount of LUSD in the Stability Pool", async () => {
+//     it("withdrawFromSP(): partial retrieval - leaves the correct amount of ARTH in the Stability Pool", async () => {
 //       // --- SETUP ---
-//       // Whale deposits 185000 LUSD in StabilityPool
+//       // Whale deposits 185000 ARTH in StabilityPool
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1, 24)),
+//         extraARTHAmount: toBN(dec(1, 24)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -2181,16 +2181,16 @@
 //       await openTrove({ ICR: toBN(dec(2, 18)), extraParams: { from: defaulter_2 } });
 //       // --- TEST ---
 
-//       // Alice makes deposit #1: 15000 LUSD
+//       // Alice makes deposit #1: 15000 ARTH
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(15000, 18)),
+//         extraARTHAmount: toBN(dec(15000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await stabilityPool.provideToSP(dec(15000, 18), frontEnd_1, { from: alice });
 
-//       const SP_LUSD_Before = await stabilityPool.getTotalLUSDDeposits();
-//       assert.equal(SP_LUSD_Before, dec(200000, 18));
+//       const SP_ARTH_Before = await stabilityPool.getTotalARTHDeposits();
+//       assert.equal(SP_ARTH_Before, dec(200000, 18));
 
 //       // price drops: defaulters' Troves fall below MCR, alice and whale Trove remain active
 //       await priceFeed.setPrice(dec(105, 18));
@@ -2202,26 +2202,26 @@
 //       const [liquidatedDebt_1] = await th.getEmittedLiquidationValues(liquidationTX_1);
 //       const [liquidatedDebt_2] = await th.getEmittedLiquidationValues(liquidationTX_2);
 
-//       // Alice retrieves part of her entitled LUSD: 9000 LUSD
+//       // Alice retrieves part of her entitled ARTH: 9000 ARTH
 //       await stabilityPool.withdrawFromSP(dec(9000, 18), { from: alice });
 
 //       /* Check SP has reduced from 2 liquidations and Alice's withdrawal
-//       Expect LUSD in SP = (200000 - liquidatedDebt_1 - liquidatedDebt_2 - 9000) */
-//       const expectedSPLUSD = toBN(dec(200000, 18))
+//       Expect ARTH in SP = (200000 - liquidatedDebt_1 - liquidatedDebt_2 - 9000) */
+//       const expectedSPARTH = toBN(dec(200000, 18))
 //         .sub(toBN(liquidatedDebt_1))
 //         .sub(toBN(liquidatedDebt_2))
 //         .sub(toBN(dec(9000, 18)));
 
-//       const SP_LUSD_After = (await stabilityPool.getTotalLUSDDeposits()).toString();
+//       const SP_ARTH_After = (await stabilityPool.getTotalARTHDeposits()).toString();
 
-//       th.assertIsApproximatelyEqual(SP_LUSD_After, expectedSPLUSD);
+//       th.assertIsApproximatelyEqual(SP_ARTH_After, expectedSPARTH);
 //     });
 
-//     it("withdrawFromSP(): full retrieval - leaves the correct amount of LUSD in the Stability Pool", async () => {
+//     it("withdrawFromSP(): full retrieval - leaves the correct amount of ARTH in the Stability Pool", async () => {
 //       // --- SETUP ---
-//       // Whale deposits 185000 LUSD in StabilityPool
+//       // Whale deposits 185000 ARTH in StabilityPool
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000000, 18)),
+//         extraARTHAmount: toBN(dec(1000000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -2235,14 +2235,14 @@
 
 //       // Alice makes deposit #1
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(15000, 18)),
+//         extraARTHAmount: toBN(dec(15000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await stabilityPool.provideToSP(dec(15000, 18), frontEnd_1, { from: alice });
 
-//       const SP_LUSD_Before = await stabilityPool.getTotalLUSDDeposits();
-//       assert.equal(SP_LUSD_Before, dec(200000, 18));
+//       const SP_ARTH_Before = await stabilityPool.getTotalARTHDeposits();
+//       assert.equal(SP_ARTH_Before, dec(200000, 18));
 
 //       // price drops: defaulters' Troves fall below MCR, alice and whale Trove remain active
 //       await priceFeed.setPrice(dec(105, 18));
@@ -2254,36 +2254,36 @@
 //       const [liquidatedDebt_1] = await th.getEmittedLiquidationValues(liquidationTX_1);
 //       const [liquidatedDebt_2] = await th.getEmittedLiquidationValues(liquidationTX_2);
 
-//       // Alice LUSDLoss is ((15000/200000) * liquidatedDebt), for each liquidation
-//       const expectedLUSDLoss_A = liquidatedDebt_1
+//       // Alice ARTHLoss is ((15000/200000) * liquidatedDebt), for each liquidation
+//       const expectedARTHLoss_A = liquidatedDebt_1
 //         .mul(toBN(dec(15000, 18)))
 //         .div(toBN(dec(200000, 18)))
 //         .add(liquidatedDebt_2.mul(toBN(dec(15000, 18))).div(toBN(dec(200000, 18))));
 
-//       const expectedCompoundedLUSDDeposit_A = toBN(dec(15000, 18)).sub(expectedLUSDLoss_A);
-//       const compoundedLUSDDeposit_A = await stabilityPool.getCompoundedLUSDDeposit(alice);
+//       const expectedCompoundedARTHDeposit_A = toBN(dec(15000, 18)).sub(expectedARTHLoss_A);
+//       const compoundedARTHDeposit_A = await stabilityPool.getCompoundedARTHDeposit(alice);
 
 //       assert.isAtMost(
-//         th.getDifference(expectedCompoundedLUSDDeposit_A, compoundedLUSDDeposit_A),
+//         th.getDifference(expectedCompoundedARTHDeposit_A, compoundedARTHDeposit_A),
 //         100000
 //       );
 
-//       const LUSDinSPBefore = await stabilityPool.getTotalLUSDDeposits();
+//       const ARTHinSPBefore = await stabilityPool.getTotalARTHDeposits();
 
-//       // Alice retrieves all of her entitled LUSD:
+//       // Alice retrieves all of her entitled ARTH:
 //       await stabilityPool.withdrawFromSP(dec(15000, 18), { from: alice });
 
-//       const expectedLUSDinSPAfter = LUSDinSPBefore.sub(compoundedLUSDDeposit_A);
+//       const expectedARTHinSPAfter = ARTHinSPBefore.sub(compoundedARTHDeposit_A);
 
-//       const LUSDinSPAfter = await stabilityPool.getTotalLUSDDeposits();
-//       assert.isAtMost(th.getDifference(expectedLUSDinSPAfter, LUSDinSPAfter), 100000);
+//       const ARTHinSPAfter = await stabilityPool.getTotalARTHDeposits();
+//       assert.isAtMost(th.getDifference(expectedARTHinSPAfter, ARTHinSPAfter), 100000);
 //     });
 
 //     it("withdrawFromSP(): Subsequent deposit and withdrawal attempt from same account, with no intermediate liquidations, withdraws zero ETH", async () => {
 //       // --- SETUP ---
-//       // Whale deposits 1850 LUSD in StabilityPool
+//       // Whale deposits 1850 ARTH in StabilityPool
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000000, 18)),
+//         extraARTHAmount: toBN(dec(1000000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -2295,9 +2295,9 @@
 
 //       // --- TEST ---
 
-//       // Alice makes deposit #1: 15000 LUSD
+//       // Alice makes deposit #1: 15000 ARTH
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(15000, 18)),
+//         extraARTHAmount: toBN(dec(15000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: alice }
 //       });
@@ -2310,7 +2310,7 @@
 //       await troveManager.liquidate(defaulter_1, { from: owner });
 //       await troveManager.liquidate(defaulter_2, { from: owner });
 
-//       // Alice retrieves all of her entitled LUSD:
+//       // Alice retrieves all of her entitled ARTH:
 //       await stabilityPool.withdrawFromSP(dec(15000, 18), { from: alice });
 //       assert.equal(await stabilityPool.getDepositorETHGain(alice), 0);
 
@@ -2337,11 +2337,11 @@
 //       await th.assertRevert(txPromise_A);
 //     });
 
-//     it("withdrawFromSP(): it correctly updates the user's LUSD and ETH snapshots of entitled reward per unit staked", async () => {
+//     it("withdrawFromSP(): it correctly updates the user's ARTH and ETH snapshots of entitled reward per unit staked", async () => {
 //       // --- SETUP ---
-//       // Whale deposits 185000 LUSD in StabilityPool
+//       // Whale deposits 185000 ARTH in StabilityPool
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000000, 18)),
+//         extraARTHAmount: toBN(dec(1000000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -2353,9 +2353,9 @@
 
 //       // --- TEST ---
 
-//       // Alice makes deposit #1: 15000 LUSD
+//       // Alice makes deposit #1: 15000 ARTH
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(15000, 18)),
+//         extraARTHAmount: toBN(dec(15000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: alice }
 //       });
@@ -2375,7 +2375,7 @@
 //       await troveManager.liquidate(defaulter_1, { from: owner });
 //       await troveManager.liquidate(defaulter_2, { from: owner });
 
-//       // Alice retrieves part of her entitled LUSD: 9000 LUSD
+//       // Alice retrieves part of her entitled ARTH: 9000 ARTH
 //       await stabilityPool.withdrawFromSP(dec(9000, 18), { from: alice });
 
 //       const P = (await stabilityPool.P()).toString();
@@ -2390,9 +2390,9 @@
 
 //     it("withdrawFromSP(): decreases StabilityPool ETH", async () => {
 //       // --- SETUP ---
-//       // Whale deposits 185000 LUSD in StabilityPool
+//       // Whale deposits 185000 ARTH in StabilityPool
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000000, 18)),
+//         extraARTHAmount: toBN(dec(1000000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -2403,9 +2403,9 @@
 
 //       // --- TEST ---
 
-//       // Alice makes deposit #1: 15000 LUSD
+//       // Alice makes deposit #1: 15000 ARTH
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(15000, 18)),
+//         extraARTHAmount: toBN(dec(15000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: alice }
 //       });
@@ -2415,7 +2415,7 @@
 //       await priceFeed.setPrice("100000000000000000000");
 
 //       // defaulter's Trove is closed.
-//       const liquidationTx_1 = await troveManager.liquidate(defaulter_1, { from: owner }); // 180 LUSD closed
+//       const liquidationTx_1 = await troveManager.liquidate(defaulter_1, { from: owner }); // 180 ARTH closed
 //       const [, liquidatedColl] = th.getEmittedLiquidationValues(liquidationTx_1);
 
 //       //Get ActivePool and StabilityPool Ether before retrieval:
@@ -2455,7 +2455,7 @@
 //       const depositors = [alice, bob, carol, dennis, erin, flyn];
 //       for (account of depositors) {
 //         await openTrove({
-//           extraLUSDAmount: toBN(dec(10000, 18)),
+//           extraARTHAmount: toBN(dec(10000, 18)),
 //           ICR: toBN(dec(2, 18)),
 //           extraParams: { from: account }
 //         });
@@ -2481,15 +2481,15 @@
 //       await stabilityPool.withdrawFromSP(dec(10000, 18), { from: flyn });
 //       assert.equal((await stabilityPool.deposits(alice))[0].toString(), "0");
 
-//       const totalDeposits = (await stabilityPool.getTotalLUSDDeposits()).toString();
+//       const totalDeposits = (await stabilityPool.getTotalARTHDeposits()).toString();
 
 //       assert.isAtMost(th.getDifference(totalDeposits, "0"), 100000);
 //     });
 
-//     it("withdrawFromSP(): increases depositor's LUSD token balance by the expected amount", async () => {
+//     it("withdrawFromSP(): increases depositor's ARTH token balance by the expected amount", async () => {
 //       // Whale opens trove
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100000, 18)),
+//         extraARTHAmount: toBN(dec(100000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -2497,7 +2497,7 @@
 //       // 1 defaulter opens trove
 //       await borrowerOperations.openTrove(
 //         th._100pct,
-//         await getOpenTroveLUSDAmount(dec(10000, 18)),
+//         await getOpenTroveARTHAmount(dec(10000, 18)),
 //         defaulter_1,
 //         defaulter_1,
 //         { from: defaulter_1, value: dec(100, "ether") }
@@ -2509,7 +2509,7 @@
 //       const depositors = [alice, bob, carol, dennis, erin, flyn];
 //       for (account of depositors) {
 //         await openTrove({
-//           extraLUSDAmount: toBN(dec(10000, 18)),
+//           extraARTHAmount: toBN(dec(10000, 18)),
 //           ICR: toBN(dec(2, 18)),
 //           extraParams: { from: account }
 //         });
@@ -2522,19 +2522,19 @@
 //       const aliceBalBefore = await arthToken.balanceOf(alice);
 //       const bobBalBefore = await arthToken.balanceOf(bob);
 
-//       /* From an offset of 10000 LUSD, each depositor receives
-//       LUSDLoss = 1666.6666666666666666 LUSD
+//       /* From an offset of 10000 ARTH, each depositor receives
+//       ARTHLoss = 1666.6666666666666666 ARTH
 
-//       and thus with a deposit of 10000 LUSD, each should withdraw 8333.3333333333333333 LUSD (in practice, slightly less due to rounding error)
+//       and thus with a deposit of 10000 ARTH, each should withdraw 8333.3333333333333333 ARTH (in practice, slightly less due to rounding error)
 //       */
 
 //       // Price bounces back to $200 per ETH
 //       await priceFeed.setPrice(dec(200, 18));
 
-//       // Bob issues a further 5000 LUSD from his trove
-//       await borrowerOperations.withdrawLUSD(th._100pct, dec(5000, 18), bob, bob, { from: bob });
+//       // Bob issues a further 5000 ARTH from his trove
+//       await borrowerOperations.withdrawARTH(th._100pct, dec(5000, 18), bob, bob, { from: bob });
 
-//       // Expect Alice's LUSD balance increase be very close to 8333.3333333333333333 LUSD
+//       // Expect Alice's ARTH balance increase be very close to 8333.3333333333333333 ARTH
 //       await stabilityPool.withdrawFromSP(dec(10000, 18), { from: alice });
 //       const aliceBalance = await arthToken.balanceOf(alice);
 
@@ -2543,7 +2543,7 @@
 //         100000
 //       );
 
-//       // expect Bob's LUSD balance increase to be very close to  13333.33333333333333333 LUSD
+//       // expect Bob's ARTH balance increase to be very close to  13333.33333333333333333 ARTH
 //       await stabilityPool.withdrawFromSP(dec(10000, 18), { from: bob });
 //       const bobBalance = await arthToken.balanceOf(bob);
 //       assert.isAtMost(
@@ -2554,24 +2554,24 @@
 
 //     it("withdrawFromSP(): doesn't impact other users Stability deposits or ETH gains", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100000, 18)),
+//         extraARTHAmount: toBN(dec(100000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves and make Stability Pool deposits
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: carol }
 //       });
@@ -2593,18 +2593,18 @@
 //       assert.isFalse(await sortedTroves.contains(defaulter_1));
 //       assert.isFalse(await sortedTroves.contains(defaulter_2));
 
-//       const alice_LUSDDeposit_Before = (
-//         await stabilityPool.getCompoundedLUSDDeposit(alice)
+//       const alice_ARTHDeposit_Before = (
+//         await stabilityPool.getCompoundedARTHDeposit(alice)
 //       ).toString();
-//       const bob_LUSDDeposit_Before = (await stabilityPool.getCompoundedLUSDDeposit(bob)).toString();
+//       const bob_ARTHDeposit_Before = (await stabilityPool.getCompoundedARTHDeposit(bob)).toString();
 
 //       const alice_ETHGain_Before = (await stabilityPool.getDepositorETHGain(alice)).toString();
 //       const bob_ETHGain_Before = (await stabilityPool.getDepositorETHGain(bob)).toString();
 
-//       //check non-zero LUSD and ETHGain in the Stability Pool
-//       const LUSDinSP = await stabilityPool.getTotalLUSDDeposits();
+//       //check non-zero ARTH and ETHGain in the Stability Pool
+//       const ARTHinSP = await stabilityPool.getTotalARTHDeposits();
 //       const ETHinSP = await stabilityPool.getETH();
-//       assert.isTrue(LUSDinSP.gt(mv._zeroBN));
+//       assert.isTrue(ARTHinSP.gt(mv._zeroBN));
 //       assert.isTrue(ETHinSP.gt(mv._zeroBN));
 
 //       // Price rises
@@ -2615,17 +2615,17 @@
 //       await stabilityPool.withdrawFromSP(dec(30000, 18), { from: carol });
 //       assert.equal((await stabilityPool.deposits(carol))[0].toString(), "0");
 
-//       const alice_LUSDDeposit_After = (
-//         await stabilityPool.getCompoundedLUSDDeposit(alice)
+//       const alice_ARTHDeposit_After = (
+//         await stabilityPool.getCompoundedARTHDeposit(alice)
 //       ).toString();
-//       const bob_LUSDDeposit_After = (await stabilityPool.getCompoundedLUSDDeposit(bob)).toString();
+//       const bob_ARTHDeposit_After = (await stabilityPool.getCompoundedARTHDeposit(bob)).toString();
 
 //       const alice_ETHGain_After = (await stabilityPool.getDepositorETHGain(alice)).toString();
 //       const bob_ETHGain_After = (await stabilityPool.getDepositorETHGain(bob)).toString();
 
 //       // Check compounded deposits and ETH gains for A and B have not changed
-//       assert.equal(alice_LUSDDeposit_Before, alice_LUSDDeposit_After);
-//       assert.equal(bob_LUSDDeposit_Before, bob_LUSDDeposit_After);
+//       assert.equal(alice_ARTHDeposit_Before, alice_ARTHDeposit_After);
+//       assert.equal(bob_ARTHDeposit_Before, bob_ARTHDeposit_After);
 
 //       assert.equal(alice_ETHGain_Before, alice_ETHGain_After);
 //       assert.equal(bob_ETHGain_Before, bob_ETHGain_After);
@@ -2633,24 +2633,24 @@
 
 //     it("withdrawFromSP(): doesn't impact system debt, collateral or TCR ", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100000, 18)),
+//         extraARTHAmount: toBN(dec(100000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves and make Stability Pool deposits
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: carol }
 //       });
@@ -2675,8 +2675,8 @@
 //       // Price rises
 //       await priceFeed.setPrice(dec(200, 18));
 
-//       const activeDebt_Before = (await activePool.getLUSDDebt()).toString();
-//       const defaultedDebt_Before = (await defaultPool.getLUSDDebt()).toString();
+//       const activeDebt_Before = (await activePool.getARTHDebt()).toString();
+//       const defaultedDebt_Before = (await defaultPool.getARTHDebt()).toString();
 //       const activeColl_Before = (await activePool.getETH()).toString();
 //       const defaultedColl_Before = (await defaultPool.getETH()).toString();
 //       const TCR_Before = (await th.getTCR(contracts)).toString();
@@ -2686,8 +2686,8 @@
 //       await stabilityPool.withdrawFromSP(dec(30000, 18), { from: carol });
 //       assert.equal((await stabilityPool.deposits(carol))[0].toString(), "0");
 
-//       const activeDebt_After = (await activePool.getLUSDDebt()).toString();
-//       const defaultedDebt_After = (await defaultPool.getLUSDDebt()).toString();
+//       const activeDebt_After = (await activePool.getARTHDebt()).toString();
+//       const defaultedDebt_After = (await defaultPool.getARTHDebt()).toString();
 //       const activeColl_After = (await activePool.getETH()).toString();
 //       const defaultedColl_After = (await defaultPool.getETH()).toString();
 //       const TCR_After = (await th.getTCR(contracts)).toString();
@@ -2702,24 +2702,24 @@
 
 //     it("withdrawFromSP(): doesn't impact any troves, including the caller's trove", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100000, 18)),
+//         extraARTHAmount: toBN(dec(100000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves and make Stability Pool deposits
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: carol }
 //       });
@@ -2791,7 +2791,7 @@
 
 //     it("withdrawFromSP(): succeeds when amount is 0 and system has an undercollateralized trove", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100, 18)),
+//         extraARTHAmount: toBN(dec(100, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
@@ -2821,7 +2821,7 @@
 //       assert.isTrue(await sortedTroves.contains(defaulter_2));
 
 //       const A_ETHBalBefore = toBN(await web3.eth.getBalance(A));
-//       const A_LQTYBalBefore = await lqtyToken.balanceOf(A);
+//       const A_LQTYBalBefore = await mahaToken.balanceOf(A);
 
 //       // Check Alice has gains to withdraw
 //       const A_pendingETHGain = await stabilityPool.getDepositorETHGain(A);
@@ -2837,7 +2837,7 @@
 
 //       const A_ETHBalAfter = toBN(await web3.eth.getBalance(A));
 
-//       const A_LQTYBalAfter = await lqtyToken.balanceOf(A);
+//       const A_LQTYBalAfter = await mahaToken.balanceOf(A);
 //       const A_LQTYBalDiff = A_LQTYBalAfter.sub(A_LQTYBalBefore);
 
 //       // Check A's ETH and LQTY balances have increased correctly
@@ -2845,79 +2845,79 @@
 //       assert.isAtMost(th.getDifference(A_LQTYBalDiff, A_pendingLQTYGain), 1000);
 //     });
 
-//     it("withdrawFromSP(): withdrawing 0 LUSD doesn't alter the caller's deposit or the total LUSD in the Stability Pool", async () => {
+//     it("withdrawFromSP(): withdrawing 0 ARTH doesn't alter the caller's deposit or the total ARTH in the Stability Pool", async () => {
 //       // --- SETUP ---
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves and make Stability Pool deposits
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: carol }
 //       });
 
-//       // A, B, C provides 100, 50, 30 LUSD to SP
+//       // A, B, C provides 100, 50, 30 ARTH to SP
 //       await stabilityPool.provideToSP(dec(100, 18), frontEnd_1, { from: alice });
 //       await stabilityPool.provideToSP(dec(50, 18), frontEnd_1, { from: bob });
 //       await stabilityPool.provideToSP(dec(30, 18), frontEnd_1, { from: carol });
 
-//       const bob_Deposit_Before = (await stabilityPool.getCompoundedLUSDDeposit(bob)).toString();
-//       const LUSDinSP_Before = (await stabilityPool.getTotalLUSDDeposits()).toString();
+//       const bob_Deposit_Before = (await stabilityPool.getCompoundedARTHDeposit(bob)).toString();
+//       const ARTHinSP_Before = (await stabilityPool.getTotalARTHDeposits()).toString();
 
-//       assert.equal(LUSDinSP_Before, dec(180, 18));
+//       assert.equal(ARTHinSP_Before, dec(180, 18));
 
-//       // Bob withdraws 0 LUSD from the Stability Pool
+//       // Bob withdraws 0 ARTH from the Stability Pool
 //       await stabilityPool.withdrawFromSP(0, { from: bob });
 
-//       // check Bob's deposit and total LUSD in Stability Pool has not changed
-//       const bob_Deposit_After = (await stabilityPool.getCompoundedLUSDDeposit(bob)).toString();
-//       const LUSDinSP_After = (await stabilityPool.getTotalLUSDDeposits()).toString();
+//       // check Bob's deposit and total ARTH in Stability Pool has not changed
+//       const bob_Deposit_After = (await stabilityPool.getCompoundedARTHDeposit(bob)).toString();
+//       const ARTHinSP_After = (await stabilityPool.getTotalARTHDeposits()).toString();
 
 //       assert.equal(bob_Deposit_Before, bob_Deposit_After);
-//       assert.equal(LUSDinSP_Before, LUSDinSP_After);
+//       assert.equal(ARTHinSP_Before, ARTHinSP_After);
 //     });
 
 //     it("withdrawFromSP(): withdrawing 0 ETH Gain does not alter the caller's ETH balance, their trove collateral, or the ETH  in the Stability Pool", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves and make Stability Pool deposits
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: carol }
 //       });
 
 //       // Would-be defaulter open trove
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: defaulter_1 }
 //       });
@@ -2932,7 +2932,7 @@
 
 //       // Dennis opens trove and deposits to Stability Pool
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: dennis }
 //       });
@@ -2966,35 +2966,35 @@
 //     it("withdrawFromSP(): Request to withdraw > caller's deposit only withdraws the caller's compounded deposit", async () => {
 //       // --- SETUP ---
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves and make Stability Pool deposits
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: carol }
 //       });
 
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: defaulter_1 }
 //       });
 
-//       // A, B, C provide LUSD to SP
+//       // A, B, C provide ARTH to SP
 //       await stabilityPool.provideToSP(dec(10000, 18), frontEnd_1, { from: alice });
 //       await stabilityPool.provideToSP(dec(20000, 18), frontEnd_1, { from: bob });
 //       await stabilityPool.provideToSP(dec(30000, 18), frontEnd_1, { from: carol });
@@ -3005,46 +3005,46 @@
 //       // Liquidate defaulter 1
 //       await troveManager.liquidate(defaulter_1);
 
-//       const alice_LUSD_Balance_Before = await arthToken.balanceOf(alice);
-//       const bob_LUSD_Balance_Before = await arthToken.balanceOf(bob);
+//       const alice_ARTH_Balance_Before = await arthToken.balanceOf(alice);
+//       const bob_ARTH_Balance_Before = await arthToken.balanceOf(bob);
 
-//       const alice_Deposit_Before = await stabilityPool.getCompoundedLUSDDeposit(alice);
-//       const bob_Deposit_Before = await stabilityPool.getCompoundedLUSDDeposit(bob);
+//       const alice_Deposit_Before = await stabilityPool.getCompoundedARTHDeposit(alice);
+//       const bob_Deposit_Before = await stabilityPool.getCompoundedARTHDeposit(bob);
 
-//       const LUSDinSP_Before = await stabilityPool.getTotalLUSDDeposits();
+//       const ARTHinSP_Before = await stabilityPool.getTotalARTHDeposits();
 
 //       await priceFeed.setPrice(dec(200, 18));
 
 //       // Bob attempts to withdraws 1 wei more than his compounded deposit from the Stability Pool
 //       await stabilityPool.withdrawFromSP(bob_Deposit_Before.add(toBN(1)), { from: bob });
 
-//       // Check Bob's LUSD balance has risen by only the value of his compounded deposit
-//       const bob_expectedLUSDBalance = bob_LUSD_Balance_Before.add(bob_Deposit_Before).toString();
-//       const bob_LUSD_Balance_After = (await arthToken.balanceOf(bob)).toString();
-//       assert.equal(bob_LUSD_Balance_After, bob_expectedLUSDBalance);
+//       // Check Bob's ARTH balance has risen by only the value of his compounded deposit
+//       const bob_expectedARTHBalance = bob_ARTH_Balance_Before.add(bob_Deposit_Before).toString();
+//       const bob_ARTH_Balance_After = (await arthToken.balanceOf(bob)).toString();
+//       assert.equal(bob_ARTH_Balance_After, bob_expectedARTHBalance);
 
-//       // Alice attempts to withdraws 2309842309.000000000000000000 LUSD from the Stability Pool
+//       // Alice attempts to withdraws 2309842309.000000000000000000 ARTH from the Stability Pool
 //       await stabilityPool.withdrawFromSP("2309842309000000000000000000", { from: alice });
 
-//       // Check Alice's LUSD balance has risen by only the value of her compounded deposit
-//       const alice_expectedLUSDBalance = alice_LUSD_Balance_Before
+//       // Check Alice's ARTH balance has risen by only the value of her compounded deposit
+//       const alice_expectedARTHBalance = alice_ARTH_Balance_Before
 //         .add(alice_Deposit_Before)
 //         .toString();
-//       const alice_LUSD_Balance_After = (await arthToken.balanceOf(alice)).toString();
-//       assert.equal(alice_LUSD_Balance_After, alice_expectedLUSDBalance);
+//       const alice_ARTH_Balance_After = (await arthToken.balanceOf(alice)).toString();
+//       assert.equal(alice_ARTH_Balance_After, alice_expectedARTHBalance);
 
-//       // Check LUSD in Stability Pool has been reduced by only Alice's compounded deposit and Bob's compounded deposit
-//       const expectedLUSDinSP = LUSDinSP_Before.sub(alice_Deposit_Before)
+//       // Check ARTH in Stability Pool has been reduced by only Alice's compounded deposit and Bob's compounded deposit
+//       const expectedARTHinSP = ARTHinSP_Before.sub(alice_Deposit_Before)
 //         .sub(bob_Deposit_Before)
 //         .toString();
-//       const LUSDinSP_After = (await stabilityPool.getTotalLUSDDeposits()).toString();
-//       assert.equal(LUSDinSP_After, expectedLUSDinSP);
+//       const ARTHinSP_After = (await stabilityPool.getTotalARTHDeposits()).toString();
+//       assert.equal(ARTHinSP_After, expectedARTHinSP);
 //     });
 
-//     it("withdrawFromSP(): Request to withdraw 2^256-1 LUSD only withdraws the caller's compounded deposit", async () => {
+//     it("withdrawFromSP(): Request to withdraw 2^256-1 ARTH only withdraws the caller's compounded deposit", async () => {
 //       // --- SETUP ---
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -3057,24 +3057,24 @@
 //       // A, B, C open troves
 //       // A, B, C open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: carol }
 //       });
 
 //       await openTrove({ ICR: toBN(dec(2, 18)), extraParams: { from: defaulter_1 } });
 
-//       // A, B, C provides 100, 50, 30 LUSD to SP
+//       // A, B, C provides 100, 50, 30 ARTH to SP
 //       await stabilityPool.provideToSP(dec(100, 18), frontEnd_1, { from: alice });
 //       await stabilityPool.provideToSP(dec(50, 18), frontEnd_1, { from: bob });
 //       await stabilityPool.provideToSP(dec(30, 18), frontEnd_1, { from: carol });
@@ -3085,11 +3085,11 @@
 //       // Liquidate defaulter 1
 //       await troveManager.liquidate(defaulter_1);
 
-//       const bob_LUSD_Balance_Before = await arthToken.balanceOf(bob);
+//       const bob_ARTH_Balance_Before = await arthToken.balanceOf(bob);
 
-//       const bob_Deposit_Before = await stabilityPool.getCompoundedLUSDDeposit(bob);
+//       const bob_Deposit_Before = await stabilityPool.getCompoundedARTHDeposit(bob);
 
-//       const LUSDinSP_Before = await stabilityPool.getTotalLUSDDeposits();
+//       const ARTHinSP_Before = await stabilityPool.getTotalARTHDeposits();
 
 //       const maxBytes32 = web3.utils.toBN(
 //         "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
@@ -3098,18 +3098,18 @@
 //       // Price drops
 //       await priceFeed.setPrice(dec(200, 18));
 
-//       // Bob attempts to withdraws maxBytes32 LUSD from the Stability Pool
+//       // Bob attempts to withdraws maxBytes32 ARTH from the Stability Pool
 //       await stabilityPool.withdrawFromSP(maxBytes32, { from: bob });
 
-//       // Check Bob's LUSD balance has risen by only the value of his compounded deposit
-//       const bob_expectedLUSDBalance = bob_LUSD_Balance_Before.add(bob_Deposit_Before).toString();
-//       const bob_LUSD_Balance_After = (await arthToken.balanceOf(bob)).toString();
-//       assert.equal(bob_LUSD_Balance_After, bob_expectedLUSDBalance);
+//       // Check Bob's ARTH balance has risen by only the value of his compounded deposit
+//       const bob_expectedARTHBalance = bob_ARTH_Balance_Before.add(bob_Deposit_Before).toString();
+//       const bob_ARTH_Balance_After = (await arthToken.balanceOf(bob)).toString();
+//       assert.equal(bob_ARTH_Balance_After, bob_expectedARTHBalance);
 
-//       // Check LUSD in Stability Pool has been reduced by only  Bob's compounded deposit
-//       const expectedLUSDinSP = LUSDinSP_Before.sub(bob_Deposit_Before).toString();
-//       const LUSDinSP_After = (await stabilityPool.getTotalLUSDDeposits()).toString();
-//       assert.equal(LUSDinSP_After, expectedLUSDinSP);
+//       // Check ARTH in Stability Pool has been reduced by only  Bob's compounded deposit
+//       const expectedARTHinSP = ARTHinSP_Before.sub(bob_Deposit_Before).toString();
+//       const ARTHinSP_After = (await stabilityPool.getTotalARTHDeposits()).toString();
+//       assert.equal(ARTHinSP_After, expectedARTHinSP);
 //     });
 
 //     it("withdrawFromSP(): caller can withdraw full deposit and ETH gain during Recovery Mode", async () => {
@@ -3118,7 +3118,7 @@
 //       // Price doubles
 //       await priceFeed.setPrice(dec(400, 18));
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000000, 18)),
+//         extraARTHAmount: toBN(dec(1000000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -3127,30 +3127,30 @@
 
 //       // A, B, C open troves and make Stability Pool deposits
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(4, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(4, 18)),
 //         extraParams: { from: bob }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(4, 18)),
 //         extraParams: { from: carol }
 //       });
 
 //       await borrowerOperations.openTrove(
 //         th._100pct,
-//         await getOpenTroveLUSDAmount(dec(10000, 18)),
+//         await getOpenTroveARTHAmount(dec(10000, 18)),
 //         defaulter_1,
 //         defaulter_1,
 //         { from: defaulter_1, value: dec(100, "ether") }
 //       );
 
-//       // A, B, C provides 10000, 5000, 3000 LUSD to SP
+//       // A, B, C provides 10000, 5000, 3000 ARTH to SP
 //       const A_GAS_Used = th.gasUsed(
 //         await stabilityPool.provideToSP(dec(10000, 18), frontEnd_1, {
 //           from: alice,
@@ -3180,23 +3180,23 @@
 //       await troveManager.liquidate(defaulter_1);
 //       assert.isFalse(await sortedTroves.contains(defaulter_1));
 
-//       const alice_LUSD_Balance_Before = await arthToken.balanceOf(alice);
-//       const bob_LUSD_Balance_Before = await arthToken.balanceOf(bob);
-//       const carol_LUSD_Balance_Before = await arthToken.balanceOf(carol);
+//       const alice_ARTH_Balance_Before = await arthToken.balanceOf(alice);
+//       const bob_ARTH_Balance_Before = await arthToken.balanceOf(bob);
+//       const carol_ARTH_Balance_Before = await arthToken.balanceOf(carol);
 
 //       const alice_ETH_Balance_Before = web3.utils.toBN(await web3.eth.getBalance(alice));
 //       const bob_ETH_Balance_Before = web3.utils.toBN(await web3.eth.getBalance(bob));
 //       const carol_ETH_Balance_Before = web3.utils.toBN(await web3.eth.getBalance(carol));
 
-//       const alice_Deposit_Before = await stabilityPool.getCompoundedLUSDDeposit(alice);
-//       const bob_Deposit_Before = await stabilityPool.getCompoundedLUSDDeposit(bob);
-//       const carol_Deposit_Before = await stabilityPool.getCompoundedLUSDDeposit(carol);
+//       const alice_Deposit_Before = await stabilityPool.getCompoundedARTHDeposit(alice);
+//       const bob_Deposit_Before = await stabilityPool.getCompoundedARTHDeposit(bob);
+//       const carol_Deposit_Before = await stabilityPool.getCompoundedARTHDeposit(carol);
 
 //       const alice_ETHGain_Before = await stabilityPool.getDepositorETHGain(alice);
 //       const bob_ETHGain_Before = await stabilityPool.getDepositorETHGain(bob);
 //       const carol_ETHGain_Before = await stabilityPool.getDepositorETHGain(carol);
 
-//       const LUSDinSP_Before = await stabilityPool.getTotalLUSDDeposits();
+//       const ARTHinSP_Before = await stabilityPool.getTotalARTHDeposits();
 
 //       // Price rises
 //       await priceFeed.setPrice(dec(220, 18));
@@ -3214,24 +3214,24 @@
 //         await stabilityPool.withdrawFromSP(dec(3000, 18), { from: carol, gasPrice: GAS_PRICE })
 //       );
 
-//       // Check LUSD balances of A, B, C have risen by the value of their compounded deposits, respectively
-//       const alice_expectedLUSDBalance = alice_LUSD_Balance_Before
+//       // Check ARTH balances of A, B, C have risen by the value of their compounded deposits, respectively
+//       const alice_expectedARTHBalance = alice_ARTH_Balance_Before
 //         .add(alice_Deposit_Before)
 //         .toString();
 
-//       const bob_expectedLUSDBalance = bob_LUSD_Balance_Before.add(bob_Deposit_Before).toString();
-//       const carol_expectedLUSDBalance = carol_LUSD_Balance_Before
+//       const bob_expectedARTHBalance = bob_ARTH_Balance_Before.add(bob_Deposit_Before).toString();
+//       const carol_expectedARTHBalance = carol_ARTH_Balance_Before
 //         .add(carol_Deposit_Before)
 //         .toString();
 
-//       const alice_LUSD_Balance_After = (await arthToken.balanceOf(alice)).toString();
+//       const alice_ARTH_Balance_After = (await arthToken.balanceOf(alice)).toString();
 
-//       const bob_LUSD_Balance_After = (await arthToken.balanceOf(bob)).toString();
-//       const carol_LUSD_Balance_After = (await arthToken.balanceOf(carol)).toString();
+//       const bob_ARTH_Balance_After = (await arthToken.balanceOf(bob)).toString();
+//       const carol_ARTH_Balance_After = (await arthToken.balanceOf(carol)).toString();
 
-//       assert.equal(alice_LUSD_Balance_After, alice_expectedLUSDBalance);
-//       assert.equal(bob_LUSD_Balance_After, bob_expectedLUSDBalance);
-//       assert.equal(carol_LUSD_Balance_After, carol_expectedLUSDBalance);
+//       assert.equal(alice_ARTH_Balance_After, alice_expectedARTHBalance);
+//       assert.equal(bob_ARTH_Balance_After, bob_expectedARTHBalance);
+//       assert.equal(carol_ARTH_Balance_After, carol_expectedARTHBalance);
 
 //       // Check ETH balances of A, B, C have increased by the value of their ETH gain from liquidations, respectively
 //       const alice_expectedETHBalance = alice_ETH_Balance_Before.add(alice_ETHGain_Before).toString();
@@ -3251,13 +3251,13 @@
 //       assert.equal(bob_expectedETHBalance, bob_ETHBalance_After_Gas);
 //       assert.equal(carol_expectedETHBalance, carol_ETHBalance_After_Gas);
 
-//       // Check LUSD in Stability Pool has been reduced by A, B and C's compounded deposit
-//       const expectedLUSDinSP = LUSDinSP_Before.sub(alice_Deposit_Before)
+//       // Check ARTH in Stability Pool has been reduced by A, B and C's compounded deposit
+//       const expectedARTHinSP = ARTHinSP_Before.sub(alice_Deposit_Before)
 //         .sub(bob_Deposit_Before)
 //         .sub(carol_Deposit_Before)
 //         .toString();
-//       const LUSDinSP_After = (await stabilityPool.getTotalLUSDDeposits()).toString();
-//       assert.equal(LUSDinSP_After, expectedLUSDinSP);
+//       const ARTHinSP_After = (await stabilityPool.getTotalARTHDeposits()).toString();
+//       assert.equal(ARTHinSP_After, expectedARTHinSP);
 
 //       // Check ETH in SP has reduced to zero
 //       const ETHinSP_After = (await stabilityPool.getETH()).toString();
@@ -3266,38 +3266,38 @@
 
 //     it("getDepositorETHGain(): depositor does not earn further ETH gains from liquidations while their compounded deposit == 0: ", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1, 24)),
+//         extraARTHAmount: toBN(dec(1, 24)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: carol }
 //       });
 
 //       // defaulters open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(15000, 18)),
+//         extraARTHAmount: toBN(dec(15000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: defaulter_1 }
 //       });
 //       await openTrove({ ICR: toBN(dec(2, 18)), extraParams: { from: defaulter_2 } });
 //       await openTrove({ ICR: toBN(dec(2, 18)), extraParams: { from: defaulter_3 } });
 
-//       // A, B, provide 10000, 5000 LUSD to SP
+//       // A, B, provide 10000, 5000 ARTH to SP
 //       await stabilityPool.provideToSP(dec(10000, 18), frontEnd_1, { from: alice });
 //       await stabilityPool.provideToSP(dec(5000, 18), frontEnd_1, { from: bob });
 
@@ -3308,12 +3308,12 @@
 //       await troveManager.liquidate(defaulter_1);
 //       assert.isFalse(await sortedTroves.contains(defaulter_1));
 
-//       const LUSDinSP = (await stabilityPool.getTotalLUSDDeposits()).toString();
-//       assert.equal(LUSDinSP, "0");
+//       const ARTHinSP = (await stabilityPool.getTotalARTHDeposits()).toString();
+//       assert.equal(ARTHinSP, "0");
 
 //       // Check Stability deposits have been fully cancelled with debt, and are now all zero
-//       const alice_Deposit = (await stabilityPool.getCompoundedLUSDDeposit(alice)).toString();
-//       const bob_Deposit = (await stabilityPool.getCompoundedLUSDDeposit(bob)).toString();
+//       const alice_Deposit = (await stabilityPool.getCompoundedARTHDeposit(alice)).toString();
+//       const bob_Deposit = (await stabilityPool.getCompoundedARTHDeposit(bob)).toString();
 
 //       assert.equal(alice_Deposit, "0");
 //       assert.equal(bob_Deposit, "0");
@@ -3322,7 +3322,7 @@
 //       const alice_ETHGain_1 = (await stabilityPool.getDepositorETHGain(alice)).toString();
 //       const bob_ETHGain_1 = (await stabilityPool.getDepositorETHGain(bob)).toString();
 
-//       // Whale deposits 10000 LUSD to Stability Pool
+//       // Whale deposits 10000 ARTH to Stability Pool
 //       await stabilityPool.provideToSP(dec(1, 24), frontEnd_1, { from: whale });
 
 //       // Liquidation 2
@@ -3351,24 +3351,24 @@
 //     // --- LQTY functionality ---
 //     it("withdrawFromSP(): triggers LQTY reward event - increases the sum G", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1, 24)),
+//         extraARTHAmount: toBN(dec(1, 24)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
@@ -3402,7 +3402,7 @@
 
 //     it("withdrawFromSP(), partial withdrawal: doesn't change the front end tag", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -3413,17 +3413,17 @@
 
 //       // A, B, C open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
@@ -3460,24 +3460,24 @@
 
 //     it("withdrawFromSP(), partial withdrawal: depositor receives LQTY rewards", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
@@ -3490,9 +3490,9 @@
 //       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_HOUR, web3.currentProvider);
 
 //       // Get A, B, C LQTY balance before
-//       const A_LQTYBalance_Before = await lqtyToken.balanceOf(A);
-//       const B_LQTYBalance_Before = await lqtyToken.balanceOf(B);
-//       const C_LQTYBalance_Before = await lqtyToken.balanceOf(C);
+//       const A_LQTYBalance_Before = await mahaToken.balanceOf(A);
+//       const B_LQTYBalance_Before = await mahaToken.balanceOf(B);
+//       const C_LQTYBalance_Before = await mahaToken.balanceOf(C);
 
 //       // A, B, C withdraw
 //       await stabilityPool.withdrawFromSP(dec(1, 18), { from: A });
@@ -3500,9 +3500,9 @@
 //       await stabilityPool.withdrawFromSP(dec(3, 18), { from: C });
 
 //       // Get LQTY balance after
-//       const A_LQTYBalance_After = await lqtyToken.balanceOf(A);
-//       const B_LQTYBalance_After = await lqtyToken.balanceOf(B);
-//       const C_LQTYBalance_After = await lqtyToken.balanceOf(C);
+//       const A_LQTYBalance_After = await mahaToken.balanceOf(A);
+//       const B_LQTYBalance_After = await mahaToken.balanceOf(B);
+//       const C_LQTYBalance_After = await mahaToken.balanceOf(C);
 
 //       // Check LQTY Balance of A, B, C has increased
 //       assert.isTrue(A_LQTYBalance_After.gt(A_LQTYBalance_Before));
@@ -3512,24 +3512,24 @@
 
 //     it("withdrawFromSP(), partial withdrawal: tagged front end receives LQTY rewards", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
@@ -3542,9 +3542,9 @@
 //       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_HOUR, web3.currentProvider);
 
 //       // Get front ends' LQTY balance before
-//       const F1_LQTYBalance_Before = await lqtyToken.balanceOf(frontEnd_1);
-//       const F2_LQTYBalance_Before = await lqtyToken.balanceOf(frontEnd_2);
-//       const F3_LQTYBalance_Before = await lqtyToken.balanceOf(frontEnd_3);
+//       const F1_LQTYBalance_Before = await mahaToken.balanceOf(frontEnd_1);
+//       const F2_LQTYBalance_Before = await mahaToken.balanceOf(frontEnd_2);
+//       const F3_LQTYBalance_Before = await mahaToken.balanceOf(frontEnd_3);
 
 //       // A, B, C withdraw
 //       await stabilityPool.withdrawFromSP(dec(1, 18), { from: A });
@@ -3552,9 +3552,9 @@
 //       await stabilityPool.withdrawFromSP(dec(3, 18), { from: C });
 
 //       // Get front ends' LQTY balance after
-//       const F1_LQTYBalance_After = await lqtyToken.balanceOf(A);
-//       const F2_LQTYBalance_After = await lqtyToken.balanceOf(B);
-//       const F3_LQTYBalance_After = await lqtyToken.balanceOf(C);
+//       const F1_LQTYBalance_After = await mahaToken.balanceOf(A);
+//       const F2_LQTYBalance_After = await mahaToken.balanceOf(B);
+//       const F3_LQTYBalance_After = await mahaToken.balanceOf(C);
 
 //       // Check LQTY Balance of front ends has increased
 //       assert.isTrue(F1_LQTYBalance_After.gt(F1_LQTYBalance_Before));
@@ -3564,39 +3564,39 @@
 
 //     it("withdrawFromSP(), partial withdrawal: tagged front end's stake decreases", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C, D, E, F open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: D }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: E }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: F }
 //       });
@@ -3634,31 +3634,31 @@
 
 //     it("withdrawFromSP(), partial withdrawal: tagged front end's snapshots update", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100000, 18)),
+//         extraARTHAmount: toBN(dec(100000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C, open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(40000, 18)),
+//         extraARTHAmount: toBN(dec(40000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(60000, 18)),
+//         extraARTHAmount: toBN(dec(60000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
 
 //       // D opens trove
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100000, 18)),
+//         extraARTHAmount: toBN(dec(100000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: D }
 //       });
@@ -3747,7 +3747,7 @@
 
 //     it("withdrawFromSP(), full withdrawal: removes deposit's front end tag", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100000, 18)),
+//         extraARTHAmount: toBN(dec(100000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -3758,12 +3758,12 @@
 
 //       //C, D open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(40000, 18)),
+//         extraARTHAmount: toBN(dec(40000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: D }
 //       });
@@ -3805,7 +3805,7 @@
 
 //     it("withdrawFromSP(), full withdrawal: zero's depositor's snapshots", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000000, 18)),
+//         extraARTHAmount: toBN(dec(1000000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -3816,7 +3816,7 @@
 
 //       // E opens trove and makes a deposit
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: E }
 //       });
@@ -3855,12 +3855,12 @@
 
 //       // C, D open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: C }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(40000, 18)),
+//         extraARTHAmount: toBN(dec(40000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: D }
 //       });
@@ -3906,7 +3906,7 @@
 
 //     it("withdrawFromSP(), full withdrawal that reduces front end stake to 0: zero’s the front end’s snapshots", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100000, 18)),
+//         extraARTHAmount: toBN(dec(100000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -3917,7 +3917,7 @@
 
 //       // E opens trove and makes a deposit
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: E }
 //       });
@@ -3950,12 +3950,12 @@
 
 //       // A, B open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(40000, 18)),
+//         extraARTHAmount: toBN(dec(40000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
@@ -3998,14 +3998,14 @@
 
 //     it("withdrawFromSP(), reverts when initial deposit value is 0", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100000, 18)),
+//         extraARTHAmount: toBN(dec(100000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A opens trove and join the Stability Pool
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10100, 18)),
+//         extraARTHAmount: toBN(dec(10100, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
@@ -4051,18 +4051,18 @@
 
 //     it("withdrawETHGainToTrove(): reverts when user has no active deposit", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100000, 18)),
+//         extraARTHAmount: toBN(dec(100000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
@@ -4089,11 +4089,11 @@
 //       await th.assertRevert(txPromise_B);
 //     });
 
-//     it("withdrawETHGainToTrove(): Applies LUSDLoss to user's deposit, and redirects ETH reward to user's Trove", async () => {
+//     it("withdrawETHGainToTrove(): Applies ARTHLoss to user's deposit, and redirects ETH reward to user's Trove", async () => {
 //       // --- SETUP ---
-//       // Whale deposits 185000 LUSD in StabilityPool
+//       // Whale deposits 185000 ARTH in StabilityPool
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000000, 18)),
+//         extraARTHAmount: toBN(dec(1000000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -4104,9 +4104,9 @@
 
 //       // --- TEST ---
 
-//       // Alice makes deposit #1: 15000 LUSD
+//       // Alice makes deposit #1: 15000 ARTH
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(15000, 18)),
+//         extraARTHAmount: toBN(dec(15000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: alice }
 //       });
@@ -4125,19 +4125,19 @@
 //       const [liquidatedDebt, liquidatedColl, ,] = th.getEmittedLiquidationValues(liquidationTx_1);
 
 //       const ETHGain_A = await stabilityPool.getDepositorETHGain(alice);
-//       const compoundedDeposit_A = await stabilityPool.getCompoundedLUSDDeposit(alice);
+//       const compoundedDeposit_A = await stabilityPool.getCompoundedARTHDeposit(alice);
 
 //       // Alice should receive rewards proportional to her deposit as share of total deposits
 //       const expectedETHGain_A = liquidatedColl.mul(toBN(dec(15000, 18))).div(toBN(dec(200000, 18)));
-//       const expectedLUSDLoss_A = liquidatedDebt.mul(toBN(dec(15000, 18))).div(toBN(dec(200000, 18)));
-//       const expectedCompoundedDeposit_A = toBN(dec(15000, 18)).sub(expectedLUSDLoss_A);
+//       const expectedARTHLoss_A = liquidatedDebt.mul(toBN(dec(15000, 18))).div(toBN(dec(200000, 18)));
+//       const expectedCompoundedDeposit_A = toBN(dec(15000, 18)).sub(expectedARTHLoss_A);
 
 //       assert.isAtMost(th.getDifference(expectedCompoundedDeposit_A, compoundedDeposit_A), 100000);
 
 //       // Alice sends her ETH Gains to her Trove
 //       await stabilityPool.withdrawETHGainToTrove(alice, alice, { from: alice });
 
-//       // check Alice's LUSDLoss has been applied to her deposit expectedCompoundedDeposit_A
+//       // check Alice's ARTHLoss has been applied to her deposit expectedCompoundedDeposit_A
 //       alice_deposit_afterDefault = (await stabilityPool.deposits(alice))[0];
 //       assert.isAtMost(
 //         th.getDifference(alice_deposit_afterDefault, expectedCompoundedDeposit_A),
@@ -4155,9 +4155,9 @@
 
 //     it("withdrawETHGainToTrove(): reverts if it would leave trove with ICR < MCR", async () => {
 //       // --- SETUP ---
-//       // Whale deposits 1850 LUSD in StabilityPool
+//       // Whale deposits 1850 ARTH in StabilityPool
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000000, 18)),
+//         extraARTHAmount: toBN(dec(1000000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -4168,9 +4168,9 @@
 
 //       // --- TEST ---
 
-//       // Alice makes deposit #1: 15000 LUSD
+//       // Alice makes deposit #1: 15000 ARTH
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(15000, 18)),
+//         extraARTHAmount: toBN(dec(15000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
@@ -4196,9 +4196,9 @@
 
 //     it("withdrawETHGainToTrove(): Subsequent deposit and withdrawal attempt from same account, with no intermediate liquidations, withdraws zero ETH", async () => {
 //       // --- SETUP ---
-//       // Whale deposits 1850 LUSD in StabilityPool
+//       // Whale deposits 1850 ARTH in StabilityPool
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000000, 18)),
+//         extraARTHAmount: toBN(dec(1000000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -4209,9 +4209,9 @@
 
 //       // --- TEST ---
 
-//       // Alice makes deposit #1: 15000 LUSD
+//       // Alice makes deposit #1: 15000 ARTH
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(15000, 18)),
+//         extraARTHAmount: toBN(dec(15000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
@@ -4258,9 +4258,9 @@
 
 //     it("withdrawETHGainToTrove(): decreases StabilityPool ETH and increases activePool ETH", async () => {
 //       // --- SETUP ---
-//       // Whale deposits 185000 LUSD in StabilityPool
+//       // Whale deposits 185000 ARTH in StabilityPool
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(1000000, 18)),
+//         extraARTHAmount: toBN(dec(1000000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -4271,9 +4271,9 @@
 
 //       // --- TEST ---
 
-//       // Alice makes deposit #1: 15000 LUSD
+//       // Alice makes deposit #1: 15000 ARTH
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(15000, 18)),
+//         extraARTHAmount: toBN(dec(15000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
@@ -4319,7 +4319,7 @@
 //     it("withdrawETHGainToTrove(): All depositors are able to withdraw their ETH gain from the SP to their Trove", async () => {
 //       // Whale opens trove
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100000, 18)),
+//         extraARTHAmount: toBN(dec(100000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -4331,7 +4331,7 @@
 //       const depositors = [alice, bob, carol, dennis, erin, flyn];
 //       for (account of depositors) {
 //         await openTrove({
-//           extraLUSDAmount: toBN(dec(10000, 18)),
+//           extraARTHAmount: toBN(dec(10000, 18)),
 //           ICR: toBN(dec(2, 18)),
 //           extraParams: { from: account }
 //         });
@@ -4362,7 +4362,7 @@
 //     it("withdrawETHGainToTrove(): All depositors withdraw, each withdraw their correct ETH gain", async () => {
 //       // Whale opens trove
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100000, 18)),
+//         extraARTHAmount: toBN(dec(100000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
@@ -4374,7 +4374,7 @@
 //       const depositors = [alice, bob, carol, dennis, erin, flyn];
 //       for (account of depositors) {
 //         await openTrove({
-//           extraLUSDAmount: toBN(dec(10000, 18)),
+//           extraARTHAmount: toBN(dec(10000, 18)),
 //           ICR: toBN(dec(2, 18)),
 //           extraParams: { from: account }
 //         });
@@ -4430,22 +4430,22 @@
 
 //       // A, B, C open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: carol }
 //       });
 
-//       // A, B, C provides 10000, 5000, 3000 LUSD to SP
+//       // A, B, C provides 10000, 5000, 3000 ARTH to SP
 //       await stabilityPool.provideToSP(dec(10000, 18), frontEnd_1, { from: alice });
 //       await stabilityPool.provideToSP(dec(5000, 18), frontEnd_1, { from: bob });
 //       await stabilityPool.provideToSP(dec(3000, 18), frontEnd_1, { from: carol });
@@ -4499,24 +4499,24 @@
 
 //     it("withdrawETHGainToTrove(): reverts if user has no trove", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: alice }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: carol }
 //       });
@@ -4524,7 +4524,7 @@
 //       // Defaulter opens
 //       await openTrove({ ICR: toBN(dec(2, 18)), extraParams: { from: defaulter_1 } });
 
-//       // A transfers LUSD to D
+//       // A transfers ARTH to D
 //       await arthToken.transfer(dennis, dec(10000, 18), { from: alice });
 
 //       // D deposits to Stability Pool
@@ -4548,24 +4548,24 @@
 
 //     it("withdrawETHGainToTrove(): triggers LQTY reward event - increases the sum G", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
@@ -4611,24 +4611,24 @@
 
 //     it("withdrawETHGainToTrove(), partial withdrawal: doesn't change the front end tag", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
@@ -4671,24 +4671,24 @@
 
 //     it("withdrawETHGainToTrove(), eligible deposit: depositor receives LQTY rewards", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
@@ -4708,9 +4708,9 @@
 //       assert.isFalse(await sortedTroves.contains(defaulter_1));
 
 //       // Get A, B, C LQTY balance before
-//       const A_LQTYBalance_Before = await lqtyToken.balanceOf(A);
-//       const B_LQTYBalance_Before = await lqtyToken.balanceOf(B);
-//       const C_LQTYBalance_Before = await lqtyToken.balanceOf(C);
+//       const A_LQTYBalance_Before = await mahaToken.balanceOf(A);
+//       const B_LQTYBalance_Before = await mahaToken.balanceOf(B);
+//       const C_LQTYBalance_Before = await mahaToken.balanceOf(C);
 
 //       // Check A, B, C have non-zero ETH gain
 //       assert.isTrue((await stabilityPool.getDepositorETHGain(A)).gt(ZERO));
@@ -4725,9 +4725,9 @@
 //       await stabilityPool.withdrawETHGainToTrove(C, C, { from: C });
 
 //       // Get LQTY balance after
-//       const A_LQTYBalance_After = await lqtyToken.balanceOf(A);
-//       const B_LQTYBalance_After = await lqtyToken.balanceOf(B);
-//       const C_LQTYBalance_After = await lqtyToken.balanceOf(C);
+//       const A_LQTYBalance_After = await mahaToken.balanceOf(A);
+//       const B_LQTYBalance_After = await mahaToken.balanceOf(B);
+//       const C_LQTYBalance_After = await mahaToken.balanceOf(C);
 
 //       // Check LQTY Balance of A, B, C has increased
 //       assert.isTrue(A_LQTYBalance_After.gt(A_LQTYBalance_Before));
@@ -4737,24 +4737,24 @@
 
 //     it("withdrawETHGainToTrove(), eligible deposit: tagged front end receives LQTY rewards", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
@@ -4774,9 +4774,9 @@
 //       assert.isFalse(await sortedTroves.contains(defaulter_1));
 
 //       // Get front ends' LQTY balance before
-//       const F1_LQTYBalance_Before = await lqtyToken.balanceOf(frontEnd_1);
-//       const F2_LQTYBalance_Before = await lqtyToken.balanceOf(frontEnd_2);
-//       const F3_LQTYBalance_Before = await lqtyToken.balanceOf(frontEnd_3);
+//       const F1_LQTYBalance_Before = await mahaToken.balanceOf(frontEnd_1);
+//       const F2_LQTYBalance_Before = await mahaToken.balanceOf(frontEnd_2);
+//       const F3_LQTYBalance_Before = await mahaToken.balanceOf(frontEnd_3);
 
 //       await priceFeed.setPrice(dec(200, 18));
 
@@ -4791,9 +4791,9 @@
 //       await stabilityPool.withdrawETHGainToTrove(C, C, { from: C });
 
 //       // Get front ends' LQTY balance after
-//       const F1_LQTYBalance_After = await lqtyToken.balanceOf(frontEnd_1);
-//       const F2_LQTYBalance_After = await lqtyToken.balanceOf(frontEnd_2);
-//       const F3_LQTYBalance_After = await lqtyToken.balanceOf(frontEnd_3);
+//       const F1_LQTYBalance_After = await mahaToken.balanceOf(frontEnd_1);
+//       const F2_LQTYBalance_After = await mahaToken.balanceOf(frontEnd_2);
+//       const F3_LQTYBalance_After = await mahaToken.balanceOf(frontEnd_3);
 
 //       // Check LQTY Balance of front ends has increased
 //       assert.isTrue(F1_LQTYBalance_After.gt(F1_LQTYBalance_Before));
@@ -4803,39 +4803,39 @@
 
 //     it("withdrawETHGainToTrove(), eligible deposit: tagged front end's stake decreases", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100000, 18)),
+//         extraARTHAmount: toBN(dec(100000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C, D, E, F open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: D }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: E }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(30000, 18)),
+//         extraARTHAmount: toBN(dec(30000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: F }
 //       });
@@ -4887,31 +4887,31 @@
 
 //     it("withdrawETHGainToTrove(), eligible deposit: tagged front end's snapshots update", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100000, 18)),
+//         extraARTHAmount: toBN(dec(100000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
 //       // A, B, C, open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(20000, 18)),
+//         extraARTHAmount: toBN(dec(20000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: A }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(40000, 18)),
+//         extraARTHAmount: toBN(dec(40000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(60000, 18)),
+//         extraARTHAmount: toBN(dec(60000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
 
 //       // D opens trove
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: D }
 //       });
@@ -5005,23 +5005,23 @@
 
 //     it("withdrawETHGainToTrove(): reverts when depositor has no ETH gain", async () => {
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(100000, 18)),
+//         extraARTHAmount: toBN(dec(100000, 18)),
 //         ICR: toBN(dec(10, 18)),
 //         extraParams: { from: whale }
 //       });
 
-//       // Whale transfers LUSD to A, B
+//       // Whale transfers ARTH to A, B
 //       await arthToken.transfer(A, dec(10000, 18), { from: whale });
 //       await arthToken.transfer(B, dec(20000, 18), { from: whale });
 
 //       // C, D open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(4000, 18)),
+//         extraARTHAmount: toBN(dec(4000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: D }
 //       });
@@ -5035,7 +5035,7 @@
 //       // fastforward time, and E makes a deposit, creating LQTY rewards for all
 //       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_HOUR, web3.currentProvider);
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(3000, 18)),
+//         extraARTHAmount: toBN(dec(3000, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: E }
 //       });
@@ -5139,17 +5139,17 @@
 //     it("registerFrontEnd(): reverts if address has a non-zero deposit already", async () => {
 //       // C, D, E open troves
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10, 18)),
+//         extraARTHAmount: toBN(dec(10, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: C }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10, 18)),
+//         extraARTHAmount: toBN(dec(10, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: D }
 //       });
 //       await openTrove({
-//         extraLUSDAmount: toBN(dec(10, 18)),
+//         extraARTHAmount: toBN(dec(10, 18)),
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: E }
 //       });

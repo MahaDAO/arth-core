@@ -50,12 +50,7 @@ module.exports = {
   networks: {
     hardhat: {
       chainId: 1337,
-      accounts: [
-        {
-          balance: "100000000000000000000",
-          privateKey: getSecret("DEPLOYER_PRIVATEKEY")
-        }
-      ],
+      accounts: accountsList,
       gas: 10000000, // tx gas limit
       blockGasLimit: 15000000,
       gasPrice: 20000000000,

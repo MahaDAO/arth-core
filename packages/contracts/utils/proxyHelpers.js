@@ -107,12 +107,12 @@
 //     return this.forwardFunction(params, "withdrawColl(uint256,address,address)");
 //   }
 
-//   async withdrawLUSD(...params) {
-//     return this.forwardFunction(params, "withdrawLUSD(uint256,uint256,address,address)");
+//   async withdrawARTH(...params) {
+//     return this.forwardFunction(params, "withdrawARTH(uint256,uint256,address,address)");
 //   }
 
-//   async repayLUSD(...params) {
-//     return this.forwardFunction(params, "repayLUSD(uint256,address,address)");
+//   async repayARTH(...params) {
+//     return this.forwardFunction(params, "repayARTH(uint256,address,address)");
 //   }
 
 //   async closeTrove(...params) {
@@ -139,8 +139,8 @@
 //     return this.proxyFunction("getCompositeDebt", params);
 //   }
 
-//   async LUSD_GAS_COMPENSATION(...params) {
-//     return this.proxyFunction("LUSD_GAS_COMPENSATION", params);
+//   async ARTH_GAS_COMPENSATION(...params) {
+//     return this.proxyFunction("ARTH_GAS_COMPENSATION", params);
 //   }
 
 //   async MIN_NET_DEBT(...params) {
@@ -206,8 +206,8 @@
 //     return this.proxyFunction("getPendingETHReward", params);
 //   }
 
-//   async getPendingLUSDDebtReward(...params) {
-//     return this.proxyFunction("getPendingLUSDDebtReward", params);
+//   async getPendingARTHDebtReward(...params) {
+//     return this.proxyFunction("getPendingARTHDebtReward", params);
 //   }
 
 //   async liquidate(user) {
@@ -238,8 +238,8 @@
 //     return this.proxyFunction("L_ETH", []);
 //   }
 
-//   async L_LUSDDebt() {
-//     return this.proxyFunction("L_LUSDDebt", []);
+//   async L_ARTHDebt() {
+//     return this.proxyFunction("L_ARTHDebt", []);
 //   }
 
 //   async rewardSnapshots(user) {
@@ -295,8 +295,8 @@
 //     return this.forwardFunction(params, "provideToSP(uint256,address)");
 //   }
 
-//   async getCompoundedLUSDDeposit(user) {
-//     return this.proxyFunctionWithUser("getCompoundedLUSDDeposit", user);
+//   async getCompoundedARTHDeposit(user) {
+//     return this.proxyFunctionWithUser("getCompoundedARTHDeposit", user);
 //   }
 
 //   async deposits(user) {
@@ -404,8 +404,8 @@
 //     return this.proxyFunctionWithUser("stakes", user);
 //   }
 
-//   async F_LUSD(user) {
-//     return this.proxyFunctionWithUser("F_LUSD", user);
+//   async F_ARTH(user) {
+//     return this.proxyFunctionWithUser("F_ARTH", user);
 //   }
 // }
 

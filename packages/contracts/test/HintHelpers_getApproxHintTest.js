@@ -28,19 +28,19 @@
 //   const getNetBorrowingAmount = async debtWithFee =>
 //     th.getNetBorrowingAmount(contracts, debtWithFee);
 
-//   /* Open a Trove for each account. LUSD debt is 200 LUSD each, with collateral beginning at
+//   /* Open a Trove for each account. ARTH debt is 200 ARTH each, with collateral beginning at
 //   1.5 ether, and rising by 0.01 ether per Trove.  Hence, the ICR of account (i + 1) is always 1% greater than the ICR of account i.
 //  */
 
-//   // Open Troves in parallel, then withdraw LUSD in parallel
+//   // Open Troves in parallel, then withdraw ARTH in parallel
 //   const makeTrovesInParallel = async (accounts, n) => {
 //     activeAccounts = accounts.slice(0, n);
 //     // console.log(`number of accounts used is: ${activeAccounts.length}`)
 //     // console.time("makeTrovesInParallel")
 //     const openTrovepromises = activeAccounts.map((account, index) => openTrove(account, index));
 //     await Promise.all(openTrovepromises);
-//     const withdrawLUSDpromises = activeAccounts.map(account => withdrawLUSDfromTrove(account));
-//     await Promise.all(withdrawLUSDpromises);
+//     const withdrawARTHpromises = activeAccounts.map(account => withdrawARTHfromTrove(account));
+//     await Promise.all(withdrawARTHpromises);
 //     // console.timeEnd("makeTrovesInParallel")
 //   };
 
@@ -53,13 +53,13 @@
 //     });
 //   };
 
-//   const withdrawLUSDfromTrove = async account => {
-//     await borrowerOperations.withdrawLUSD(th._100pct, "100000000000000000000", account, account, {
+//   const withdrawARTHfromTrove = async account => {
+//     await borrowerOperations.withdrawARTH(th._100pct, "100000000000000000000", account, account, {
 //       from: account
 //     });
 //   };
 
-//   // Sequentially add coll and withdraw LUSD, 1 account at a time
+//   // Sequentially add coll and withdraw ARTH, 1 account at a time
 //   const makeTrovesInSequence = async (accounts, n) => {
 //     activeAccounts = accounts.slice(0, n);
 //     // console.log(`number of accounts used is: ${activeAccounts.length}`)
@@ -70,7 +70,7 @@
 //     for (const account of activeAccounts) {
 //       const ICR_BN = toBN(ICR.toString().concat("0".repeat(16)));
 //       await th.openTrove(contracts, {
-//         extraLUSDAmount: toBN(dec(10000, 18)),
+//         extraARTHAmount: toBN(dec(10000, 18)),
 //         ICR: ICR_BN,
 //         extraParams: { from: account }
 //       });
@@ -98,7 +98,7 @@
 //     troveManager = contracts.troveManager;
 //     borrowerOperations = contracts.borrowerOperations;
 //     hintHelpers = contracts.hintHelpers;
-//     priceFeed = contracts.priceFeedTestnet;
+//     priceFeed = contracts.priceFeed;
 
 //     await deploymentHelper.connectCoreContracts(contracts, LQTYContracts);
 //     await deploymentHelper.connectLQTYContracts(LQTYContracts);

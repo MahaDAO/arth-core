@@ -68,8 +68,6 @@ async function deploy(configParams) {
 
 async function main() {
   const networkName = hre.network.name;
-  console.log("--------------------Network name--------------", networkName);
-
   let params;
 
   if (networkName === "bscTestnet") params = bscTestnetParams;

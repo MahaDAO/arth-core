@@ -26,7 +26,7 @@ const DefaultPoolTester = artifacts.require("./DefaultPoolTester.sol");
 const LiquityMathTester = artifacts.require("./LiquityMathTester.sol");
 const BorrowerOperationsTester = artifacts.require("./BorrowerOperationsTester.sol");
 const TroveManagerTester = artifacts.require("./TroveManagerTester.sol");
-const ArthTokenTester = artifacts.require("./LUSDTokenTester.sol");
+const ArthTokenTester = artifacts.require("./ARTHTokenTester.sol");
 const PriceFeed = artifacts.require('./MockOracle.sol')
 
 // Proxy scripts
@@ -35,7 +35,6 @@ const BorrowerWrappersScript = artifacts.require("BorrowerWrappersScript");
 const TroveManagerScript = artifacts.require("TroveManagerScript");
 const StabilityPoolScript = artifacts.require("StabilityPoolScript");
 const TokenScript = artifacts.require("TokenScript");
-const { artifacts } = require("hardhat");
 // const MAHAStakingScript = artifacts.require("MAHAStakingScript");
 const {
   buildUserProxies,
@@ -98,16 +97,23 @@ class DeploymentHelper {
     const borrowerOperations = await BorrowerOperations.new();
     const hintHelpers = await HintHelpers.new();
     const priceFeed = await PriceFeed.new();
+    const mahaToken = await MAHAToken.new("MahaDAO", "MAHA");
+    const communityIssuance = await CommunityIssuance.new(
+      mahaToken.address,
+      stabilityPool.address,
+      5 * 24 * 60 * 60
+    );
+
     const governance = await Governance.new(
-      deployWallet.address,                   // timelock address
+      deployWallet,                   // timelock address
       troveManager.address,
       borrowerOperations.address,
       priceFeed.address,
-      fundWallet.address,
+      fundWallet,
       "0"
     );
     const arthToken = await ARTHValuecoin.new(
-      deployWallet.address
+      deployWallet
     );
     ARTHValuecoin.setAsDeployed(arthToken);
     DefaultPool.setAsDeployed(defaultPool);
@@ -122,6 +128,7 @@ class DeploymentHelper {
     BorrowerOperations.setAsDeployed(borrowerOperations);
     HintHelpers.setAsDeployed(hintHelpers);
     PriceFeed.setAsDeployed(priceFeed);
+    CommunityIssuance.setAsDeployed(communityIssuance);
 
     const coreContracts = {
       governance,
@@ -136,7 +143,9 @@ class DeploymentHelper {
       functionCaller,
       borrowerOperations,
       hintHelpers,
-      priceFeed
+      priceFeed,
+      mahaToken,
+      communityIssuance
     };
     return coreContracts;
   }
@@ -147,7 +156,6 @@ class DeploymentHelper {
     // Contract without testers (yet)
     testerContracts.sortedTroves = await SortedTroves.new();
     // Actual tester contracts
-    testerContracts.communityIssuance = await CommunityIssuanceTester.new();
     testerContracts.activePool = await ActivePoolTester.new();
     testerContracts.defaultPool = await DefaultPoolTester.new();
     testerContracts.stabilityPool = await StabilityPoolTester.new();
@@ -159,16 +167,22 @@ class DeploymentHelper {
     testerContracts.functionCaller = await FunctionCaller.new();
     testerContracts.hintHelpers = await HintHelpers.new();
     testerContracts.priceFeed = await PriceFeed.new();
+    testerContracts.mahaToken = await MAHAToken.new("MAHADao", "MAHA");
+    testerContracts.communityIssuance = await CommunityIssuanceTester.new(
+      testerContracts.mahaToken.address,
+      testerContracts.stabilityPool.address,
+      5 * 24 * 60 * 60
+    );
     testerContracts.governance = await Governance.new(
-      deployWallet.address,                   // timelock address
+      deployWallet,                   // timelock address
       testerContracts.troveManager.address,
       testerContracts.borrowerOperations.address,
       testerContracts.priceFeed.address,
-      fundWallet.address,
+      fundWallet,
       "0"
     );
     testerContracts.arthToken = await ArthTokenTester.new(
-      deployWallet.address
+      deployWallet
     );
     return testerContracts;
   }
@@ -228,15 +242,15 @@ class DeploymentHelper {
     const hintHelpers = await HintHelpers.new();
     const priceFeed = await PriceFeed.new();
     const governance = await governance.new(
-      deployWallet.address,                   // timelock address
+      deployWallet,                   // timelock address
       troveManager.address,
       borrowerOperations.address,
       priceFeed.address,
-      fundWallet.address,
+      fundWallet,
       "0"
     );
     const arthToken = await ARTHValuecoin.new(
-      deployWallet.address
+      deployWallet
     );
     const coreContracts = {
       governance,
@@ -283,14 +297,14 @@ class DeploymentHelper {
 
   static async deployARTHToken(contracts, deployWallet) {
     contracts.arthToken = await ARTHValuecoin.new(
-      deployWallet.address
+      deployWallet
     );
     return contracts;
   }
 
   static async deployARTHTokenTester(contracts, deployWallet) {
     contracts.arthToken = await ArthTokenTester.new(
-      deployWallet.address
+      deployWallet
     );
     return contracts;
   }
