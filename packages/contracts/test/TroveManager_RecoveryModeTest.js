@@ -58,7 +58,7 @@
 //   const [bountyAddress, lpRewardsAddress, multisig] = accounts.slice(997, 1000);
 
 //   let priceFeed;
-//   let lusdToken;
+//   let arthToken;
 //   let sortedTroves;
 //   let troveManager;
 //   let activePool;
@@ -78,7 +78,7 @@
 //   beforeEach(async () => {
 //     contracts = await deploymentHelper.deployLiquityCore();
 //     contracts.troveManager = await TroveManagerTester.new();
-//     contracts.lusdToken = await ARTHValuecoin.new(
+//     contracts.arthToken = await ARTHValuecoin.new(
 //       contracts.troveManager.address,
 //       contracts.stabilityPool.address,
 //       contracts.borrowerOperations.address
@@ -90,7 +90,7 @@
 //     );
 
 //     priceFeed = contracts.priceFeedTestnet;
-//     lusdToken = contracts.lusdToken;
+//     arthToken = contracts.arthToken;
 //     sortedTroves = contracts.sortedTroves;
 //     troveManager = contracts.troveManager;
 //     activePool = contracts.activePool;
@@ -1534,7 +1534,7 @@
 //     assert.equal(bob_ICR_After, bob_ICR_Before);
 
 //     // to compensate borrowing fees
-//     await lusdToken.transfer(bob, dec(100, 18), { from: alice });
+//     await arthToken.transfer(bob, dec(100, 18), { from: alice });
 
 //     // Remove Bob from system to test Carol's trove: price rises, Bob closes trove, price drops to 100 again
 //     await priceFeed.setPrice(dec(200, 18));
@@ -1920,7 +1920,7 @@
 //     });
 
 //     // Bob sends tokens to Dennis, who has no trove
-//     await lusdToken.transfer(dennis, spDeposit, { from: bob });
+//     await arthToken.transfer(dennis, spDeposit, { from: bob });
 
 //     //Dennis provides 200 LUSD to SP
 //     await stabilityPool.provideToSP(spDeposit, ZERO_ADDRESS, { from: dennis });
@@ -1983,9 +1983,9 @@
 //     assert.isTrue(await th.checkRecoveryMode(contracts));
 
 //     // Check token balances
-//     assert.equal((await lusdToken.balanceOf(alice)).toString(), A_lusdAmount);
-//     assert.equal((await lusdToken.balanceOf(bob)).toString(), B_lusdAmount);
-//     assert.equal((await lusdToken.balanceOf(carol)).toString(), C_lusdAmount);
+//     assert.equal((await arthToken.balanceOf(alice)).toString(), A_lusdAmount);
+//     assert.equal((await arthToken.balanceOf(bob)).toString(), B_lusdAmount);
+//     assert.equal((await arthToken.balanceOf(carol)).toString(), C_lusdAmount);
 
 //     // Check sortedList size is 4
 //     assert.equal((await sortedTroves.getSize()).toString(), "4");
@@ -2004,9 +2004,9 @@
 //     assert.equal((await sortedTroves.getSize()).toString(), "1");
 
 //     // Confirm token balances have not changed
-//     assert.equal((await lusdToken.balanceOf(alice)).toString(), A_lusdAmount);
-//     assert.equal((await lusdToken.balanceOf(bob)).toString(), B_lusdAmount);
-//     assert.equal((await lusdToken.balanceOf(carol)).toString(), C_lusdAmount);
+//     assert.equal((await arthToken.balanceOf(alice)).toString(), A_lusdAmount);
+//     assert.equal((await arthToken.balanceOf(bob)).toString(), B_lusdAmount);
+//     assert.equal((await arthToken.balanceOf(carol)).toString(), C_lusdAmount);
 //   });
 
 //   it("liquidate(), with 110% < ICR < TCR, can claim collateral, re-open, be reedemed and claim again", async () => {
@@ -3164,9 +3164,9 @@
 //     assert.equal((await sortedTroves.getSize()).toString(), "4");
 
 //     // Check token balances before
-//     assert.equal((await lusdToken.balanceOf(dennis)).toString(), lusdAmountD);
-//     assert.equal((await lusdToken.balanceOf(erin)).toString(), lusdAmountE);
-//     assert.equal((await lusdToken.balanceOf(freddy)).toString(), lusdAmountF);
+//     assert.equal((await arthToken.balanceOf(dennis)).toString(), lusdAmountD);
+//     assert.equal((await arthToken.balanceOf(erin)).toString(), lusdAmountE);
+//     assert.equal((await arthToken.balanceOf(freddy)).toString(), lusdAmountF);
 
 //     // Price drops
 //     await priceFeed.setPrice(dec(100, 18));
@@ -3186,9 +3186,9 @@
 //     assert.isFalse(await sortedTroves.contains(freddy));
 
 //     // Check token balances of users whose troves were liquidated, have not changed
-//     assert.equal((await lusdToken.balanceOf(dennis)).toString(), lusdAmountD);
-//     assert.equal((await lusdToken.balanceOf(erin)).toString(), lusdAmountE);
-//     assert.equal((await lusdToken.balanceOf(freddy)).toString(), lusdAmountF);
+//     assert.equal((await arthToken.balanceOf(dennis)).toString(), lusdAmountD);
+//     assert.equal((await arthToken.balanceOf(erin)).toString(), lusdAmountE);
+//     assert.equal((await arthToken.balanceOf(freddy)).toString(), lusdAmountF);
 //   });
 
 //   it("liquidateTroves(): Liquidating troves at 100 < ICR < 110 with SP deposits correctly impacts their SP deposit and ETH gain", async () => {
@@ -4204,7 +4204,7 @@
 //     await stabilityPool.provideToSP(spDeposit, ZERO_ADDRESS, { from: alice });
 
 //     // to compensate borrowing fee
-//     await lusdToken.transfer(alice, A_totalDebt, { from: whale });
+//     await arthToken.transfer(alice, A_totalDebt, { from: whale });
 //     // Alice closes trove
 //     await borrowerOperations.closeTrove({ from: alice });
 

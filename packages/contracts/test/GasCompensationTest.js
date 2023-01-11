@@ -35,7 +35,7 @@
 //   const [bountyAddress, lpRewardsAddress, multisig] = accounts.slice(997, 1000);
 
 //   let priceFeed;
-//   let lusdToken;
+//   let arthToken;
 //   let sortedTroves;
 //   let troveManager;
 //   let activePool;
@@ -67,7 +67,7 @@
 //   beforeEach(async () => {
 //     contracts = await deploymentHelper.deployLiquityCore();
 //     contracts.troveManager = await TroveManagerTester.new();
-//     contracts.lusdToken = await ARTHValuecoin.new(
+//     contracts.arthToken = await ARTHValuecoin.new(
 //       contracts.troveManager.address,
 //       contracts.stabilityPool.address,
 //       contracts.borrowerOperations.address
@@ -79,7 +79,7 @@
 //     );
 
 //     priceFeed = contracts.priceFeedTestnet;
-//     lusdToken = contracts.lusdToken;
+//     arthToken = contracts.arthToken;
 //     sortedTroves = contracts.sortedTroves;
 //     troveManager = contracts.troveManager;
 //     activePool = contracts.activePool;

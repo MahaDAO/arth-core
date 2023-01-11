@@ -1,7 +1,7 @@
 // const deploymentHelper = require("../utils/deploymentHelpers.js")
 // const testHelpers = require("../utils/testHelpers.js")
 // const TroveManagerTester = artifacts.require("./TroveManagerTester.sol")
-// const LUSDTokenTester = artifacts.require("./ARTHTokenTester.sol")
+// const ARTHTokenTester = artifacts.require("./ARTHTokenTester.sol")
 
 // const th = testHelpers.TestHelper
 // const dec = th.dec
@@ -26,7 +26,7 @@
 //   const [bountyAddress, lpRewardsAddress, multisig] = accounts.slice(997, 1000)
 
 //   let priceFeed
-//   let lusdToken
+//   let arthToken
 //   let sortedTroves
 //   let troveManager
 //   let activePool
@@ -51,7 +51,7 @@
 //   beforeEach(async () => {
 //     contracts = await deploymentHelper.deployLiquityCore()
 //     contracts.troveManager = await TroveManagerTester.new()
-//     contracts.lusdToken = await LUSDTokenTester.new(
+//     contracts.arthToken = await ARTHTokenTester.new(
 //       contracts.troveManager.address,
 //       contracts.stabilityPool.address,
 //       contracts.borrowerOperations.address
@@ -59,7 +59,7 @@
 //     const LQTYContracts = await deploymentHelper.deployLQTYContracts(bountyAddress, lpRewardsAddress, multisig)
 
 //     priceFeed = contracts.priceFeedTestnet
-//     lusdToken = contracts.lusdToken
+//     arthToken = contracts.arthToken
 //     sortedTroves = contracts.sortedTroves
 //     troveManager = contracts.troveManager
 //     activePool = contracts.activePool

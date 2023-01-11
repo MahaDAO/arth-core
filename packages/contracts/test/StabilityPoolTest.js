@@ -49,7 +49,7 @@
 //   const frontEnds = [frontEnd_1, frontEnd_2, frontEnd_3];
 //   let contracts;
 //   let priceFeed;
-//   let lusdToken;
+//   let arthToken;
 //   let sortedTroves;
 //   let troveManager;
 //   let activePool;
@@ -73,7 +73,7 @@
 //     beforeEach(async () => {
 //       contracts = await deploymentHelper.deployLiquityCore();
 //       contracts.troveManager = await TroveManagerTester.new();
-//       contracts.lusdToken = await ARTHValuecoin.new(
+//       contracts.arthToken = await ARTHValuecoin.new(
 //         contracts.troveManager.address,
 //         contracts.stabilityPool.address,
 //         contracts.borrowerOperations.address
@@ -85,7 +85,7 @@
 //       );
 
 //       priceFeed = contracts.priceFeedTestnet;
-//       lusdToken = contracts.lusdToken;
+//       arthToken = contracts.arthToken;
 //       sortedTroves = contracts.sortedTroves;
 //       troveManager = contracts.troveManager;
 //       activePool = contracts.activePool;
@@ -156,13 +156,13 @@
 
 //       // --- TEST ---
 //       // get user's deposit record before
-//       const alice_LUSDBalance_Before = await lusdToken.balanceOf(alice);
+//       const alice_LUSDBalance_Before = await arthToken.balanceOf(alice);
 
 //       // provideToSP()
 //       await stabilityPool.provideToSP(200, frontEnd_1, { from: alice });
 
 //       // check user's LUSD balance change
-//       const alice_LUSDBalance_After = await lusdToken.balanceOf(alice);
+//       const alice_LUSDBalance_After = await arthToken.balanceOf(alice);
 //       assert.equal(alice_LUSDBalance_Before.sub(alice_LUSDBalance_After), "200");
 //     });
 
@@ -190,7 +190,7 @@
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale, value: dec(50, "ether") }
 //       });
-//       const whaleLUSD = await lusdToken.balanceOf(whale);
+//       const whaleLUSD = await arthToken.balanceOf(whale);
 //       await stabilityPool.provideToSP(whaleLUSD, frontEnd_1, { from: whale });
 
 //       // 2 Troves opened, each withdraws minimum debt
@@ -265,7 +265,7 @@
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: whale, value: dec(50, "ether") }
 //       });
-//       const whaleLUSD = await lusdToken.balanceOf(whale);
+//       const whaleLUSD = await arthToken.balanceOf(whale);
 //       await stabilityPool.provideToSP(whaleLUSD, frontEnd_1, { from: whale });
 
 //       // 3 Troves opened. Two users withdraw 160 LUSD each
@@ -376,8 +376,8 @@
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: bob, value: dec(50, "ether") }
 //       });
-//       const aliceLUSDbal = await lusdToken.balanceOf(alice);
-//       const bobLUSDbal = await lusdToken.balanceOf(bob);
+//       const aliceLUSDbal = await arthToken.balanceOf(alice);
+//       const bobLUSDbal = await arthToken.balanceOf(bob);
 
 //       // Alice, attempts to deposit 1 wei more than her balance
 
@@ -451,7 +451,7 @@
 //       // --- TEST ---
 
 //       const nonPayable = await NonPayable.new();
-//       await lusdToken.transfer(nonPayable.address, dec(250, 18), { from: whale });
+//       await arthToken.transfer(nonPayable.address, dec(250, 18), { from: whale });
 
 //       // NonPayable makes deposit #1: 150 LUSD
 //       const txData1 = th.getTransactionData("provideToSP(uint256,address)", [
@@ -1082,8 +1082,8 @@
 
 //       // --- SETUP ---
 
-//       const initialDeposit_A = await lusdToken.balanceOf(A);
-//       const initialDeposit_B = await lusdToken.balanceOf(B);
+//       const initialDeposit_A = await arthToken.balanceOf(A);
+//       const initialDeposit_B = await arthToken.balanceOf(B);
 //       // A, B provide to SP
 //       await stabilityPool.provideToSP(initialDeposit_A, frontEnd_1, { from: A });
 //       await stabilityPool.provideToSP(initialDeposit_B, frontEnd_2, { from: B });
@@ -1374,8 +1374,8 @@
 //       });
 
 //       // Whale transfers LUSD to A, B
-//       await lusdToken.transfer(A, dec(100, 18), { from: whale });
-//       await lusdToken.transfer(B, dec(200, 18), { from: whale });
+//       await arthToken.transfer(A, dec(100, 18), { from: whale });
+//       await arthToken.transfer(B, dec(200, 18), { from: whale });
 
 //       // C, D open troves
 //       await openTrove({
@@ -1438,8 +1438,8 @@
 //       });
 
 //       // Whale transfers LUSD to A, B
-//       await lusdToken.transfer(A, dec(1000, 18), { from: whale });
-//       await lusdToken.transfer(B, dec(1000, 18), { from: whale });
+//       await arthToken.transfer(A, dec(1000, 18), { from: whale });
+//       await arthToken.transfer(B, dec(1000, 18), { from: whale });
 
 //       // C, D open troves
 //       await openTrove({
@@ -1592,8 +1592,8 @@
 //       });
 
 //       // whale transfer to troves D and E
-//       await lusdToken.transfer(D, dec(100, 18), { from: whale });
-//       await lusdToken.transfer(E, dec(200, 18), { from: whale });
+//       await arthToken.transfer(D, dec(100, 18), { from: whale });
+//       await arthToken.transfer(E, dec(200, 18), { from: whale });
 
 //       // A, B, C open troves
 //       await openTrove({
@@ -1863,7 +1863,7 @@
 //       // fastforward time then make an SP deposit, to make G > 0
 //       await th.fastForwardTime(timeValues.SECONDS_IN_ONE_HOUR, web3.currentProvider);
 
-//       await stabilityPool.provideToSP(await lusdToken.balanceOf(D), ZERO_ADDRESS, { from: D });
+//       await stabilityPool.provideToSP(await arthToken.balanceOf(D), ZERO_ADDRESS, { from: D });
 
 //       // perform a liquidation to make 0 < P < 1, and S > 0
 //       await priceFeed.setPrice(dec(100, 18));
@@ -1946,8 +1946,8 @@
 //       });
 
 //       // Whale transfers LUSD to C, D
-//       await lusdToken.transfer(C, dec(100, 18), { from: whale });
-//       await lusdToken.transfer(D, dec(100, 18), { from: whale });
+//       await arthToken.transfer(C, dec(100, 18), { from: whale });
+//       await arthToken.transfer(D, dec(100, 18), { from: whale });
 
 //       txPromise_A = stabilityPool.provideToSP(0, frontEnd_1, { from: A });
 //       txPromise_B = stabilityPool.provideToSP(0, ZERO_ADDRESS, { from: B });
@@ -2519,8 +2519,8 @@
 //       await priceFeed.setPrice(dec(105, 18));
 //       await troveManager.liquidate(defaulter_1);
 
-//       const aliceBalBefore = await lusdToken.balanceOf(alice);
-//       const bobBalBefore = await lusdToken.balanceOf(bob);
+//       const aliceBalBefore = await arthToken.balanceOf(alice);
+//       const bobBalBefore = await arthToken.balanceOf(bob);
 
 //       /* From an offset of 10000 LUSD, each depositor receives
 //       LUSDLoss = 1666.6666666666666666 LUSD
@@ -2536,7 +2536,7 @@
 
 //       // Expect Alice's LUSD balance increase be very close to 8333.3333333333333333 LUSD
 //       await stabilityPool.withdrawFromSP(dec(10000, 18), { from: alice });
-//       const aliceBalance = await lusdToken.balanceOf(alice);
+//       const aliceBalance = await arthToken.balanceOf(alice);
 
 //       assert.isAtMost(
 //         th.getDifference(aliceBalance.sub(aliceBalBefore), "8333333333333333333333"),
@@ -2545,7 +2545,7 @@
 
 //       // expect Bob's LUSD balance increase to be very close to  13333.33333333333333333 LUSD
 //       await stabilityPool.withdrawFromSP(dec(10000, 18), { from: bob });
-//       const bobBalance = await lusdToken.balanceOf(bob);
+//       const bobBalance = await arthToken.balanceOf(bob);
 //       assert.isAtMost(
 //         th.getDifference(bobBalance.sub(bobBalBefore), "13333333333333333333333"),
 //         100000
@@ -3005,8 +3005,8 @@
 //       // Liquidate defaulter 1
 //       await troveManager.liquidate(defaulter_1);
 
-//       const alice_LUSD_Balance_Before = await lusdToken.balanceOf(alice);
-//       const bob_LUSD_Balance_Before = await lusdToken.balanceOf(bob);
+//       const alice_LUSD_Balance_Before = await arthToken.balanceOf(alice);
+//       const bob_LUSD_Balance_Before = await arthToken.balanceOf(bob);
 
 //       const alice_Deposit_Before = await stabilityPool.getCompoundedLUSDDeposit(alice);
 //       const bob_Deposit_Before = await stabilityPool.getCompoundedLUSDDeposit(bob);
@@ -3020,7 +3020,7 @@
 
 //       // Check Bob's LUSD balance has risen by only the value of his compounded deposit
 //       const bob_expectedLUSDBalance = bob_LUSD_Balance_Before.add(bob_Deposit_Before).toString();
-//       const bob_LUSD_Balance_After = (await lusdToken.balanceOf(bob)).toString();
+//       const bob_LUSD_Balance_After = (await arthToken.balanceOf(bob)).toString();
 //       assert.equal(bob_LUSD_Balance_After, bob_expectedLUSDBalance);
 
 //       // Alice attempts to withdraws 2309842309.000000000000000000 LUSD from the Stability Pool
@@ -3030,7 +3030,7 @@
 //       const alice_expectedLUSDBalance = alice_LUSD_Balance_Before
 //         .add(alice_Deposit_Before)
 //         .toString();
-//       const alice_LUSD_Balance_After = (await lusdToken.balanceOf(alice)).toString();
+//       const alice_LUSD_Balance_After = (await arthToken.balanceOf(alice)).toString();
 //       assert.equal(alice_LUSD_Balance_After, alice_expectedLUSDBalance);
 
 //       // Check LUSD in Stability Pool has been reduced by only Alice's compounded deposit and Bob's compounded deposit
@@ -3085,7 +3085,7 @@
 //       // Liquidate defaulter 1
 //       await troveManager.liquidate(defaulter_1);
 
-//       const bob_LUSD_Balance_Before = await lusdToken.balanceOf(bob);
+//       const bob_LUSD_Balance_Before = await arthToken.balanceOf(bob);
 
 //       const bob_Deposit_Before = await stabilityPool.getCompoundedLUSDDeposit(bob);
 
@@ -3103,7 +3103,7 @@
 
 //       // Check Bob's LUSD balance has risen by only the value of his compounded deposit
 //       const bob_expectedLUSDBalance = bob_LUSD_Balance_Before.add(bob_Deposit_Before).toString();
-//       const bob_LUSD_Balance_After = (await lusdToken.balanceOf(bob)).toString();
+//       const bob_LUSD_Balance_After = (await arthToken.balanceOf(bob)).toString();
 //       assert.equal(bob_LUSD_Balance_After, bob_expectedLUSDBalance);
 
 //       // Check LUSD in Stability Pool has been reduced by only  Bob's compounded deposit
@@ -3180,9 +3180,9 @@
 //       await troveManager.liquidate(defaulter_1);
 //       assert.isFalse(await sortedTroves.contains(defaulter_1));
 
-//       const alice_LUSD_Balance_Before = await lusdToken.balanceOf(alice);
-//       const bob_LUSD_Balance_Before = await lusdToken.balanceOf(bob);
-//       const carol_LUSD_Balance_Before = await lusdToken.balanceOf(carol);
+//       const alice_LUSD_Balance_Before = await arthToken.balanceOf(alice);
+//       const bob_LUSD_Balance_Before = await arthToken.balanceOf(bob);
+//       const carol_LUSD_Balance_Before = await arthToken.balanceOf(carol);
 
 //       const alice_ETH_Balance_Before = web3.utils.toBN(await web3.eth.getBalance(alice));
 //       const bob_ETH_Balance_Before = web3.utils.toBN(await web3.eth.getBalance(bob));
@@ -3224,10 +3224,10 @@
 //         .add(carol_Deposit_Before)
 //         .toString();
 
-//       const alice_LUSD_Balance_After = (await lusdToken.balanceOf(alice)).toString();
+//       const alice_LUSD_Balance_After = (await arthToken.balanceOf(alice)).toString();
 
-//       const bob_LUSD_Balance_After = (await lusdToken.balanceOf(bob)).toString();
-//       const carol_LUSD_Balance_After = (await lusdToken.balanceOf(carol)).toString();
+//       const bob_LUSD_Balance_After = (await arthToken.balanceOf(bob)).toString();
+//       const carol_LUSD_Balance_After = (await arthToken.balanceOf(carol)).toString();
 
 //       assert.equal(alice_LUSD_Balance_After, alice_expectedLUSDBalance);
 //       assert.equal(bob_LUSD_Balance_After, bob_expectedLUSDBalance);
@@ -3408,8 +3408,8 @@
 //       });
 
 //       // whale transfer to troves D and E
-//       await lusdToken.transfer(D, dec(100, 18), { from: whale });
-//       await lusdToken.transfer(E, dec(200, 18), { from: whale });
+//       await arthToken.transfer(D, dec(100, 18), { from: whale });
+//       await arthToken.transfer(E, dec(200, 18), { from: whale });
 
 //       // A, B, C open troves
 //       await openTrove({
@@ -3753,8 +3753,8 @@
 //       });
 
 //       // Whale transfers to A, B
-//       await lusdToken.transfer(A, dec(10000, 18), { from: whale });
-//       await lusdToken.transfer(B, dec(20000, 18), { from: whale });
+//       await arthToken.transfer(A, dec(10000, 18), { from: whale });
+//       await arthToken.transfer(B, dec(20000, 18), { from: whale });
 
 //       //C, D open troves
 //       await openTrove({
@@ -3848,8 +3848,8 @@
 //       // --- TEST ---
 
 //       // Whale transfers to A, B
-//       await lusdToken.transfer(A, dec(10000, 18), { from: whale });
-//       await lusdToken.transfer(B, dec(20000, 18), { from: whale });
+//       await arthToken.transfer(A, dec(10000, 18), { from: whale });
+//       await arthToken.transfer(B, dec(20000, 18), { from: whale });
 
 //       await priceFeed.setPrice(dec(200, 18));
 
@@ -4525,7 +4525,7 @@
 //       await openTrove({ ICR: toBN(dec(2, 18)), extraParams: { from: defaulter_1 } });
 
 //       // A transfers LUSD to D
-//       await lusdToken.transfer(dennis, dec(10000, 18), { from: alice });
+//       await arthToken.transfer(dennis, dec(10000, 18), { from: alice });
 
 //       // D deposits to Stability Pool
 //       await stabilityPool.provideToSP(dec(10000, 18), frontEnd_1, { from: dennis });
@@ -5011,8 +5011,8 @@
 //       });
 
 //       // Whale transfers LUSD to A, B
-//       await lusdToken.transfer(A, dec(10000, 18), { from: whale });
-//       await lusdToken.transfer(B, dec(20000, 18), { from: whale });
+//       await arthToken.transfer(A, dec(10000, 18), { from: whale });
+//       await arthToken.transfer(B, dec(20000, 18), { from: whale });
 
 //       // C, D open troves
 //       await openTrove({

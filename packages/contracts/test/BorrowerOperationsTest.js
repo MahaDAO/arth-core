@@ -4,7 +4,7 @@
 // const BorrowerOperationsTester = artifacts.require("./BorrowerOperationsTester.sol");
 // const NonPayable = artifacts.require("NonPayable.sol");
 // const TroveManagerTester = artifacts.require("TroveManagerTester");
-// const LUSDTokenTester = artifacts.require("./ARTHTokenTester");
+// const ARTHTokenTester = artifacts.require("./ARTHTokenTester");
 
 // const th = testHelpers.TestHelper;
 
@@ -52,7 +52,7 @@
 //   // const frontEnds = [frontEnd_1, frontEnd_2, frontEnd_3]
 
 //   let priceFeed;
-//   let lusdToken;
+//   let arthToken;
 //   let sortedTroves;
 //   let troveManager;
 //   let activePool;
@@ -85,7 +85,7 @@
 //       contracts = await deploymentHelper.deployLiquityCore();
 //       contracts.borrowerOperations = await BorrowerOperationsTester.new();
 //       contracts.troveManager = await TroveManagerTester.new();
-//       contracts = await deploymentHelper.deployLUSDTokenTester(contracts);
+//       contracts = await deploymentHelper.deployARTHTokenTester(contracts);
 //       const LQTYContracts = await deploymentHelper.deployLQTYTesterContractsHardhat(
 //         bountyAddress,
 //         lpRewardsAddress,
@@ -102,7 +102,7 @@
 //       // }
 
 //       priceFeed = contracts.priceFeedTestnet;
-//       lusdToken = contracts.lusdToken;
+//       arthToken = contracts.arthToken;
 //       sortedTroves = contracts.sortedTroves;
 //       troveManager = contracts.troveManager;
 //       activePool = contracts.activePool;
@@ -820,7 +820,7 @@
 //         extraParams: { from: E }
 //       });
 
-//       const A_LUSDBal = await lusdToken.balanceOf(A);
+//       const A_LUSDBal = await arthToken.balanceOf(A);
 
 //       // Artificially set base rate to 5%
 //       await troveManager.setBaseRate(dec(5, 16));
@@ -944,7 +944,7 @@
 //         extraParams: { from: E }
 //       });
 
-//       const totalSupply = await lusdToken.totalSupply();
+//       const totalSupply = await arthToken.totalSupply();
 
 //       // Artificially make baseRate 5%
 //       await troveManager.setBaseRate(dec(5, 16));
@@ -1021,7 +1021,7 @@
 //         extraParams: { from: E }
 //       });
 
-//       const totalSupply = await lusdToken.totalSupply();
+//       const totalSupply = await arthToken.totalSupply();
 
 //       // Artificially make baseRate 5%
 //       await troveManager.setBaseRate(dec(5, 16));
@@ -1224,7 +1224,7 @@
 //       await lqtyStaking.stake(dec(1, 18), { from: multisig });
 
 //       // Check LQTY LUSD balance before == 0
-//       const lqtyStaking_LUSDBalance_Before = await lusdToken.balanceOf(lqtyStaking.address);
+//       const lqtyStaking_LUSDBalance_Before = await arthToken.balanceOf(lqtyStaking.address);
 //       assert.equal(lqtyStaking_LUSDBalance_Before, "0");
 
 //       await openTrove({ ICR: toBN(dec(10, 18)), extraParams: { from: whale } });
@@ -1264,7 +1264,7 @@
 //       await borrowerOperations.withdrawLUSD(th._100pct, dec(37, 18), C, C, { from: D });
 
 //       // Check LQTY LUSD balance after has increased
-//       const lqtyStaking_LUSDBalance_After = await lusdToken.balanceOf(lqtyStaking.address);
+//       const lqtyStaking_LUSDBalance_After = await arthToken.balanceOf(lqtyStaking.address);
 //       assert.isTrue(lqtyStaking_LUSDBalance_After.gt(lqtyStaking_LUSDBalance_Before));
 //     });
 
@@ -1392,7 +1392,7 @@
 //       await lqtyStaking.stake(dec(1, 18), { from: multisig });
 
 //       // Check LQTY Staking contract balance before == 0
-//       const lqtyStaking_LUSDBalance_Before = await lusdToken.balanceOf(lqtyStaking.address);
+//       const lqtyStaking_LUSDBalance_Before = await arthToken.balanceOf(lqtyStaking.address);
 //       assert.equal(lqtyStaking_LUSDBalance_Before, "0");
 
 //       await openTrove({ ICR: toBN(dec(10, 18)), extraParams: { from: whale } });
@@ -1428,18 +1428,18 @@
 //       // 2 hours pass
 //       th.fastForwardTime(7200, web3.currentProvider);
 
-//       const D_LUSDBalanceBefore = await lusdToken.balanceOf(D);
+//       const D_LUSDBalanceBefore = await arthToken.balanceOf(D);
 
 //       // D withdraws LUSD
 //       const D_LUSDRequest = toBN(dec(37, 18));
 //       await borrowerOperations.withdrawLUSD(th._100pct, D_LUSDRequest, D, D, { from: D });
 
 //       // Check LQTY staking LUSD balance has increased
-//       const lqtyStaking_LUSDBalance_After = await lusdToken.balanceOf(lqtyStaking.address);
+//       const lqtyStaking_LUSDBalance_After = await arthToken.balanceOf(lqtyStaking.address);
 //       assert.isTrue(lqtyStaking_LUSDBalance_After.gt(lqtyStaking_LUSDBalance_Before));
 
 //       // Check D's LUSD balance now equals their initial balance plus request LUSD
-//       const D_LUSDBalanceAfter = await lusdToken.balanceOf(D);
+//       const D_LUSDBalanceAfter = await arthToken.balanceOf(D);
 //       assert.isTrue(D_LUSDBalanceAfter.eq(D_LUSDBalanceBefore.add(D_LUSDRequest)));
 //     });
 
@@ -1519,14 +1519,14 @@
 //       // 2 hours pass
 //       th.fastForwardTime(7200, web3.currentProvider);
 
-//       const D_LUSDBalanceBefore = await lusdToken.balanceOf(D);
+//       const D_LUSDBalanceBefore = await arthToken.balanceOf(D);
 
 //       // D withdraws LUSD
 //       const D_LUSDRequest = toBN(dec(37, 18));
 //       await borrowerOperations.withdrawLUSD(th._100pct, dec(37, 18), D, D, { from: D });
 
 //       // Check D's LUSD balance now equals their requested LUSD
-//       const D_LUSDBalanceAfter = await lusdToken.balanceOf(D);
+//       const D_LUSDBalanceAfter = await arthToken.balanceOf(D);
 
 //       // Check D's trove debt == D's LUSD balance + liquidation reserve
 //       assert.isTrue(D_LUSDBalanceAfter.eq(D_LUSDBalanceBefore.add(D_LUSDRequest)));
@@ -1712,17 +1712,17 @@
 //       await openTrove({ extraParams: { value: toBN(dec(100, "ether")), from: alice } });
 
 //       // check before
-//       const alice_LUSDTokenBalance_Before = await lusdToken.balanceOf(alice);
-//       assert.isTrue(alice_LUSDTokenBalance_Before.gt(toBN("0")));
+//       const alice_ARTHTokenBalance_Before = await arthToken.balanceOf(alice);
+//       assert.isTrue(alice_ARTHTokenBalance_Before.gt(toBN("0")));
 
 //       await borrowerOperations.withdrawLUSD(th._100pct, dec(10000, 18), alice, alice, {
 //         from: alice
 //       });
 
 //       // check after
-//       const alice_LUSDTokenBalance_After = await lusdToken.balanceOf(alice);
+//       const alice_ARTHTokenBalance_After = await arthToken.balanceOf(alice);
 //       assert.isTrue(
-//         alice_LUSDTokenBalance_After.eq(alice_LUSDTokenBalance_Before.add(toBN(dec(10000, 18))))
+//         alice_ARTHTokenBalance_After.eq(alice_ARTHTokenBalance_Before.add(toBN(dec(10000, 18))))
 //       );
 //     });
 
@@ -1800,7 +1800,7 @@
 //         extraParams: { from: bob }
 //       });
 
-//       await lusdToken.transfer(alice, repayAmount, { from: bob });
+//       await arthToken.transfer(alice, repayAmount, { from: bob });
 
 //       await assertRevert(
 //         borrowerOperations.adjustTrove(th._100pct, 0, repayAmount, false, alice, alice, {
@@ -1937,18 +1937,18 @@
 //       assert.isTrue(aliceDebtBefore.gt(toBN("0")));
 
 //       // check before
-//       const alice_LUSDTokenBalance_Before = await lusdToken.balanceOf(alice);
-//       assert.isTrue(alice_LUSDTokenBalance_Before.gt(toBN("0")));
+//       const alice_ARTHTokenBalance_Before = await arthToken.balanceOf(alice);
+//       assert.isTrue(alice_ARTHTokenBalance_Before.gt(toBN("0")));
 
 //       await borrowerOperations.repayLUSD(aliceDebtBefore.div(toBN(10)), alice, alice, {
 //         from: alice
 //       }); // Repays 1/10 her debt
 
 //       // check after
-//       const alice_LUSDTokenBalance_After = await lusdToken.balanceOf(alice);
+//       const alice_ARTHTokenBalance_After = await arthToken.balanceOf(alice);
 //       th.assertIsApproximatelyEqual(
-//         alice_LUSDTokenBalance_After,
-//         alice_LUSDTokenBalance_Before.sub(aliceDebtBefore.div(toBN(10)))
+//         alice_ARTHTokenBalance_After,
+//         alice_ARTHTokenBalance_Before.sub(aliceDebtBefore.div(toBN(10)))
 //       );
 //     });
 
@@ -1993,14 +1993,14 @@
 //         ICR: toBN(dec(2, 18)),
 //         extraParams: { from: B }
 //       });
-//       const bobBalBefore = await lusdToken.balanceOf(B);
+//       const bobBalBefore = await arthToken.balanceOf(B);
 //       assert.isTrue(bobBalBefore.gt(toBN("0")));
 
 //       // Bob transfers all but 5 of his LUSD to Carol
-//       await lusdToken.transfer(C, bobBalBefore.sub(toBN(dec(5, 18))), { from: B });
+//       await arthToken.transfer(C, bobBalBefore.sub(toBN(dec(5, 18))), { from: B });
 
 //       //Confirm B's LUSD balance has decreased to 5 LUSD
-//       const bobBalAfter = await lusdToken.balanceOf(B);
+//       const bobBalAfter = await arthToken.balanceOf(B);
 
 //       assert.isTrue(bobBalAfter.eq(toBN(dec(5, 18))));
 
@@ -2336,7 +2336,7 @@
 //       await lqtyStaking.stake(dec(1, 18), { from: multisig });
 
 //       // Check LQTY LUSD balance before == 0
-//       const lqtyStaking_LUSDBalance_Before = await lusdToken.balanceOf(lqtyStaking.address);
+//       const lqtyStaking_LUSDBalance_Before = await arthToken.balanceOf(lqtyStaking.address);
 //       assert.equal(lqtyStaking_LUSDBalance_Before, "0");
 
 //       await openTrove({ ICR: toBN(dec(10, 18)), extraParams: { from: whale } });
@@ -2375,7 +2375,7 @@
 //       });
 
 //       // Check LQTY LUSD balance after has increased
-//       const lqtyStaking_LUSDBalance_After = await lusdToken.balanceOf(lqtyStaking.address);
+//       const lqtyStaking_LUSDBalance_After = await arthToken.balanceOf(lqtyStaking.address);
 //       assert.isTrue(lqtyStaking_LUSDBalance_After.gt(lqtyStaking_LUSDBalance_Before));
 //     });
 
@@ -2502,7 +2502,7 @@
 //       await lqtyStaking.stake(dec(1, 18), { from: multisig });
 
 //       // Check LQTY Staking contract balance before == 0
-//       const lqtyStaking_LUSDBalance_Before = await lusdToken.balanceOf(lqtyStaking.address);
+//       const lqtyStaking_LUSDBalance_Before = await arthToken.balanceOf(lqtyStaking.address);
 //       assert.equal(lqtyStaking_LUSDBalance_Before, "0");
 
 //       await openTrove({ ICR: toBN(dec(10, 18)), extraParams: { from: whale } });
@@ -2527,7 +2527,7 @@
 //         extraParams: { from: D }
 //       });
 
-//       const D_LUSDBalanceBefore = await lusdToken.balanceOf(D);
+//       const D_LUSDBalanceBefore = await arthToken.balanceOf(D);
 
 //       // Artificially make baseRate 5%
 //       await troveManager.setBaseRate(dec(5, 16));
@@ -2545,11 +2545,11 @@
 //       await borrowerOperations.adjustTrove(th._100pct, 0, LUSDRequest_D, true, D, D, { from: D });
 
 //       // Check LQTY staking LUSD balance has increased
-//       const lqtyStaking_LUSDBalance_After = await lusdToken.balanceOf(lqtyStaking.address);
+//       const lqtyStaking_LUSDBalance_After = await arthToken.balanceOf(lqtyStaking.address);
 //       assert.isTrue(lqtyStaking_LUSDBalance_After.gt(lqtyStaking_LUSDBalance_Before));
 
 //       // Check D's LUSD balance has increased by their requested LUSD
-//       const D_LUSDBalanceAfter = await lusdToken.balanceOf(D);
+//       const D_LUSDBalanceAfter = await arthToken.balanceOf(D);
 //       assert.isTrue(D_LUSDBalanceAfter.eq(D_LUSDBalanceBefore.add(LUSDRequest_D)));
 //     });
 
@@ -2584,14 +2584,14 @@
 //       th.fastForwardTime(7200, web3.currentProvider);
 
 //       // Check staking LUSD balance before > 0
-//       const lqtyStaking_LUSDBalance_Before = await lusdToken.balanceOf(lqtyStaking.address);
+//       const lqtyStaking_LUSDBalance_Before = await arthToken.balanceOf(lqtyStaking.address);
 //       assert.isTrue(lqtyStaking_LUSDBalance_Before.gt(toBN("0")));
 
 //       // D adjusts trove
 //       await borrowerOperations.adjustTrove(th._100pct, 0, dec(37, 18), true, D, D, { from: D });
 
 //       // Check staking LUSD balance after > staking balance before
-//       const lqtyStaking_LUSDBalance_After = await lusdToken.balanceOf(lqtyStaking.address);
+//       const lqtyStaking_LUSDBalance_After = await arthToken.balanceOf(lqtyStaking.address);
 //       assert.isTrue(lqtyStaking_LUSDBalance_After.gt(lqtyStaking_LUSDBalance_Before));
 //     });
 
@@ -2672,7 +2672,7 @@
 //         extraParams: { from: D }
 //       });
 
-//       const D_LUSDBalBefore = await lusdToken.balanceOf(D);
+//       const D_LUSDBalBefore = await arthToken.balanceOf(D);
 //       // Check baseRate is zero
 //       const baseRate_1 = await troveManager.baseRate();
 //       assert.equal(baseRate_1, "0");
@@ -2680,14 +2680,14 @@
 //       // 2 hours pass
 //       th.fastForwardTime(7200, web3.currentProvider);
 
-//       const DUSDBalanceBefore = await lusdToken.balanceOf(D);
+//       const DUSDBalanceBefore = await arthToken.balanceOf(D);
 
 //       // D adjusts trove
 //       const LUSDRequest_D = toBN(dec(40, 18));
 //       await borrowerOperations.adjustTrove(th._100pct, 0, LUSDRequest_D, true, D, D, { from: D });
 
 //       // Check D's LUSD balance increased by their requested LUSD
-//       const LUSDBalanceAfter = await lusdToken.balanceOf(D);
+//       const LUSDBalanceAfter = await arthToken.balanceOf(D);
 //       assert.isTrue(LUSDBalanceAfter.eq(D_LUSDBalBefore.add(LUSDRequest_D)));
 //     });
 
@@ -3082,7 +3082,7 @@
 //       await lqtyToken.unprotectedMint(bob, dec(100, 18));
 //       await lqtyStaking.stake(dec(100, 18), { from: bob });
 
-//       const lqtyStakingLUSDBalanceBefore = await lusdToken.balanceOf(lqtyStaking.address);
+//       const lqtyStakingLUSDBalanceBefore = await arthToken.balanceOf(lqtyStaking.address);
 //       assert.isTrue(lqtyStakingLUSDBalanceBefore.gt(toBN("0")));
 
 //       const txAlice = await borrowerOperations.adjustTrove(
@@ -3105,7 +3105,7 @@
 //       assert.isTrue(await th.checkRecoveryMode(contracts));
 
 //       // Check no fee was sent to staking contract
-//       const lqtyStakingLUSDBalanceAfter = await lusdToken.balanceOf(lqtyStaking.address);
+//       const lqtyStakingLUSDBalanceAfter = await arthToken.balanceOf(lqtyStaking.address);
 //       assert.equal(lqtyStakingLUSDBalanceAfter.toString(), lqtyStakingLUSDBalanceBefore.toString());
 //     });
 
@@ -3148,7 +3148,7 @@
 //       assert.isTrue(bobFee.gt(toBN("0")));
 
 //       // Alice transfers LUSD to bob to compensate borrowing fees
-//       await lusdToken.transfer(bob, bobFee, { from: alice });
+//       await arthToken.transfer(bob, bobFee, { from: alice });
 
 //       const remainingDebt = (await troveManager.getTroveDebt(bob)).sub(LUSD_GAS_COMPENSATION);
 
@@ -3495,8 +3495,8 @@
 //         extraParams: { from: alice }
 //       });
 
-//       const alice_LUSDTokenBalance_Before = await lusdToken.balanceOf(alice);
-//       assert.isTrue(alice_LUSDTokenBalance_Before.gt(toBN("0")));
+//       const alice_ARTHTokenBalance_Before = await arthToken.balanceOf(alice);
+//       assert.isTrue(alice_ARTHTokenBalance_Before.gt(toBN("0")));
 
 //       // Alice adjusts trove - coll decrease and debt decrease
 //       await borrowerOperations.adjustTrove(
@@ -3510,9 +3510,9 @@
 //       );
 
 //       // check after
-//       const alice_LUSDTokenBalance_After = await lusdToken.balanceOf(alice);
+//       const alice_ARTHTokenBalance_After = await arthToken.balanceOf(alice);
 //       assert.isTrue(
-//         alice_LUSDTokenBalance_After.eq(alice_LUSDTokenBalance_Before.sub(toBN(dec(10, 18))))
+//         alice_ARTHTokenBalance_After.eq(alice_ARTHTokenBalance_Before.sub(toBN(dec(10, 18))))
 //       );
 //     });
 
@@ -3529,8 +3529,8 @@
 //         extraParams: { from: alice }
 //       });
 
-//       const alice_LUSDTokenBalance_Before = await lusdToken.balanceOf(alice);
-//       assert.isTrue(alice_LUSDTokenBalance_Before.gt(toBN("0")));
+//       const alice_ARTHTokenBalance_Before = await arthToken.balanceOf(alice);
+//       assert.isTrue(alice_ARTHTokenBalance_Before.gt(toBN("0")));
 
 //       // Alice adjusts trove - coll increase and debt increase
 //       await borrowerOperations.adjustTrove(th._100pct, 0, dec(100, 18), true, alice, alice, {
@@ -3539,9 +3539,9 @@
 //       });
 
 //       // check after
-//       const alice_LUSDTokenBalance_After = await lusdToken.balanceOf(alice);
+//       const alice_ARTHTokenBalance_After = await arthToken.balanceOf(alice);
 //       assert.isTrue(
-//         alice_LUSDTokenBalance_After.eq(alice_LUSDTokenBalance_Before.add(toBN(dec(100, 18))))
+//         alice_ARTHTokenBalance_After.eq(alice_ARTHTokenBalance_Before.add(toBN(dec(100, 18))))
 //       );
 //     });
 
@@ -3802,10 +3802,10 @@
 //       const bobDebt = await getTroveEntireDebt(B);
 
 //       // Bob transfers some LUSD to carol
-//       await lusdToken.transfer(C, dec(10, 18), { from: B });
+//       await arthToken.transfer(C, dec(10, 18), { from: B });
 
 //       //Confirm B's LUSD balance is less than 50 LUSD
-//       const B_LUSDBal = await lusdToken.balanceOf(B);
+//       const B_LUSDBal = await arthToken.balanceOf(B);
 //       assert.isTrue(B_LUSDBal.lt(bobDebt));
 
 //       const repayLUSDPromise_B = borrowerOperations.adjustTrove(
@@ -3884,7 +3884,7 @@
 //       const price = await priceFeed.getPrice();
 
 //       // to compensate borrowing fees
-//       await lusdToken.transfer(alice, dec(300, 18), { from: bob });
+//       await arthToken.transfer(alice, dec(300, 18), { from: bob });
 
 //       assert.isFalse(await troveManager.checkRecoveryMode(price));
 
@@ -3933,9 +3933,9 @@
 //       });
 
 //       // Alice transfers her LUSD to Bob and Carol so they can cover fees
-//       const aliceBal = await lusdToken.balanceOf(alice);
-//       await lusdToken.transfer(bob, aliceBal.div(toBN(2)), { from: alice });
-//       await lusdToken.transfer(carol, aliceBal.div(toBN(2)), { from: alice });
+//       const aliceBal = await arthToken.balanceOf(alice);
+//       await arthToken.transfer(bob, aliceBal.div(toBN(2)), { from: alice });
+//       await arthToken.transfer(carol, aliceBal.div(toBN(2)), { from: alice });
 
 //       // check Recovery Mode
 //       assert.isFalse(await th.checkRecoveryMode(contracts));
@@ -3963,10 +3963,10 @@
 //       });
 
 //       // Artificially mint to Alice so she has enough to close her trove
-//       await lusdToken.unprotectedMint(alice, dec(100000, 18));
+//       await arthToken.unprotectedMint(alice, dec(100000, 18));
 
 //       // Check she has more LUSD than her trove debt
-//       const aliceBal = await lusdToken.balanceOf(alice);
+//       const aliceBal = await arthToken.balanceOf(alice);
 //       const aliceDebt = await getTroveEntireDebt(alice);
 //       assert.isTrue(aliceBal.gt(aliceDebt));
 
@@ -3994,12 +3994,12 @@
 //       });
 
 //       const aliceCollBefore = await getTroveEntireColl(alice);
-//       const dennisLUSD = await lusdToken.balanceOf(dennis);
+//       const dennisLUSD = await arthToken.balanceOf(dennis);
 //       assert.isTrue(aliceCollBefore.gt(toBN("0")));
 //       assert.isTrue(dennisLUSD.gt(toBN("0")));
 
 //       // To compensate borrowing fees
-//       await lusdToken.transfer(alice, dennisLUSD.div(toBN(2)), { from: dennis });
+//       await arthToken.transfer(alice, dennisLUSD.div(toBN(2)), { from: dennis });
 
 //       // Alice attempts to close trove
 //       await borrowerOperations.closeTrove({ from: alice });
@@ -4022,12 +4022,12 @@
 //       });
 
 //       const aliceDebtBefore = await getTroveEntireColl(alice);
-//       const dennisLUSD = await lusdToken.balanceOf(dennis);
+//       const dennisLUSD = await arthToken.balanceOf(dennis);
 //       assert.isTrue(aliceDebtBefore.gt(toBN("0")));
 //       assert.isTrue(dennisLUSD.gt(toBN("0")));
 
 //       // To compensate borrowing fees
-//       await lusdToken.transfer(alice, dennisLUSD.div(toBN(2)), { from: dennis });
+//       await arthToken.transfer(alice, dennisLUSD.div(toBN(2)), { from: dennis });
 
 //       // Alice attempts to close trove
 //       await borrowerOperations.closeTrove({ from: alice });
@@ -4052,12 +4052,12 @@
 //       const aliceStakeBefore = await getTroveStake(alice);
 //       assert.isTrue(aliceStakeBefore.gt(toBN("0")));
 
-//       const dennisLUSD = await lusdToken.balanceOf(dennis);
+//       const dennisLUSD = await arthToken.balanceOf(dennis);
 //       assert.isTrue(aliceStakeBefore.gt(toBN("0")));
 //       assert.isTrue(dennisLUSD.gt(toBN("0")));
 
 //       // To compensate borrowing fees
-//       await lusdToken.transfer(alice, dennisLUSD.div(toBN(2)), { from: dennis });
+//       await arthToken.transfer(alice, dennisLUSD.div(toBN(2)), { from: dennis });
 
 //       // Alice attempts to close trove
 //       await borrowerOperations.closeTrove({ from: alice });
@@ -4124,7 +4124,7 @@
 //       assert.isTrue(L_LUSDDebt_Snapshot_A_AfterLiquidation.gt(toBN("0")));
 
 //       // to compensate borrowing fees
-//       await lusdToken.transfer(alice, await lusdToken.balanceOf(dennis), { from: dennis });
+//       await arthToken.transfer(alice, await arthToken.balanceOf(dennis), { from: dennis });
 
 //       await priceFeed.setPrice(dec(200, 18));
 
@@ -4160,7 +4160,7 @@
 //       assert.isTrue(await sortedTroves.contains(alice));
 
 //       // to compensate borrowing fees
-//       await lusdToken.transfer(alice, await lusdToken.balanceOf(dennis), { from: dennis });
+//       await arthToken.transfer(alice, await arthToken.balanceOf(dennis), { from: dennis });
 
 //       // Close the trove
 //       await borrowerOperations.closeTrove({ from: alice });
@@ -4197,7 +4197,7 @@
 //       assert.isTrue(activePool_RawEther_before.eq(activePool_ETH_before));
 
 //       // to compensate borrowing fees
-//       await lusdToken.transfer(alice, await lusdToken.balanceOf(dennis), { from: dennis });
+//       await arthToken.transfer(alice, await arthToken.balanceOf(dennis), { from: dennis });
 
 //       // Close the trove
 //       await borrowerOperations.closeTrove({ from: alice });
@@ -4232,7 +4232,7 @@
 //       assert.isTrue(activePool_Debt_before.gt(toBN("0")));
 
 //       // to compensate borrowing fees
-//       await lusdToken.transfer(alice, await lusdToken.balanceOf(dennis), { from: dennis });
+//       await arthToken.transfer(alice, await arthToken.balanceOf(dennis), { from: dennis });
 
 //       // Close the trove
 //       await borrowerOperations.closeTrove({ from: alice });
@@ -4274,7 +4274,7 @@
 //       );
 
 //       // to compensate borrowing fees
-//       await lusdToken.transfer(alice, await lusdToken.balanceOf(dennis), { from: dennis });
+//       await arthToken.transfer(alice, await arthToken.balanceOf(dennis), { from: dennis });
 
 //       // Alice closes trove
 //       await borrowerOperations.closeTrove({ from: alice });
@@ -4307,7 +4307,7 @@
 //         const alice_ETHBalance_Before = web3.utils.toBN(await web3.eth.getBalance(alice));
 
 //         // to compensate borrowing fees
-//         await lusdToken.transfer(alice, await lusdToken.balanceOf(dennis), { from: dennis });
+//         await arthToken.transfer(alice, await arthToken.balanceOf(dennis), { from: dennis });
 
 //         await borrowerOperations.closeTrove({ from: alice, gasPrice: 0 });
 
@@ -4334,16 +4334,16 @@
 //       assert.isTrue(aliceDebt.gt(toBN("0")));
 
 //       // to compensate borrowing fees
-//       await lusdToken.transfer(alice, await lusdToken.balanceOf(dennis), { from: dennis });
+//       await arthToken.transfer(alice, await arthToken.balanceOf(dennis), { from: dennis });
 
-//       const alice_LUSDBalance_Before = await lusdToken.balanceOf(alice);
+//       const alice_LUSDBalance_Before = await arthToken.balanceOf(alice);
 //       assert.isTrue(alice_LUSDBalance_Before.gt(toBN("0")));
 
 //       // close trove
 //       await borrowerOperations.closeTrove({ from: alice });
 
 //       // check alice LUSD balance after
-//       const alice_LUSDBalance_After = await lusdToken.balanceOf(alice);
+//       const alice_LUSDBalance_After = await arthToken.balanceOf(alice);
 //       th.assertIsApproximatelyEqual(
 //         alice_LUSDBalance_After,
 //         alice_LUSDBalance_Before.sub(aliceDebt.sub(LUSD_GAS_COMPENSATION))
@@ -4380,8 +4380,8 @@
 //       const carolColl = await getTroveEntireColl(carol);
 
 //       // Whale transfers to A and B to cover their fees
-//       await lusdToken.transfer(alice, dec(10000, 18), { from: whale });
-//       await lusdToken.transfer(bob, dec(10000, 18), { from: whale });
+//       await arthToken.transfer(alice, dec(10000, 18), { from: whale });
+//       await arthToken.transfer(bob, dec(10000, 18), { from: whale });
 
 //       // --- TEST ---
 
@@ -4474,7 +4474,7 @@
 //       });
 
 //       //Confirm Bob's LUSD balance is less than his trove debt
-//       const B_LUSDBal = await lusdToken.balanceOf(B);
+//       const B_LUSDBal = await arthToken.balanceOf(B);
 //       const B_troveDebt = await getTroveEntireDebt(B);
 
 //       assert.isTrue(B_LUSDBal.lt(B_troveDebt));
@@ -4894,7 +4894,7 @@
 //         extraParams: { from: C }
 //       });
 
-//       const totalSupply = await lusdToken.totalSupply();
+//       const totalSupply = await arthToken.totalSupply();
 
 //       // Artificially make baseRate 5%
 //       await troveManager.setBaseRate(dec(5, 16));
@@ -5081,7 +5081,7 @@
 //       await lqtyStaking.stake(dec(1, 18), { from: multisig });
 
 //       // Check LQTY LUSD balance before == 0
-//       const lqtyStaking_LUSDBalance_Before = await lusdToken.balanceOf(lqtyStaking.address);
+//       const lqtyStaking_LUSDBalance_Before = await arthToken.balanceOf(lqtyStaking.address);
 //       assert.equal(lqtyStaking_LUSDBalance_Before, "0");
 
 //       await openTrove({
@@ -5124,7 +5124,7 @@
 //       });
 
 //       // Check LQTY LUSD balance after has increased
-//       const lqtyStaking_LUSDBalance_After = await lusdToken.balanceOf(lqtyStaking.address);
+//       const lqtyStaking_LUSDBalance_After = await arthToken.balanceOf(lqtyStaking.address);
 //       assert.isTrue(lqtyStaking_LUSDBalance_After.gt(lqtyStaking_LUSDBalance_Before));
 //     });
 
@@ -5254,7 +5254,7 @@
 //       await lqtyStaking.stake(dec(1, 18), { from: multisig });
 
 //       // Check LQTY Staking contract balance before == 0
-//       const lqtyStaking_LUSDBalance_Before = await lusdToken.balanceOf(lqtyStaking.address);
+//       const lqtyStaking_LUSDBalance_Before = await arthToken.balanceOf(lqtyStaking.address);
 //       assert.equal(lqtyStaking_LUSDBalance_Before, "0");
 
 //       await openTrove({
@@ -5297,11 +5297,11 @@
 //       });
 
 //       // Check LQTY staking LUSD balance has increased
-//       const lqtyStaking_LUSDBalance_After = await lusdToken.balanceOf(lqtyStaking.address);
+//       const lqtyStaking_LUSDBalance_After = await arthToken.balanceOf(lqtyStaking.address);
 //       assert.isTrue(lqtyStaking_LUSDBalance_After.gt(lqtyStaking_LUSDBalance_Before));
 
 //       // Check D's LUSD balance now equals their requested LUSD
-//       const LUSDBalance_D = await lusdToken.balanceOf(D);
+//       const LUSDBalance_D = await arthToken.balanceOf(D);
 //       assert.isTrue(LUSDRequest_D.eq(LUSDBalance_D));
 //     });
 
@@ -5779,7 +5779,7 @@
 //       assert.isTrue(await sortedTroves.contains(alice));
 
 //       // to compensate borrowing fees
-//       await lusdToken.transfer(alice, dec(10000, 18), { from: whale });
+//       await arthToken.transfer(alice, dec(10000, 18), { from: whale });
 
 //       // Repay and close Trove
 //       await borrowerOperations.closeTrove({ from: alice });
@@ -5842,8 +5842,8 @@
 
 //     it("openTrove(): increases user ARTHValuecoin balance by correct amount", async () => {
 //       // check before
-//       const alice_LUSDTokenBalance_Before = await lusdToken.balanceOf(alice);
-//       assert.equal(alice_LUSDTokenBalance_Before, 0);
+//       const alice_ARTHTokenBalance_Before = await arthToken.balanceOf(alice);
+//       assert.equal(alice_ARTHTokenBalance_Before, 0);
 
 //       await borrowerOperations.openTrove(th._100pct, dec(10000, 18), alice, alice, {
 //         from: alice,
@@ -5851,8 +5851,8 @@
 //       });
 
 //       // check after
-//       const alice_LUSDTokenBalance_After = await lusdToken.balanceOf(alice);
-//       assert.equal(alice_LUSDTokenBalance_After, dec(10000, 18));
+//       const alice_ARTHTokenBalance_After = await arthToken.balanceOf(alice);
+//       assert.equal(alice_ARTHTokenBalance_After, dec(10000, 18));
 //     });
 
 //     //  --- getNewICRFromTroveChange - (external wrapper in Tester contract calls internal function) ---
@@ -6506,7 +6506,7 @@
 //         });
 
 //         // Alice sends LUSD to NonPayable so its LUSD balance covers its debt
-//         await lusdToken.transfer(nonPayable.address, dec(10000, 18), { from: alice });
+//         await arthToken.transfer(nonPayable.address, dec(10000, 18), { from: alice });
 
 //         // open trove from NonPayable proxy contract
 //         const _100pctHex = "0xde0b6b3a7640000";

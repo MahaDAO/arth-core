@@ -23,7 +23,7 @@ contract('Gas cost tests', async accounts => {
   const multisig = accounts[1000]
 
   let priceFeed
-  let lusdToken
+  let arthToken
   let sortedTroves
   let troveManager
   let activePool
@@ -39,7 +39,7 @@ contract('Gas cost tests', async accounts => {
     const LQTYContracts = await deploymentHelper.deployLQTYContracts(bountyAddress, lpRewardsAddress, multisig)
 
     priceFeed = contracts.priceFeedTestnet
-    lusdToken = contracts.lusdToken
+    arthToken = contracts.arthToken
     sortedTroves = contracts.sortedTroves
     troveManager = contracts.troveManager
     activePool = contracts.activePool

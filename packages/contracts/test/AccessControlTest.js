@@ -17,13 +17,13 @@ test/launchSequenceTest/DuringLockupPeriodTest.js */
 contract(
   "Access Control: Liquity functions with the caller restricted to Liquity contract(s)",
   async accounts => {
-    const [owner, alice, bob, carol] = accounts;
+    const [owner, alice, bob, carol, fund] = accounts;
     const [bountyAddress, lpRewardsAddress, multisig] = accounts.slice(997, 1000);
 
     let coreContracts;
 
     let priceFeed;
-    let lusdToken;
+    let arthToken;
     let sortedTroves;
     let troveManager;
     let nameRegistry;
@@ -39,17 +39,17 @@ contract(
     // let lockupContractFactory;
 
     before(async () => {
-      coreContracts = await deploymentHelper.deployLiquityCore();
+      coreContracts = await deploymentHelper.deployLiquityCore(owner, fund);
       coreContracts.troveManager = await TroveManagerTester.new();
-      coreContracts = await deploymentHelper.deployLUSDTokenTester(coreContracts);
-      const LQTYContracts = await deploymentHelper.deployLQTYTesterContractsHardhat(
-        bountyAddress,
-        lpRewardsAddress,
-        multisig
-      );
+      coreContracts = await deploymentHelper.deployARTHTokenTester(coreContracts, owner);
+      // const LQTYContracts = await deploymentHelper.deployLQTYTesterContractsHardhat(
+      //   bountyAddress,
+      //   lpRewardsAddress,
+      //   multisig
+      // );
 
       priceFeed = coreContracts.priceFeed;
-      lusdToken = coreContracts.lusdToken;
+      arthToken = coreContracts.arthToken;
       sortedTroves = coreContracts.sortedTroves;
       troveManager = coreContracts.troveManager;
       nameRegistry = coreContracts.nameRegistry;
@@ -59,14 +59,13 @@ contract(
       functionCaller = coreContracts.functionCaller;
       borrowerOperations = coreContracts.borrowerOperations;
 
-      lqtyStaking = LQTYContracts.lqtyStaking;
-      lqtyToken = LQTYContracts.lqtyToken;
-      communityIssuance = LQTYContracts.communityIssuance;
+      // lqtyStaking = LQTYContracts.lqtyStaking;
+      // lqtyToken = LQTYContracts.lqtyToken;
+      // communityIssuance = LQTYContracts.communityIssuance;
       // lockupContractFactory = LQTYContracts.lockupContractFactory;
-
-      await deploymentHelper.connectLQTYContracts(LQTYContracts);
-      await deploymentHelper.connectCoreContracts(coreContracts, LQTYContracts);
-      await deploymentHelper.connectLQTYContractsToCore(LQTYContracts, coreContracts);
+      // await deploymentHelper.connectLQTYContracts(LQTYContracts);
+      await deploymentHelper.connectCoreContracts(coreContracts);
+      // await deploymentHelper.connectLQTYContractsToCore(LQTYContracts, coreContracts);
 
       for (account of accounts.slice(0, 10)) {
         await th.openTrove(coreContracts, {
@@ -79,7 +78,7 @@ contract(
       const expectedCISupplyCap = "32000000000000000000000000"; // 32mil
 
       // Check CI has been properly funded
-      const bal = await lqtyToken.balanceOf(communityIssuance.address);
+      // const bal = await lqtyToken.balanceOf(communityIssuance.address);
       assert.equal(bal, expectedCISupplyCap);
     });
 
@@ -361,7 +360,7 @@ contract(
       //    mint
       it("mint(): reverts when called by an account that is not BorrowerOperations", async () => {
         // Attempt call from alice
-        const txAlice = lusdToken.mint(bob, 100, { from: alice });
+        const txAlice = arthToken.mint(bob, 100, { from: alice });
         await th.assertRevert(txAlice, "Caller is not BorrowerOperations");
       });
 
@@ -369,7 +368,7 @@ contract(
       it("burn(): reverts when called by an account that is not BO nor TroveM nor SP", async () => {
         // Attempt call from alice
         try {
-          const txAlice = await lusdToken.burn(bob, 100, { from: alice });
+          const txAlice = await arthToken.burn(bob, 100, { from: alice });
         } catch (err) {
           assert.include(err.message, "revert");
           // assert.include(err.message, "Caller is neither BorrowerOperations nor TroveManager nor StabilityPool")
@@ -380,7 +379,7 @@ contract(
       it("sendToPool(): reverts when called by an account that is not StabilityPool", async () => {
         // Attempt call from alice
         try {
-          const txAlice = await lusdToken.sendToPool(bob, activePool.address, 100, { from: alice });
+          const txAlice = await arthToken.sendToPool(bob, activePool.address, 100, { from: alice });
         } catch (err) {
           assert.include(err.message, "revert");
           assert.include(err.message, "Caller is not the StabilityPool");
@@ -391,7 +390,7 @@ contract(
       it("returnFromPool(): reverts when called by an account that is not TroveManager nor StabilityPool", async () => {
         // Attempt call from alice
         try {
-          const txAlice = await lusdToken.returnFromPool(activePool.address, bob, 100, {
+          const txAlice = await arthToken.returnFromPool(activePool.address, bob, 100, {
             from: alice
           });
         } catch (err) {

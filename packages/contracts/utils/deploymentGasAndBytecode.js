@@ -21,7 +21,7 @@ const DefaultPoolTester = artifacts.require("./DefaultPoolTester.sol");
 const LiquityMathTester = artifacts.require("./LiquityMathTester.sol");
 const BorrowerOperationsTester = artifacts.require("./BorrowerOperationsTester.sol");
 const TroveManagerTester = artifacts.require("./TroveManagerTester.sol");
-const LUSDTokenTester = artifacts.require("./ARTHTokenTester.sol");
+const ARTHTokenTester = artifacts.require("./ARTHTokenTester.sol");
 
 const { TestHelper: th } = require("../utils/testHelpers.js");
 
@@ -51,7 +51,7 @@ const TesterContractABIs = [
   LiquityMathTester,
   BorrowerOperationsTester,
   TroveManagerTester,
-  LUSDTokenTester
+  ARTHTokenTester
 ];
 
 const getGasFromContractDeployment = async (contractObject, name) => {
@@ -107,12 +107,12 @@ const logContractBytecodeLengths = contractABIs => {
 // Run script: log deployment gas costs and bytecode lengths for all contracts
 async function main() {
   const coreContracts = await dh.deployLiquityCoreHardhat();
-  const MAHAContracts = await dh.deployMAHAContractsHardhat(ARBITRARY_ADDRESS, ARBITRARY_ADDRESS);
+  const MAHAContracts = await dh.deployMAHAContractsHardhat();
   const testerContracts = await dh.deployTesterContractsHardhat();
 
-  await dh.connectCoreContracts(coreContracts, MAHAContracts);
-  await dh.connectMAHAContracts(MAHAContracts);
-  await dh.connectMAHAContractsToCore(MAHAContracts, coreContracts);
+  await dh.connectCoreContracts(coreContracts);
+  // await dh.connectMAHAContracts(MAHAContracts);
+  // await dh.connectMAHAContractsToCore(MAHAContracts, coreContracts);
 
   console.log(`\n`);
   console.log(`MAHA CONTRACTS`);

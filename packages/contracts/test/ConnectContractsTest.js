@@ -8,7 +8,7 @@
 //     const [bountyAddress, lpRewardsAddress, multisig] = accounts.slice(997, 1000);
 
 //     let priceFeed;
-//     let lusdToken;
+//     let arthToken;
 //     let sortedTroves;
 //     let troveManager;
 //     let activePool;
@@ -30,7 +30,7 @@
 //       );
 
 //       priceFeed = coreContracts.priceFeedTestnet;
-//       lusdToken = coreContracts.lusdToken;
+//       arthToken = coreContracts.arthToken;
 //       sortedTroves = coreContracts.sortedTroves;
 //       troveManager = coreContracts.troveManager;
 //       activePool = coreContracts.activePool;
@@ -58,11 +58,11 @@
 //     });
 
 //     it("Sets the correct ARTHValuecoin address in TroveManager", async () => {
-//       const lusdTokenAddress = lusdToken.address;
+//       const arthTokenAddress = arthToken.address;
 
-//       const recordedClvTokenAddress = await troveManager.lusdToken();
+//       const recordedClvTokenAddress = await troveManager.arthToken();
 
-//       assert.equal(lusdTokenAddress, recordedClvTokenAddress);
+//       assert.equal(arthTokenAddress, recordedClvTokenAddress);
 //     });
 
 //     it("Sets the correct SortedTroves address in TroveManager", async () => {
@@ -167,11 +167,11 @@
 //     });
 
 //     it("Sets the correct ARTHValuecoin address in StabilityPool", async () => {
-//       const lusdTokenAddress = lusdToken.address;
+//       const arthTokenAddress = arthToken.address;
 
-//       const recordedClvTokenAddress = await stabilityPool.lusdToken();
+//       const recordedClvTokenAddress = await stabilityPool.arthToken();
 
-//       assert.equal(lusdTokenAddress, recordedClvTokenAddress);
+//       assert.equal(arthTokenAddress, recordedClvTokenAddress);
 //     });
 
 //     it("Sets the correct TroveManager address in StabilityPool", async () => {
@@ -281,10 +281,10 @@
 
 //     // // Sets ARTHValuecoin in LQTYStaking
 //     // it("Sets the correct ActivePool address in LQTYStaking", async () => {
-//     //   const lusdTokenAddress = lusdToken.address;
+//     //   const arthTokenAddress = arthToken.address;
 
-//     //   const recordedLUSDTokenAddress = await lqtyStaking.lusdToken();
-//     //   assert.equal(lusdTokenAddress, recordedLUSDTokenAddress);
+//     //   const recordedARTHTokenAddress = await lqtyStaking.arthToken();
+//     //   assert.equal(arthTokenAddress, recordedARTHTokenAddress);
 //     // });
 
 //     // // Sets TroveManager in LQTYStaking

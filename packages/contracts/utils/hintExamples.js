@@ -9,23 +9,19 @@ async function main() {
 
   const coreContracts = await dh.deployLiquityCoreHardhat();
   const ARBITRARY_ADDRESS = "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419";
-  const MAHAContracts = await dh.deployMAHAContractsHardhat(
-    ARBITRARY_ADDRESS,
-    ARBITRARY_ADDRESS,
-    ARBITRARY_ADDRESS
-  );
+  const MAHAContracts = await dh.deployMAHAContractsHardhat();
 
   const {
     troveManager,
     borrowerOperations,
     hintHelpers,
     sortedTroves,
-    priceFeedTestnet
+    priceFeed
   } = coreContracts;
 
-  await dh.connectCoreContracts(coreContracts, MAHAContracts);
-  await dh.connectMAHAContracts(MAHAContracts);
-  await dh.connectMAHAContractsToCore(MAHAContracts, coreContracts);
+  await dh.connectCoreContracts(coreContracts);
+  // await dh.connectMAHAContracts(MAHAContracts);
+  // await dh.connectMAHAContractsToCore(MAHAContracts, coreContracts);
 
   // Examples of off-chain hint calculation for Open Trove
 
@@ -33,7 +29,7 @@ async function main() {
   const toBN = web3.utils.toBN;
 
   const price = toBN(toWei("2500"));
-  await priceFeedTestnet.setPrice(toBN(toWei("2500")));
+  await priceFeed.setPrice(toBN(toWei("2500")));
 
   const LUSDAmount = toBN(toWei("2500")); // borrower wants to withdraw 2500 LUSD
   const ETHColl = toBN(toWei("5")); // borrower wants to lock 5 ETH collateral

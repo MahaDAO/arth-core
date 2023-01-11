@@ -15,7 +15,7 @@ const StabilityPool = artifacts.require("StabilityPool");
 contract("Echidna debugger", async accounts => {
   let echidnaTester;
   let troveManager;
-  let lusdToken;
+  let arthToken;
   let activePool;
   let defaultPool;
   let stabilityPool;
@@ -24,7 +24,7 @@ contract("Echidna debugger", async accounts => {
   before(async () => {
     echidnaTester = await EchidnaTester.new({ value: dec(11, 25) });
     troveManager = await TroveManager.at(await echidnaTester.troveManager());
-    lusdToken = await ARTHValuecoin.at(await echidnaTester.lusdToken());
+    arthToken = await ARTHValuecoin.at(await echidnaTester.arthToken());
     activePool = await ActivePool.at(await echidnaTester.activePool());
     defaultPool = await DefaultPool.at(await echidnaTester.defaultPool());
     stabilityPool = await StabilityPool.at(await echidnaTester.stabilityPool());

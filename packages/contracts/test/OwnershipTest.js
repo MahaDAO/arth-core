@@ -11,7 +11,7 @@
 //   const [bountyAddress, lpRewardsAddress, multisig] = accounts.slice(997, 1000)
   
 //   let contracts
-//   let lusdToken
+//   let arthToken
 //   let sortedTroves
 //   let troveManager
 //   let activePool
@@ -27,10 +27,10 @@
 //   before(async () => {
 //     contracts = await deploymentHelper.deployLiquityCore()
 //     contracts.borrowerOperations = await BorrowerOperationsTester.new()
-//     contracts = await deploymentHelper.deployLUSDToken(contracts)
+//     contracts = await deploymentHelper.deployARTHToken(contracts)
 //     const LQTYContracts = await deploymentHelper.deployLQTYContracts(bountyAddress, lpRewardsAddress, multisig)
 
-//     lusdToken = contracts.lusdToken
+//     arthToken = contracts.arthToken
 //     sortedTroves = contracts.sortedTroves
 //     troveManager = contracts.troveManager
 //     activePool = contracts.activePool

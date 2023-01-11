@@ -20,12 +20,14 @@ contract('TroveManager', async accounts => {
   let stabilityPool
   let defaultPool
   let borrowerOperations
+  let arthToken
+  let sortedTroves
   
   beforeEach(async () => {
     contracts = await deploymentHelper.deployLiquityCore()
-    const LQTYContracts = await deploymentHelper.deployLQTYContracts(bountyAddress, lpRewardsAddress)
+    // const LQTYContracts = await deploymentHelper.deployLQTYContracts(bountyAddress, lpRewardsAddress)
     
-    lusdToken = contracts.lusdToken
+    arthToken = contracts.arthToken
     priceFeed = contracts.priceFeedTestnet
     sortedTroves = contracts.sortedTroves
     troveManager = contracts.troveManager
@@ -34,14 +36,14 @@ contract('TroveManager', async accounts => {
     defaultPool = contracts.defaultPool
     borrowerOperations = contracts.borrowerOperations
   
-    lqtyStaking = LQTYContracts.lqtyStaking
-    lqtyToken = LQTYContracts.lqtyToken
-    communityIssuance = LQTYContracts.communityIssuance
+    // lqtyStaking = LQTYContracts.lqtyStaking
+    // lqtyToken = LQTYContracts.lqtyToken
+    // communityIssuance = LQTYContracts.communityIssuance
     // lockupContractFactory = LQTYContracts.lockupContractFactory
 
-    await deploymentHelper.connectLQTYContracts(LQTYContracts)
-    await deploymentHelper.connectCoreContracts(contracts, LQTYContracts)
-    await deploymentHelper.connectLQTYContractsToCore(LQTYContracts, contracts)
+    // await deploymentHelper.connectLQTYContracts(LQTYContracts)
+    await deploymentHelper.connectCoreContracts(contracts)
+    // await deploymentHelper.connectLQTYContractsToCore(LQTYContracts, contracts)
   })
 
   // --- Check accumulation from repeatedly applying rewards ---

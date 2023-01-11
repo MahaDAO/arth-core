@@ -37,7 +37,7 @@
 //   const [bountyAddress, lpRewardsAddress, multisig] = accounts.slice(997, 1000);
 
 //   let priceFeed;
-//   let lusdToken;
+//   let arthToken;
 //   let sortedTroves;
 //   let troveManager;
 //   let nameRegistry;
@@ -57,7 +57,7 @@
 //   beforeEach(async () => {
 //     contracts = await deploymentHelper.deployLiquityCore();
 //     contracts.troveManager = await TroveManagerTester.new();
-//     contracts.lusdToken = await ARTHValuecoin.new(
+//     contracts.arthToken = await ARTHValuecoin.new(
 //       contracts.troveManager.address,
 //       contracts.stabilityPool.address,
 //       contracts.borrowerOperations.address
@@ -69,7 +69,7 @@
 //     );
 
 //     priceFeed = contracts.priceFeedTestnet;
-//     lusdToken = contracts.lusdToken;
+//     arthToken = contracts.arthToken;
 //     sortedTroves = contracts.sortedTroves;
 //     troveManager = contracts.troveManager;
 //     nameRegistry = contracts.nameRegistry;
@@ -172,7 +172,7 @@
 //     );
 
 //     // check LUSD gas compensation
-//     assert.equal((await lusdToken.balanceOf(owner)).toString(), dec(400, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
 //   });
 
 //   it("redistribution: A, B, C Open. C Liquidated. D, E, F Open. F Liquidated. Distributes correct rewards", async () => {
@@ -286,7 +286,7 @@
 //     );
 
 //     // check LUSD gas compensation
-//     assert.equal((await lusdToken.balanceOf(owner)).toString(), dec(400, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
 //   });
 //   ////
 
@@ -421,7 +421,7 @@
 //     assert.isAtMost(th.getDifference(entireSystemColl, F_coll.add(gainedETH)), 1000);
 
 //     // check LUSD gas compensation
-//     assert.equal((await lusdToken.balanceOf(owner)).toString(), dec(1000, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(1000, 18));
 //   });
 
 //   // ---Trove adds collateral ---
@@ -863,7 +863,7 @@
 //     assert.isAtMost(th.getDifference(alice_LUSDDebt, expected_A_debt), 10000);
 
 //     // check LUSD gas compensation
-//     assert.equal((await lusdToken.balanceOf(owner)).toString(), dec(400, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
 //   });
 
 //   it("redistribution: Trove with the majority stake tops up. A,B,C, D open. Liq(D). C tops up. E Enters, Liq(E). Distributes correct rewards", async () => {
@@ -1015,7 +1015,7 @@
 //     );
 
 //     // check LUSD gas compensation
-//     th.assertIsApproximatelyEqual((await lusdToken.balanceOf(owner)).toString(), dec(400, 18));
+//     th.assertIsApproximatelyEqual((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
 //   });
 
 //   it("redistribution: Trove with the majority stake tops up. A,B,C, D open. Liq(D). A, B, C top up. E Enters, Liq(E). Distributes correct rewards", async () => {
@@ -1171,7 +1171,7 @@
 //     );
 
 //     // check LUSD gas compensation
-//     th.assertIsApproximatelyEqual((await lusdToken.balanceOf(owner)).toString(), dec(400, 18));
+//     th.assertIsApproximatelyEqual((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
 //   });
 
 //   // --- Trove withdraws collateral ---
@@ -1248,7 +1248,7 @@
 //     );
 
 //     // check LUSD gas compensation
-//     assert.equal((await lusdToken.balanceOf(owner)).toString(), dec(400, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
 //   });
 
 //   it("redistribution: A,B,C Open. Liq(C). B withdraws coll. D Opens. Liq(D). Distributes correct rewards.", async () => {
@@ -1373,7 +1373,7 @@
 //     );
 
 //     // check LUSD gas compensation
-//     th.assertIsApproximatelyEqual((await lusdToken.balanceOf(owner)).toString(), dec(400, 18));
+//     th.assertIsApproximatelyEqual((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
 //   });
 
 //   it("redistribution: Trove with the majority stake withdraws. A,B,C,D open. Liq(D). C withdraws some coll. E Enters, Liq(E). Distributes correct rewards", async () => {
@@ -1521,7 +1521,7 @@
 //     );
 
 //     // check LUSD gas compensation
-//     assert.equal((await lusdToken.balanceOf(owner)).toString(), dec(400, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
 //   });
 
 //   it("redistribution: Trove with the majority stake withdraws. A,B,C,D open. Liq(D). A, B, C withdraw. E Enters, Liq(E). Distributes correct rewards", async () => {
@@ -1707,7 +1707,7 @@
 //     );
 
 //     // check LUSD gas compensation
-//     assert.equal((await lusdToken.balanceOf(owner)).toString(), dec(400, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
 //   });
 
 //   // For calculations of correct values used in test, see scenario 1:
@@ -1930,7 +1930,7 @@
 //     th.assertIsApproximatelyEqual(totalCollateralSnapshot, totalCollateralSnapshotAfterL3);
 
 //     // check LUSD gas compensation
-//     assert.equal((await lusdToken.balanceOf(owner)).toString(), dec(600, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(600, 18));
 //   });
 
 //   // For calculations of correct values used in test, see scenario 2:
@@ -2158,6 +2158,6 @@
 //     th.assertIsApproximatelyEqual(totalCollateralSnapshot, totalCollateralSnapshotAfterL3);
 
 //     // check LUSD gas compensation
-//     assert.equal((await lusdToken.balanceOf(owner)).toString(), dec(600, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(600, 18));
 //   });
 // });

@@ -37,7 +37,7 @@
 //   let contracts
 
 //   let priceFeed
-//   let lusdToken
+//   let arthToken
 //   let sortedTroves
 //   let troveManager
 //   let activePool
@@ -61,10 +61,10 @@
 //       contracts = await deploymentHelper.deployLiquityCore()
 //       const LQTYContracts = await deploymentHelper.deployLQTYContracts(bountyAddress, lpRewardsAddress, multisig)
 //       contracts.troveManager = await TroveManagerTester.new()
-//       contracts = await deploymentHelper.deployLUSDToken(contracts)
+//       contracts = await deploymentHelper.deployARTHToken(contracts)
 
 //       priceFeed = contracts.priceFeedTestnet
-//       lusdToken = contracts.lusdToken
+//       arthToken = contracts.arthToken
 //       sortedTroves = contracts.sortedTroves
 //       troveManager = contracts.troveManager
 //       activePool = contracts.activePool
@@ -94,7 +94,7 @@
 //       // Whale transfers 10k LUSD to A, B and C who then deposit it to the SP
 //       const depositors = [alice, bob, carol]
 //       for (account of depositors) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -138,7 +138,7 @@
 //       // Whale transfers 10k LUSD to A, B and C who then deposit it to the SP
 //       const depositors = [alice, bob, carol]
 //       for (account of depositors) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -183,7 +183,7 @@
 //       // Whale transfers 10k LUSD to A, B and C who then deposit it to the SP
 //       const depositors = [alice, bob, carol]
 //       for (account of depositors) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -232,7 +232,7 @@
 //       // Whale transfers 10k LUSD to A, B and C who then deposit it to the SP
 //       const depositors = [alice, bob, carol]
 //       for (account of depositors) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -279,7 +279,7 @@
 //       // Whale transfers 10k LUSD to A, B and C who then deposit it to the SP
 //       const depositors = [alice, bob, carol]
 //       for (account of depositors) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -327,11 +327,11 @@
 //       await borrowerOperations.openTrove(th._100pct, await getOpenTroveLUSDAmount(dec(10000, 18)), ZERO_ADDRESS, ZERO_ADDRESS, { from: carol, value: dec(10000, 'ether') })
 
 //       // Whale transfers 10k, 20k, 30k LUSD to A, B and C respectively who then deposit it to the SP
-//       await lusdToken.transfer(alice, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(alice, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: alice })
-//       await lusdToken.transfer(bob, dec(20000, 18), { from: whale })
+//       await arthToken.transfer(bob, dec(20000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(20000, 18), ZERO_ADDRESS, { from: bob })
-//       await lusdToken.transfer(carol, dec(30000, 18), { from: whale })
+//       await arthToken.transfer(carol, dec(30000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(30000, 18), ZERO_ADDRESS, { from: carol })
 
 //       // 2 Defaulters open trove with 200% ICR
@@ -374,11 +374,11 @@
 //       await borrowerOperations.openTrove(th._100pct, await getOpenTroveLUSDAmount(dec(10000, 18)), ZERO_ADDRESS, ZERO_ADDRESS, { from: carol, value: dec(10000, 'ether') })
 
 //       // Whale transfers 10k, 20k, 30k LUSD to A, B and C respectively who then deposit it to the SP
-//       await lusdToken.transfer(alice, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(alice, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: alice })
-//       await lusdToken.transfer(bob, dec(20000, 18), { from: whale })
+//       await arthToken.transfer(bob, dec(20000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(20000, 18), ZERO_ADDRESS, { from: bob })
-//       await lusdToken.transfer(carol, dec(30000, 18), { from: whale })
+//       await arthToken.transfer(carol, dec(30000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(30000, 18), ZERO_ADDRESS, { from: carol })
 
 //       // Defaulters open trove with 200% ICR
@@ -428,11 +428,11 @@
 //       Bob:  456000 LUSD
 //       Carol: 13100 LUSD */
 //       // Whale transfers LUSD to  A, B and C respectively who then deposit it to the SP
-//       await lusdToken.transfer(alice, dec(2000, 18), { from: whale })
+//       await arthToken.transfer(alice, dec(2000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(2000, 18), ZERO_ADDRESS, { from: alice })
-//       await lusdToken.transfer(bob, dec(456000, 18), { from: whale })
+//       await arthToken.transfer(bob, dec(456000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(456000, 18), ZERO_ADDRESS, { from: bob })
-//       await lusdToken.transfer(carol, dec(13100, 18), { from: whale })
+//       await arthToken.transfer(carol, dec(13100, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(13100, 18), ZERO_ADDRESS, { from: carol })
 
 //       /* Defaulters open troves
@@ -489,7 +489,7 @@
 //       // Whale transfers 10k LUSD to A, B and C who then deposit it to the SP
 //       const depositors = [alice, bob, carol]
 //       for (account of depositors) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -506,7 +506,7 @@
 //       await troveManager.liquidate(defaulter_2, { from: owner });
 
 //       // Whale transfers 10k to Dennis who then provides to SP
-//       await lusdToken.transfer(dennis, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(dennis, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: dennis })
 
 //       // Third defaulter liquidated
@@ -550,7 +550,7 @@
 //       // Whale transfers 10k LUSD to A, B and C who then deposit it to the SP
 //       const depositors = [alice, bob, carol]
 //       for (account of depositors) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -568,7 +568,7 @@
 //       await troveManager.liquidate(defaulter_2, { from: owner });
 
 //       // Dennis opens a trove and provides to SP
-//       await lusdToken.transfer(dennis, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(dennis, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: dennis })
 
 //       // Third and fourth defaulters liquidated
@@ -613,11 +613,11 @@
 //       Carol: 15000 LUSD
 //       */
 //       // Whale transfers LUSD to  A, B and C respectively who then deposit it to the SP
-//       await lusdToken.transfer(alice, dec(60000, 18), { from: whale })
+//       await arthToken.transfer(alice, dec(60000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(60000, 18), ZERO_ADDRESS, { from: alice })
-//       await lusdToken.transfer(bob, dec(20000, 18), { from: whale })
+//       await arthToken.transfer(bob, dec(20000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(20000, 18), ZERO_ADDRESS, { from: bob })
-//       await lusdToken.transfer(carol, dec(15000, 18), { from: whale })
+//       await arthToken.transfer(carol, dec(15000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(15000, 18), ZERO_ADDRESS, { from: carol })
 
 //       /* Defaulters open troves:
@@ -639,7 +639,7 @@
 //       await troveManager.liquidate(defaulter_2, { from: owner });
 
 //       // Dennis provides 25000 LUSD
-//       await lusdToken.transfer(dennis, dec(25000, 18), { from: whale })
+//       await arthToken.transfer(dennis, dec(25000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(25000, 18), ZERO_ADDRESS, { from: dennis })
 
 //       // Last two defaulters liquidated
@@ -685,7 +685,7 @@
 //       // Whale transfers 10k LUSD to A, B and C who then deposit it to the SP
 //       const depositors = [alice, bob, carol, dennis]
 //       for (account of depositors) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -750,13 +750,13 @@
 //       Dennis: 40000 LUSD
 //       */
 //       // Whale transfers LUSD to  A, B,C and D respectively who then deposit it to the SP
-//       await lusdToken.transfer(alice, dec(20000, 18), { from: whale })
+//       await arthToken.transfer(alice, dec(20000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(20000, 18), ZERO_ADDRESS, { from: alice })
-//       await lusdToken.transfer(bob, dec(25000, 18), { from: whale })
+//       await arthToken.transfer(bob, dec(25000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(25000, 18), ZERO_ADDRESS, { from: bob })
-//       await lusdToken.transfer(carol, dec(12500, 18), { from: whale })
+//       await arthToken.transfer(carol, dec(12500, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(12500, 18), ZERO_ADDRESS, { from: carol })
-//       await lusdToken.transfer(dennis, dec(40000, 18), { from: whale })
+//       await arthToken.transfer(dennis, dec(40000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(40000, 18), ZERO_ADDRESS, { from: dennis })
 
 //       /* Defaulters open troves:
@@ -784,7 +784,7 @@
 //       await priceFeed.setPrice(dec(100, 18))
 
 //       const dennis_ETHWithdrawn = th.getEventArgByName(txD, 'ETHGainWithdrawn', '_ETH').toString()
-//       assert.isAtMost(th.getDifference((await lusdToken.balanceOf(dennis)).toString(), '27692307692307700000000'), 100000000000)
+//       assert.isAtMost(th.getDifference((await arthToken.balanceOf(dennis)).toString(), '27692307692307700000000'), 100000000000)
 //       // 300*0.995 * 40000/97500
 //       assert.isAtMost(th.getDifference(dennis_ETHWithdrawn, '122461538461538466100'), 100000000000)
 
@@ -824,7 +824,7 @@
 //       // Whale transfers 10k LUSD to A, B and D who then deposit it to the SP
 //       const depositors = [alice, bob, dennis]
 //       for (account of depositors) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -842,7 +842,7 @@
 //       await troveManager.liquidate(defaulter_2, { from: owner });
 
 //       // Carol makes deposit
-//       await lusdToken.transfer(carol, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(carol, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: carol })
 
 //       await troveManager.liquidate(defaulter_3, { from: owner });
@@ -854,7 +854,7 @@
 //       await priceFeed.setPrice(dec(100, 18))
 
 //       const dennis_ETHWithdrawn = th.getEventArgByName(txD, 'ETHGainWithdrawn', '_ETH').toString()
-//       assert.isAtMost(th.getDifference((await lusdToken.balanceOf(dennis)).toString(), '1666666666666666666666'), 100000)
+//       assert.isAtMost(th.getDifference((await arthToken.balanceOf(dennis)).toString(), '1666666666666666666666'), 100000)
 //       assert.isAtMost(th.getDifference(dennis_ETHWithdrawn, '82916666666666666667'), 100000)
 
 //       await troveManager.liquidate(defaulter_4, { from: owner });
@@ -899,7 +899,7 @@
 //       // Whale transfers 10k LUSD to A, B who then deposit it to the SP
 //       const depositors = [alice, bob]
 //       for (account of depositors) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -916,7 +916,7 @@
 //       // Carol, Dennis each deposit 10000 LUSD
 //       const depositors_2 = [carol, dennis]
 //       for (account of depositors_2) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -972,7 +972,7 @@
 //       // Whale transfers 10k LUSD to A, B who then deposit it to the SP
 //       const depositors = [alice, bob]
 //       for (account of depositors) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -1020,7 +1020,7 @@
 //       // Carol, Dennis each deposit 10000 LUSD
 //       const depositors_2 = [carol, dennis]
 //       for (account of depositors) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -1071,7 +1071,7 @@
 //       // Whale transfers 10k LUSD to A, B who then deposit it to the SP
 //       const depositors = [alice, bob]
 //       for (account of depositors) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -1086,13 +1086,13 @@
 //       await troveManager.liquidate(defaulter_1, { from: owner });
 
 //       // Carol, Dennis, Erin each deposit 10000, 20000, 30000 LUSD respectively
-//       await lusdToken.transfer(carol, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(carol, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: carol })
 
-//       await lusdToken.transfer(dennis, dec(20000, 18), { from: whale })
+//       await arthToken.transfer(dennis, dec(20000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(20000, 18), ZERO_ADDRESS, { from: dennis })
 
-//       await lusdToken.transfer(erin, dec(30000, 18), { from: whale })
+//       await arthToken.transfer(erin, dec(30000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(30000, 18), ZERO_ADDRESS, { from: erin })
 
 //       // Defaulter 2 liquidated. 10000 LUSD offset
@@ -1141,7 +1141,7 @@
 //       await borrowerOperations.openTrove(th._100pct, await getOpenTroveLUSDAmount(dec(10000, 18)), ZERO_ADDRESS, ZERO_ADDRESS, { from: carol, value: dec(10000, 'ether') })
 //       await borrowerOperations.openTrove(th._100pct, await getOpenTroveLUSDAmount(dec(10000, 18)), ZERO_ADDRESS, ZERO_ADDRESS, { from: dennis, value: dec(10000, 'ether') })
 
-//       await lusdToken.transfer(alice, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(alice, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: alice })
 
 //       // Defaulter 1,2,3 withdraw 10000 LUSD
@@ -1205,7 +1205,7 @@
 //       // Alice, Bob each deposit 10k LUSD
 //       const depositors_1 = [alice, bob]
 //       for (account of depositors_1) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -1215,7 +1215,7 @@
 //       // Carol, Dennis each deposit 10000 LUSD
 //       const depositors_2 = [carol, dennis]
 //       for (account of depositors_2) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -1225,7 +1225,7 @@
 //       // Erin, Flyn each deposit 10000 LUSD
 //       const depositors_3 = [erin, flyn]
 //       for (account of depositors_3) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -1235,7 +1235,7 @@
 //       // Graham, Harriet each deposit 10000 LUSD
 //       const depositors_4 = [graham, harriet]
 //       for (account of depositors_4) {
-//         await lusdToken.transfer(account, dec(10000, 18), { from: whale })
+//         await arthToken.transfer(account, dec(10000, 18), { from: whale })
 //         await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: account })
 //       }
 
@@ -1302,7 +1302,7 @@
 //       await borrowerOperations.openTrove(th._100pct, await getOpenTroveLUSDAmount(dec(10000, 18)), ZERO_ADDRESS, ZERO_ADDRESS, { from: alice, value: dec(10000, 'ether') })
 //       await borrowerOperations.openTrove(th._100pct, await getOpenTroveLUSDAmount(dec(10000, 18)), ZERO_ADDRESS, ZERO_ADDRESS, { from: bob, value: dec(10000, 'ether') })
 
-//       await lusdToken.transfer(alice, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(alice, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: alice })
 
 //       // Defaulter 1 withdraws 'almost' 10000 LUSD:  9999.99991 LUSD
@@ -1328,7 +1328,7 @@
 //       // Grab the ETH gain from the emitted event in the tx log
 //       const alice_ETHWithdrawn = await th.getEventArgByName(txA, 'ETHGainWithdrawn', '_ETH').toString()
 
-//       await lusdToken.transfer(bob, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(bob, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: bob })
 
 //       // Defaulter 2 liquidated.  9900 LUSD liquidated. P altered by a factor of 1-(9900/10000) = 0.01.  Scale changed.
@@ -1362,7 +1362,7 @@
 //       await borrowerOperations.openTrove(th._100pct, await getOpenTroveLUSDAmount(dec(10000, 18)), ZERO_ADDRESS, ZERO_ADDRESS, { from: carol, value: dec(10000, 'ether') })
 //       await borrowerOperations.openTrove(th._100pct, await getOpenTroveLUSDAmount(dec(10000, 18)), ZERO_ADDRESS, ZERO_ADDRESS, { from: dennis, value: dec(10000, 'ether') })
       
-//       await lusdToken.transfer(alice, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(alice, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: alice })
 
 //       // Defaulter 1 withdraws 'almost' 10k LUSD.
@@ -1386,13 +1386,13 @@
 //       await priceFeed.setPrice(dec(100, 18))
 
 //       //B, C, D deposit to Stability Pool
-//       await lusdToken.transfer(bob, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(bob, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: bob })
 
-//       await lusdToken.transfer(carol, dec(20000, 18), { from: whale })
+//       await arthToken.transfer(carol, dec(20000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(20000, 18), ZERO_ADDRESS, { from: carol })
 
-//       await lusdToken.transfer(dennis, dec(30000, 18), { from: whale })
+//       await arthToken.transfer(dennis, dec(30000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(30000, 18), ZERO_ADDRESS, { from: dennis })
 
 //       // 54000 LUSD liquidated.  P altered by a factor of 1-(59400/60000) = 0.01. Scale changed.
@@ -1445,7 +1445,7 @@
 //       await borrowerOperations.openTrove(th._100pct, await getOpenTroveLUSDAmount(dec(10000, 18)), ZERO_ADDRESS, ZERO_ADDRESS, { from: bob, value: dec(10000, 'ether') })
 //       await borrowerOperations.openTrove(th._100pct, await getOpenTroveLUSDAmount(dec(10000, 18)), ZERO_ADDRESS, ZERO_ADDRESS, { from: carol, value: dec(10000, 'ether') })
       
-//       await lusdToken.transfer(alice, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(alice, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: alice })
 
 //       // Defaulter 1 and default 2 each withdraw 9999.999999999 LUSD
@@ -1468,7 +1468,7 @@
 //       await priceFeed.setPrice(dec(100, 18))
 
 //       // Bob deposits 10k LUSD
-//       await lusdToken.transfer(bob, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(bob, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: bob })
 
 //       // Defaulter 2 liquidated
@@ -1502,7 +1502,7 @@
 //       await borrowerOperations.openTrove(th._100pct, await getOpenTroveLUSDAmount(dec(10000, 18)), ZERO_ADDRESS, ZERO_ADDRESS, { from: carol, value: dec(10000, 'ether') })
 //       await borrowerOperations.openTrove(th._100pct, await getOpenTroveLUSDAmount(dec(10000, 18)), ZERO_ADDRESS, ZERO_ADDRESS, { from: dennis, value: dec(10000, 'ether') })
       
-//       await lusdToken.transfer(alice, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(alice, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: alice })
 
 //       // Defaulter 1 and default 2 withdraw up to debt of 9999.9 LUSD and 59999.4 LUSD
@@ -1524,13 +1524,13 @@
 //       await priceFeed.setPrice(dec(100, 18))
 
 //       // B, C, D deposit 10000, 20000, 30000 LUSD
-//       await lusdToken.transfer(bob, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(bob, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: bob })
 
-//       await lusdToken.transfer(carol, dec(20000, 18), { from: whale })
+//       await arthToken.transfer(carol, dec(20000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(20000, 18), ZERO_ADDRESS, { from: carol })
 
-//       await lusdToken.transfer(dennis, dec(30000, 18), { from: whale })
+//       await arthToken.transfer(dennis, dec(30000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(30000, 18), ZERO_ADDRESS, { from: dennis })
 
 //       // Defaulter 2 liquidated
@@ -1576,7 +1576,7 @@
 //       // Price drops by 50%
 //       await priceFeed.setPrice(dec(100, 18));
 
-//       await lusdToken.transfer(alice, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(alice, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: alice })
 
 //       // Defaulter 1 liquidated. P -> (~1e-10)*P
@@ -1618,7 +1618,7 @@
 //       // price drops by 50%
 //       await priceFeed.setPrice(dec(100, 18));
 
-//       await lusdToken.transfer(alice, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(alice, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: alice })
 
 //       // Defaulter 1 liquidated. 
@@ -1628,7 +1628,7 @@
 //       assert.equal(await stabilityPool.currentScale(), '0')
 
 //       // B deposits 9999.9 LUSD
-//       await lusdToken.transfer(bob, dec(99999, 17), { from: whale })
+//       await arthToken.transfer(bob, dec(99999, 17), { from: whale })
 //       await stabilityPool.provideToSP(dec(99999, 17), ZERO_ADDRESS, { from: bob })
 
 //       // Defaulter 2 liquidated
@@ -1638,7 +1638,7 @@
 //       assert.equal(await stabilityPool.currentScale(), '1')
 
 //       // C deposits 9999.9 LUSD
-//       await lusdToken.transfer(carol, dec(99999, 17), { from: whale })
+//       await arthToken.transfer(carol, dec(99999, 17), { from: whale })
 //       await stabilityPool.provideToSP(dec(99999, 17), ZERO_ADDRESS, { from: carol })
 
 //       // Defaulter 3 liquidated
@@ -1648,7 +1648,7 @@
 //       assert.equal(await stabilityPool.currentScale(), '1')
 
 //       // D deposits 9999.9 LUSD
-//       await lusdToken.transfer(dennis, dec(99999, 17), { from: whale })
+//       await arthToken.transfer(dennis, dec(99999, 17), { from: whale })
 //       await stabilityPool.provideToSP(dec(99999, 17), ZERO_ADDRESS, { from: dennis })
 
 //       // Defaulter 4 liquidated
@@ -1702,8 +1702,8 @@
 //       await priceFeed.setPrice(dec(100, 18));
 
 //       // A, B provide 10k LUSD 
-//       await lusdToken.transfer(A, dec(10000, 18), { from: whale })
-//       await lusdToken.transfer(B, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(A, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(B, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: A })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: B })
 
@@ -1725,7 +1725,7 @@
 //       assert.equal(LUSDinSP_1, '0')
 
 //       // Check SP LUSD balance is zero
-//       const SPLUSDBalance_1 = await lusdToken.balanceOf(stabilityPool.address)
+//       const SPLUSDBalance_1 = await arthToken.balanceOf(stabilityPool.address)
 //       // console.log(`SPLUSDBalance_1: ${SPLUSDBalance_1}`)
 //       assert.equal(SPLUSDBalance_1, '0')
 
@@ -1742,8 +1742,8 @@
 //       // ==========
 
 //       // C, D provide 10k LUSD 
-//       await lusdToken.transfer(C, dec(10000, 18), { from: whale })
-//       await lusdToken.transfer(D, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(C, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(D, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: C })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: D })
 
@@ -1765,7 +1765,7 @@
 //       assert.equal(LUSDinSP_2, '0')
 
 //       // Check SP LUSD balance is zero
-//       const SPLUSDBalance_2 = await lusdToken.balanceOf(stabilityPool.address)
+//       const SPLUSDBalance_2 = await arthToken.balanceOf(stabilityPool.address)
 //       // console.log(`SPLUSDBalance_2: ${SPLUSDBalance_2}`)
 //       assert.equal(SPLUSDBalance_2, '0')
 
@@ -1782,8 +1782,8 @@
 //       // ============
 
 //       // E, F provide 10k LUSD 
-//       await lusdToken.transfer(E, dec(10000, 18), { from: whale })
-//       await lusdToken.transfer(F, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(E, dec(10000, 18), { from: whale })
+//       await arthToken.transfer(F, dec(10000, 18), { from: whale })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: E })
 //       await stabilityPool.provideToSP(dec(10000, 18), ZERO_ADDRESS, { from: F })
 
@@ -1804,7 +1804,7 @@
 //       assert.equal(LUSDinSP_3, '0')
 
 //       // Check SP LUSD balance is zero
-//       const SPLUSDBalance_3 = await lusdToken.balanceOf(stabilityPool.address)
+//       const SPLUSDBalance_3 = await arthToken.balanceOf(stabilityPool.address)
 //       // console.log(`SPLUSDBalance_3: ${SPLUSDBalance_3}`)
 //       assert.equal(SPLUSDBalance_3, '0')
 
@@ -1902,7 +1902,7 @@
 //       await th.assertRevert(txBPromise, 'StabilityPool: caller must have non-zero ETH Gain')
 
 //       const aliceLUSDBalance = await stabilityPool.getCompoundedLUSDDeposit(alice)
-//       // const aliceLUSDBalance = await lusdToken.balanceOf(alice)
+//       // const aliceLUSDBalance = await arthToken.balanceOf(alice)
 //       const aliceExpectedLUSDBalance = toBN('99999999999999997500000000000000000000')
 //       const aliceLUSDBalDiff = aliceLUSDBalance.sub(aliceExpectedLUSDBalance).abs()
 

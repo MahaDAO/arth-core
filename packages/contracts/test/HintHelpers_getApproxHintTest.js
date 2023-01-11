@@ -83,7 +83,7 @@
 //   before(async () => {
 //     contracts = await deploymentHelper.deployLiquityCore();
 //     contracts.troveManager = await TroveManagerTester.new();
-//     contracts.lusdToken = await ARTHValuecoin.new(
+//     contracts.arthToken = await ARTHValuecoin.new(
 //       contracts.troveManager.address,
 //       contracts.stabilityPool.address,
 //       contracts.borrowerOperations.address
