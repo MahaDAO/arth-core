@@ -562,7 +562,7 @@ class TestHelper {
         ARTHAmount,
         upperHint,
         lowerHint,
-        { from: account, value: ETHAmount }
+        this.ZERO_ADDRESS
       );
       const gas = this.gasUsed(tx);
       gasCostList.push(gas);
@@ -587,7 +587,7 @@ class TestHelper {
         ARTHAmount,
         upperHint,
         lowerHint,
-        { from: account, value: randCollAmount }
+        this.ZERO_ADDRESS
       );
       const gas = this.gasUsed(tx);
       gasCostList.push(gas);
@@ -620,7 +620,7 @@ class TestHelper {
         proportionalARTH,
         upperHint,
         lowerHint,
-        { from: account, value: randCollAmount }
+        this.ZERO_ADDRESS
       );
       const gas = this.gasUsed(tx);
       gasCostList.push(gas);
@@ -662,7 +662,7 @@ class TestHelper {
         proportionalARTH,
         upperHint,
         lowerHint,
-        { from: account, value: randCollAmount }
+        this.ZERO_ADDRESS
       );
 
       if (logging && tx.receipt.status) {
@@ -693,7 +693,7 @@ class TestHelper {
         randARTHAmount,
         upperHint,
         lowerHint,
-        { from: account, value: ETHAmount }
+        this.ZERO_ADDRESS
       );
       const gas = this.gasUsed(tx);
       gasCostList.push(gas);
@@ -736,7 +736,7 @@ class TestHelper {
         ARTHAmountWei,
         upperHint,
         lowerHint,
-        { from: account, value: ETHAmount }
+        this.ZERO_ADDRESS
       );
       const gas = this.gasUsed(tx);
       gasCostList.push(gas);
@@ -771,13 +771,17 @@ class TestHelper {
       const price = await contracts.priceFeed.getPrice();
       extraParams.value = ICR.mul(totalDebt).div(price);
     }
-    console.log("**dev--------------maxFeePercentage", maxFeePercentage, arthAmount, upperHint, lowerHint, extraParams)
+    // console.log("**dev--------------maxFeePercentage", maxFeePercentage, arthAmount, upperHint, lowerHint, extraParams)
+    console.log("**dev--------------maxFeePercentage", upperHint)
+    console.log("**dev--------------maxFeePercentage", lowerHint)
+    console.log("**dev--------------maxFeePercentage", extraParams)
     const tx = await contracts.borrowerOperations.openTrove(
       maxFeePercentage,
       arthAmount,
       upperHint,
       lowerHint,
-      extraParams
+      // extraParams
+      this.ZERO_ADDRESS
     );
 
     return {

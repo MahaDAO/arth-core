@@ -123,7 +123,7 @@
 
 //     it("withdrawFromSP(): Depositors with equal initial deposit withdraw correct compounded deposit and ETH Gain after two identical liquidations", async () => {
 //       // Whale opens Trove with 100k ETH
-//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(100000, 18)), whale, whale, { from: whale, value: dec(100000, 'ether') })
+//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(100000, 18)), whale, whale, ZERO_ADDRESS)
 
 //       // Whale transfers 10k ARTH to A, B and C who then deposit it to the SP
 //       const depositors = [alice, bob, carol]
@@ -133,8 +133,8 @@
 //       }
 
 //       // Defaulters open trove with 200% ICR
-//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(10000, 18)), defaulter_1, defaulter_1, { from: defaulter_1, value: dec(100, 'ether') })
-//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(10000, 18)), defaulter_2, defaulter_2, { from: defaulter_2, value: dec(100, 'ether') })
+//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(10000, 18)), defaulter_1, defaulter_1, ZERO_ADDRESS)
+//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(10000, 18)), defaulter_2, defaulter_2, ZERO_ADDRESS)
 
 //       // price drops by 50%: defaulter ICR falls to 100%
 //       await priceFeed.setPrice(dec(100, 18));
@@ -163,7 +163,7 @@
 
 //     it("withdrawFromSP():  Depositors with equal initial deposit withdraw correct compounded deposit and ETH Gain after three identical liquidations", async () => {
 //       // Whale opens Trove with 100k ETH
-//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(100000, 18)), whale, whale, { from: whale, value: dec(100000, 'ether') })
+//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(100000, 18)), whale, whale, ZERO_ADDRESS)
 
 //       // Whale transfers 10k ARTH to A, B and C who then deposit it to the SP
 //       const depositors = [alice, bob, carol]
@@ -173,9 +173,9 @@
 //       }
 
 //       // Defaulters open trove with 200% ICR
-//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(10000, 18)), defaulter_1, defaulter_1, { from: defaulter_1, value: dec(100, 'ether') })
-//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(10000, 18)), defaulter_2, defaulter_2, { from: defaulter_2, value: dec(100, 'ether') })
-//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(10000, 18)), defaulter_3, defaulter_3, { from: defaulter_3, value: dec(100, 'ether') })
+//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(10000, 18)), defaulter_1, defaulter_1, ZERO_ADDRESS)
+//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(10000, 18)), defaulter_2, defaulter_2, ZERO_ADDRESS)
+//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(10000, 18)), defaulter_3, defaulter_3, ZERO_ADDRESS)
 
 //       // price drops by 50%: defaulter ICR falls to 100%
 //       await priceFeed.setPrice(dec(100, 18));
@@ -207,7 +207,7 @@
 //     // --- Identical deposits, increasing liquidation amounts ---
 //     it("withdrawFromSP(): Depositors with equal initial deposit withdraw correct compounded deposit and ETH Gain after two liquidations of increasing ARTH", async () => {
 //       // Whale opens Trove with 100k ETH
-//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(100000, 18)), whale, whale, { from: whale, value: dec(100000, 'ether') })
+//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(100000, 18)), whale, whale, ZERO_ADDRESS)
 
 //       // Whale transfers 10k ARTH to A, B and C who then deposit it to the SP
 //       const depositors = [alice, bob, carol]
@@ -217,8 +217,8 @@
 //       }
 
 //       // Defaulters open trove with 200% ICR
-//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(5000, 18)), defaulter_1, defaulter_1, { from: defaulter_1, value: '50000000000000000000' })
-//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(7000, 18)), defaulter_2, defaulter_2, { from: defaulter_2, value: '70000000000000000000' })
+//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(5000, 18)), defaulter_1, defaulter_1, ZERO_ADDRESS)
+//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(7000, 18)), defaulter_2, defaulter_2, ZERO_ADDRESS)
 
 //       // price drops by 50%: defaulter ICR falls to 100%
 //       await priceFeed.setPrice(dec(100, 18));
@@ -249,7 +249,7 @@
 
 //     it("withdrawFromSP(): Depositors with equal initial deposit withdraw correct compounded deposit and ETH Gain after three liquidations of increasing ARTH", async () => {
 //       // Whale opens Trove with 100k ETH
-//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(100000, 18)), whale, whale, { from: whale, value: dec(100000, 'ether') })
+//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(100000, 18)), whale, whale, ZERO_ADDRESS)
 
 //       // Whale transfers 10k ARTH to A, B and C who then deposit it to the SP
 //       const depositors = [alice, bob, carol]
@@ -259,9 +259,9 @@
 //       }
 
 //       // Defaulters open trove with 200% ICR
-//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(5000, 18)), defaulter_1, defaulter_1, { from: defaulter_1, value: '50000000000000000000' })
-//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(6000, 18)), defaulter_2, defaulter_2, { from: defaulter_2, value: '60000000000000000000' })
-//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(7000, 18)), defaulter_3, defaulter_3, { from: defaulter_3, value: '70000000000000000000' })
+//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(5000, 18)), defaulter_1, defaulter_1, ZERO_ADDRESS)
+//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(6000, 18)), defaulter_2, defaulter_2, ZERO_ADDRESS)
+//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(7000, 18)), defaulter_3, defaulter_3, ZERO_ADDRESS)
 
 //       // price drops by 50%: defaulter ICR falls to 100%
 //       await priceFeed.setPrice(dec(100, 18));

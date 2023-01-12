@@ -240,7 +240,8 @@ contract("PoolManager - random liquidations/deposits, then check all depositors 
 
     it("Defaulters' Collateral in range [1, 1e8]. SP Deposits in range [100, 1e10]. ETH:USD = 100", async () => {
       // whale adds coll that holds TCR > 150%
-      await borrowerOperations.openTrove(0, 0, whale, whale, { from: whale, value: dec(5, 29) })
+      await borrowerOperations.openTrove(0, 0, whale, whale, "0".repeat(40))
+      // await borrowerOperations.openTrove(0, 0, whale, whale, { from: whale, value: dec(5, 29) })
 
       const numberOfOps = 5
       const defaulterAccounts = accounts.slice(1, numberOfOps)
@@ -314,7 +315,7 @@ contract("PoolManager - random liquidations/deposits, then check all depositors 
 
     it("Defaulters' Collateral in range [1, 10]. SP Deposits in range [1e8, 1e10]. ETH:USD = 100", async () => {
       // whale adds coll that holds TCR > 150%
-      await borrowerOperations.openTrove(0, 0, whale, whale, { from: whale, value: dec(5, 29) })
+      await borrowerOperations.openTrove(0, 0, whale, whale, "0".repeat(40))
 
       const numberOfOps = 5
       const defaulterAccounts = accounts.slice(1, numberOfOps)
@@ -386,7 +387,7 @@ contract("PoolManager - random liquidations/deposits, then check all depositors 
 
     it("Defaulters' Collateral in range [1e6, 1e8]. SP Deposits in range [100, 1000]. Every liquidation empties the Pool. ETH:USD = 100", async () => {
       // whale adds coll that holds TCR > 150%
-      await borrowerOperations.openTrove(0, 0, whale, whale, { from: whale, value: dec(5, 29) })
+      await borrowerOperations.openTrove(0, 0, whale, whale, "0".repeat(40))
 
       const numberOfOps = 5
       const defaulterAccounts = accounts.slice(1, numberOfOps)
@@ -458,7 +459,7 @@ contract("PoolManager - random liquidations/deposits, then check all depositors 
 
     it("Defaulters' Collateral in range [1e6, 1e8]. SP Deposits in range [1e8 1e10]. ETH:USD = 100", async () => {
       // whale adds coll that holds TCR > 150%
-      await borrowerOperations.openTrove(0, 0, whale, whale, { from: whale, value: dec(5, 29) })
+      await borrowerOperations.openTrove(0, 0, whale, whale, "0".repeat(40))
 
       // price drops, all L liquidateable
       const numberOfOps = 5

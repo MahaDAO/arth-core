@@ -3225,21 +3225,21 @@
 //       await getOpenTroveARTHAmount(dec(10000, 18)),
 //       A,
 //       A,
-//       { from: A, value: dec(1000, "ether") }
+//       ZERO_ADDRESS
 //     );
 //     await borrowerOperations.openTrove(
 //       th._100pct,
 //       await getOpenTroveARTHAmount(dec(20000, 18)),
 //       B,
 //       B,
-//       { from: B, value: dec(1000, "ether") }
+//       ZERO_ADDRESS
 //     );
 //     await borrowerOperations.openTrove(
 //       th._100pct,
 //       await getOpenTroveARTHAmount(dec(30000, 18)),
 //       C,
 //       C,
-//       { from: C, value: dec(1000, "ether") }
+//       ZERO_ADDRESS
 //     );
 
 //     // A and C send all their tokens to B
@@ -3271,21 +3271,21 @@
 //       await getOpenTroveARTHAmount(dec(6000, 18)),
 //       A,
 //       A,
-//       { from: A, value: dec(1000, "ether") }
+//       ZERO_ADDRESS
 //     );
 //     await borrowerOperations.openTrove(
 //       th._100pct,
 //       await getOpenTroveARTHAmount(dec(20000, 18)),
 //       B,
 //       B,
-//       { from: B, value: dec(1000, "ether") }
+//       ZERO_ADDRESS
 //     );
 //     await borrowerOperations.openTrove(
 //       th._100pct,
 //       await getOpenTroveARTHAmount(dec(30000, 18)),
 //       C,
 //       C,
-//       { from: C, value: dec(1000, "ether") }
+//       ZERO_ADDRESS
 //     );
 
 //     // A and C send all their tokens to B

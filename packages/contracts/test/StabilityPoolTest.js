@@ -2500,7 +2500,7 @@
 //         await getOpenTroveARTHAmount(dec(10000, 18)),
 //         defaulter_1,
 //         defaulter_1,
-//         { from: defaulter_1, value: dec(100, "ether") }
+//         ZERO_ADDRESS
 //       );
 
 //       const defaulterDebt = (await troveManager.getEntireDebtAndColl(defaulter_1))[0];
@@ -3147,7 +3147,7 @@
 //         await getOpenTroveARTHAmount(dec(10000, 18)),
 //         defaulter_1,
 //         defaulter_1,
-//         { from: defaulter_1, value: dec(100, "ether") }
+//         ZERO_ADDRESS
 //       );
 
 //       // A, B, C provides 10000, 5000, 3000 ARTH to SP

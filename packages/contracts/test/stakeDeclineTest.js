@@ -83,19 +83,19 @@
 //     await priceFeed.setPrice(dec(100, 18))
   
 //     // Make 1 mega troves A at ~50% total collateral
-//     await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(1, 31)), ZERO_ADDRESS, ZERO_ADDRESS, { from: A, value: dec(2, 29) })
+//     await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(1, 31)), ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS)
     
 //     // Make 5 large troves B, C, D, E, F at ~10% total collateral
-//     await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(2, 30)), ZERO_ADDRESS, ZERO_ADDRESS, { from: B, value: dec(4, 28) })
-//     await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(2, 30)), ZERO_ADDRESS, ZERO_ADDRESS, { from: C, value: dec(4, 28) })
-//     await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(2, 30)), ZERO_ADDRESS, ZERO_ADDRESS, { from: D, value: dec(4, 28) })
-//     await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(2, 30)), ZERO_ADDRESS, ZERO_ADDRESS, { from: E, value: dec(4, 28) })
-//     await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(2, 30)), ZERO_ADDRESS, ZERO_ADDRESS, { from: F, value: dec(4, 28) })
+//     await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(2, 30)), ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS)
+//     await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(2, 30)), ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS)
+//     await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(2, 30)), ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS)
+//     await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(2, 30)), ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS)
+//     await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(2, 30)), ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS)
   
 //     // Make 10 tiny troves at relatively negligible collateral (~1e-9 of total)
 //     const tinyTroves = accounts.slice(10, 20)
 //     for (account of tinyTroves) {
-//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(1, 22)), ZERO_ADDRESS, ZERO_ADDRESS, { from: account, value: dec(2, 20) })
+//       await borrowerOperations.openTrove(th._100pct, await getOpenTroveARTHAmount(dec(1, 22)), ZERO_ADDRESS, ZERO_ADDRESS, ZERO_ADDRESS)
 //     }
 
 //     // liquidate 1 trove at ~50% total system collateral

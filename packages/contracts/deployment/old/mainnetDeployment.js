@@ -311,7 +311,8 @@ async function mainnetDeploy(configParams) {
   //       _3kLUSDWithdrawal,
   //       th.ZERO_ADDRESS,
   //       th.ZERO_ADDRESS,
-  //       { value: _3ETHcoll, gasPrice }
+  //       th.ZERO_ADDRESS,
+  //      // { value: _3ETHcoll, gasPrice }
   //     )
   //   )
   // } else {
