@@ -302,134 +302,151 @@ class MainnetDeploymentHelper {
   }
   // Connect contracts to their dependencies
   async connectCoreContractsMainnet(contracts) {
-    const gasPrice = this.configParams.GAS_PRICE;
+      const gasPrice = this.configParams.GAS_PRICE;
+      console.log("**dev--------------------deployment Helper")
+      // set TroveManager addr in SortedTroves
+      console.log("set address for sortedTroves");
+      (await this.isOwnershipRenounced(contracts.sortedTroves)) ||
+        (await this.sendAndWaitForTransaction(
+          contracts.sortedTroves.setParams(
+            maxBytes32,
+            contracts.troveManager.address,
+            contracts.borrowerOperations.address,
+            { gasPrice }
+          )
+        ));
 
-    // set TroveManager addr in SortedTroves
-    console.log("set address for sortedTroves");
-    (await this.isOwnershipRenounced(contracts.sortedTroves)) ||
-      (await this.sendAndWaitForTransaction(
-        contracts.sortedTroves.setParams(
-          maxBytes32,
-          contracts.troveManager.address,
-          contracts.borrowerOperations.address,
-          { gasPrice }
-        )
-      ));
+      // set contracts in the Trove Manager
+      console.log("set address for troveManager");
+      (await this.isOwnershipRenounced(contracts.troveManager)) ||
+        (await this.sendAndWaitForTransaction(
+          contracts.arthToken.toggleTroveManager(contracts.troveManager.address, { gasPrice })
+        ));
 
-    // set contracts in the Trove Manager
-    console.log("set address for troveManager");
-    (await this.isOwnershipRenounced(contracts.troveManager)) ||
-      (await this.sendAndWaitForTransaction(
-        contracts.arthToken.toggleTroveManager(contracts.troveManager.address, { gasPrice })
-      ));
+      (await this.isOwnershipRenounced(contracts.troveManager)) ||
+        (await this.sendAndWaitForTransaction(
+          contracts.troveManager.setAddresses(
+            contracts.borrowerOperations.address,
+            contracts.activePool.address,
+            contracts.defaultPool.address,
+            contracts.stabilityPool.address,
+            contracts.gasPool.address,
+            contracts.collSurplusPool.address,
+            contracts.governance.address,
+            contracts.arthToken.address,
+            contracts.sortedTroves.address,
+            { gasPrice }
+          )
+        ));
 
-    (await this.isOwnershipRenounced(contracts.troveManager)) ||
-      (await this.sendAndWaitForTransaction(
-        contracts.troveManager.setAddresses(
-          contracts.borrowerOperations.address,
-          contracts.activePool.address,
-          contracts.defaultPool.address,
-          contracts.stabilityPool.address,
-          contracts.gasPool.address,
-          contracts.collSurplusPool.address,
-          contracts.governance.address,
-          contracts.arthToken.address,
-          contracts.sortedTroves.address,
-          { gasPrice }
-        )
-      ));
+      // set contracts in BorrowerOperations
+      console.log("set address for borrowerOperations");
+      (await this.isOwnershipRenounced(contracts.borrowerOperations)) ||
+        (await this.sendAndWaitForTransaction(
+          contracts.arthToken.toggleBorrowerOperations(contracts.borrowerOperations.address, {
+            gasPrice
+          })
+        ));
 
-    // set contracts in BorrowerOperations
-    console.log("set address for borrowerOperations");
-    (await this.isOwnershipRenounced(contracts.borrowerOperations)) ||
-      (await this.sendAndWaitForTransaction(
-        contracts.arthToken.toggleBorrowerOperations(contracts.borrowerOperations.address, {
-          gasPrice
-        })
-      ));
+      (await this.isOwnershipRenounced(contracts.borrowerOperations)) ||
+        (await this.sendAndWaitForTransaction(
+          contracts.borrowerOperations.setAddresses(
+            contracts.troveManager.address,
+            contracts.activePool.address,
+            contracts.defaultPool.address,
+            contracts.stabilityPool.address,
+            contracts.gasPool.address,
+            contracts.collSurplusPool.address,
+            contracts.governance.address,
+            contracts.sortedTroves.address,
+            contracts.arthToken.address,
+            { gasPrice }
+          )
+        ));
 
-    (await this.isOwnershipRenounced(contracts.borrowerOperations)) ||
-      (await this.sendAndWaitForTransaction(
-        contracts.borrowerOperations.setAddresses(
-          contracts.troveManager.address,
-          contracts.activePool.address,
-          contracts.defaultPool.address,
-          contracts.stabilityPool.address,
-          contracts.gasPool.address,
-          contracts.collSurplusPool.address,
-          contracts.governance.address,
-          contracts.sortedTroves.address,
-          contracts.arthToken.address,
-          { gasPrice }
-        )
-      ));
+      // set contracts in the Pools
+      console.log("set address for stabilityPool");
+      (await this.isOwnershipRenounced(contracts.stabilityPool)) ||
+        (await this.sendAndWaitForTransaction(
+          contracts.arthToken.toggleStabilityPool(contracts.stabilityPool.address, {
+            gasPrice
+          })
+        ));
 
-    // set contracts in the Pools
-    console.log("set address for stabilityPool");
-    (await this.isOwnershipRenounced(contracts.stabilityPool)) ||
-      (await this.sendAndWaitForTransaction(
-        contracts.arthToken.toggleStabilityPool(contracts.stabilityPool.address, {
-          gasPrice
-        })
-      ));
+      (await this.isOwnershipRenounced(contracts.stabilityPool)) ||
+        (await this.sendAndWaitForTransaction(
+          contracts.stabilityPool.setAddresses(
+            contracts.borrowerOperations.address,
+            contracts.troveManager.address,
+            contracts.activePool.address,
+            contracts.arthToken.address,
+            contracts.sortedTroves.address,
+            contracts.governance.address,
+            contracts.communityIssuance.address,
+            { gasPrice }
+          )
+        ));
 
-    (await this.isOwnershipRenounced(contracts.stabilityPool)) ||
-      (await this.sendAndWaitForTransaction(
-        contracts.stabilityPool.setAddresses(
-          contracts.borrowerOperations.address,
-          contracts.troveManager.address,
-          contracts.activePool.address,
-          contracts.arthToken.address,
-          contracts.sortedTroves.address,
-          contracts.governance.address,
+      console.log("set address for activePool");
+      (await this.isOwnershipRenounced(contracts.activePool)) ||
+        (await this.sendAndWaitForTransaction(
+          contracts.activePool.setAddresses(
+            contracts.borrowerOperations.address,
+            contracts.troveManager.address,
+            contracts.stabilityPool.address,
+            contracts.defaultPool.address,
+            { gasPrice }
+          )
+        ));
+
+      console.log("set address for defaultPool");
+      (await this.isOwnershipRenounced(contracts.defaultPool)) ||
+        (await this.sendAndWaitForTransaction(
+          contracts.defaultPool.setAddresses(
+            contracts.troveManager.address,
+            contracts.activePool.address,
+            { gasPrice }
+          )
+        ));
+
+      console.log("set address for collSurplusPool");
+      (await this.isOwnershipRenounced(contracts.collSurplusPool)) ||
+        (await this.sendAndWaitForTransaction(
+          contracts.collSurplusPool.setAddresses(
+            contracts.borrowerOperations.address,
+            contracts.troveManager.address,
+            contracts.activePool.address,
+            { gasPrice }
+          )
+        ));
+
+      // set contracts in HintHelpers
+      console.log("set address for hintHelpers");
+      (await this.isOwnershipRenounced(contracts.hintHelpers)) ||
+        (await this.sendAndWaitForTransaction(
+          contracts.hintHelpers.setAddresses(
+            contracts.sortedTroves.address,
+            contracts.troveManager.address,
+            { gasPrice }
+          )
+        ));
+
+      await this.sendAndWaitForTransaction(
+        contracts.mahaToken.mint(
           contracts.communityIssuance.address,
+          BigNumber.from(10).pow(18).mul(1000),
           { gasPrice }
         )
-      ));
+      );
 
-    console.log("set address for activePool");
-    (await this.isOwnershipRenounced(contracts.activePool)) ||
-      (await this.sendAndWaitForTransaction(
-        contracts.activePool.setAddresses(
-          contracts.borrowerOperations.address,
-          contracts.troveManager.address,
+      await this.sendAndWaitForTransaction(
+        contracts.communityIssuance.setAddresses(
+          contracts.mahaToken.address,
           contracts.stabilityPool.address,
-          contracts.defaultPool.address,
+          5 * 24 * 60 * 60,
           { gasPrice }
         )
-      ));
-
-    console.log("set address for defaultPool");
-    (await this.isOwnershipRenounced(contracts.defaultPool)) ||
-      (await this.sendAndWaitForTransaction(
-        contracts.defaultPool.setAddresses(
-          contracts.troveManager.address,
-          contracts.activePool.address,
-          { gasPrice }
-        )
-      ));
-
-    console.log("set address for collSurplusPool");
-    (await this.isOwnershipRenounced(contracts.collSurplusPool)) ||
-      (await this.sendAndWaitForTransaction(
-        contracts.collSurplusPool.setAddresses(
-          contracts.borrowerOperations.address,
-          contracts.troveManager.address,
-          contracts.activePool.address,
-          { gasPrice }
-        )
-      ));
-
-    // set contracts in HintHelpers
-    console.log("set address for hintHelpers");
-    (await this.isOwnershipRenounced(contracts.hintHelpers)) ||
-      (await this.sendAndWaitForTransaction(
-        contracts.hintHelpers.setAddresses(
-          contracts.sortedTroves.address,
-          contracts.troveManager.address,
-          { gasPrice }
-        )
-      ));
+      );
   }
 
   // --- Verify on Ethrescan ---

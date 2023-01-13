@@ -452,6 +452,18 @@ class DeploymentHelper {
       contracts.sortedTroves.address,
       contracts.troveManager.address
     );
+
+    await contracts.arthToken.toggleTroveManager(
+      contracts.troveManager.address
+    );
+
+    await contracts.arthToken.toggleBorrowerOperations(
+      contracts.borrowerOperations.address
+    );
+
+    await contracts.arthToken.toggleStabilityPool(
+      contracts.stabilityPool.address
+    );
   }
 
   // static async connectMAHAContracts(MAHAContracts) {

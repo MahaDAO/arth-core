@@ -316,8 +316,9 @@ class TestDeploymentHelper {
 
   // --- Connector methods ---
 
-  async connectCoreContractsMainnet(contracts, MAHAContracts, chainlinkProxyAddress) {
+  async connectCoreContractsMainnet(contracts) {
     const gasPrice = this.configParams.GAS_PRICE;
+    console.log("**dev--------------------testnet deployment Helper")
 
     // Set TroveManager addr in SortedTroves.
     (await this.isOwnershipRenounced(contracts.sortedTroves)) ||
@@ -363,6 +364,7 @@ class TestDeploymentHelper {
           { gasPrice }
         )
       ));
+      
 
     // Set contracts in the Pools.
     (await this.isOwnershipRenounced(contracts.stabilityPool)) ||
@@ -418,6 +420,30 @@ class TestDeploymentHelper {
           { gasPrice }
         )
       ));
+
+    (await this.isOwnershipRenounced(contracts.hintHelpers)) ||
+    (await this.sendAndWaitForTransaction(
+      contracts.arthToken.toggleBorrowerOperations(
+        contracts.borrowerOperations.address,
+        { gasPrice }
+      )
+    ));
+    
+    (await this.isOwnershipRenounced(contracts.hintHelpers)) ||
+    (await this.sendAndWaitForTransaction(
+      contracts.arthToken.toggleStabilityPool(
+        contracts.stabilityPool.address,
+        { gasPrice }
+      )
+    ));
+
+    (await this.isOwnershipRenounced(contracts.hintHelpers)) ||
+    (await this.sendAndWaitForTransaction(
+      contracts.arthToken.toggleTroveManager(
+        contracts.troveManager.address,
+        { gasPrice }
+      )
+    ));
 
     await this.sendAndWaitForTransaction(
       contracts.mahaToken.mint(

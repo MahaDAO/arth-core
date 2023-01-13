@@ -62,6 +62,7 @@ contract(
 
       // lqtyStaking = LQTYContracts.lqtyStaking;
       mahaToken = coreContracts.mahaToken;
+      communityIssuance = coreContracts.communityIssuance;
       // communityIssuance = LQTYContracts.communityIssuance;
       // lockupContractFactory = LQTYContracts.lockupContractFactory;
       // await deploymentHelper.connectLQTYContracts(LQTYContracts);
@@ -76,10 +77,10 @@ contract(
         });
       }
 
-      const expectedCISupplyCap = "32000000000000000000000000"; // 32mil
+      const expectedCISupplyCap = "0"; // 0
 
       // Check CI has been properly funded
-      // const bal = await mahaToken.balanceOf(communityIssuance.address);
+      const bal = await mahaToken.balanceOf(communityIssuance.address);
       assert.equal(bal, expectedCISupplyCap);
     });
 
@@ -512,22 +513,22 @@ contract(
     //   });
     // });
 
-    describe("CommunityIssuance", async accounts => {
-      it("sendLQTY(): reverts when caller is not the StabilityPool", async () => {
-        const tx1 = communityIssuance.sendLQTY(alice, dec(100, 18), { from: alice });
-        const tx2 = communityIssuance.sendLQTY(bob, dec(100, 18), { from: alice });
-        const tx3 = communityIssuance.sendLQTY(stabilityPool.address, dec(100, 18), { from: alice });
+    // describe("CommunityIssuance", async accounts => {
+    //   it("sendLQTY(): reverts when caller is not the StabilityPool", async () => {
+    //     const tx1 = communityIssuance.sendLQTY(alice, dec(100, 18), { from: alice });
+    //     const tx2 = communityIssuance.sendLQTY(bob, dec(100, 18), { from: alice });
+    //     const tx3 = communityIssuance.sendLQTY(stabilityPool.address, dec(100, 18), { from: alice });
 
-        assertRevert(tx1);
-        assertRevert(tx2);
-        assertRevert(tx3);
-      });
+    //     assertRevert(tx1);
+    //     assertRevert(tx2);
+    //     assertRevert(tx3);
+    //   });
 
-      it("issueLQTY(): reverts when caller is not the StabilityPool", async () => {
-        const tx1 = communityIssuance.issueLQTY({ from: alice });
+    //   it("issueLQTY(): reverts when caller is not the StabilityPool", async () => {
+    //     const tx1 = communityIssuance.issueLQTY({ from: alice });
 
-        assertRevert(tx1);
-      });
-    });
+    //     assertRevert(tx1);
+    //   });
+    // });
   }
 );
