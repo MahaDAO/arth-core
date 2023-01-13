@@ -323,11 +323,11 @@
 
 //     //   // --- SETUP ---
 //     //   // A,B,C add 15/5/5 ETH, withdraw 100/100/900 ARTH
-//     //   await borrowerOperations.openTrove(th._100pct, dec(100, 18), alice, alice, ZERO_ADDRESS)
-//     //   await borrowerOperations.openTrove(th._100pct, dec(100, 18), bob, bob, ZERO_ADDRESS)
-//     //   await borrowerOperations.openTrove(th._100pct, dec(900, 18), carol, carol, ZERO_ADDRESS)
+//     //   await borrowerOperations.openTrove(th._100pct, dec(100, 18), alice, alice, ZERO_ADDRESS, { from: alice, value: dec(15, 'ether') })
+//     //   await borrowerOperations.openTrove(th._100pct, dec(100, 18), bob, bob, ZERO_ADDRESS, { from: bob, value: dec(4, 'ether') })
+//     //   await borrowerOperations.openTrove(th._100pct, dec(900, 18), carol, carol, ZERO_ADDRESS, { from: carol, value: dec(5, 'ether') })
 
-//     //   await borrowerOperations.openTrove(th._100pct, 0, dennis, dennis, ZERO_ADDRESS)
+//     //   await borrowerOperations.openTrove(th._100pct, 0, dennis, dennis, ZERO_ADDRESS, { from: dennis, value: dec(1, 'ether') })
 //     //   // --- TEST ---
 
 //     //   // price drops to 1ETH:100ARTH, reducing Carol's ICR below MCR
@@ -1754,13 +1754,13 @@
 //         await getNetBorrowingAmount(MIN_NET_DEBT.add(toBN("2"))),
 //         A,
 //         A,
-//         ZERO_ADDRESS
+//         ZERO_ADDRESS, { from: A, value: dec(100, 30) }
 //       );
 
 //       const repayTxA = await borrowerOperations.repayARTH(1, A, A, { from: A });
 //       assert.isTrue(repayTxA.receipt.status);
 
-//       await borrowerOperations.openTrove(th._100pct, dec(20, 25), B, B, ZERO_ADDRESS);
+//       await borrowerOperations.openTrove(th._100pct, dec(20, 25), B, B, ZERO_ADDRESS, { from: A, value: dec(100, 30) });
 
 //       const repayTxB = await borrowerOperations.repayARTH(dec(19, 25), B, B, { from: B });
 //       assert.isTrue(repayTxB.receipt.status);
@@ -1773,7 +1773,7 @@
 //         await getNetBorrowingAmount(MIN_NET_DEBT.add(toBN("2"))),
 //         A,
 //         A,
-//         ZERO_ADDRESS
+//         ZERO_ADDRESS, { from: A, value: dec(100, 30) }
 //       );
 
 //       const repayTxAPromise = borrowerOperations.repayARTH(2, A, A, { from: A });
@@ -4585,7 +4585,7 @@
 //         th._100pct,
 //         await getNetBorrowingAmount(MIN_NET_DEBT.add(toBN(1))),
 //         A,
-//         A,
+//         A, ZERO_ADDRESS,
 //         { from: A, value: dec(100, 30) }
 //       );
 //       assert.isTrue(txA.receipt.status);
@@ -4595,7 +4595,7 @@
 //         th._100pct,
 //         await getNetBorrowingAmount(MIN_NET_DEBT.add(toBN(dec(47789898, 22)))),
 //         A,
-//         A,
+//         A, ZERO_ADDRESS,
 //         { from: C, value: dec(100, 30) }
 //       );
 //       assert.isTrue(txC.receipt.status);
@@ -4603,7 +4603,7 @@
 //     });
 
 //     it("openTrove(): reverts if net debt < minimum net debt", async () => {
-//       const txAPromise = borrowerOperations.openTrove(th._100pct, 0, A, A, {
+//       const txAPromise = borrowerOperations.openTrove(th._100pct, 0, A, A, ZERO_ADDRESS, {
 //         from: A,
 //         value: dec(100, 30)
 //       });
@@ -4613,7 +4613,7 @@
 //         th._100pct,
 //         await getNetBorrowingAmount(MIN_NET_DEBT.sub(toBN(1))),
 //         B,
-//         B,
+//         B, ZERO_ADDRESS,
 //         { from: B, value: dec(100, 30) }
 //       );
 //       await assertRevert(txBPromise, "revert");
@@ -4622,7 +4622,7 @@
 //         th._100pct,
 //         MIN_NET_DEBT.sub(toBN(dec(173, 18))),
 //         C,
-//         C,
+//         C,ZERO_ADDRESS,
 //         { from: C, value: dec(100, 30) }
 //       );
 //       await assertRevert(txCPromise, "revert");
@@ -4808,43 +4808,43 @@
 
 //     it("openTrove(): reverts if max fee > 100%", async () => {
 //       await assertRevert(
-//         borrowerOperations.openTrove(dec(2, 18), dec(10000, 18), A, A, ZERO_ADDRESS),
+//         borrowerOperations.openTrove(dec(2, 18), dec(10000, 18), A, A, ZERO_ADDRESS, { from: A, value: dec(1000, 'ether') }),
 //         "Max fee percentage must be between 0.5% and 100%"
 //       );
 //       await assertRevert(
-//         borrowerOperations.openTrove("1000000000000000001", dec(20000, 18), B, B, ZERO_ADDRESS),
+//         borrowerOperations.openTrove("1000000000000000001", dec(20000, 18), B, B, ZERO_ADDRESS, { from: B, value: dec(1000, 'ether') }),
 //         "Max fee percentage must be between 0.5% and 100%"
 //       );
 //     });
 
 //     it("openTrove(): reverts if max fee < 0.5% in Normal mode", async () => {
 //       await assertRevert(
-//         borrowerOperations.openTrove(0, dec(195000, 18), A, A, ZERO_ADDRESS),
+//         borrowerOperations.openTrove(0, dec(195000, 18), A, A, ZERO_ADDRESS, { from: A, value: dec(1200, 'ether') }),
 //         "Max fee percentage must be between 0.5% and 100%"
 //       );
 //       await assertRevert(
-//         borrowerOperations.openTrove(1, dec(195000, 18), A, A, ZERO_ADDRESS),
+//         borrowerOperations.openTrove(1, dec(195000, 18), A, A, ZERO_ADDRESS, { from: A, value: dec(1000, 'ether') }),
 //         "Max fee percentage must be between 0.5% and 100%"
 //       );
 //       await assertRevert(
-//         borrowerOperations.openTrove("4999999999999999", dec(195000, 18), B, B, ZERO_ADDRESS),
+//         borrowerOperations.openTrove("4999999999999999", dec(195000, 18), B, B, ZERO_ADDRESS, { from: B, value: dec(1200, 'ether') }),
 //         "Max fee percentage must be between 0.5% and 100%"
 //       );
 //     });
 
 //     it("openTrove(): allows max fee < 0.5% in Recovery Mode", async () => {
-//       await borrowerOperations.openTrove(th._100pct, dec(195000, 18), A, A, ZERO_ADDRESS);
+//       await borrowerOperations.openTrove(th._100pct, dec(195000, 18), A, A, ZERO_ADDRESS, { from: A, value: dec(2000, 'ether') });
 
 //       await priceFeed.setPrice(dec(100, 18));
 //       assert.isTrue(await th.checkRecoveryMode(contracts));
 
-//       await borrowerOperations.openTrove(0, dec(19500, 18), B, B, ZERO_ADDRESS);
+//       await borrowerOperations.openTrove(0, dec(19500, 18), B, B, ZERO_ADDRESS, { from: B, value: dec(3100, 'ether') });
 //       await priceFeed.setPrice(dec(50, 18));
 //       assert.isTrue(await th.checkRecoveryMode(contracts));
-//       await borrowerOperations.openTrove(1, dec(19500, 18), C, C, ZERO_ADDRESS);
+//       await borrowerOperations.openTrove(1, dec(19500, 18), C, C, ZERO_ADDRESS, { from: C, value: dec(3100, 'ether') });
 //       await priceFeed.setPrice(dec(25, 18));
 //       assert.isTrue(await th.checkRecoveryMode(contracts));
-//       await borrowerOperations.openTrove("4999999999999999", dec(19500, 18), D, D, ZERO_ADDRESS);
+//       await borrowerOperations.openTrove("4999999999999999", dec(19500, 18), D, D, ZERO_ADDRESS, { from: D, value: dec(3100, 'ether') });
 //     });
 
 //     it("openTrove(): reverts if fee exceeds max fee percentage", async () => {
@@ -4877,7 +4877,7 @@
 
 //       const lessThan5pct = "49999999999999999";
 //       await assertRevert(
-//         borrowerOperations.openTrove(lessThan5pct, dec(30000, 18), A, A, ZERO_ADDRESS),
+//         borrowerOperations.openTrove(lessThan5pct, dec(30000, 18), A, A, ZERO_ADDRESS, { from: D, value: dec(1000, 'ether') }),
 //         "Fee exceeded provided maximum"
 //       );
 
@@ -4885,7 +4885,7 @@
 //       assert.equal(borrowingRate, dec(5, 16));
 //       // Attempt with maxFee 1%
 //       await assertRevert(
-//         borrowerOperations.openTrove(dec(1, 16), dec(30000, 18), A, A, ZERO_ADDRESS),
+//         borrowerOperations.openTrove(dec(1, 16), dec(30000, 18), A, A, ZERO_ADDRESS, { from: D, value: dec(1000, 'ether') }),
 //         "Fee exceeded provided maximum"
 //       );
 
@@ -4893,7 +4893,7 @@
 //       assert.equal(borrowingRate, dec(5, 16));
 //       // Attempt with maxFee 3.754%
 //       await assertRevert(
-//         borrowerOperations.openTrove(dec(3754, 13), dec(30000, 18), A, A, ZERO_ADDRESS),
+//         borrowerOperations.openTrove(dec(3754, 13), dec(30000, 18), A, A, ZERO_ADDRESS, { from: D, value: dec(1000, 'ether') }),
 //         "Fee exceeded provided maximum"
 //       );
 
@@ -4901,7 +4901,7 @@
 //       assert.equal(borrowingRate, dec(5, 16));
 //       // Attempt with maxFee 1e-16%
 //       await assertRevert(
-//         borrowerOperations.openTrove(dec(5, 15), dec(30000, 18), A, A, ZERO_ADDRESS),
+//         borrowerOperations.openTrove(dec(5, 15), dec(30000, 18), A, A, ZERO_ADDRESS, { from: D, value: dec(1000, 'ether') }),
 //         "Fee exceeded provided maximum"
 //       );
 //     });
@@ -4932,32 +4932,32 @@
 
 //       // Attempt with maxFee > 5%
 //       const moreThan5pct = "50000000000000001";
-//       const tx1 = await borrowerOperations.openTrove(moreThan5pct, dec(10000, 18), A, A, ZERO_ADDRESS);
+//       const tx1 = await borrowerOperations.openTrove(moreThan5pct, dec(10000, 18), A, A, ZERO_ADDRESS, { from: D, value: dec(100, 'ether') });
 //       assert.isTrue(tx1.receipt.status);
 
 //       borrowingRate = await troveManager.getBorrowingRate(); // expect 5% rate
 //       assert.equal(borrowingRate, dec(5, 16));
 
 //       // Attempt with maxFee = 5%
-//       const tx2 = await borrowerOperations.openTrove(dec(5, 16), dec(10000, 18), A, A, ZERO_ADDRESS);
+//       const tx2 = await borrowerOperations.openTrove(dec(5, 16), dec(10000, 18), A, A, ZERO_ADDRESS, { from: H, value: dec(100, 'ether') });
 //       assert.isTrue(tx2.receipt.status);
 
 //       borrowingRate = await troveManager.getBorrowingRate(); // expect 5% rate
 //       assert.equal(borrowingRate, dec(5, 16));
 
 //       // Attempt with maxFee 10%
-//       const tx3 = await borrowerOperations.openTrove(dec(1, 17), dec(10000, 18), A, A, ZERO_ADDRESS);
+//       const tx3 = await borrowerOperations.openTrove(dec(1, 17), dec(10000, 18), A, A, ZERO_ADDRESS, { from: E, value: dec(100, 'ether') });
 //       assert.isTrue(tx3.receipt.status);
 
 //       borrowingRate = await troveManager.getBorrowingRate(); // expect 5% rate
 //       assert.equal(borrowingRate, dec(5, 16));
 
 //       // Attempt with maxFee 37.659%
-//       const tx4 = await borrowerOperations.openTrove(dec(37659, 13), dec(10000, 18), A, A, ZERO_ADDRESS);
+//       const tx4 = await borrowerOperations.openTrove(dec(37659, 13), dec(10000, 18), A, A, ZERO_ADDRESS, { from: F, value: dec(100, 'ether') });
 //       assert.isTrue(tx4.receipt.status);
 
 //       // Attempt with maxFee 100%
-//       const tx5 = await borrowerOperations.openTrove(dec(1, 18), dec(10000, 18), A, A, ZERO_ADDRESS);
+//       const tx5 = await borrowerOperations.openTrove(dec(1, 18), dec(10000, 18), A, A, ZERO_ADDRESS, { from: G, value: dec(100, 'ether') });
 //       assert.isTrue(tx5.receipt.status);
 //     });
 
@@ -5119,7 +5119,7 @@
 //           D_ARTHRequest,
 //           ZERO_ADDRESS,
 //           ZERO_ADDRESS,
-//           ZERO_ADDRESS
+//           ZERO_ADDRESS, { from: D, value: dec(200, 'ether') }
 //         );
 
 //         const emittedFee = toBN(th.getARTHFeeFromARTHBorrowingEvent(openTroveTx));
@@ -5234,7 +5234,7 @@
 
 //       // D opens trove
 //       const ARTHRequest_D = toBN(dec(40000, 18));
-//       await borrowerOperations.openTrove(th._100pct, ARTHRequest_D, D, D, ZERO_ADDRESS);
+//       await borrowerOperations.openTrove(th._100pct, ARTHRequest_D, D, D, ZERO_ADDRESS, { from: D, value: dec(500, 'ether') });
 
 //       // Check LQTY staking ARTH balance has increased
 //       const lqtyStaking_ARTHBalance_After = await arthToken.balanceOf(lqtyStaking.address);
@@ -5307,7 +5307,7 @@
 //         ARTHRequest,
 //         ZERO_ADDRESS,
 //         ZERO_ADDRESS,
-//         ZERO_ADDRESS
+//         ZERO_ADDRESS, { value: dec(100, 'ether'), from: C }
 //       );
 //       const _ARTHFee = toBN(th.getEventArgByName(txC, "ARTHBorrowingFeePaid", "_ARTHFee"));
 
@@ -5527,7 +5527,7 @@
 //           await getNetBorrowingAmount(MIN_NET_DEBT),
 //           carol,
 //           carol,
-//           ZERO_ADDRESS
+//           ZERO_ADDRESS, { from: carol, value: dec(1, 'ether') }
 //         )
 //       );
 //     });
@@ -5545,7 +5545,7 @@
 //       assert.equal(status_Before, 0);
 
 //       const ARTHRequest = MIN_NET_DEBT;
-//       borrowerOperations.openTrove(th._100pct, MIN_NET_DEBT, carol, carol, ZERO_ADDRESS);
+//       borrowerOperations.openTrove(th._100pct, MIN_NET_DEBT, carol, carol, ZERO_ADDRESS, { from: alice, value: dec(100, 'ether') });
 
 //       // Get the expected debt based on the ARTH request (adding fee and liq. reserve on top)
 //       const expectedDebt = ARTHRequest.add(await troveManager.getBorrowingFee(ARTHRequest)).add(
@@ -5752,7 +5752,7 @@
 //         await getOpenTroveARTHAmount(dec(10000, 18)),
 //         alice,
 //         alice,
-//         ZERO_ADDRESS
+//         ZERO_ADDRESS, { from: alice, value: dec(100, 'ether') }
 //       );
 
 //       // check after
@@ -5782,7 +5782,7 @@
 //       const alice_ARTHTokenBalance_Before = await arthToken.balanceOf(alice);
 //       assert.equal(alice_ARTHTokenBalance_Before, 0);
 
-//       await borrowerOperations.openTrove(th._100pct, dec(10000, 18), alice, alice, ZERO_ADDRESS);
+//       await borrowerOperations.openTrove(th._100pct, dec(10000, 18), alice, alice, ZERO_ADDRESS, { from: alice, value: dec(100, 'ether') });
 
 //       // check after
 //       const alice_ARTHTokenBalance_After = await arthToken.balanceOf(alice);
@@ -6016,8 +6016,8 @@
 //         const troveColl = toBN(dec(1000, "ether"));
 //         const troveTotalDebt = toBN(dec(100000, 18));
 //         const troveARTHAmount = await getOpenTroveARTHAmount(troveTotalDebt);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS);
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS, { from: alice, value: troveColl });
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS, { from: bob, value: troveColl });
 
 //         await priceFeed.setPrice(dec(100, 18));
 
@@ -6056,8 +6056,8 @@
 //         const troveColl = toBN(dec(1000, "ether"));
 //         const troveTotalDebt = toBN(dec(100000, 18));
 //         const troveARTHAmount = await getOpenTroveARTHAmount(troveTotalDebt);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS);
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS, { from: alice, value: troveColl });
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS, { from: bob, value: troveColl });
 
 //         await priceFeed.setPrice(dec(100, 18));
 
@@ -6096,8 +6096,8 @@
 //         const troveColl = toBN(dec(1000, "ether"));
 //         const troveTotalDebt = toBN(dec(100000, 18));
 //         const troveARTHAmount = await getOpenTroveARTHAmount(troveTotalDebt);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS);
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS, { from: alice, value: troveColl });
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS, { from: bob, value: troveColl });
 
 //         await priceFeed.setPrice(dec(100, 18));
 
@@ -6135,8 +6135,8 @@
 //         const troveColl = toBN(dec(1000, "ether"));
 //         const troveTotalDebt = toBN(dec(100000, 18));
 //         const troveARTHAmount = await getOpenTroveARTHAmount(troveTotalDebt);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS);
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS, { from: alice, value: troveColl });
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS, { from: bob, value: troveColl });
 
 //         await priceFeed.setPrice(dec(100, 18));
 
@@ -6175,8 +6175,8 @@
 //         const troveColl = toBN(dec(1000, "ether"));
 //         const troveTotalDebt = toBN(dec(100000, 18));
 //         const troveARTHAmount = await getOpenTroveARTHAmount(troveTotalDebt);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS);
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS, { from: alice, value: troveColl });
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS, { from: bob, value: troveColl });
 
 //         await priceFeed.setPrice(dec(100, 18));
 
@@ -6216,8 +6216,8 @@
 //         const troveColl = toBN(dec(1000, "ether"));
 //         const troveTotalDebt = toBN(dec(100000, 18));
 //         const troveARTHAmount = await getOpenTroveARTHAmount(troveTotalDebt);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS);
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS, { from: alice, value: troveColl });
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS, { from: bob, value: troveColl });
 
 //         await priceFeed.setPrice(dec(100, 18));
 
@@ -6257,8 +6257,8 @@
 //         const troveColl = toBN(dec(1000, "ether"));
 //         const troveTotalDebt = toBN(dec(100000, 18));
 //         const troveARTHAmount = await getOpenTroveARTHAmount(troveTotalDebt);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS);
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS, { from: alice, value: troveColl });
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS, { from: bob, value: troveColl });
 
 //         await priceFeed.setPrice(dec(100, 18));
 
@@ -6298,8 +6298,8 @@
 //         const troveColl = toBN(dec(1000, "ether"));
 //         const troveTotalDebt = toBN(dec(100000, 18));
 //         const troveARTHAmount = await getOpenTroveARTHAmount(troveTotalDebt);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS);
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS, { from: alice, value: troveColl });
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS, { from: bob, value: troveColl });
 
 //         await priceFeed.setPrice(dec(100, 18));
 
@@ -6339,8 +6339,8 @@
 //         const troveColl = toBN(dec(1000, "ether"));
 //         const troveTotalDebt = toBN(dec(100000, 18));
 //         const troveARTHAmount = await getOpenTroveARTHAmount(troveTotalDebt);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS);
-//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS);
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, alice, alice, ZERO_ADDRESS, { from: alice, value: troveColl });
+//         await borrowerOperations.openTrove(th._100pct, troveARTHAmount, bob, bob, ZERO_ADDRESS, { from: bob, value: troveColl });
 
 //         await priceFeed.setPrice(dec(100, 18));
 
@@ -6380,7 +6380,7 @@
 //         const nonPayable = await NonPayable.new();
 
 //         // we need 2 troves to be able to close 1 and have 1 remaining in the system
-//         await borrowerOperations.openTrove(th._100pct, dec(100000, 18), alice, alice, ZERO_ADDRESS);
+//         await borrowerOperations.openTrove(th._100pct, dec(100000, 18), alice, alice, ZERO_ADDRESS, { from: bob, alice: troveColl });
 
 //         // Alice sends ARTH to NonPayable so its ARTH balance covers its debt
 //         await arthToken.transfer(nonPayable.address, dec(10000, 18), { from: alice });
