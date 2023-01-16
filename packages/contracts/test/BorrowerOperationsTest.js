@@ -107,6 +107,7 @@ contract("BorrowerOperations", async accounts => {
       ARTH_GAS_COMPENSATION = await borrowerOperations.ARTH_GAS_COMPENSATION();
       MIN_NET_DEBT = await borrowerOperations.MIN_NET_DEBT();
       BORROWING_FEE_FLOOR = await governance.getBorrowingFeeFloor();
+
     });
 
     it("addColl(): reverts when top-up would leave trove with ICR < MCR", async () => {

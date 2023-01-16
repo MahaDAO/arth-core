@@ -81,9 +81,7 @@ contract("SortedTroves", async accounts => {
   //     contracts = await deploymentHelper.deployLiquityCore();
   //     contracts.troveManager = await TroveManagerTester.new();
   //     contracts.arthToken = await ARTHValuecoin.new(
-  //       contracts.troveManager.address,
-  //       contracts.stabilityPool.address,
-  //       contracts.borrowerOperations.address
+  //       owner
   //     );
   //     const LQTYContracts = await deploymentHelper.deployLQTYContracts(
   //       bountyAddress,
