@@ -66,7 +66,7 @@ class MainnetDeploymentHelper {
 
   async deployLiquityCoreMainnet(deploymentState) {
     // Get contract factories
-    const mockOracleFactory = await this.getFactory("MockOracle");
+    const mockOracleFactory = await this.getFactory("PriceFeedTestnet");
     const mockERC20Factory = await this.getFactory("MockERC20");
     const sortedTrovesFactory = await this.getFactory("SortedTroves");
     const troveManagerFactory = await this.getFactory("TroveManager");

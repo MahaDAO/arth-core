@@ -757,16 +757,20 @@ class TestHelper {
 
     const MIN_DEBT = (
       await this.getNetBorrowingAmount(contracts, await contracts.borrowerOperations.MIN_NET_DEBT())
-    ).add(this.toBN(1)); // add 1 to avoid rounding issues
+    )
+    // .add(this.toBN(1)); // add 1 to avoid rounding issues
+    // console.log("--------MinDEBT----------", MIN_DEBT.toString())
+    // console.log("--------extraLUSDAmount----------", extraARTHAmount.toString())
     const arthAmount = MIN_DEBT.add(extraARTHAmount);
-
     if (!ICR && !extraParams.value) ICR = this.toBN(this.dec(15, 17));
     // 150%
     else if (typeof ICR == "string") ICR = this.toBN(ICR);
 
     const totalDebt = await this.getOpenTroveTotalDebt(contracts, arthAmount);
     const netDebt = await this.getActualDebtFromComposite(totalDebt, contracts);
-
+    // console.log("11111111111111", totalDebt.toString())
+    // console.log("22222222222222", netDebt.toString())
+    // console.log("ICR", ICR.toString())
     if (ICR) {
       const price = await contracts.priceFeed.getPrice();
       extraParams.value = ICR.mul(totalDebt).div(price);

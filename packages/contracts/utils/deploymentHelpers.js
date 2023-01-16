@@ -27,7 +27,7 @@ const LiquityMathTester = artifacts.require("./LiquityMathTester.sol");
 const BorrowerOperationsTester = artifacts.require("./BorrowerOperationsTester.sol");
 const TroveManagerTester = artifacts.require("./TroveManagerTester.sol");
 const ArthTokenTester = artifacts.require("./ARTHTokenTester.sol");
-const PriceFeed = artifacts.require('./MockOracle.sol')
+const PriceFeed = artifacts.require('./PriceFeedTestnet.sol')
 
 // Proxy scripts
 const BorrowerOperationsScript = artifacts.require("BorrowerOperationsScript");
