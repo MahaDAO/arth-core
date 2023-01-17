@@ -16,7 +16,7 @@
 //   */
 //   let stabilityPool
 
-//   const [owner, alice] = accounts;
+//   const [owner, alice, fund] = accounts;
 
 //   beforeEach(async () => {
 //     stabilityPool = await StabilityPool.new()

@@ -29,7 +29,8 @@
 //     defaulter_2,
 //     defaulter_3,
 //     defaulter_4,
-//     whale
+//     whale, 
+//     fund
 //   ] = accounts;
 
 //   const [bountyAddress, lpRewardsAddress, multisig] = accounts.slice(997, 1000);
@@ -65,16 +66,17 @@
 //   });
 
 //   beforeEach(async () => {
-//     contracts = await deploymentHelper.deployLiquityCore();
+//     contracts = await deploymentHelper.deployLiquityCore(owner, fund);
 //     contracts.troveManager = await TroveManagerTester.new();
-//     contracts.arthToken = await ARTHValuecoin.new(
-//       owner
-//     );
-//     const LQTYContracts = await deploymentHelper.deployLQTYContracts(
-//       bountyAddress,
-//       lpRewardsAddress,
-//       multisig
-//     );
+
+//     // const governance = await Governance.new(
+//     //     owner,                   // timelock address
+//     //     contracts.troveManager.address,
+//     //     contracts.borrowerOperations.address,
+//     //     contracts.priceFeed.address,
+//     //     fund,
+//     //     "0"
+//     //   );
 
 //     priceFeed = contracts.priceFeed;
 //     arthToken = contracts.arthToken;
@@ -85,153 +87,151 @@
 //     defaultPool = contracts.defaultPool;
 //     borrowerOperations = contracts.borrowerOperations;
 
-//     await deploymentHelper.connectLQTYContracts(LQTYContracts);
-//     await deploymentHelper.connectCoreContracts(contracts, LQTYContracts);
-//     await deploymentHelper.connectLQTYContractsToCore(LQTYContracts, contracts);
+//     await deploymentHelper.connectCoreContracts(contracts);
 //   });
 
 //   // --- Raw gas compensation calculations ---
 
-//   it("_getCollGasCompensation(): returns the 0.5% of collaterall if it is < $10 in value", async () => {
-//     /*
-//     ETH:USD price = 1
-//     coll = 1 ETH: $1 in value
-//     -> Expect 0.5% of collaterall as gas compensation */
-//     await priceFeed.setPrice(dec(1, 18));
-//     // const price_1 = await priceFeed.getPrice()
-//     const gasCompensation_1 = (
-//       await troveManagerTester.getCollGasCompensation(dec(1, "ether"))
-//     ).toString();
-//     assert.equal(gasCompensation_1, dec(5, 15));
+// //   it("_getCollGasCompensation(): returns the 0.5% of collaterall if it is < $10 in value", async () => {
+// //     /*
+// //     ETH:USD price = 1
+// //     coll = 1 ETH: $1 in value
+// //     -> Expect 0.5% of collaterall as gas compensation */
+// //     await priceFeed.setPrice(dec(1, 18));
+// //     // const price_1 = await priceFeed.getPrice()
+// //     const gasCompensation_1 = (
+// //       await troveManagerTester.getCollGasCompensation(dec(500, "ether"))
+// //     ).toString();
+// //     assert.equal(gasCompensation_1, dec(25, 17));
 
-//     /*
-//     ETH:USD price = 28.4
-//     coll = 0.1 ETH: $2.84 in value
-//     -> Expect 0.5% of collaterall as gas compensation */
-//     await priceFeed.setPrice("28400000000000000000");
-//     // const price_2 = await priceFeed.getPrice()
-//     const gasCompensation_2 = (
-//       await troveManagerTester.getCollGasCompensation(dec(100, "finney"))
-//     ).toString();
-//     assert.equal(gasCompensation_2, dec(5, 14));
+// //     /*
+// //     ETH:USD price = 28.4
+// //     coll = 0.1 ETH: $2.84 in value
+// //     -> Expect 0.5% of collaterall as gas compensation */
+// //     await priceFeed.setPrice("28400000000000000000");
+// //     // const price_2 = await priceFeed.getPrice()
+// //     const gasCompensation_2 = (
+// //       await troveManagerTester.getCollGasCompensation(dec(100, "finney"))
+// //     ).toString();
+// //     assert.equal(gasCompensation_2, dec(5, 14));
 
-//     /*
-//     ETH:USD price = 1000000000 (1 billion)
-//     coll = 0.000000005 ETH (5e9 wei): $5 in value
-//     -> Expect 0.5% of collaterall as gas compensation */
-//     await priceFeed.setPrice(dec(1, 27));
-//     // const price_3 = await priceFeed.getPrice()
-//     const gasCompensation_3 = (
-//       await troveManagerTester.getCollGasCompensation("5000000000")
-//     ).toString();
-//     assert.equal(gasCompensation_3, "25000000");
-//   });
+// //     /*
+// //     ETH:USD price = 1000000000 (1 billion)
+// //     coll = 0.000000005 ETH (5e9 wei): $5 in value
+// //     -> Expect 0.5% of collaterall as gas compensation */
+// //     await priceFeed.setPrice(dec(1, 27));
+// //     // const price_3 = await priceFeed.getPrice()
+// //     const gasCompensation_3 = (
+// //       await troveManagerTester.getCollGasCompensation("5000000000")
+// //     ).toString();
+// //     assert.equal(gasCompensation_3, "25000000");
+// //   });
 
-//   it("_getCollGasCompensation(): returns 0.5% of collaterall when 0.5% of collateral < $10 in value", async () => {
-//     const price = await priceFeed.getPrice();
-//     assert.equal(price, dec(200, 18));
+// //   it("_getCollGasCompensation(): returns 0.5% of collaterall when 0.5% of collateral < $10 in value", async () => {
+// //     const price = await priceFeed.getPrice();
+// //     assert.equal(price, dec(200, 18));
 
-//     /*
-//     ETH:USD price = 200
-//     coll = 9.999 ETH
-//     0.5% of coll = 0.04995 ETH. USD value: $9.99
-//     -> Expect 0.5% of collaterall as gas compensation */
-//     const gasCompensation_1 = (
-//       await troveManagerTester.getCollGasCompensation("9999000000000000000")
-//     ).toString();
-//     assert.equal(gasCompensation_1, "49995000000000000");
+// //     /*
+// //     ETH:USD price = 200
+// //     coll = 9.999 ETH
+// //     0.5% of coll = 0.04995 ETH. USD value: $9.99
+// //     -> Expect 0.5% of collaterall as gas compensation */
+// //     const gasCompensation_1 = (
+// //       await troveManagerTester.getCollGasCompensation("9999000000000000000")
+// //     ).toString();
+// //     assert.equal(gasCompensation_1, "49995000000000000");
 
-//     /* ETH:USD price = 200
-//      coll = 0.055 ETH
-//      0.5% of coll = 0.000275 ETH. USD value: $0.055
-//      -> Expect 0.5% of collaterall as gas compensation */
-//     const gasCompensation_2 = (
-//       await troveManagerTester.getCollGasCompensation("55000000000000000")
-//     ).toString();
-//     assert.equal(gasCompensation_2, dec(275, 12));
+// //     /* ETH:USD price = 200
+// //      coll = 0.055 ETH
+// //      0.5% of coll = 0.000275 ETH. USD value: $0.055
+// //      -> Expect 0.5% of collaterall as gas compensation */
+// //     const gasCompensation_2 = (
+// //       await troveManagerTester.getCollGasCompensation("55000000000000000")
+// //     ).toString();
+// //     assert.equal(gasCompensation_2, dec(275, 12));
 
-//     /* ETH:USD price = 200
-//     coll = 6.09232408808723580 ETH
-//     0.5% of coll = 0.004995 ETH. USD value: $6.09
-//     -> Expect 0.5% of collaterall as gas compensation */
-//     const gasCompensation_3 = (
-//       await troveManagerTester.getCollGasCompensation("6092324088087235800")
-//     ).toString();
-//     assert.equal(gasCompensation_3, "30461620440436179");
-//   });
+// //     /* ETH:USD price = 200
+// //     coll = 6.09232408808723580 ETH
+// //     0.5% of coll = 0.004995 ETH. USD value: $6.09
+// //     -> Expect 0.5% of collaterall as gas compensation */
+// //     const gasCompensation_3 = (
+// //       await troveManagerTester.getCollGasCompensation("6092324088087235800")
+// //     ).toString();
+// //     assert.equal(gasCompensation_3, "30461620440436179");
+// //   });
 
-//   it("getCollGasCompensation(): returns 0.5% of collaterall when 0.5% of collateral = $10 in value", async () => {
-//     const price = await priceFeed.getPrice();
-//     assert.equal(price, dec(200, 18));
+// //   it("getCollGasCompensation(): returns 0.5% of collaterall when 0.5% of collateral = $10 in value", async () => {
+// //     const price = await priceFeed.getPrice();
+// //     assert.equal(price, dec(200, 18));
 
-//     /*
-//     ETH:USD price = 200
-//     coll = 10 ETH
-//     0.5% of coll = 0.5 ETH. USD value: $10
-//     -> Expect 0.5% of collaterall as gas compensation */
-//     const gasCompensation = (
-//       await troveManagerTester.getCollGasCompensation(dec(10, "ether"))
-//     ).toString();
-//     assert.equal(gasCompensation, "50000000000000000");
-//   });
+// //     /*
+// //     ETH:USD price = 200
+// //     coll = 10 ETH
+// //     0.5% of coll = 0.5 ETH. USD value: $10
+// //     -> Expect 0.5% of collaterall as gas compensation */
+// //     const gasCompensation = (
+// //       await troveManagerTester.getCollGasCompensation(dec(10, "ether"))
+// //     ).toString();
+// //     assert.equal(gasCompensation, "50000000000000000");
+// //   });
 
-//   it("getCollGasCompensation(): returns 0.5% of collaterall when 0.5% of collateral = $10 in value", async () => {
-//     const price = await priceFeed.getPrice();
-//     assert.equal(price, dec(200, 18));
+// //   it("getCollGasCompensation(): returns 0.5% of collaterall when 0.5% of collateral = $10 in value", async () => {
+// //     const price = await priceFeed.getPrice();
+// //     assert.equal(price, dec(200, 18));
 
-//     /*
-//     ETH:USD price = 200 $/E
-//     coll = 100 ETH
-//     0.5% of coll = 0.5 ETH. USD value: $100
-//     -> Expect $100 gas compensation, i.e. 0.5 ETH */
-//     const gasCompensation_1 = (
-//       await troveManagerTester.getCollGasCompensation(dec(100, "ether"))
-//     ).toString();
-//     assert.equal(gasCompensation_1, dec(500, "finney"));
+// //     /*
+// //     ETH:USD price = 200 $/E
+// //     coll = 100 ETH
+// //     0.5% of coll = 0.5 ETH. USD value: $100
+// //     -> Expect $100 gas compensation, i.e. 0.5 ETH */
+// //     const gasCompensation_1 = (
+// //       await troveManagerTester.getCollGasCompensation(dec(100, "ether"))
+// //     ).toString();
+// //     assert.equal(gasCompensation_1, dec(500, "finney"));
 
-//     /*
-//     ETH:USD price = 200 $/E
-//     coll = 10.001 ETH
-//     0.5% of coll = 0.050005 ETH. USD value: $10.001
-//     -> Expect $100 gas compensation, i.e.  0.050005  ETH */
-//     const gasCompensation_2 = (
-//       await troveManagerTester.getCollGasCompensation("10001000000000000000")
-//     ).toString();
-//     assert.equal(gasCompensation_2, "50005000000000000");
+// //     /*
+// //     ETH:USD price = 200 $/E
+// //     coll = 10.001 ETH
+// //     0.5% of coll = 0.050005 ETH. USD value: $10.001
+// //     -> Expect $100 gas compensation, i.e.  0.050005  ETH */
+// //     const gasCompensation_2 = (
+// //       await troveManagerTester.getCollGasCompensation("10001000000000000000")
+// //     ).toString();
+// //     assert.equal(gasCompensation_2, "50005000000000000");
 
-//     /*
-//     ETH:USD price = 200 $/E
-//     coll = 37.5 ETH
-//     0.5% of coll = 0.1875 ETH. USD value: $37.5
-//     -> Expect $37.5 gas compensation i.e.  0.1875  ETH */
-//     const gasCompensation_3 = (
-//       await troveManagerTester.getCollGasCompensation("37500000000000000000")
-//     ).toString();
-//     assert.equal(gasCompensation_3, "187500000000000000");
+// //     /*
+// //     ETH:USD price = 200 $/E
+// //     coll = 37.5 ETH
+// //     0.5% of coll = 0.1875 ETH. USD value: $37.5
+// //     -> Expect $37.5 gas compensation i.e.  0.1875  ETH */
+// //     const gasCompensation_3 = (
+// //       await troveManagerTester.getCollGasCompensation("37500000000000000000")
+// //     ).toString();
+// //     assert.equal(gasCompensation_3, "187500000000000000");
 
-//     /*
-//     ETH:USD price = 45323.54542 $/E
-//     coll = 94758.230582309850 ETH
-//     0.5% of coll = 473.7911529 ETH. USD value: $21473894.84
-//     -> Expect $21473894.8385808 gas compensation, i.e.  473.7911529115490  ETH */
-//     await priceFeed.setPrice("45323545420000000000000");
-//     const gasCompensation_4 = await troveManagerTester.getCollGasCompensation(
-//       "94758230582309850000000"
-//     );
-//     assert.isAtMost(th.getDifference(gasCompensation_4, "473791152911549000000"), 1000000);
+// //     /*
+// //     ETH:USD price = 45323.54542 $/E
+// //     coll = 94758.230582309850 ETH
+// //     0.5% of coll = 473.7911529 ETH. USD value: $21473894.84
+// //     -> Expect $21473894.8385808 gas compensation, i.e.  473.7911529115490  ETH */
+// //     await priceFeed.setPrice("45323545420000000000000");
+// //     const gasCompensation_4 = await troveManagerTester.getCollGasCompensation(
+// //       "94758230582309850000000"
+// //     );
+// //     assert.isAtMost(th.getDifference(gasCompensation_4, "473791152911549000000"), 1000000);
 
-//     /*
-//     ETH:USD price = 1000000 $/E (1 million)
-//     coll = 300000000 ETH   (300 million)
-//     0.5% of coll = 1500000 ETH. USD value: $150000000000
-//     -> Expect $150000000000 gas compensation, i.e. 1500000 ETH */
-//     await priceFeed.setPrice(dec(1, 24));
-//     const price_2 = await priceFeed.getPrice();
-//     const gasCompensation_5 = (
-//       await troveManagerTester.getCollGasCompensation("300000000000000000000000000")
-//     ).toString();
-//     assert.equal(gasCompensation_5, "1500000000000000000000000");
-//   });
+// //     /*
+// //     ETH:USD price = 1000000 $/E (1 million)
+// //     coll = 300000000 ETH   (300 million)
+// //     0.5% of coll = 1500000 ETH. USD value: $150000000000
+// //     -> Expect $150000000000 gas compensation, i.e. 1500000 ETH */
+// //     await priceFeed.setPrice(dec(1, 24));
+// //     const price_2 = await priceFeed.getPrice();
+// //     const gasCompensation_5 = (
+// //       await troveManagerTester.getCollGasCompensation("300000000000000000000000000")
+// //     ).toString();
+// //     assert.equal(gasCompensation_5, "1500000000000000000000000");
+// //   });
 
 //   // --- Composite debt calculations ---
 
@@ -245,25 +245,25 @@
 //     coll = 9.999 ETH
 //     debt = 10 ARTH
 //     0.5% of coll = 0.04995 ETH. USD value: $9.99
-//     -> Expect composite debt = 10 + 200  = 2100 ARTH*/
+//     -> Expect composite debt = 10 + 50  = 60 ARTH*/
 //     const compositeDebt_1 = await troveManagerTester.getCompositeDebt(dec(10, 18));
-//     assert.equal(compositeDebt_1, dec(210, 18));
+//     assert.equal(compositeDebt_1.toString(), dec(60, 18));
 
 //     /* ETH:USD price = 200
 //      coll = 0.055 ETH
 //      debt = 0 ARTH
 //      0.5% of coll = 0.000275 ETH. USD value: $0.055
-//      -> Expect composite debt = 0 + 200 = 200 ARTH*/
+//      -> Expect composite debt = 0 + 50 = 50 ARTH*/
 //     const compositeDebt_2 = await troveManagerTester.getCompositeDebt(0);
-//     assert.equal(compositeDebt_2, dec(200, 18));
+//     assert.equal(compositeDebt_2.toString(), dec(50, 18));
 
 //     // /* ETH:USD price = 200
 //     // coll = 6.09232408808723580 ETH
 //     // debt = 200 ARTH
 //     // 0.5% of coll = 0.004995 ETH. USD value: $6.09
-//     // -> Expect  composite debt =  200 + 200 = 400  ARTH */
+//     // -> Expect  composite debt =  200 + 50 = 250  ARTH */
 //     const compositeDebt_3 = await troveManagerTester.getCompositeDebt(dec(200, 18));
-//     assert.equal(compositeDebt_3, "400000000000000000000");
+//     assert.equal(compositeDebt_3.toString(), "250000000000000000000");
 //   });
 
 //   // returns $10 worth of ETH when 0.5% of coll == $10
@@ -276,9 +276,9 @@
 //     coll = 10 ETH
 //     debt = 123.45 ARTH
 //     0.5% of coll = 0.5 ETH. USD value: $10
-//     -> Expect composite debt = (123.45 + 200) = 323.45 ARTH  */
+//     -> Expect composite debt = (123.45 + 50) = 173.45 ARTH  */
 //     const compositeDebt = await troveManagerTester.getCompositeDebt("123450000000000000000");
-//     assert.equal(compositeDebt, "323450000000000000000");
+//     assert.equal(compositeDebt.toString(), "173450000000000000000");
 //   });
 
 //   /// ***
@@ -292,47 +292,47 @@
 //     ETH:USD price = 200 $/E
 //     coll = 100 ETH
 //     debt = 2000 ARTH
-//     -> Expect composite debt = (2000 + 200) = 2200 ARTH  */
+//     -> Expect composite debt = (2000 + 50) = 2050 ARTH  */
 //     const compositeDebt_1 = (await troveManagerTester.getCompositeDebt(dec(2000, 18))).toString();
-//     assert.equal(compositeDebt_1, "2200000000000000000000");
+//     assert.equal(compositeDebt_1, "2050000000000000000000");
 
 //     /*
 //     ETH:USD price = 200 $/E
 //     coll = 10.001 ETH
 //     debt = 200 ARTH
-//     -> Expect composite debt = (200 + 200) = 400 ARTH  */
+//     -> Expect composite debt = (200 + 50) = 250 ARTH  */
 //     const compositeDebt_2 = (await troveManagerTester.getCompositeDebt(dec(200, 18))).toString();
-//     assert.equal(compositeDebt_2, "400000000000000000000");
+//     assert.equal(compositeDebt_2, "250000000000000000000");
 
 //     /*
 //     ETH:USD price = 200 $/E
 //     coll = 37.5 ETH
 //     debt = 500 ARTH
-//     -> Expect composite debt = (500 + 200) = 700 ARTH  */
+//     -> Expect composite debt = (500 + 50) = 550 ARTH  */
 //     const compositeDebt_3 = (await troveManagerTester.getCompositeDebt(dec(500, 18))).toString();
-//     assert.equal(compositeDebt_3, "700000000000000000000");
+//     assert.equal(compositeDebt_3, "550000000000000000000");
 
 //     /*
 //     ETH:USD price = 45323.54542 $/E
 //     coll = 94758.230582309850 ETH
 //     debt = 1 billion ARTH
-//     -> Expect composite debt = (1000000000 + 200) = 1000000200 ARTH  */
+//     -> Expect composite debt = (1000000000 + 50) = 1000000050 ARTH  */
 //     await priceFeed.setPrice("45323545420000000000000");
 //     const price_2 = await priceFeed.getPrice();
 //     const compositeDebt_4 = (await troveManagerTester.getCompositeDebt(dec(1, 27))).toString();
-//     assert.isAtMost(th.getDifference(compositeDebt_4, "1000000200000000000000000000"), 100000000000);
+//     assert.isAtMost(th.getDifference(compositeDebt_4, "1000000050000000000000000000"), 100000000000);
 
 //     /*
 //     ETH:USD price = 1000000 $/E (1 million)
 //     coll = 300000000 ETH   (300 million)
 //     debt = 54321.123456789 ARTH
-//    -> Expect composite debt = (54321.123456789 + 200) = 54521.123456789 ARTH */
+//    -> Expect composite debt = (54321.123456789 + 50) = 54371.123456789 ARTH */
 //     await priceFeed.setPrice(dec(1, 24));
 //     const price_3 = await priceFeed.getPrice();
 //     const compositeDebt_5 = (
 //       await troveManagerTester.getCompositeDebt("54321123456789000000000")
 //     ).toString();
-//     assert.equal(compositeDebt_5, "54521123456789000000000");
+//     assert.equal(compositeDebt_5, "54371123456789000000000");
 //   });
 
 //   // --- Test ICRs with virtual debt ---
@@ -1298,7 +1298,7 @@
 //     const price = await priceFeed.getPrice();
 
 //     // Check not in Recovery Mode
-//     assert.isFalse(await th.checkRecoveryMode(contracts));
+//     assert.isTrue(await th.checkRecoveryMode(contracts));
 
 //     // Check A, B, C, D have ICR < MCR
 //     assert.isTrue((await troveManager.getCurrentICR(alice, price)).lt(mv._MCR));
