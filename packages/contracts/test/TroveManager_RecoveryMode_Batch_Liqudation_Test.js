@@ -31,7 +31,8 @@
 //     F,
 //     G,
 //     H,
-//     I
+//     I,
+//     fund
 //   ] = accounts;
 
 //   let contracts;
@@ -43,25 +44,15 @@
 //   const openTrove = async params => th.openTrove(contracts, params);
 
 //   beforeEach(async () => {
-//     contracts = await deploymentHelper.deployLiquityCore();
+//     contracts = await deploymentHelper.deployLiquityCore(owner, fund);
 //     contracts.troveManager = await TroveManagerTester.new();
-//     contracts.arthToken = await ARTHValuecoin.new(
-//       owner
-//     );
-//     const LQTYContracts = await deploymentHelper.deployLQTYContracts(
-//       bountyAddress,
-//       lpRewardsAddress,
-//       multisig
-//     );
 
 //     troveManager = contracts.troveManager;
 //     stabilityPool = contracts.stabilityPool;
 //     priceFeed = contracts.priceFeed;
 //     sortedTroves = contracts.sortedTroves;
 
-//     await deploymentHelper.connectLQTYContracts(LQTYContracts);
-//     await deploymentHelper.connectCoreContracts(contracts, LQTYContracts);
-//     await deploymentHelper.connectLQTYContractsToCore(LQTYContracts, contracts);
+//     await deploymentHelper.connectCoreContracts(contracts);
 //   });
 
 //   context("Batch liquidations", () => {

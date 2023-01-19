@@ -31,7 +31,8 @@
 //     defaulter_1,
 //     defaulter_2,
 //     defaulter_3,
-//     defaulter_4
+//     defaulter_4,
+//     funds
 //   ] = accounts;
 
 //   const [bountyAddress, lpRewardsAddress, multisig] = accounts.slice(997, 1000);
@@ -55,16 +56,8 @@
 //   const openTrove = async params => th.openTrove(contracts, params);
 
 //   beforeEach(async () => {
-//     contracts = await deploymentHelper.deployLiquityCore();
+//     contracts = await deploymentHelper.deployLiquityCore(owner, funds);
 //     contracts.troveManager = await TroveManagerTester.new();
-//     contracts.arthToken = await ARTHValuecoin.new(
-//       owner
-//     );
-//     const LQTYContracts = await deploymentHelper.deployLQTYContracts(
-//       bountyAddress,
-//       lpRewardsAddress,
-//       multisig
-//     );
 
 //     priceFeed = contracts.priceFeed;
 //     arthToken = contracts.arthToken;
@@ -77,9 +70,7 @@
 //     functionCaller = contracts.functionCaller;
 //     borrowerOperations = contracts.borrowerOperations;
 
-//     await deploymentHelper.connectLQTYContracts(LQTYContracts);
-//     await deploymentHelper.connectCoreContracts(contracts, LQTYContracts);
-//     await deploymentHelper.connectLQTYContractsToCore(LQTYContracts, contracts);
+//     await deploymentHelper.connectCoreContracts(contracts);
 //   });
 
 //   it("redistribution: A, B Open. B Liquidated. C, D Open. D Liquidated. Distributes correct rewards", async () => {
@@ -170,7 +161,7 @@
 //     );
 
 //     // check ARTH gas compensation
-//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(100, 18));
 //   });
 
 //   it("redistribution: A, B, C Open. C Liquidated. D, E, F Open. F Liquidated. Distributes correct rewards", async () => {
@@ -284,7 +275,7 @@
 //     );
 
 //     // check ARTH gas compensation
-//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(100, 18));
 //   });
 //   ////
 
@@ -419,7 +410,7 @@
 //     assert.isAtMost(th.getDifference(entireSystemColl, F_coll.add(gainedETH)), 1000);
 
 //     // check ARTH gas compensation
-//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(1000, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(250, 18));
 //   });
 
 //   // ---Trove adds collateral ---
@@ -861,7 +852,7 @@
 //     assert.isAtMost(th.getDifference(alice_ARTHDebt, expected_A_debt), 10000);
 
 //     // check ARTH gas compensation
-//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(100, 18));
 //   });
 
 //   it("redistribution: Trove with the majority stake tops up. A,B,C, D open. Liq(D). C tops up. E Enters, Liq(E). Distributes correct rewards", async () => {
@@ -1011,9 +1002,9 @@
 //       entireSystemColl_3,
 //       totalCollAfterL1.add(th.applyLiquidationFee(E_coll))
 //     );
-
+// console.log("**dev-----------------", (await arthToken.balanceOf(owner)).toString())
 //     // check ARTH gas compensation
-//     th.assertIsApproximatelyEqual((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
+//     th.assertIsApproximatelyEqual((await arthToken.balanceOf(owner)).toString(), dec(100, 18));
 //   });
 
 //   it("redistribution: Trove with the majority stake tops up. A,B,C, D open. Liq(D). A, B, C top up. E Enters, Liq(E). Distributes correct rewards", async () => {
@@ -1169,7 +1160,7 @@
 //     );
 
 //     // check ARTH gas compensation
-//     th.assertIsApproximatelyEqual((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
+//     th.assertIsApproximatelyEqual((await arthToken.balanceOf(owner)).toString(), dec(100, 18));
 //   });
 
 //   // --- Trove withdraws collateral ---
@@ -1246,7 +1237,7 @@
 //     );
 
 //     // check ARTH gas compensation
-//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(100, 18));
 //   });
 
 //   it("redistribution: A,B,C Open. Liq(C). B withdraws coll. D Opens. Liq(D). Distributes correct rewards.", async () => {
@@ -1371,7 +1362,7 @@
 //     );
 
 //     // check ARTH gas compensation
-//     th.assertIsApproximatelyEqual((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
+//     th.assertIsApproximatelyEqual((await arthToken.balanceOf(owner)).toString(), dec(100, 18));
 //   });
 
 //   it("redistribution: Trove with the majority stake withdraws. A,B,C,D open. Liq(D). C withdraws some coll. E Enters, Liq(E). Distributes correct rewards", async () => {
@@ -1519,7 +1510,7 @@
 //     );
 
 //     // check ARTH gas compensation
-//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(100, 18));
 //   });
 
 //   it("redistribution: Trove with the majority stake withdraws. A,B,C,D open. Liq(D). A, B, C withdraw. E Enters, Liq(E). Distributes correct rewards", async () => {
@@ -1705,7 +1696,7 @@
 //     );
 
 //     // check ARTH gas compensation
-//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(400, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(100, 18));
 //   });
 
 //   // For calculations of correct values used in test, see scenario 1:
@@ -1928,7 +1919,7 @@
 //     th.assertIsApproximatelyEqual(totalCollateralSnapshot, totalCollateralSnapshotAfterL3);
 
 //     // check ARTH gas compensation
-//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(600, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(150, 18));
 //   });
 
 //   // For calculations of correct values used in test, see scenario 2:
@@ -2156,6 +2147,6 @@
 //     th.assertIsApproximatelyEqual(totalCollateralSnapshot, totalCollateralSnapshotAfterL3);
 
 //     // check ARTH gas compensation
-//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(600, 18));
+//     assert.equal((await arthToken.balanceOf(owner)).toString(), dec(150, 18));
 //   });
 // });

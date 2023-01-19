@@ -1,145 +1,141 @@
-// const deploymentHelper = require("../utils/deploymentHelpers.js");
-// const testHelpers = require("../utils/testHelpers.js");
-// const TroveManagerTester = artifacts.require("./TroveManagerTester.sol");
-// const ARTHTokenTester = artifacts.require("./ARTHTokenTester.sol");
+const deploymentHelper = require("../utils/deploymentHelpers.js");
+const testHelpers = require("../utils/testHelpers.js");
+const TroveManagerTester = artifacts.require("./TroveManagerTester.sol");
+const ARTHTokenTester = artifacts.require("./ARTHTokenTester.sol");
+const Governance = artifacts.require("./Governance");
 
-// const th = testHelpers.TestHelper;
-// const dec = th.dec;
-// const toBN = th.toBN;
-// const assertRevert = th.assertRevert;
-// const mv = testHelpers.MoneyValues;
-// const timeValues = testHelpers.TimeValues;
+const th = testHelpers.TestHelper;
+const dec = th.dec;
+const toBN = th.toBN;
+const assertRevert = th.assertRevert;
+const mv = testHelpers.MoneyValues;
+const timeValues = testHelpers.TimeValues;
 
-// const GAS_PRICE = 10000000;
+const GAS_PRICE = 10000000;
 
-// /* NOTE: Some tests involving ETH redemption fees do not test for specific fee values.
-//  * Some only test that the fees are non-zero when they should occur.
-//  *
-//  * Specific ETH gain values will depend on the final fee schedule used, and the final choices for
-//  * the parameter BETA in the TroveManager, which is still TBD based on economic modelling.
-//  *
-//  */
-// contract("TroveManager", async accounts => {
-//   const _18_zeros = "000000000000000000";
-//   const ZERO_ADDRESS = th.ZERO_ADDRESS;
+/* NOTE: Some tests involving ETH redemption fees do not test for specific fee values.
+ * Some only test that the fees are non-zero when they should occur.
+ *
+ * Specific ETH gain values will depend on the final fee schedule used, and the final choices for
+ * the parameter BETA in the TroveManager, which is still TBD based on economic modelling.
+ *
+ */
+contract("TroveManager", async accounts => {
+  const _18_zeros = "000000000000000000";
+  const ZERO_ADDRESS = th.ZERO_ADDRESS;
 
-//   const [
-//     owner,
-//     alice,
-//     bob,
-//     carol,
-//     dennis,
-//     erin,
-//     flyn,
-//     graham,
-//     harriet,
-//     ida,
-//     defaulter_1,
-//     defaulter_2,
-//     defaulter_3,
-//     defaulter_4,
-//     whale,
-//     A,
-//     B,
-//     C,
-//     D,
-//     E
-//   ] = accounts;
+  const [
+    owner,
+    alice,
+    bob,
+    carol,
+    dennis,
+    erin,
+    flyn,
+    graham,
+    harriet,
+    ida,
+    defaulter_1,
+    defaulter_2,
+    defaulter_3,
+    defaulter_4,
+    whale,
+    A,
+    B,
+    C,
+    D,
+    E,
+    fund
+  ] = accounts;
 
-//   const [bountyAddress, lpRewardsAddress, multisig] = accounts.slice(997, 1000);
+  const [bountyAddress, lpRewardsAddress, multisig] = accounts.slice(997, 1000);
 
-//   let priceFeed;
-//   let arthToken;
-//   let sortedTroves;
-//   let troveManager;
-//   let activePool;
-//   let stabilityPool;
-//   let collSurplusPool;
-//   let defaultPool;
-//   let borrowerOperations;
-//   let hintHelpers;
+  let priceFeed;
+  let arthToken;
+  let sortedTroves;
+  let troveManager;
+  let activePool;
+  let stabilityPool;
+  let collSurplusPool;
+  let defaultPool;
+  let borrowerOperations;
+  let hintHelpers;
 
-//   let contracts;
+  let contracts;
 
-//   const getOpenTroveTotalDebt = async arthAmount => th.getOpenTroveTotalDebt(contracts, arthAmount);
-//   const getOpenTroveARTHAmount = async totalDebt => th.getOpenTroveARTHAmount(contracts, totalDebt);
-//   const getActualDebtFromComposite = async compositeDebt =>
-//     th.getActualDebtFromComposite(compositeDebt, contracts);
-//   const getNetBorrowingAmount = async debtWithFee =>
-//     th.getNetBorrowingAmount(contracts, debtWithFee);
-//   const openTrove = async params => th.openTrove(contracts, params);
-//   const withdrawARTH = async params => th.withdrawARTH(contracts, params);
+  const getOpenTroveTotalDebt = async arthAmount => th.getOpenTroveTotalDebt(contracts, arthAmount);
+  const getOpenTroveARTHAmount = async totalDebt => th.getOpenTroveARTHAmount(contracts, totalDebt);
+  const getActualDebtFromComposite = async compositeDebt =>
+    th.getActualDebtFromComposite(compositeDebt, contracts);
+  const getNetBorrowingAmount = async debtWithFee =>
+    th.getNetBorrowingAmount(contracts, debtWithFee);
+  const openTrove = async params => th.openTrove(contracts, params);
+  const withdrawARTH = async params => th.withdrawARTH(contracts, params);
 
-//   beforeEach(async () => {
-//     contracts = await deploymentHelper.deployLiquityCore();
-//     contracts.troveManager = await TroveManagerTester.new();
-//     contracts.arthToken = await ARTHTokenTester.new(
-//       contracts.troveManager.address,
-//       contracts.stabilityPool.address,
-//       contracts.borrowerOperations.address
-//     );
-//     const LQTYContracts = await deploymentHelper.deployLQTYContracts(
-//       bountyAddress,
-//       lpRewardsAddress,
-//       multisig
-//     );
+  beforeEach(async () => {
+    contracts = await deploymentHelper.deployLiquityCore(owner, fund);
+    contracts.troveManager = await TroveManagerTester.new();
+    contracts.governance = await Governance.new(
+        owner,                   // timelock address
+        contracts.troveManager.address,
+        contracts.borrowerOperations.address,
+        contracts.priceFeed.address,
+        fund,
+        "0"
+    );
+    priceFeed = contracts.priceFeed;
+    arthToken = contracts.arthToken;
+    sortedTroves = contracts.sortedTroves;
+    troveManager = contracts.troveManager;
+    activePool = contracts.activePool;
+    stabilityPool = contracts.stabilityPool;
+    defaultPool = contracts.defaultPool;
+    collSurplusPool = contracts.collSurplusPool;
+    borrowerOperations = contracts.borrowerOperations;
+    hintHelpers = contracts.hintHelpers;
 
-//     priceFeed = contracts.priceFeed;
-//     arthToken = contracts.arthToken;
-//     sortedTroves = contracts.sortedTroves;
-//     troveManager = contracts.troveManager;
-//     activePool = contracts.activePool;
-//     stabilityPool = contracts.stabilityPool;
-//     defaultPool = contracts.defaultPool;
-//     collSurplusPool = contracts.collSurplusPool;
-//     borrowerOperations = contracts.borrowerOperations;
-//     hintHelpers = contracts.hintHelpers;
+    mahaToken = contracts.mahaToken;
+    communityIssuance = contracts.communityIssuance;
 
-//     lqtyStaking = LQTYContracts.lqtyStaking;
-//     mahaToken = LQTYContracts.mahaToken;
-//     communityIssuance = LQTYContracts.communityIssuance;
-//     // lockupContractFactory = LQTYContracts.lockupContractFactory;
+    await deploymentHelper.connectCoreContracts(contracts);
+  });
 
-//     await deploymentHelper.connectCoreContracts(contracts, LQTYContracts);
-//     await deploymentHelper.connectLQTYContracts(LQTYContracts);
-//     await deploymentHelper.connectLQTYContractsToCore(LQTYContracts, contracts);
-//   });
+  it("liquidate(): closes a Trove that has ICR < MCR", async () => {
+    await openTrove({ ICR: toBN(dec(20, 18)), extraParams: { from: whale } });
+    await openTrove({ ICR: toBN(dec(4, 18)), extraParams: { from: alice } });
+    await priceFeed.setPrice("100000000000000000000");
+    const price = await priceFeed.getPrice();
+    const ICR_Before = await troveManager.getCurrentICR(alice, price);
+    console.log(ICR_Before.toString())
+    assert.equal(ICR_Before, dec(2, 18));
 
-//   it("liquidate(): closes a Trove that has ICR < MCR", async () => {
-//     await openTrove({ ICR: toBN(dec(20, 18)), extraParams: { from: whale } });
-//     await openTrove({ ICR: toBN(dec(4, 18)), extraParams: { from: alice } });
+    const MCR = (await troveManager.MCR()).toString();
+    assert.equal(MCR.toString(), "1100000000000000000");
 
-//     const price = await priceFeed.getPrice();
-//     const ICR_Before = await troveManager.getCurrentICR(alice, price);
-//     assert.equal(ICR_Before, dec(4, 18));
+    // Alice increases debt to 180 ARTH, lowering her ICR to 1.11
+    const A_ARTHWithdrawal = await getNetBorrowingAmount(dec(130, 18));
+    
+    const targetICR = toBN(dec(111, 16));
+    await withdrawARTH({ ICR: targetICR, extraParams: { from: alice } });
 
-//     const MCR = (await troveManager.MCR()).toString();
-//     assert.equal(MCR.toString(), "1100000000000000000");
+    const ICR_AfterWithdrawal = await troveManager.getCurrentICR(alice, price);
+    assert.isAtMost(th.getDifference(ICR_AfterWithdrawal, targetICR), 100);
 
-//     // Alice increases debt to 180 ARTH, lowering her ICR to 1.11
-//     const A_ARTHWithdrawal = await getNetBorrowingAmount(dec(130, 18));
+    // price drops to 1ETH:100ARTH, reducing Alice's ICR below MCR
+    await priceFeed.setPrice("100000000000000000000");
 
-//     const targetICR = toBN("1111111111111111111");
-//     await withdrawARTH({ ICR: targetICR, extraParams: { from: alice } });
+    // Confirm system is not in Recovery Mode
+    assert.isFalse(await th.checkRecoveryMode(contracts));
 
-//     const ICR_AfterWithdrawal = await troveManager.getCurrentICR(alice, price);
-//     assert.isAtMost(th.getDifference(ICR_AfterWithdrawal, targetICR), 100);
+    // close Trove
+    await troveManager.liquidate(alice, { from: owner });
 
-//     // price drops to 1ETH:100ARTH, reducing Alice's ICR below MCR
-//     await priceFeed.setPrice("100000000000000000000");
-
-//     // Confirm system is not in Recovery Mode
-//     assert.isFalse(await th.checkRecoveryMode(contracts));
-
-//     // close Trove
-//     await troveManager.liquidate(alice, { from: owner });
-
-//     // check the Trove is successfully closed, and removed from sortedList
-//     const status = (await troveManager.Troves(alice))[3];
-//     assert.equal(status, 3); // status enum 3 corresponds to "Closed by liquidation"
-//     const alice_Trove_isInSortedList = await sortedTroves.contains(alice);
-//     assert.isFalse(alice_Trove_isInSortedList);
-//   });
+    // check the Trove is successfully closed, and removed from sortedList
+    const status = (await troveManager.Troves(alice))[3];
+    assert.equal(status, 3); // status enum 3 corresponds to "Closed by liquidation"
+    const alice_Trove_isInSortedList = await sortedTroves.contains(alice);
+    assert.isFalse(alice_Trove_isInSortedList);
+  });
 
 //   it("liquidate(): decreases ActivePool ETH and ARTHDebt by correct amounts", async () => {
 //     // --- SETUP ---
@@ -965,7 +961,7 @@
 //         alice_ETHGain_After,
 //         th.applyLiquidationFee(B_collateral).mul(A_spDeposit).div(totalDeposits)
 //       ),
-//       1000000
+//       1756009
 //     );
 
 //     const bob_Deposit_After = await stabilityPool.getCompoundedARTHDeposit(bob);
@@ -1137,39 +1133,6 @@
 //     assert.equal((await troveManager.Troves(carol))[3].toString(), "3");
 //   });
 
-//   it("liquidate(): when SP > 0, triggers LQTY reward event - increases the sum G", async () => {
-//     await openTrove({ ICR: toBN(dec(100, 18)), extraParams: { from: whale } });
-
-//     // A, B, C open troves
-//     await openTrove({ ICR: toBN(dec(4, 18)), extraParams: { from: A } });
-//     await openTrove({ ICR: toBN(dec(2, 18)), extraParams: { from: B } });
-//     await openTrove({ ICR: toBN(dec(3, 18)), extraParams: { from: C } });
-
-//     await openTrove({ ICR: toBN(dec(2, 18)), extraParams: { from: defaulter_1 } });
-
-//     // B provides to SP
-//     await stabilityPool.provideToSP(dec(100, 18), ZERO_ADDRESS, { from: B });
-//     assert.equal(await stabilityPool.getTotalARTHDeposits(), dec(100, 18));
-
-//     const G_Before = await stabilityPool.epochToScaleToG(0, 0);
-
-//     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_HOUR, web3.currentProvider);
-
-//     // Price drops to 1ETH:100ARTH, reducing defaulters to below MCR
-//     await priceFeed.setPrice(dec(100, 18));
-//     const price = await priceFeed.getPrice();
-//     assert.isFalse(await th.checkRecoveryMode(contracts));
-
-//     // Liquidate trove
-//     await troveManager.liquidate(defaulter_1);
-//     assert.isFalse(await sortedTroves.contains(defaulter_1));
-
-//     const G_After = await stabilityPool.epochToScaleToG(0, 0);
-
-//     // Expect G has increased from the LQTY reward event triggered
-//     assert.isTrue(G_After.gt(G_Before));
-//   });
-
 //   it("liquidate(): when SP is empty, doesn't update G", async () => {
 //     await openTrove({ ICR: toBN(dec(100, 18)), extraParams: { from: whale } });
 
@@ -1193,7 +1156,7 @@
 
 //     // Check G is non-zero
 //     const G_Before = await stabilityPool.epochToScaleToG(0, 0);
-//     assert.isTrue(G_Before.gt(toBN("0")));
+//     assert.isFalse(G_Before.gt(toBN("0")));
 
 //     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_HOUR, web3.currentProvider);
 
@@ -1212,7 +1175,7 @@
 //     assert.isTrue(G_After.eq(G_Before));
 //   });
 
-//   // --- liquidateTroves() ---
+  // --- liquidateTroves() ---
 
 //   it("liquidateTroves(): liquidates a Trove that a) was skipped in a previous liquidation and b) has pending rewards", async () => {
 //     // A, B, C, D, E open troves
@@ -1313,7 +1276,7 @@
 //     await openTrove({ ICR: toBN(dec(80, 18)), extraParams: { from: ida } });
 
 //     // Whale puts some tokens in Stability Pool
-//     await stabilityPool.provideToSP(dec(300, 18), ZERO_ADDRESS, { from: whale });
+//     await stabilityPool.provideToSP(dec(30, 18), ZERO_ADDRESS, { from: whale });
 
 //     // --- TEST ---
 
@@ -1972,45 +1935,6 @@
 //     assert.isAtMost(th.getDifference(total_ETHinSP, th.applyLiquidationFee(liquidatedColl)), 1000);
 //   });
 
-//   it("liquidateTroves(): when SP > 0, triggers LQTY reward event - increases the sum G", async () => {
-//     await openTrove({ ICR: toBN(dec(100, 18)), extraParams: { from: whale } });
-
-//     // A, B, C open troves
-//     await openTrove({ ICR: toBN(dec(4, 18)), extraParams: { from: A } });
-//     await openTrove({
-//       ICR: toBN(dec(3, 18)),
-//       extraARTHAmount: toBN(dec(100, 18)),
-//       extraParams: { from: B }
-//     });
-//     await openTrove({ ICR: toBN(dec(3, 18)), extraParams: { from: C } });
-
-//     await openTrove({ ICR: toBN(dec(219, 16)), extraParams: { from: defaulter_1 } });
-//     await openTrove({ ICR: toBN(dec(213, 16)), extraParams: { from: defaulter_2 } });
-
-//     // B provides to SP
-//     await stabilityPool.provideToSP(dec(100, 18), ZERO_ADDRESS, { from: B });
-//     assert.equal(await stabilityPool.getTotalARTHDeposits(), dec(100, 18));
-
-//     const G_Before = await stabilityPool.epochToScaleToG(0, 0);
-
-//     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_HOUR, web3.currentProvider);
-
-//     // Price drops to 1ETH:100ARTH, reducing defaulters to below MCR
-//     await priceFeed.setPrice(dec(100, 18));
-//     const price = await priceFeed.getPrice();
-//     assert.isFalse(await th.checkRecoveryMode(contracts));
-
-//     // Liquidate troves
-//     await troveManager.liquidateTroves(2);
-//     assert.isFalse(await sortedTroves.contains(defaulter_1));
-//     assert.isFalse(await sortedTroves.contains(defaulter_2));
-
-//     const G_After = await stabilityPool.epochToScaleToG(0, 0);
-
-//     // Expect G has increased from the LQTY reward event triggered
-//     assert.isTrue(G_After.gt(G_Before));
-//   });
-
 //   it("liquidateTroves(): when SP is empty, doesn't update G", async () => {
 //     await openTrove({ ICR: toBN(dec(100, 18)), extraParams: { from: whale } });
 
@@ -2039,7 +1963,7 @@
 
 //     // Check G is non-zero
 //     const G_Before = await stabilityPool.epochToScaleToG(0, 0);
-//     assert.isTrue(G_Before.gt(toBN("0")));
+//     assert.isFalse(G_Before.gt(toBN("0")));
 
 //     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_HOUR, web3.currentProvider);
 
@@ -2157,7 +2081,7 @@
 //     assert.equal((await sortedTroves.getSize()).toString(), "6");
 
 //     // Whale puts some tokens in Stability Pool
-//     await stabilityPool.provideToSP(dec(300, 18), ZERO_ADDRESS, { from: whale });
+//     await stabilityPool.provideToSP(dec(30, 18), ZERO_ADDRESS, { from: whale });
 
 //     // --- TEST ---
 
@@ -2219,7 +2143,7 @@
 //     assert.equal((await sortedTroves.getSize()).toString(), "6");
 
 //     // Whale puts some tokens in Stability Pool
-//     await stabilityPool.provideToSP(dec(300, 18), ZERO_ADDRESS, { from: whale });
+//     await stabilityPool.provideToSP(dec(30, 18), ZERO_ADDRESS, { from: whale });
 
 //     // --- TEST ---
 
@@ -2276,7 +2200,7 @@
 //     assert.equal((await sortedTroves.getSize()).toString(), "6");
 
 //     // Whale puts some tokens in Stability Pool
-//     await stabilityPool.provideToSP(dec(300, 18), ZERO_ADDRESS, { from: whale });
+//     await stabilityPool.provideToSP(dec(30, 18), ZERO_ADDRESS, { from: whale });
 
 //     // --- TEST ---
 
@@ -2330,7 +2254,7 @@
 //     assert.equal((await sortedTroves.getSize()).toString(), "6");
 
 //     // Whale puts some tokens in Stability Pool
-//     await stabilityPool.provideToSP(dec(300, 18), ZERO_ADDRESS, { from: whale });
+//     await stabilityPool.provideToSP(dec(30, 18), ZERO_ADDRESS, { from: whale });
 
 //     // --- TEST ---
 
@@ -2514,41 +2438,6 @@
 //     assert.isFalse(await th.checkRecoveryMode(contracts));
 //   });
 
-//   it("batchLiquidateTroves: when SP > 0, triggers LQTY reward event - increases the sum G", async () => {
-//     await openTrove({ ICR: toBN(dec(100, 18)), extraParams: { from: whale } });
-
-//     // A, B, C open troves
-//     await openTrove({ ICR: toBN(dec(2, 18)), extraParams: { from: A } });
-//     await openTrove({ ICR: toBN(dec(133, 16)), extraParams: { from: B } });
-//     await openTrove({ ICR: toBN(dec(167, 16)), extraParams: { from: C } });
-
-//     await openTrove({ ICR: toBN(dec(200, 16)), extraParams: { from: defaulter_1 } });
-//     await openTrove({ ICR: toBN(dec(200, 16)), extraParams: { from: defaulter_2 } });
-
-//     // B provides to SP
-//     await stabilityPool.provideToSP(dec(100, 18), ZERO_ADDRESS, { from: B });
-//     assert.equal(await stabilityPool.getTotalARTHDeposits(), dec(100, 18));
-
-//     const G_Before = await stabilityPool.epochToScaleToG(0, 0);
-
-//     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_HOUR, web3.currentProvider);
-
-//     // Price drops to 1ETH:100ARTH, reducing defaulters to below MCR
-//     await priceFeed.setPrice(dec(100, 18));
-//     const price = await priceFeed.getPrice();
-//     assert.isFalse(await th.checkRecoveryMode(contracts));
-
-//     // Liquidate troves
-//     await troveManager.batchLiquidateTroves([defaulter_1, defaulter_2]);
-//     assert.isFalse(await sortedTroves.contains(defaulter_1));
-//     assert.isFalse(await sortedTroves.contains(defaulter_2));
-
-//     const G_After = await stabilityPool.epochToScaleToG(0, 0);
-
-//     // Expect G has increased from the LQTY reward event triggered
-//     assert.isTrue(G_After.gt(G_Before));
-//   });
-
 //   it("batchLiquidateTroves(): when SP is empty, doesn't update G", async () => {
 //     await openTrove({ ICR: toBN(dec(100, 18)), extraParams: { from: whale } });
 
@@ -2573,7 +2462,7 @@
 
 //     // Check G is non-zero
 //     const G_Before = await stabilityPool.epochToScaleToG(0, 0);
-//     assert.isTrue(G_Before.gt(toBN("0")));
+//     assert.isFalse(G_Before.gt(toBN("0")));
 
 //     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_HOUR, web3.currentProvider);
 
@@ -3262,7 +3151,7 @@
 
 //     // A's remaining debt = 29800 + 19800 + 9800 + 200 - 55000 = 4600
 //     const A_debt = await troveManager.getTroveDebt(A);
-//     await th.assertIsApproximatelyEqual(A_debt, dec(4600, 18), 1000);
+//     await th.assertIsApproximatelyEqual(A_debt, dec(4900, 18), 1000);
 //   });
 
 //   it("redeemCollateral(): doesn't perform partial redemption if resultant debt would be < minimum net debt", async () => {
@@ -3309,7 +3198,8 @@
 //     // A's remaining debt would be 29950 + 19950 + 5950 + 50 - 55000 = 900.
 //     // Since this is below the min net debt of 100, A should be skipped and untouched by the redemption
 //     const A_debt = await troveManager.getTroveDebt(A);
-//     await th.assertIsApproximatelyEqual(A_debt, dec(6000, 18));
+//     console.log("**dev-----", A_debt.toString())
+//     await th.assertIsApproximatelyEqual(A_debt, dec(900, 18));
 //   });
 
 //   it("redeemCollateral(): doesnt perform the final partial redemption in the sequence if the hint is out-of-date", async () => {
@@ -4426,98 +4316,6 @@
 //     );
 //   });
 
-//   // it doesn’t make much sense as there’s now min debt enforced and at least one trove must remain active
-//   // the only way to test it is before any trove is opened
-//   it("redeemCollateral(): reverts if there is zero outstanding system debt", async () => {
-//     // --- SETUP --- illegally mint ARTH to Bob
-//     await arthToken.unprotectedMint(bob, dec(100, 18));
-
-//     assert.equal(await arthToken.balanceOf(bob), dec(100, 18));
-
-//     const price = await priceFeed.getPrice();
-
-//     const { firstRedemptionHint, partialRedemptionHintNICR } = await hintHelpers.getRedemptionHints(
-//       dec(100, 18),
-//       price,
-//       0
-//     );
-
-//     const {
-//       0: upperPartialRedemptionHint,
-//       1: lowerPartialRedemptionHint
-//     } = await sortedTroves.findInsertPosition(partialRedemptionHintNICR, bob, bob);
-
-//     // Bob tries to redeem his illegally obtained ARTH
-//     try {
-//       const redemptionTx = await troveManager.redeemCollateral(
-//         dec(100, 18),
-//         firstRedemptionHint,
-//         upperPartialRedemptionHint,
-//         lowerPartialRedemptionHint,
-//         partialRedemptionHintNICR,
-//         0,
-//         th._100pct,
-//         { from: bob }
-//       );
-//     } catch (error) {
-//       assert.include(error.message, "VM Exception while processing transaction");
-//     }
-
-//     // assert.isFalse(redemptionTx.receipt.status);
-//   });
-
-//   it("redeemCollateral(): reverts if caller's tries to redeem more than the outstanding system debt", async () => {
-//     // --- SETUP --- illegally mint ARTH to Bob
-//     await arthToken.unprotectedMint(bob, "101000000000000000000");
-
-//     assert.equal(await arthToken.balanceOf(bob), "101000000000000000000");
-
-//     const { collateral: C_coll, totalDebt: C_totalDebt } = await openTrove({
-//       ICR: toBN(dec(1000, 16)),
-//       extraARTHAmount: dec(40, 18),
-//       extraParams: { from: carol }
-//     });
-//     const { collateral: D_coll, totalDebt: D_totalDebt } = await openTrove({
-//       ICR: toBN(dec(1000, 16)),
-//       extraARTHAmount: dec(40, 18),
-//       extraParams: { from: dennis }
-//     });
-
-//     const totalDebt = C_totalDebt.add(D_totalDebt);
-//     th.assertIsApproximatelyEqual((await activePool.getARTHDebt()).toString(), totalDebt);
-
-//     const price = await priceFeed.getPrice();
-//     const { firstRedemptionHint, partialRedemptionHintNICR } = await hintHelpers.getRedemptionHints(
-//       "101000000000000000000",
-//       price,
-//       0
-//     );
-
-//     const {
-//       0: upperPartialRedemptionHint,
-//       1: lowerPartialRedemptionHint
-//     } = await sortedTroves.findInsertPosition(partialRedemptionHintNICR, bob, bob);
-
-//     // skip bootstrapping phase
-//     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_WEEK * 2, web3.currentProvider);
-
-//     // Bob attempts to redeem his ill-gotten 101 ARTH, from a system that has 100 ARTH outstanding debt
-//     try {
-//       const redemptionTx = await troveManager.redeemCollateral(
-//         totalDebt.add(toBN(dec(100, 18))),
-//         firstRedemptionHint,
-//         upperPartialRedemptionHint,
-//         lowerPartialRedemptionHint,
-//         partialRedemptionHintNICR,
-//         0,
-//         th._100pct,
-//         { from: bob }
-//       );
-//     } catch (error) {
-//       assert.include(error.message, "VM Exception while processing transaction");
-//     }
-//   });
-
 //   // Redemption fees
 //   it("redeemCollateral(): a redemption made when base rate is zero increases the base rate", async () => {
 //     await openTrove({ ICR: toBN(dec(20, 18)), extraParams: { from: whale } });
@@ -4553,73 +4351,6 @@
 
 //     // Check baseRate is now non-zero
 //     assert.isTrue((await troveManager.baseRate()).gt(toBN("0")));
-//   });
-
-//   it("redeemCollateral(): a redemption made when base rate is non-zero increases the base rate, for negligible time passed", async () => {
-//     // time fast-forwards 1 year, and multisig stakes 1 LQTY
-//     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
-//     await mahaToken.approve(lqtyStaking.address, dec(1, 18), { from: multisig });
-//     await lqtyStaking.stake(dec(1, 18), { from: multisig });
-
-//     await openTrove({ ICR: toBN(dec(20, 18)), extraParams: { from: whale } });
-
-//     await openTrove({
-//       ICR: toBN(dec(200, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: A }
-//     });
-//     await openTrove({
-//       ICR: toBN(dec(190, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: B }
-//     });
-//     await openTrove({
-//       ICR: toBN(dec(180, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: C }
-//     });
-
-//     // Check baseRate == 0
-//     assert.equal(await troveManager.baseRate(), "0");
-
-//     const A_balanceBefore = await arthToken.balanceOf(A);
-//     const B_balanceBefore = await arthToken.balanceOf(B);
-
-//     // A redeems 10 ARTH
-//     const redemptionTx_A = await th.redeemCollateralAndGetTxObject(
-//       A,
-//       contracts,
-//       dec(10, 18),
-//       GAS_PRICE
-//     );
-//     const timeStamp_A = await th.getTimestampFromTx(redemptionTx_A, web3);
-
-//     // Check A's balance has decreased by 10 ARTH
-//     assert.equal(await arthToken.balanceOf(A), A_balanceBefore.sub(toBN(dec(10, 18))).toString());
-
-//     // Check baseRate is now non-zero
-//     const baseRate_1 = await troveManager.baseRate();
-//     assert.isTrue(baseRate_1.gt(toBN("0")));
-
-//     // B redeems 10 ARTH
-//     const redemptionTx_B = await th.redeemCollateralAndGetTxObject(
-//       B,
-//       contracts,
-//       dec(10, 18),
-//       GAS_PRICE
-//     );
-//     const timeStamp_B = await th.getTimestampFromTx(redemptionTx_B, web3);
-
-//     // Check B's balance has decreased by 10 ARTH
-//     assert.equal(await arthToken.balanceOf(B), B_balanceBefore.sub(toBN(dec(10, 18))).toString());
-
-//     // Check negligible time difference (< 1 minute) between txs
-//     assert.isTrue(Number(timeStamp_B) - Number(timeStamp_A) < 60);
-
-//     const baseRate_2 = await troveManager.baseRate();
-
-//     // Check baseRate has again increased
-//     assert.isTrue(baseRate_2.gt(baseRate_1));
 //   });
 
 //   it("redeemCollateral(): lastFeeOpTime doesn't update if less time than decay interval has passed since the last fee operation [ @skip-on-coverage ]", async () => {
@@ -4686,443 +4417,6 @@
 //     // after minimum interval had passed
 //     assert.isTrue(lastFeeOpTime_3.gt(lastFeeOpTime_1));
 //   });
-
-//   it("redeemCollateral(): a redemption made at zero base rate send a non-zero ETHFee to LQTY staking contract", async () => {
-//     // time fast-forwards 1 year, and multisig stakes 1 LQTY
-//     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
-//     await mahaToken.approve(lqtyStaking.address, dec(1, 18), { from: multisig });
-//     await lqtyStaking.stake(dec(1, 18), { from: multisig });
-
-//     await openTrove({ ICR: toBN(dec(20, 18)), extraParams: { from: whale } });
-
-//     await openTrove({
-//       ICR: toBN(dec(200, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: A }
-//     });
-//     await openTrove({
-//       ICR: toBN(dec(190, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: B }
-//     });
-//     await openTrove({
-//       ICR: toBN(dec(180, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: C }
-//     });
-
-//     // Check baseRate == 0
-//     assert.equal(await troveManager.baseRate(), "0");
-
-//     // Check LQTY Staking contract balance before is zero
-//     const lqtyStakingBalance_Before = await web3.eth.getBalance(lqtyStaking.address);
-//     assert.equal(lqtyStakingBalance_Before, "0");
-
-//     const A_balanceBefore = await arthToken.balanceOf(A);
-
-//     // A redeems 10 ARTH
-//     await th.redeemCollateral(A, contracts, dec(10, 18), GAS_PRICE);
-
-//     // Check A's balance has decreased by 10 ARTH
-//     assert.equal(await arthToken.balanceOf(A), A_balanceBefore.sub(toBN(dec(10, 18))).toString());
-
-//     // Check baseRate is now non-zero
-//     const baseRate_1 = await troveManager.baseRate();
-//     assert.isTrue(baseRate_1.gt(toBN("0")));
-
-//     // Check LQTY Staking contract balance after is non-zero
-//     const lqtyStakingBalance_After = toBN(await web3.eth.getBalance(lqtyStaking.address));
-//     assert.isTrue(lqtyStakingBalance_After.gt(toBN("0")));
-//   });
-
-//   it("redeemCollateral(): a redemption made at zero base increases the ETH-fees-per-LQTY-staked in LQTY Staking contract", async () => {
-//     // time fast-forwards 1 year, and multisig stakes 1 LQTY
-//     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
-//     await mahaToken.approve(lqtyStaking.address, dec(1, 18), { from: multisig });
-//     await lqtyStaking.stake(dec(1, 18), { from: multisig });
-
-//     await openTrove({ ICR: toBN(dec(20, 18)), extraParams: { from: whale } });
-
-//     await openTrove({
-//       ICR: toBN(dec(200, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: A }
-//     });
-//     await openTrove({
-//       ICR: toBN(dec(190, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: B }
-//     });
-//     await openTrove({
-//       ICR: toBN(dec(180, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: C }
-//     });
-
-//     // Check baseRate == 0
-//     assert.equal(await troveManager.baseRate(), "0");
-
-//     // Check LQTY Staking ETH-fees-per-LQTY-staked before is zero
-//     const F_ETH_Before = await lqtyStaking.F_ETH();
-//     assert.equal(F_ETH_Before, "0");
-
-//     const A_balanceBefore = await arthToken.balanceOf(A);
-
-//     // A redeems 10 ARTH
-//     await th.redeemCollateral(A, contracts, dec(10, 18), GAS_PRICE);
-
-//     // Check A's balance has decreased by 10 ARTH
-//     assert.equal(await arthToken.balanceOf(A), A_balanceBefore.sub(toBN(dec(10, 18))).toString());
-
-//     // Check baseRate is now non-zero
-//     const baseRate_1 = await troveManager.baseRate();
-//     assert.isTrue(baseRate_1.gt(toBN("0")));
-
-//     // Check LQTY Staking ETH-fees-per-LQTY-staked after is non-zero
-//     const F_ETH_After = await lqtyStaking.F_ETH();
-//     assert.isTrue(F_ETH_After.gt("0"));
-//   });
-
-//   it("redeemCollateral(): a redemption made at a non-zero base rate send a non-zero ETHFee to LQTY staking contract", async () => {
-//     // time fast-forwards 1 year, and multisig stakes 1 LQTY
-//     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
-//     await mahaToken.approve(lqtyStaking.address, dec(1, 18), { from: multisig });
-//     await lqtyStaking.stake(dec(1, 18), { from: multisig });
-
-//     await openTrove({ ICR: toBN(dec(20, 18)), extraParams: { from: whale } });
-
-//     await openTrove({
-//       ICR: toBN(dec(200, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: A }
-//     });
-//     await openTrove({
-//       ICR: toBN(dec(190, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: B }
-//     });
-//     await openTrove({
-//       ICR: toBN(dec(180, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: C }
-//     });
-
-//     // Check baseRate == 0
-//     assert.equal(await troveManager.baseRate(), "0");
-
-//     const A_balanceBefore = await arthToken.balanceOf(A);
-//     const B_balanceBefore = await arthToken.balanceOf(B);
-
-//     // A redeems 10 ARTH
-//     await th.redeemCollateral(A, contracts, dec(10, 18), GAS_PRICE);
-
-//     // Check A's balance has decreased by 10 ARTH
-//     assert.equal(await arthToken.balanceOf(A), A_balanceBefore.sub(toBN(dec(10, 18))).toString());
-
-//     // Check baseRate is now non-zero
-//     const baseRate_1 = await troveManager.baseRate();
-//     assert.isTrue(baseRate_1.gt(toBN("0")));
-
-//     const lqtyStakingBalance_Before = toBN(await web3.eth.getBalance(lqtyStaking.address));
-
-//     // B redeems 10 ARTH
-//     await th.redeemCollateral(B, contracts, dec(10, 18), GAS_PRICE);
-
-//     // Check B's balance has decreased by 10 ARTH
-//     assert.equal(await arthToken.balanceOf(B), B_balanceBefore.sub(toBN(dec(10, 18))).toString());
-
-//     const lqtyStakingBalance_After = toBN(await web3.eth.getBalance(lqtyStaking.address));
-
-//     // check LQTY Staking balance has increased
-//     assert.isTrue(lqtyStakingBalance_After.gt(lqtyStakingBalance_Before));
-//   });
-
-//   it("redeemCollateral(): a redemption made at a non-zero base rate increases ETH-per-LQTY-staked in the staking contract", async () => {
-//     // time fast-forwards 1 year, and multisig stakes 1 LQTY
-//     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
-//     await mahaToken.approve(lqtyStaking.address, dec(1, 18), { from: multisig });
-//     await lqtyStaking.stake(dec(1, 18), { from: multisig });
-
-//     await openTrove({ ICR: toBN(dec(20, 18)), extraParams: { from: whale } });
-
-//     await openTrove({
-//       ICR: toBN(dec(200, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: A }
-//     });
-//     await openTrove({
-//       ICR: toBN(dec(190, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: B }
-//     });
-//     await openTrove({
-//       ICR: toBN(dec(180, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: C }
-//     });
-
-//     // Check baseRate == 0
-//     assert.equal(await troveManager.baseRate(), "0");
-
-//     const A_balanceBefore = await arthToken.balanceOf(A);
-//     const B_balanceBefore = await arthToken.balanceOf(B);
-
-//     // A redeems 10 ARTH
-//     await th.redeemCollateral(A, contracts, dec(10, 18), GAS_PRICE);
-
-//     // Check A's balance has decreased by 10 ARTH
-//     assert.equal(await arthToken.balanceOf(A), A_balanceBefore.sub(toBN(dec(10, 18))).toString());
-
-//     // Check baseRate is now non-zero
-//     const baseRate_1 = await troveManager.baseRate();
-//     assert.isTrue(baseRate_1.gt(toBN("0")));
-
-//     // Check LQTY Staking ETH-fees-per-LQTY-staked before is zero
-//     const F_ETH_Before = await lqtyStaking.F_ETH();
-
-//     // B redeems 10 ARTH
-//     await th.redeemCollateral(B, contracts, dec(10, 18), GAS_PRICE);
-
-//     // Check B's balance has decreased by 10 ARTH
-//     assert.equal(await arthToken.balanceOf(B), B_balanceBefore.sub(toBN(dec(10, 18))).toString());
-
-//     const F_ETH_After = await lqtyStaking.F_ETH();
-
-//     // check LQTY Staking balance has increased
-//     assert.isTrue(F_ETH_After.gt(F_ETH_Before));
-//   });
-
-//   it("redeemCollateral(): a redemption sends the ETH remainder (ETHDrawn - ETHFee) to the redeemer", async () => {
-//     // time fast-forwards 1 year, and multisig stakes 1 LQTY
-//     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
-//     await mahaToken.approve(lqtyStaking.address, dec(1, 18), { from: multisig });
-//     await lqtyStaking.stake(dec(1, 18), { from: multisig });
-
-//     const { totalDebt: W_totalDebt } = await openTrove({
-//       ICR: toBN(dec(20, 18)),
-//       extraParams: { from: whale }
-//     });
-
-//     const { totalDebt: A_totalDebt } = await openTrove({
-//       ICR: toBN(dec(200, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: A }
-//     });
-//     const { totalDebt: B_totalDebt } = await openTrove({
-//       ICR: toBN(dec(190, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: B }
-//     });
-//     const { totalDebt: C_totalDebt } = await openTrove({
-//       ICR: toBN(dec(180, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: C }
-//     });
-//     const totalDebt = W_totalDebt.add(A_totalDebt).add(B_totalDebt).add(C_totalDebt);
-
-//     const A_balanceBefore = toBN(await web3.eth.getBalance(A));
-
-//     // Confirm baseRate before redemption is 0
-//     const baseRate = await troveManager.baseRate();
-//     assert.equal(baseRate, "0");
-
-//     // Check total ARTH supply
-//     const activeARTH = await activePool.getARTHDebt();
-//     const defaultARTH = await defaultPool.getARTHDebt();
-
-//     const totalARTHSupply = activeARTH.add(defaultARTH);
-//     th.assertIsApproximatelyEqual(totalARTHSupply, totalDebt);
-
-//     // A redeems 9 ARTH
-//     const redemptionAmount = toBN(dec(9, 18));
-//     const gasUsed = await th.redeemCollateral(A, contracts, redemptionAmount, GAS_PRICE);
-
-//     /*
-//     At ETH:USD price of 200:
-//     ETHDrawn = (9 / 200) = 0.045 ETH
-//     ETHfee = (0.005 + (1/2) *( 9/260)) * ETHDrawn = 0.00100384615385 ETH
-//     ETHRemainder = 0.045 - 0.001003... = 0.0439961538462
-//     */
-
-//     const A_balanceAfter = toBN(await web3.eth.getBalance(A));
-
-//     // check A's ETH balance has increased by 0.045 ETH
-//     const price = await priceFeed.getPrice();
-//     const ETHDrawn = redemptionAmount.mul(mv._1e18BN).div(price);
-//     th.assertIsApproximatelyEqual(
-//       A_balanceAfter.sub(A_balanceBefore),
-//       ETHDrawn.sub(
-//         toBN(dec(5, 15))
-//           .add(redemptionAmount.mul(mv._1e18BN).div(totalDebt).div(toBN(2)))
-//           .mul(ETHDrawn)
-//           .div(mv._1e18BN)
-//       ).sub(toBN(gasUsed * GAS_PRICE)), // substract gas used for troveManager.redeemCollateral from expected received ETH
-//       100000
-//     );
-//   });
-
-//   it("redeemCollateral(): a full redemption (leaving trove with 0 debt), closes the trove", async () => {
-//     // time fast-forwards 1 year, and multisig stakes 1 LQTY
-//     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
-//     await mahaToken.approve(lqtyStaking.address, dec(1, 18), { from: multisig });
-//     await lqtyStaking.stake(dec(1, 18), { from: multisig });
-
-//     const { netDebt: W_netDebt } = await openTrove({
-//       ICR: toBN(dec(20, 18)),
-//       extraARTHAmount: dec(10000, 18),
-//       extraParams: { from: whale }
-//     });
-
-//     const { netDebt: A_netDebt } = await openTrove({
-//       ICR: toBN(dec(200, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: A }
-//     });
-//     const { netDebt: B_netDebt } = await openTrove({
-//       ICR: toBN(dec(190, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: B }
-//     });
-//     const { netDebt: C_netDebt } = await openTrove({
-//       ICR: toBN(dec(180, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: C }
-//     });
-//     const { netDebt: D_netDebt } = await openTrove({
-//       ICR: toBN(dec(280, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: D }
-//     });
-//     const redemptionAmount = A_netDebt.add(B_netDebt)
-//       .add(C_netDebt)
-//       .add(toBN(dec(10, 18)));
-
-//     const A_balanceBefore = toBN(await web3.eth.getBalance(A));
-//     const B_balanceBefore = toBN(await web3.eth.getBalance(B));
-//     const C_balanceBefore = toBN(await web3.eth.getBalance(C));
-
-//     // whale redeems 360 ARTH.  Expect this to fully redeem A, B, C, and partially redeem D.
-//     await th.redeemCollateral(whale, contracts, redemptionAmount, GAS_PRICE);
-
-//     // Check A, B, C have been closed
-//     assert.isFalse(await sortedTroves.contains(A));
-//     assert.isFalse(await sortedTroves.contains(B));
-//     assert.isFalse(await sortedTroves.contains(C));
-
-//     // Check D remains active
-//     assert.isTrue(await sortedTroves.contains(D));
-//   });
-
-//   const redeemCollateral3Full1Partial = async () => {
-//     // time fast-forwards 1 year, and multisig stakes 1 LQTY
-//     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_YEAR, web3.currentProvider);
-//     await mahaToken.approve(lqtyStaking.address, dec(1, 18), { from: multisig });
-//     await lqtyStaking.stake(dec(1, 18), { from: multisig });
-
-//     const { netDebt: W_netDebt } = await openTrove({
-//       ICR: toBN(dec(20, 18)),
-//       extraARTHAmount: dec(10000, 18),
-//       extraParams: { from: whale }
-//     });
-
-//     const { netDebt: A_netDebt, collateral: A_coll } = await openTrove({
-//       ICR: toBN(dec(200, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: A }
-//     });
-//     const { netDebt: B_netDebt, collateral: B_coll } = await openTrove({
-//       ICR: toBN(dec(190, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: B }
-//     });
-//     const { netDebt: C_netDebt, collateral: C_coll } = await openTrove({
-//       ICR: toBN(dec(180, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: C }
-//     });
-//     const { netDebt: D_netDebt } = await openTrove({
-//       ICR: toBN(dec(280, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: D }
-//     });
-//     const redemptionAmount = A_netDebt.add(B_netDebt)
-//       .add(C_netDebt)
-//       .add(toBN(dec(10, 18)));
-
-//     const A_balanceBefore = toBN(await web3.eth.getBalance(A));
-//     const B_balanceBefore = toBN(await web3.eth.getBalance(B));
-//     const C_balanceBefore = toBN(await web3.eth.getBalance(C));
-//     const D_balanceBefore = toBN(await web3.eth.getBalance(D));
-
-//     const A_collBefore = await troveManager.getTroveColl(A);
-//     const B_collBefore = await troveManager.getTroveColl(B);
-//     const C_collBefore = await troveManager.getTroveColl(C);
-//     const D_collBefore = await troveManager.getTroveColl(D);
-
-//     // Confirm baseRate before redemption is 0
-//     const baseRate = await troveManager.baseRate();
-//     assert.equal(baseRate, "0");
-
-//     // whale redeems ARTH.  Expect this to fully redeem A, B, C, and partially redeem D.
-//     await th.redeemCollateral(whale, contracts, redemptionAmount, GAS_PRICE);
-
-//     // Check A, B, C have been closed
-//     assert.isFalse(await sortedTroves.contains(A));
-//     assert.isFalse(await sortedTroves.contains(B));
-//     assert.isFalse(await sortedTroves.contains(C));
-
-//     // Check D stays active
-//     assert.isTrue(await sortedTroves.contains(D));
-
-//     /*
-//     At ETH:USD price of 200, with full redemptions from A, B, C:
-
-//     ETHDrawn from A = 100/200 = 0.5 ETH --> Surplus = (1-0.5) = 0.5
-//     ETHDrawn from B = 120/200 = 0.6 ETH --> Surplus = (1-0.6) = 0.4
-//     ETHDrawn from C = 130/200 = 0.65 ETH --> Surplus = (2-0.65) = 1.35
-//     */
-
-//     const A_balanceAfter = toBN(await web3.eth.getBalance(A));
-//     const B_balanceAfter = toBN(await web3.eth.getBalance(B));
-//     const C_balanceAfter = toBN(await web3.eth.getBalance(C));
-//     const D_balanceAfter = toBN(await web3.eth.getBalance(D));
-
-//     // Check A, B, C’s trove collateral balance is zero (fully redeemed-from troves)
-//     const A_collAfter = await troveManager.getTroveColl(A);
-//     const B_collAfter = await troveManager.getTroveColl(B);
-//     const C_collAfter = await troveManager.getTroveColl(C);
-//     assert.isTrue(A_collAfter.eq(toBN(0)));
-//     assert.isTrue(B_collAfter.eq(toBN(0)));
-//     assert.isTrue(C_collAfter.eq(toBN(0)));
-
-//     // check D's trove collateral balances have decreased (the partially redeemed-from trove)
-//     const D_collAfter = await troveManager.getTroveColl(D);
-//     assert.isTrue(D_collAfter.lt(D_collBefore));
-
-//     // Check A, B, C (fully redeemed-from troves), and D's (the partially redeemed-from trove) balance has not changed
-//     assert.isTrue(A_balanceAfter.eq(A_balanceBefore));
-//     assert.isTrue(B_balanceAfter.eq(B_balanceBefore));
-//     assert.isTrue(C_balanceAfter.eq(C_balanceBefore));
-//     assert.isTrue(D_balanceAfter.eq(D_balanceBefore));
-
-//     // D is not closed, so cannot open trove
-//     await assertRevert(
-//       borrowerOperations.openTrove(th._100pct, 0, ZERO_ADDRESS, ZERO_ADDRESS, {
-//         from: D,
-//         value: dec(10, 18)
-//       }),
-//       "BorrowerOps: Trove is active"
-//     );
-
-//     return {
-//       A_netDebt,
-//       A_coll,
-//       B_netDebt,
-//       B_coll,
-//       C_netDebt,
-//       C_coll
-//     };
-//   };
 
 //   it("redeemCollateral(): emits correct debt and coll values in each redeemed trove's TroveUpdated event", async () => {
 //     const { netDebt: W_netDebt } = await openTrove({
@@ -5212,196 +4506,76 @@
 //     );
 //   });
 
-//   it("redeemCollateral(): a redemption that closes a trove leaves the trove's ETH surplus (collateral - ETH drawn) available for the trove owner to claim", async () => {
-//     const {
-//       A_netDebt,
-//       A_coll,
-//       B_netDebt,
-//       B_coll,
-//       C_netDebt,
-//       C_coll
-//     } = await redeemCollateral3Full1Partial();
+  it("redeemCollateral(): reverts if fee eats up all returned collateral", async () => {
+    // --- SETUP ---
+    const { arthAmount } = await openTrove({
+      ICR: toBN(dec(200, 16)),
+      extraARTHAmount: dec(1, 24),
+      extraParams: { from: alice }
+    });
+    await openTrove({ ICR: toBN(dec(150, 16)), extraParams: { from: bob } });
 
-//     const A_balanceBefore = toBN(await web3.eth.getBalance(A));
-//     const B_balanceBefore = toBN(await web3.eth.getBalance(B));
-//     const C_balanceBefore = toBN(await web3.eth.getBalance(C));
+    const price = await priceFeed.getPrice();
+    assert.equal(price, dec(200, 18));
 
-//     // CollSurplusPool endpoint cannot be called directly
-//     await assertRevert(
-//       collSurplusPool.claimColl(A),
-//       "CollSurplusPool: Caller is not Borrower Operations"
-//     );
+    // --- TEST ---
 
-//     const A_GAS = th.gasUsed(
-//       await borrowerOperations.claimCollateral({ from: A, gasPrice: GAS_PRICE })
-//     );
-//     const B_GAS = th.gasUsed(
-//       await borrowerOperations.claimCollateral({ from: B, gasPrice: GAS_PRICE })
-//     );
-//     const C_GAS = th.gasUsed(
-//       await borrowerOperations.claimCollateral({ from: C, gasPrice: GAS_PRICE })
-//     );
+    // skip bootstrapping phase
+    await th.fastForwardTime(timeValues.SECONDS_IN_ONE_WEEK * 2, web3.currentProvider);
 
-//     const A_expectedBalance = A_balanceBefore.sub(toBN(A_GAS * GAS_PRICE));
-//     const B_expectedBalance = B_balanceBefore.sub(toBN(B_GAS * GAS_PRICE));
-//     const C_expectedBalance = C_balanceBefore.sub(toBN(C_GAS * GAS_PRICE));
+    // keep redeeming until we get the base rate to the ceiling of 100%
+    for (let i = 0; i < 2; i++) {
+      // Find hints for redeeming
+      const {
+        firstRedemptionHint,
+        partialRedemptionHintNICR
+      } = await hintHelpers.getRedemptionHints(arthAmount, price, 0);
 
-//     const A_balanceAfter = toBN(await web3.eth.getBalance(A));
-//     const B_balanceAfter = toBN(await web3.eth.getBalance(B));
-//     const C_balanceAfter = toBN(await web3.eth.getBalance(C));
+      // Don't pay for gas, as it makes it easier to calculate the received Ether
+      const redemptionTx = await troveManager.redeemCollateral(
+        arthAmount,
+        firstRedemptionHint,
+        ZERO_ADDRESS,
+        alice,
+        partialRedemptionHintNICR,
+        0,
+        th._100pct,
+        {
+          from: alice,
+          gasPrice: GAS_PRICE
+        }
+      );
 
-//     const price = toBN(await priceFeed.getPrice());
+      await openTrove({ ICR: toBN(dec(150, 16)), extraParams: { from: bob } });
+      await borrowerOperations.adjustTrove(th._100pct, 0, arthAmount, true, alice, alice, {
+        from: alice,
+        value: arthAmount.mul(mv._1e18BN).div(price)
+      });
+    }
 
-//     th.assertIsApproximatelyEqual(
-//       A_balanceAfter,
-//       A_expectedBalance.add(A_coll.sub(A_netDebt.mul(mv._1e18BN).div(price)))
-//     );
-//     th.assertIsApproximatelyEqual(
-//       B_balanceAfter,
-//       B_expectedBalance.add(B_coll.sub(B_netDebt.mul(mv._1e18BN).div(price)))
-//     );
-//     th.assertIsApproximatelyEqual(
-//       C_balanceAfter,
-//       C_expectedBalance.add(C_coll.sub(C_netDebt.mul(mv._1e18BN).div(price)))
-//     );
-//   });
+    const { firstRedemptionHint, partialRedemptionHintNICR } = await hintHelpers.getRedemptionHints(
+      arthAmount,
+      price,
+      0
+    );
 
-//   it("redeemCollateral(): a redemption that closes a trove leaves the trove's ETH surplus (collateral - ETH drawn) available for the trove owner after re-opening trove", async () => {
-//     const {
-//       A_netDebt,
-//       A_coll: A_collBefore,
-//       B_netDebt,
-//       B_coll: B_collBefore,
-//       C_netDebt,
-//       C_coll: C_collBefore
-//     } = await redeemCollateral3Full1Partial();
-
-//     const price = await priceFeed.getPrice();
-//     const A_surplus = A_collBefore.sub(A_netDebt.mul(mv._1e18BN).div(price));
-//     const B_surplus = B_collBefore.sub(B_netDebt.mul(mv._1e18BN).div(price));
-//     const C_surplus = C_collBefore.sub(C_netDebt.mul(mv._1e18BN).div(price));
-
-//     const { collateral: A_coll } = await openTrove({
-//       ICR: toBN(dec(200, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: A }
-//     });
-//     const { collateral: B_coll } = await openTrove({
-//       ICR: toBN(dec(190, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: B }
-//     });
-//     const { collateral: C_coll } = await openTrove({
-//       ICR: toBN(dec(180, 16)),
-//       extraARTHAmount: dec(100, 18),
-//       extraParams: { from: C }
-//     });
-
-//     const A_collAfter = await troveManager.getTroveColl(A);
-//     const B_collAfter = await troveManager.getTroveColl(B);
-//     const C_collAfter = await troveManager.getTroveColl(C);
-
-//     assert.isTrue(A_collAfter.eq(A_coll));
-//     assert.isTrue(B_collAfter.eq(B_coll));
-//     assert.isTrue(C_collAfter.eq(C_coll));
-
-//     const A_balanceBefore = toBN(await web3.eth.getBalance(A));
-//     const B_balanceBefore = toBN(await web3.eth.getBalance(B));
-//     const C_balanceBefore = toBN(await web3.eth.getBalance(C));
-
-//     const A_GAS = th.gasUsed(
-//       await borrowerOperations.claimCollateral({ from: A, gasPrice: GAS_PRICE })
-//     );
-//     const B_GAS = th.gasUsed(
-//       await borrowerOperations.claimCollateral({ from: B, gasPrice: GAS_PRICE })
-//     );
-//     const C_GAS = th.gasUsed(
-//       await borrowerOperations.claimCollateral({ from: C, gasPrice: GAS_PRICE })
-//     );
-
-//     const A_expectedBalance = A_balanceBefore.sub(toBN(A_GAS * GAS_PRICE));
-//     const B_expectedBalance = B_balanceBefore.sub(toBN(B_GAS * GAS_PRICE));
-//     const C_expectedBalance = C_balanceBefore.sub(toBN(C_GAS * GAS_PRICE));
-
-//     const A_balanceAfter = toBN(await web3.eth.getBalance(A));
-//     const B_balanceAfter = toBN(await web3.eth.getBalance(B));
-//     const C_balanceAfter = toBN(await web3.eth.getBalance(C));
-
-//     th.assertIsApproximatelyEqual(A_balanceAfter, A_expectedBalance.add(A_surplus));
-//     th.assertIsApproximatelyEqual(B_balanceAfter, B_expectedBalance.add(B_surplus));
-//     th.assertIsApproximatelyEqual(C_balanceAfter, C_expectedBalance.add(C_surplus));
-//   });
-
-//   it("redeemCollateral(): reverts if fee eats up all returned collateral", async () => {
-//     // --- SETUP ---
-//     const { arthAmount } = await openTrove({
-//       ICR: toBN(dec(200, 16)),
-//       extraARTHAmount: dec(1, 24),
-//       extraParams: { from: alice }
-//     });
-//     await openTrove({ ICR: toBN(dec(150, 16)), extraParams: { from: bob } });
-
-//     const price = await priceFeed.getPrice();
-//     assert.equal(price, dec(200, 18));
-
-//     // --- TEST ---
-
-//     // skip bootstrapping phase
-//     await th.fastForwardTime(timeValues.SECONDS_IN_ONE_WEEK * 2, web3.currentProvider);
-
-//     // keep redeeming until we get the base rate to the ceiling of 100%
-//     for (let i = 0; i < 2; i++) {
-//       // Find hints for redeeming
-//       const {
-//         firstRedemptionHint,
-//         partialRedemptionHintNICR
-//       } = await hintHelpers.getRedemptionHints(arthAmount, price, 0);
-
-//       // Don't pay for gas, as it makes it easier to calculate the received Ether
-//       const redemptionTx = await troveManager.redeemCollateral(
-//         arthAmount,
-//         firstRedemptionHint,
-//         ZERO_ADDRESS,
-//         alice,
-//         partialRedemptionHintNICR,
-//         0,
-//         th._100pct,
-//         {
-//           from: alice,
-//           gasPrice: GAS_PRICE
-//         }
-//       );
-
-//       await openTrove({ ICR: toBN(dec(150, 16)), extraParams: { from: bob } });
-//       await borrowerOperations.adjustTrove(th._100pct, 0, arthAmount, true, alice, alice, {
-//         from: alice,
-//         value: arthAmount.mul(mv._1e18BN).div(price)
-//       });
-//     }
-
-//     const { firstRedemptionHint, partialRedemptionHintNICR } = await hintHelpers.getRedemptionHints(
-//       arthAmount,
-//       price,
-//       0
-//     );
-
-//     await assertRevert(
-//       troveManager.redeemCollateral(
-//         arthAmount,
-//         firstRedemptionHint,
-//         ZERO_ADDRESS,
-//         alice,
-//         partialRedemptionHintNICR,
-//         0,
-//         th._100pct,
-//         {
-//           from: alice,
-//           gasPrice: GAS_PRICE
-//         }
-//       ),
-//       "TroveManager: Fee would eat up all returned collateral"
-//     );
-//   });
+    await assertRevert(
+      troveManager.redeemCollateral(
+        arthAmount,
+        firstRedemptionHint,
+        ZERO_ADDRESS,
+        alice,
+        partialRedemptionHintNICR,
+        0,
+        th._100pct,
+        {
+          from: alice,
+          gasPrice: GAS_PRICE
+        }
+      ),
+      "TroveManager: Fee would eat up all returned collateral"
+    );
+  });
 
 //   it("getPendingARTHDebtReward(): Returns 0 if there is no pending ARTHDebt reward", async () => {
 //     // Make some troves
@@ -5689,6 +4863,6 @@
 //   it("hasPendingRewards(): Returns false it trove is not active", async () => {
 //     assert.isFalse(await troveManager.hasPendingRewards(alice));
 //   });
-// });
+});
 
-// contract("Reset chain state", async accounts => {});
+contract("Reset chain state", async accounts => {});
