@@ -620,7 +620,13 @@ contract LinkTellorPriceFeed is Ownable, CheckContract, BaseMath, IPriceFeed {
          */
 
         // Try to get the price data from the previous round:
-        try priceAggregator.getRoundData(_currentRoundId - 1) returns (
+        if (_currentRoundId == 0) {
+            _currentRoundId = (2^80 - 1);
+        } else {
+            _currentRoundId = _currentRoundId - 1;
+        }
+        try priceAggregator.getRoundData(_currentRoundId) returns (
+        // try priceAggregator.getRoundData(_currentRoundId - 1) returns (
             uint80 roundId,
             int256 answer,
             uint256, /* startedAt */

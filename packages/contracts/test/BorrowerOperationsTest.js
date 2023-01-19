@@ -160,7 +160,7 @@
 //       // check status before
 //       assert.equal(status_Before, 1);
 
-//       // Alice adds second collateral
+//       // Alice adds second collateral 
 //       await borrowerOperations.addColl(alice, alice, { from: alice, value: dec(1, "ether") });
 
 //       const alice_Trove_After = await troveManager.Troves(alice);
