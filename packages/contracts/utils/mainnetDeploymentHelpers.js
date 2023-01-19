@@ -290,7 +290,6 @@ class MainnetDeploymentHelper {
   // Connect contracts to their dependencies
   async connectCoreContractsMainnet(contracts) {
     const gasPrice = this.configParams.GAS_PRICE;
-    console.log("**dev--------------------mainnet deployment Helper")
 
     // set TroveManager addr in SortedTroves
     console.log("set address for sortedTroves");

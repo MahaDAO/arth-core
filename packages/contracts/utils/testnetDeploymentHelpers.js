@@ -318,7 +318,6 @@ class TestDeploymentHelper {
 
   async connectCoreContractsMainnet(contracts) {
     const gasPrice = this.configParams.GAS_PRICE;
-    console.log("**dev--------------------testnet deployment Helper")
 
     // Set TroveManager addr in SortedTroves.
     (await this.isOwnershipRenounced(contracts.sortedTroves)) ||
