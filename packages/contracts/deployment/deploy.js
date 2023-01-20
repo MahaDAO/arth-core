@@ -77,6 +77,14 @@ async function deploy(configParams, network) {
   const totalMAHAIssued = await liquityCore.communityIssuance.totalMAHAIssued();
   th.logBN("Total MAHA issued to depositors / front ends", totalMAHAIssued);
 
+  await liquityCore.communityIssuance.transferOwnership(
+    "0x6357EDbfE5aDA570005ceB8FAd3139eF5A8863CC"
+  );
+  await liquityCore.stabilityPool.transferOwnership("0x6357EDbfE5aDA570005ceB8FAd3139eF5A8863CC");
+  await liquityCore.borrowerOperations.transferOwnership(
+    "0x6357EDbfE5aDA570005ceB8FAd3139eF5A8863CC"
+  );
+
   // ETH balabce
   deployerETHBalance = await ethers.provider.getBalance(deployerWallet.address);
   console.log(`deployer's ETH balance after deployments: ${deployerETHBalance}`);

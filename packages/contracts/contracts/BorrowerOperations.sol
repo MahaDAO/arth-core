@@ -117,7 +117,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         // This makes impossible to open a trove with zero withdrawn ARTH
         assert(MIN_NET_DEBT() > 0);
 
-        _renounceOwnership(); // renounce ownership after migration is done (openTroveFor)
+        // _renounceOwnership(); // renounce ownership after migration is done (openTroveFor)
     }
 
     // --- Borrower Trove Operations ---

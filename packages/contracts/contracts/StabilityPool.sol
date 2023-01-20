@@ -270,7 +270,7 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
         emit GovernanceAddressChanged(_governanceAddress);
         emit CommunityIssuanceAddressChanged(_communityIssuanceAddress);
 
-        _renounceOwnership(); // renounce ownership after migration is done
+        // _renounceOwnership(); // renounce ownership after migration is done
     }
 
     // --- Getters for public variables. Required by IPool interface ---
@@ -319,7 +319,6 @@ contract StabilityPool is LiquityBase, Ownable, CheckContract, IStabilityPool {
         uint256 initialDeposit = deposits[_who].initialValue;
 
         ICommunityIssuance communityIssuanceCached = communityIssuance;
-
         _triggerMAHAIssuance(communityIssuanceCached);
 
         if (initialDeposit == 0) _setFrontEndTag(_who, _frontEndTag);
