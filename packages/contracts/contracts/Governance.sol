@@ -23,9 +23,9 @@ contract Governance is BaseMath, Ownable, IGovernance {
     string public constant NAME = "Governance";
     uint256 public constant _100pct = 1000000000000000000; // 1e18 == 100%
 
-    uint256 private BORROWING_FEE_FLOOR = (DECIMAL_PRECISION / 1000) * 0; // 0.5%
-    uint256 private REDEMPTION_FEE_FLOOR = (DECIMAL_PRECISION / 1000) * 5; // 0.5%
-    uint256 private MAX_BORROWING_FEE = (DECIMAL_PRECISION / 100) * 0; // 5%
+    uint256 private BORROWING_FEE_FLOOR = (DECIMAL_PRECISION / 1000) * 5; // 0.5%
+    uint256 private REDEMPTION_FEE_FLOOR = (DECIMAL_PRECISION / 1000) * 1; // 0.1%
+    uint256 private MAX_BORROWING_FEE = (DECIMAL_PRECISION / 100) * 5; // 5%
 
     // Amount of ARTH to be locked in gas pool on opening troves
     uint256 private immutable ARTH_GAS_COMPENSATION;
