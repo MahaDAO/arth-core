@@ -4,7 +4,7 @@
 
 ## TroveListingParams interface
 
-Parameters of the [getTroves()](./arth-base.readableliquity.gettroves_1.md) function.
+Parameters of the [getTroves()](./arth-base.readablearth.gettroves_1.md) function.
 
 <b>Signature:</b>
 

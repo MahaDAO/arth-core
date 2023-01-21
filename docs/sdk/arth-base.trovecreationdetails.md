@@ -4,7 +4,7 @@
 
 ## TroveCreationDetails interface
 
-Details of an [openTrove()](./arth-base.transactableliquity.opentrove.md) transaction.
+Details of an [openTrove()](./arth-base.transactablearth.opentrove.md) transaction.
 
 <b>Signature:</b>
 

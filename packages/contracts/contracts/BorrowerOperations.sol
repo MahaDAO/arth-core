@@ -11,7 +11,6 @@ import "./Dependencies/LiquityBase.sol";
 import "./Dependencies/SafeMath.sol";
 import "./Dependencies/Ownable.sol";
 import "./Dependencies/CheckContract.sol";
-import "./Dependencies/console.sol";
 
 contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOperations {
     using SafeMath for uint256;
@@ -70,7 +69,6 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         IARTHValuecoin arthToken;
     }
 
-
     mapping(address => bool) public frontEnds;
 
     // --- Dependency setters ---
@@ -86,9 +84,6 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         address _sortedTrovesAddress,
         address _arthTokenAddress
     ) external override onlyOwner {
-        // This makes impossible to open a trove with zero withdrawn ARTH
-        assert(MIN_NET_DEBT > 0);
-
         checkContract(_troveManagerAddress);
         checkContract(_activePoolAddress);
         checkContract(_defaultPoolAddress);
@@ -119,7 +114,10 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         emit SortedTrovesAddressChanged(_sortedTrovesAddress);
         emit ARTHTokenAddressChanged(_arthTokenAddress);
 
-        _renounceOwnership();
+        // This makes impossible to open a trove with zero withdrawn ARTH
+        assert(MIN_NET_DEBT() > 0);
+
+        // _renounceOwnership(); // renounce ownership after migration is done (openTroveFor)
     }
 
     // --- Borrower Trove Operations ---
@@ -135,11 +133,67 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         uint256 _maxFeePercentage,
         uint256 _ARTHAmount,
         address _upperHint,
+        address _lowerHint
+    ) external payable override {
+        _openTrove(
+            msg.sender,
+            msg.sender,
+            _maxFeePercentage,
+            _ARTHAmount,
+            _upperHint,
+            _lowerHint,
+            address(0)
+        );
+    }
+
+    function openTrove(
+        uint256 _maxFeePercentage,
+        uint256 _ARTHAmount,
+        address _upperHint,
         address _lowerHint,
         address _frontEndTag
     ) external payable override {
+        _openTrove(
+            msg.sender,
+            msg.sender,
+            _maxFeePercentage,
+            _ARTHAmount,
+            _upperHint,
+            _lowerHint,
+            _frontEndTag
+        );
+    }
+
+    function openTroveFor(
+        address _who,
+        uint256 _maxFeePercentage,
+        uint256 _ARTHAmount,
+        address _upperHint,
+        address _lowerHint,
+        address _frontEndTag
+    ) external payable onlyOwner {
+        _openTrove(
+            _who,
+            msg.sender,
+            _maxFeePercentage,
+            _ARTHAmount,
+            _upperHint,
+            _lowerHint,
+            _frontEndTag
+        );
+    }
+
+    function _openTrove(
+        address _who,
+        address _arthRecipeint,
+        uint256 _maxFeePercentage,
+        uint256 _ARTHAmount,
+        address _upperHint,
+        address _lowerHint,
+        address _frontEndTag
+    ) internal {
         _requireFrontEndIsRegisteredOrZero(_frontEndTag);
-        _requireFrontEndNotRegistered(msg.sender);
+        _requireFrontEndNotRegistered(_who);
 
         ContractsCache memory contractsCache = ContractsCache(troveManager, activePool, arthToken);
         LocalVariables_openTrove memory vars;
@@ -148,7 +202,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         bool isRecoveryMode = _checkRecoveryMode(vars.price);
 
         _requireValidMaxFeePercentage(_maxFeePercentage, isRecoveryMode);
-        _requireTroveisNotActive(contractsCache.troveManager, msg.sender);
+        _requireTroveisNotActive(contractsCache.troveManager, _who);
 
         vars.ARTHFee;
         vars.netDebt = _ARTHAmount;
@@ -187,24 +241,24 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         }
 
         // Set the trove struct's properties
-        contractsCache.troveManager.setTroveFrontEndTag(msg.sender, _frontEndTag);
-        contractsCache.troveManager.setTroveStatus(msg.sender, 1);
-        contractsCache.troveManager.increaseTroveColl(msg.sender, msg.value);
-        contractsCache.troveManager.increaseTroveDebt(msg.sender, vars.compositeDebt);
+        contractsCache.troveManager.setTroveFrontEndTag(_who, _frontEndTag);
+        contractsCache.troveManager.setTroveStatus(_who, 1);
+        contractsCache.troveManager.increaseTroveColl(_who, msg.value);
+        contractsCache.troveManager.increaseTroveDebt(_who, vars.compositeDebt);
 
-        contractsCache.troveManager.updateTroveRewardSnapshots(msg.sender);
-        vars.stake = contractsCache.troveManager.updateStakeAndTotalStakes(msg.sender);
+        contractsCache.troveManager.updateTroveRewardSnapshots(_who);
+        vars.stake = contractsCache.troveManager.updateStakeAndTotalStakes(_who);
 
-        sortedTroves.insert(msg.sender, vars.NICR, _upperHint, _lowerHint);
-        vars.arrayIndex = contractsCache.troveManager.addTroveOwnerToArray(msg.sender);
-        emit TroveCreated(msg.sender, vars.arrayIndex);
+        sortedTroves.insert(_who, vars.NICR, _upperHint, _lowerHint);
+        vars.arrayIndex = contractsCache.troveManager.addTroveOwnerToArray(_who);
+        emit TroveCreated(_who, vars.arrayIndex);
 
         // Move the ether to the Active Pool, and mint the ARTHAmount to the borrower
         _activePoolAddColl(contractsCache.activePool, msg.value);
         _withdrawARTH(
             contractsCache.activePool,
             contractsCache.arthToken,
-            msg.sender,
+            _arthRecipeint,
             _ARTHAmount,
             vars.netDebt
         );
@@ -213,18 +267,18 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
             contractsCache.activePool,
             contractsCache.arthToken,
             gasPoolAddress,
-            ARTH_GAS_COMPENSATION,
-            ARTH_GAS_COMPENSATION
+            ARTH_GAS_COMPENSATION(),
+            ARTH_GAS_COMPENSATION()
         );
 
         emit TroveUpdated(
-            msg.sender,
+            _who,
             vars.compositeDebt,
             msg.value,
             vars.stake,
             BorrowerOperation.openTrove
         );
-        emit ARTHBorrowingFeePaid(msg.sender, vars.ARTHFee);
+        emit ARTHBorrowingFeePaid(_who, vars.ARTHFee);
     }
 
     // Send ETH as collateral to a trove
@@ -428,7 +482,11 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         uint256 coll = troveManagerCached.getTroveColl(msg.sender);
         uint256 debt = troveManagerCached.getTroveDebt(msg.sender);
 
-        _requireSufficientARTHBalance(arthTokenCached, msg.sender, debt.sub(ARTH_GAS_COMPENSATION));
+        _requireSufficientARTHBalance(
+            arthTokenCached,
+            msg.sender,
+            debt.sub(ARTH_GAS_COMPENSATION())
+        );
 
         uint256 newTCR = _getNewTCRFromTroveChange(coll, false, debt, false, price);
         _requireNewTCRisAboveCCR(newTCR);
@@ -439,8 +497,8 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         emit TroveUpdated(msg.sender, 0, 0, 0, BorrowerOperation.closeTrove);
 
         // Burn the repaid ARTH from the user's balance and the gas compensation from the Gas Pool
-        _repayARTH(activePoolCached, arthTokenCached, msg.sender, debt.sub(ARTH_GAS_COMPENSATION));
-        _repayARTH(activePoolCached, arthTokenCached, gasPoolAddress, ARTH_GAS_COMPENSATION);
+        _repayARTH(activePoolCached, arthTokenCached, msg.sender, debt.sub(ARTH_GAS_COMPENSATION()));
+        _repayARTH(activePoolCached, arthTokenCached, gasPoolAddress, ARTH_GAS_COMPENSATION());
 
         // Send the collateral back to the user
         activePoolCached.sendETH(msg.sender, coll);
@@ -471,6 +529,7 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         if (ARTHFee > 0) {
             uint256 feeForEcosystemFund = ARTHFee;
 
+            // give 50% to ecosystem and frontend
             if (_frontEndTag != address(0)) {
                 feeForEcosystemFund = ARTHFee.mul(50).div(100);
                 uint256 _fee = ARTHFee.sub(feeForEcosystemFund);
@@ -565,6 +624,11 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         uint256 _ARTHAmount,
         uint256 _netDebtIncrease
     ) internal {
+        require(
+            _activePool.getARTHDebt() + _ARTHAmount <= governance.getMaxDebtCeiling(),
+            "mint > max debt"
+        );
+        require(governance.getAllowMinting(), "!minting");
         _activePool.increaseARTHDebt(_netDebtIncrease);
         _arthToken.mint(_account, _ARTHAmount);
     }
@@ -709,16 +773,16 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         );
     }
 
-    function _requireAtLeastMinNetDebt(uint256 _netDebt) internal pure {
+    function _requireAtLeastMinNetDebt(uint256 _netDebt) internal view {
         require(
-            _netDebt >= MIN_NET_DEBT,
+            _netDebt >= MIN_NET_DEBT(),
             "BorrowerOps: Trove's net debt must be greater than minimum"
         );
     }
 
-    function _requireValidARTHRepayment(uint256 _currentDebt, uint256 _debtRepayment) internal pure {
+    function _requireValidARTHRepayment(uint256 _currentDebt, uint256 _debtRepayment) internal view {
         require(
-            _debtRepayment <= _currentDebt.sub(ARTH_GAS_COMPENSATION),
+            _debtRepayment <= _currentDebt.sub(ARTH_GAS_COMPENSATION()),
             "BorrowerOps: Amount repaid must not be larger than the Trove's debt"
         );
     }
@@ -837,7 +901,11 @@ contract BorrowerOperations is LiquityBase, Ownable, CheckContract, IBorrowerOpe
         return newTCR;
     }
 
-    function getCompositeDebt(uint256 _debt) external pure override returns (uint256) {
+    function getCompositeDebt(uint256 _debt) external view override returns (uint256) {
         return _getCompositeDebt(_debt);
+    }
+
+    function BORROWING_FEE_FLOOR() external view returns (uint256) {
+        return getBorrowingFeeFloor();
     }
 }

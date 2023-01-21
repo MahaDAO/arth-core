@@ -4,7 +4,7 @@
 
 ## RedemptionDetails interface
 
-Details of a [redeemARTH()](./arth-base.transactableliquity.redeemarth.md) transaction.
+Details of a [redeemARTH()](./arth-base.transactablearth.redeemarth.md) transaction.
 
 <b>Signature:</b>
 

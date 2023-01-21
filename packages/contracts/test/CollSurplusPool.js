@@ -92,7 +92,7 @@ contract("CollSurplusPool", async accounts => {
     const B_netDebt = await th.getAmountWithBorrowingFee(contracts, B_lusdAmount);
     const openTroveData = th.getTransactionData("openTrove(uint256,uint256,address,address,address)", [
       "0xde0b6b3a7640000",
-      web3.utils.toHex(B_lusdAmount),
+      web3.utils.toHex(B_arthAmount),
       B,
       B,
       "0x0"

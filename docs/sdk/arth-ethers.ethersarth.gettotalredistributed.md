@@ -4,6 +4,7 @@
 
 ## EthersARTH.getTotalRedistributed() method
 
+Get the total collateral and debt per stake that has been liquidated through redistribution.
 
 <b>Signature:</b>
 
@@ -20,4 +21,8 @@ getTotalRedistributed(overrides?: EthersCallOverrides): Promise<Trove>;
 <b>Returns:</b>
 
 Promise&lt;[Trove](./arth-base.trove.md)<!-- -->&gt;
+
+## Remarks
+
+Needed when dealing with instances of [TroveWithPendingRedistribution](./arth-base.trovewithpendingredistribution.md)<!-- -->.
 

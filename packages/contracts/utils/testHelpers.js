@@ -294,14 +294,12 @@ class TestHelper {
   // Given a composite debt, returns the actual debt  - i.e. subtracts the virtual debt.
   // Virtual debt = 50 ARTH.
   static async getActualDebtFromComposite(compositeDebt, contracts) {
-    const issuedDebt = await contracts.troveManager.getActualDebtFromComposite(compositeDebt);
-    return issuedDebt;
+    return await contracts.troveManager.getActualDebtFromComposite(compositeDebt);
   }
 
   // Adds the gas compensation (50 ARTH)
   static async getCompositeDebt(contracts, debt) {
-    const compositeDebt = contracts.borrowerOperations.getCompositeDebt(debt);
-    return compositeDebt;
+    return contracts.borrowerOperations.getCompositeDebt(debt);
   }
 
   static async getTroveEntireColl(contracts, trove) {
@@ -466,10 +464,8 @@ class TestHelper {
 
   static async getBorrowerOpsListHint(contracts, newColl, newDebt) {
     const newNICR = await contracts.hintHelpers.computeNominalCR(newColl, newDebt);
-    const {
-      hintAddress: approxfullListHint,
-      latestRandomSeed
-    } = await contracts.hintHelpers.getApproxHint(newNICR, 5, this.latestRandomSeed);
+    const { hintAddress: approxfullListHint, latestRandomSeed } =
+      await contracts.hintHelpers.getApproxHint(newNICR, 5, this.latestRandomSeed);
     this.latestRandomSeed = latestRandomSeed;
 
     const { 0: upperHint, 1: lowerHint } = await contracts.sortedTroves.findInsertPosition(
@@ -813,6 +809,8 @@ class TestHelper {
     } else {
       increasedTotalDebt = await this.getAmountWithBorrowingFee(contracts, arthAmount);
     }
+    // 1080000000000000000108
+    //  300000000000000000001
 
     await contracts.borrowerOperations.withdrawARTH(
       maxFeePercentage,
@@ -1248,14 +1246,8 @@ class TestHelper {
     const firstRedemptionHint = redemptionhint[0];
     const partialRedemptionNewICR = redemptionhint[1];
 
-    const {
-      hintAddress: approxPartialRedemptionHint,
-      latestRandomSeed
-    } = await contracts.hintHelpers.getApproxHint(
-      partialRedemptionNewICR,
-      50,
-      this.latestRandomSeed
-    );
+    const { hintAddress: approxPartialRedemptionHint, latestRandomSeed } =
+      await contracts.hintHelpers.getApproxHint(partialRedemptionNewICR, 50, this.latestRandomSeed);
     this.latestRandomSeed = latestRandomSeed;
 
     const exactPartialRedemptionHint = await contracts.sortedTroves.findInsertPosition(
@@ -1427,8 +1419,8 @@ class TestHelper {
     return Number(days) * (60 * 60 * 24);
   }
 
-  static async getTimeFromSystemDeployment(lqtyToken, web3, timePassedSinceDeployment) {
-    const deploymentTime = await lqtyToken.getDeploymentStartTime();
+  static async getTimeFromSystemDeployment(mahaToken, web3, timePassedSinceDeployment) {
+    const deploymentTime = await mahaToken.getDeploymentStartTime();
     return this.toBN(deploymentTime).add(this.toBN(timePassedSinceDeployment));
   }
 

@@ -9,7 +9,7 @@ Calculate the difference between this Trove and another.
 <b>Signature:</b>
 
 ```typescript
-whatChanged(that: Trove, borrowingRate?: Decimalish): TroveChange<Decimal> | undefined;
+whatChanged(that: Trove, borrowingRate?: Decimalish): Promise<TroveChange<Decimal> | undefined>;
 ```
 
 ## Parameters
@@ -21,7 +21,7 @@ whatChanged(that: Trove, borrowingRate?: Decimalish): TroveChange<Decimal> | und
 
 <b>Returns:</b>
 
-[TroveChange](./arth-base.trovechange.md)<!-- -->&lt;[Decimal](./arth-base.decimal.md)<!-- -->&gt; \| undefined
+Promise&lt;[TroveChange](./arth-base.trovechange.md)<!-- -->&lt;[Decimal](./arth-base.decimal.md)<!-- -->&gt; \| undefined&gt;
 
 An object representing the change, or `undefined` if the Troves are equal.
 

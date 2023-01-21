@@ -9,6 +9,7 @@ import "./Dependencies/Ownable.sol";
 import "./Dependencies/CheckContract.sol";
 import "./Dependencies/SafeMath.sol";
 import "./Interfaces/IERC20.sol";
+import "./Interfaces/IGovernance.sol";
 
 contract CommunityIssuance is ICommunityIssuance, Ownable, CheckContract, BaseMath {
     using SafeMath for uint256;
@@ -22,27 +23,25 @@ contract CommunityIssuance is ICommunityIssuance, Ownable, CheckContract, BaseMa
     uint256 public rewardsDuration;
     uint256 public periodFinish = 0;
 
-    IERC20 public mahaToken;
-
+    IGovernance public governance;
     address public stabilityPoolAddress;
-
     uint256 public totalMAHAIssued;
     uint256 public immutable deploymentTime;
 
     // --- Functions ---
 
     constructor(
-        address _mahaTokenAddress,
+        address _governance,
         address _stabilityPoolAddress,
         uint256 _rewardsDuration
     ) {
-        checkContract(_mahaTokenAddress);
+        checkContract(_governance);
         checkContract(_stabilityPoolAddress);
 
         deploymentTime = block.timestamp;
         rewardsDuration = _rewardsDuration;
 
-        mahaToken = IERC20(_mahaTokenAddress);
+        governance = IGovernance(_governance);
         stabilityPoolAddress = _stabilityPoolAddress;
 
         periodFinish = block.timestamp.add(rewardsDuration);
@@ -75,7 +74,7 @@ contract CommunityIssuance is ICommunityIssuance, Ownable, CheckContract, BaseMa
         // This keeps the reward rate in the right range, preventing overflows due to
         // very high values of rewardRate in the earned and rewardsPerToken functions;
         // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
-        uint256 balance = mahaToken.balanceOf(address(this));
+        uint256 balance = governance.getMAHA().balanceOf(address(this));
         require(rewardRate <= balance.div(rewardsDuration), "Provided reward too high");
 
         lastUpdateTime = block.timestamp;
@@ -89,13 +88,12 @@ contract CommunityIssuance is ICommunityIssuance, Ownable, CheckContract, BaseMa
 
     function _getCumulativeIssuance() internal view returns (uint256) {
         uint256 rewards = rewardRate.mul(lastTimeRewardApplicable().sub(lastUpdateTime));
-
-        return LiquityMath._min(rewards, mahaToken.balanceOf(address(this)));
+        return LiquityMath._min(rewards, governance.getMAHA().balanceOf(address(this)));
     }
 
     function sendMAHA(address _account, uint256 _MAHAamount) external override {
         _requireCallerIsStabilityPool();
-        mahaToken.transfer(_account, _MAHAamount);
+        governance.getMAHA().transfer(_account, _MAHAamount);
     }
 
     // --- 'require' functions ---

@@ -4,6 +4,7 @@
 
 ## ReadableEthersARTH.getTrove() method
 
+Get the current state of a Trove.
 
 <b>Signature:</b>
 
@@ -15,7 +16,7 @@ getTrove(address?: string, overrides?: EthersCallOverrides): Promise<UserTrove>;
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  address | string |  |
+|  address | string | Address that owns the Trove. |
 |  overrides | [EthersCallOverrides](./arth-ethers.etherscalloverrides.md) |  |
 
 <b>Returns:</b>

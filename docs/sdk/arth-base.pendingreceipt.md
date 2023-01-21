@@ -16,5 +16,5 @@ export declare type PendingReceipt = {
 
 ## Remarks
 
-Returned by [SentLiquityTransaction.getReceipt()](./arth-base.sentliquitytransaction.getreceipt.md)<!-- -->.
+Returned by [SentARTHTransaction.getReceipt()](./arth-base.sentarthtransaction.getreceipt.md)<!-- -->.
 

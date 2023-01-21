@@ -11,7 +11,7 @@ A transaction that has been prepared for sending.
 ```typescript
 export declare class PopulatedEthersARTHTransaction<T = unknown> implements PopulatedARTHTransaction<EthersPopulatedTransaction, SentEthersARTHTransaction<T>> 
 ```
-<b>Implements:</b> PopulatedARTHTransaction&lt;[EthersPopulatedTransaction](./arth-ethers.etherspopulatedtransaction.md)<!-- -->, [SentEthersARTHTransaction](./arth-ethers.sentethersarthtransaction.md)<!-- -->&lt;T&gt;&gt;
+<b>Implements:</b> [PopulatedARTHTransaction](./arth-base.populatedarthtransaction.md)<!-- -->&lt;[EthersPopulatedTransaction](./arth-ethers.etherspopulatedtransaction.md)<!-- -->, [SentEthersARTHTransaction](./arth-ethers.sentethersarthtransaction.md)<!-- -->&lt;T&gt;&gt;
 
 ## Remarks
 
@@ -30,5 +30,5 @@ The constructor for this class is marked as internal. Third-party code should no
 
 |  Method | Modifiers | Description |
 |  --- | --- | --- |
-|  [send()](./arth-ethers.populatedethersarthtransaction.send.md) |  |  |
+|  [send()](./arth-ethers.populatedethersarthtransaction.send.md) |  | Send the transaction. |
 

@@ -4,7 +4,8 @@ const ZERO_ADDRESS = "0x" + "0".repeat(40);
 const maxBytes32 = "0x" + "f".repeat(64);
 
 class MainnetDeploymentHelper {
-  constructor(configParams, deployerWallet) {
+  constructor(configParams, deployerWallet, network) {
+    this.network = network;
     this.configParams = configParams;
     this.deployerWallet = deployerWallet;
     this.hre = require("hardhat");
@@ -21,6 +22,7 @@ class MainnetDeploymentHelper {
   }
 
   saveDeployment(deploymentState) {
+    if (this.network === "hardhat") return;
     const deploymentStateJSON = JSON.stringify(deploymentState, null, 2);
     fs.writeFileSync(this.configParams.OUTPUT_FILE, deploymentStateJSON);
   }
@@ -182,10 +184,11 @@ class MainnetDeploymentHelper {
     );
 
     const governanceParams = [
+      this.configParams.externalAddrs.MAHA,
       this.configParams.externalAddrs.TIMELOCK,
       troveManager.address,
       borrowerOperations.address,
-      priceFeed.address,
+      this.configParams.externalAddrs.PRICE_FEED,
       this.configParams.externalAddrs.ECOSYSTEM_FUND,
       "0"
     ];
@@ -199,7 +202,7 @@ class MainnetDeploymentHelper {
     );
 
     const communityIssuanceParams = [
-      mahaToken.address,
+      governance.address,
       stabilityPool.address,
       this.configParams.COMMUNITY_ISSUANCE_REWARDS_DURATION
     ];

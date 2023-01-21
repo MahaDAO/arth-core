@@ -22,8 +22,10 @@ The constructor for this class is marked as internal. Third-party code should no
 |  --- | --- | --- | --- |
 |  [collateral](./arth-base.trove.collateral.md) |  | [Decimal](./arth-base.decimal.md) | Amount of native currency (e.g. Ether) collateralized. |
 |  [debt](./arth-base.trove.debt.md) |  | [Decimal](./arth-base.decimal.md) | Amount of ARTH owed. |
+|  [governance](./arth-base.trove.governance.md) | <code>static</code> | string |  |
 |  [isEmpty](./arth-base.trove.isempty.md) |  | boolean |  |
 |  [netDebt](./arth-base.trove.netdebt.md) |  | [Decimal](./arth-base.decimal.md) | Amount of ARTH that must be repaid to close this Trove. |
+|  [provider?](./arth-base.trove.provider.md) | <code>static</code> | Provider \| Signer | <i>(Optional)</i> |
 
 ## Methods
 
@@ -32,17 +34,17 @@ The constructor for this class is marked as internal. Third-party code should no
 |  [add(that)](./arth-base.trove.add.md) |  |  |
 |  [addCollateral(collateral)](./arth-base.trove.addcollateral.md) |  |  |
 |  [addDebt(debt)](./arth-base.trove.adddebt.md) |  |  |
-|  [adjust(params, borrowingRate)](./arth-base.trove.adjust.md) |  | Calculate the result of an [adjustTrove()](./arth-base.transactableliquity.adjusttrove.md) transaction on this Trove. |
-|  [adjustTo(that, borrowingRate)](./arth-base.trove.adjustto.md) |  | Calculate the parameters of an [adjustTrove()](./arth-base.transactableliquity.adjusttrove.md) transaction that will change this Trove into the given Trove. |
+|  [adjust(params, borrowingRate)](./arth-base.trove.adjust.md) |  | Calculate the result of an [adjustTrove()](./arth-base.transactablearth.adjusttrove.md) transaction on this Trove. |
+|  [adjustTo(that, borrowingRate)](./arth-base.trove.adjustto.md) |  | Calculate the parameters of an [adjustTrove()](./arth-base.transactablearth.adjusttrove.md) transaction that will change this Trove into the given Trove. |
 |  [apply(change, borrowingRate)](./arth-base.trove.apply.md) |  | Make a new Trove by applying a [TroveChange](./arth-base.trovechange.md) to this Trove. |
 |  [collateralRatio(price)](./arth-base.trove.collateralratio.md) |  | Calculate the Trove's collateralization ratio at a given price. |
 |  [collateralRatioIsBelowCritical(price)](./arth-base.trove.collateralratioisbelowcritical.md) |  | Whether the collateralization ratio is less than the [CRITICAL\_COLLATERAL\_RATIO](./arth-base.critical_collateral_ratio.md) at a given price. |
 |  [collateralRatioIsBelowMinimum(price)](./arth-base.trove.collateralratioisbelowminimum.md) |  | Whether the Trove is undercollateralized at a given price. |
-|  [create(params, borrowingRate)](./arth-base.trove.create.md) | <code>static</code> | Calculate the result of an [openTrove()](./arth-base.transactableliquity.opentrove.md) transaction. |
+|  [create(params, borrowingRate)](./arth-base.trove.create.md) | <code>static</code> | Calculate the result of an [openTrove()](./arth-base.transactablearth.opentrove.md) transaction. |
 |  [equals(that)](./arth-base.trove.equals.md) |  |  |
 |  [isOpenableInRecoveryMode(price)](./arth-base.trove.isopenableinrecoverymode.md) |  | Whether the Trove is sufficiently collateralized to be opened during recovery mode. |
 |  [multiply(multiplier)](./arth-base.trove.multiply.md) |  |  |
-|  [recreate(that, borrowingRate)](./arth-base.trove.recreate.md) | <code>static</code> | Calculate the parameters of an [openTrove()](./arth-base.transactableliquity.opentrove.md) transaction that will result in the given Trove. |
+|  [recreate(that, borrowingRate)](./arth-base.trove.recreate.md) | <code>static</code> | Calculate the parameters of an [openTrove()](./arth-base.transactablearth.opentrove.md) transaction that will result in the given Trove. |
 |  [setCollateral(collateral)](./arth-base.trove.setcollateral.md) |  |  |
 |  [setDebt(debt)](./arth-base.trove.setdebt.md) |  |  |
 |  [subtract(that)](./arth-base.trove.subtract.md) |  |  |

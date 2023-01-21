@@ -4,6 +4,7 @@
 
 ## ReadableEthersARTH.getFrontendStatus() method
 
+Check whether an address is registered as a ARTH frontend, and what its kickback rate is.
 
 <b>Signature:</b>
 
@@ -15,7 +16,7 @@ getFrontendStatus(address?: string, overrides?: EthersCallOverrides): Promise<Fr
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  address | string |  |
+|  address | string | Address to check. |
 |  overrides | [EthersCallOverrides](./arth-ethers.etherscalloverrides.md) |  |
 
 <b>Returns:</b>

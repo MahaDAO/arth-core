@@ -22,13 +22,16 @@ contract HintHelpers is LiquityBase, Ownable, CheckContract {
 
     // --- Dependency setters ---
 
-    function setAddresses(address _sortedTrovesAddress, address _troveManagerAddress)
-        external
-        onlyOwner
-    {
+    function setAddresses(
+        address _sortedTrovesAddress,
+        address _troveManagerAddress,
+        address _governance
+    ) external onlyOwner {
         checkContract(_sortedTrovesAddress);
         checkContract(_troveManagerAddress);
+        checkContract(_governance);
 
+        governance = IGovernance(_governance);
         sortedTroves = ISortedTroves(_sortedTrovesAddress);
         troveManager = ITroveManager(_troveManagerAddress);
 
@@ -94,10 +97,10 @@ contract HintHelpers is LiquityBase, Ownable, CheckContract {
             );
 
             if (netARTHDebt > remainingARTH) {
-                if (netARTHDebt > MIN_NET_DEBT) {
+                if (netARTHDebt > MIN_NET_DEBT()) {
                     uint256 maxRedeemableARTH = LiquityMath._min(
                         remainingARTH,
-                        netARTHDebt.sub(MIN_NET_DEBT)
+                        netARTHDebt.sub(MIN_NET_DEBT())
                     );
 
                     uint256 ETH = troveManager.getTroveColl(currentTroveuser).add(

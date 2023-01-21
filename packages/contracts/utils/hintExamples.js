@@ -106,10 +106,8 @@ async function main() {
   } = redemptionhint;
 
   // Get the approximate partial redemption hint
-  const {
-    hintAddress: approxPartialRedemptionHint,
-    latestRandomSeed
-  } = await contracts.hintHelpers.getApproxHint(partialRedemptionNewICR, numTrials, 42);
+  const { hintAddress: approxPartialRedemptionHint, latestRandomSeed } =
+    await contracts.hintHelpers.getApproxHint(partialRedemptionNewICR, numTrials, 42);
 
   /* Use the approximate partial redemption hint to get the exact partial redemption hint from the
    * deployed SortedTroves contract

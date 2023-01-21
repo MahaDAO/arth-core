@@ -215,9 +215,6 @@ contract EchidnaTester {
         uint256 ETH = getAdjustedETH(actorBalance, _ETH, CCR);
         uint256 ARTHAmount = getAdjustedARTH(ETH, _ARTHAmount, CCR);
 
-        //console.log('ETH', ETH);
-        //console.log('ARTHAmount', ARTHAmount);
-
         echidnaProxy.openTrovePrx(ETH, ARTHAmount, address(0), address(0), 0, address(0));
 
         numberOfTroves = troveManager.getTroveOwnersCount();

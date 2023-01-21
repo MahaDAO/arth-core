@@ -1,3 +1,4 @@
+const exp = require("constants");
 const deploymentHelper = require("../utils/deploymentHelpers.js");
 const testHelpers = require("../utils/testHelpers.js");
 
@@ -3739,9 +3740,8 @@ contract("BorrowerOperations", async accounts => {
 
       // liquidate Carol's Trove, Alice and Bob earn rewards.
       const liquidationTx = await troveManager.liquidate(carol, { from: owner });
-      const [liquidatedDebt_C, liquidatedColl_C, gasComp_C] = th.getEmittedLiquidationValues(
-        liquidationTx
-      );
+      const [liquidatedDebt_C, liquidatedColl_C, gasComp_C] =
+        th.getEmittedLiquidationValues(liquidationTx);
 
       // Dennis opens a new Trove
       await openTrove({
@@ -4639,7 +4639,6 @@ contract("BorrowerOperations", async accounts => {
       // check coll and debt after
       assert.isTrue(coll_After.gt("0"));
       assert.isTrue(debt_After.gt("0"));
-
       assert.isTrue(debt_After.eq(expectedDebt));
 
       // check active status
@@ -4742,9 +4741,8 @@ contract("BorrowerOperations", async accounts => {
 
       // close Carol's Trove, liquidating her 1 ether and 180ARTH.
       const liquidationTx = await troveManager.liquidate(carol, { from: owner });
-      const [liquidatedDebt, liquidatedColl, gasComp] = th.getEmittedLiquidationValues(
-        liquidationTx
-      );
+      const [liquidatedDebt, liquidatedColl, gasComp] =
+        th.getEmittedLiquidationValues(liquidationTx);
 
       /* with total stakes = 10 ether, after liquidation, L_ETH should equal 1/10 ether per-ether-staked,
        and L_ARTH should equal 18 ARTH per-ether-staked. */
@@ -5104,9 +5102,8 @@ contract("BorrowerOperations", async accounts => {
         const liquidationTx = await troveManager.liquidate(bob);
         assert.isFalse(await sortedTroves.contains(bob));
 
-        const [liquidatedDebt, liquidatedColl, gasComp] = th.getEmittedLiquidationValues(
-          liquidationTx
-        );
+        const [liquidatedDebt, liquidatedColl, gasComp] =
+          th.getEmittedLiquidationValues(liquidationTx);
 
         await priceFeed.setPrice(dec(200, 18));
         const price = await priceFeed.getPrice();
@@ -5144,9 +5141,8 @@ contract("BorrowerOperations", async accounts => {
         const liquidationTx = await troveManager.liquidate(bob);
         assert.isFalse(await sortedTroves.contains(bob));
 
-        const [liquidatedDebt, liquidatedColl, gasComp] = th.getEmittedLiquidationValues(
-          liquidationTx
-        );
+        const [liquidatedDebt, liquidatedColl, gasComp] =
+          th.getEmittedLiquidationValues(liquidationTx);
 
         await priceFeed.setPrice(dec(200, 18));
         const price = await priceFeed.getPrice();
@@ -5184,9 +5180,8 @@ contract("BorrowerOperations", async accounts => {
         const liquidationTx = await troveManager.liquidate(bob);
         assert.isFalse(await sortedTroves.contains(bob));
 
-        const [liquidatedDebt, liquidatedColl, gasComp] = th.getEmittedLiquidationValues(
-          liquidationTx
-        );
+        const [liquidatedDebt, liquidatedColl, gasComp] =
+          th.getEmittedLiquidationValues(liquidationTx);
 
         await priceFeed.setPrice(dec(200, 18));
         const price = await priceFeed.getPrice();
@@ -5223,9 +5218,8 @@ contract("BorrowerOperations", async accounts => {
         const liquidationTx = await troveManager.liquidate(bob);
         assert.isFalse(await sortedTroves.contains(bob));
 
-        const [liquidatedDebt, liquidatedColl, gasComp] = th.getEmittedLiquidationValues(
-          liquidationTx
-        );
+        const [liquidatedDebt, liquidatedColl, gasComp] =
+          th.getEmittedLiquidationValues(liquidationTx);
 
         await priceFeed.setPrice(dec(200, 18));
         const price = await priceFeed.getPrice();
@@ -5263,9 +5257,8 @@ contract("BorrowerOperations", async accounts => {
         const liquidationTx = await troveManager.liquidate(bob);
         assert.isFalse(await sortedTroves.contains(bob));
 
-        const [liquidatedDebt, liquidatedColl, gasComp] = th.getEmittedLiquidationValues(
-          liquidationTx
-        );
+        const [liquidatedDebt, liquidatedColl, gasComp] =
+          th.getEmittedLiquidationValues(liquidationTx);
 
         await priceFeed.setPrice(dec(200, 18));
         const price = await priceFeed.getPrice();
@@ -5304,9 +5297,8 @@ contract("BorrowerOperations", async accounts => {
         const liquidationTx = await troveManager.liquidate(bob);
         assert.isFalse(await sortedTroves.contains(bob));
 
-        const [liquidatedDebt, liquidatedColl, gasComp] = th.getEmittedLiquidationValues(
-          liquidationTx
-        );
+        const [liquidatedDebt, liquidatedColl, gasComp] =
+          th.getEmittedLiquidationValues(liquidationTx);
 
         await priceFeed.setPrice(dec(200, 18));
         const price = await priceFeed.getPrice();
@@ -5345,9 +5337,8 @@ contract("BorrowerOperations", async accounts => {
         const liquidationTx = await troveManager.liquidate(bob);
         assert.isFalse(await sortedTroves.contains(bob));
 
-        const [liquidatedDebt, liquidatedColl, gasComp] = th.getEmittedLiquidationValues(
-          liquidationTx
-        );
+        const [liquidatedDebt, liquidatedColl, gasComp] =
+          th.getEmittedLiquidationValues(liquidationTx);
 
         await priceFeed.setPrice(dec(200, 18));
         const price = await priceFeed.getPrice();
@@ -5386,9 +5377,8 @@ contract("BorrowerOperations", async accounts => {
         const liquidationTx = await troveManager.liquidate(bob);
         assert.isFalse(await sortedTroves.contains(bob));
 
-        const [liquidatedDebt, liquidatedColl, gasComp] = th.getEmittedLiquidationValues(
-          liquidationTx
-        );
+        const [liquidatedDebt, liquidatedColl, gasComp] =
+          th.getEmittedLiquidationValues(liquidationTx);
 
         await priceFeed.setPrice(dec(200, 18));
         const price = await priceFeed.getPrice();
@@ -5427,9 +5417,8 @@ contract("BorrowerOperations", async accounts => {
         const liquidationTx = await troveManager.liquidate(bob);
         assert.isFalse(await sortedTroves.contains(bob));
 
-        const [liquidatedDebt, liquidatedColl, gasComp] = th.getEmittedLiquidationValues(
-          liquidationTx
-        );
+        const [liquidatedDebt, liquidatedColl, gasComp] =
+          th.getEmittedLiquidationValues(liquidationTx);
 
         await priceFeed.setPrice(dec(200, 18));
         const price = await priceFeed.getPrice();

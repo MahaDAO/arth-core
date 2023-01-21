@@ -9,18 +9,20 @@ Calculate the current borrowing rate.
 <b>Signature:</b>
 
 ```typescript
-borrowingRate(when?: Date): Decimal;
+borrowingRate(governAddr: string, provider: Provider | Signer, when?: Date): Promise<Decimal>;
 ```
 
 ## Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
+|  governAddr | string |  |
+|  provider | Provider \| Signer |  |
 |  when | Date | Optional timestamp that can be used to calculate what the borrowing rate would decay to at a point of time in the future. |
 
 <b>Returns:</b>
 
-[Decimal](./arth-base.decimal.md)
+Promise&lt;[Decimal](./arth-base.decimal.md)<!-- -->&gt;
 
 ## Remarks
 
@@ -32,7 +34,7 @@ To calculate the borrowing fee in ARTH, multiply the borrowed ARTH amount by the
 
 
 ```typescript
-const fees = await liquity.getFees();
+const fees = await arth.getFees();
 
 const borrowedARTHAmount = 100;
 const borrowingRate = fees.borrowingRate();

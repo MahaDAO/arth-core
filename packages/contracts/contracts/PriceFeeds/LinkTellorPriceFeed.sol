@@ -10,7 +10,6 @@ import "../Dependencies/Ownable.sol";
 import "../Dependencies/CheckContract.sol";
 import "../Dependencies/BaseMath.sol";
 import "../Dependencies/LiquityMath.sol";
-import "../Dependencies/console.sol";
 
 /*
  * PriceFeed for mainnet deployment, to be connected to Chainlink's live ETH:USD aggregator reference
@@ -362,6 +361,8 @@ contract LinkTellorPriceFeed is Ownable, CheckContract, BaseMath, IPriceFeed {
             // return Chainlink price (no status change)
             return _storeChainlinkPrice(chainlinkResponse);
         }
+
+        return 0;
     }
 
     // --- Helper functions ---

@@ -18,7 +18,7 @@ contract MockOracle is IPriceFeed {
         return price;
     }
 
-    function fetchPrice() external override returns (uint256) {
+    function fetchPrice() external view override returns (uint256) {
         return price;
     }
 

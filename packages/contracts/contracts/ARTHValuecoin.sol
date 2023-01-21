@@ -11,8 +11,8 @@ contract ARTHValuecoin is CheckContract, Ownable, IARTHValuecoin {
     using SafeMath for uint256;
 
     uint256 private _totalSupply;
-    string internal constant _NAME = "ARTH Valuecoin (Polygon)";
-    string internal constant _SYMBOL = "ARTH.poly";
+    string internal constant _NAME = "ARTH Valuecoin";
+    string internal constant _SYMBOL = "ARTH";
     string internal constant _VERSION = "3";
     uint8 internal constant _DECIMALS = 18;
 
@@ -45,7 +45,7 @@ contract ARTHValuecoin is CheckContract, Ownable, IARTHValuecoin {
 
     // --- Events ---
 
-    constructor(address _governance) {
+    constructor(address _timelock) {
         bytes32 hashedName = keccak256(bytes(_NAME));
         bytes32 hashedVersion = keccak256(bytes(_VERSION));
 
@@ -54,7 +54,7 @@ contract ARTHValuecoin is CheckContract, Ownable, IARTHValuecoin {
         _CACHED_CHAIN_ID = _chainID();
         _CACHED_DOMAIN_SEPARATOR = _buildDomainSeparator(_TYPE_HASH, hashedName, hashedVersion);
 
-        transferOwnership(_governance);
+        transferOwnership(_timelock);
     }
 
     // -- Functions to manage access control ---

@@ -4,7 +4,7 @@
 
 ## EthersARTHConnectionOptionalParams.useStore property
 
-Create a  and expose it as the `store` property.
+Create a [ARTHStore](./arth-base.arthstore.md) and expose it as the `store` property.
 
 <b>Signature:</b>
 
@@ -16,5 +16,5 @@ readonly useStore?: EthersARTHStoreOption;
 
 When set to one of the available [options](./arth-ethers.ethersarthstoreoption.md)<!-- -->, [ReadableEthersARTH.connect()](./arth-ethers.readableethersarth.connect_1.md) will return a [ReadableEthersARTHWithStore](./arth-ethers.readableethersarthwithstore.md)<!-- -->, while [EthersARTH.connect()](./arth-ethers.ethersarth.connect_1.md) will return an [EthersARTHWithStore](./arth-ethers.ethersarthwithstore.md)<!-- -->.
 
-Note that the store won't start monitoring the blockchain until its  function is called.
+Note that the store won't start monitoring the blockchain until its [start()](./arth-base.arthstore.start.md) function is called.
 

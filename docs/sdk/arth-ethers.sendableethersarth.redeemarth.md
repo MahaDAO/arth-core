@@ -4,6 +4,7 @@
 
 ## SendableEthersARTH.redeemARTH() method
 
+Redeem ARTH to native currency (e.g. Ether) at face value.
 
 <b>Signature:</b>
 
@@ -15,11 +16,15 @@ redeemARTH(amount: Decimalish, maxRedemptionRate?: Decimalish, overrides?: Ether
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  amount | [Decimalish](./arth-base.decimalish.md) |  |
-|  maxRedemptionRate | [Decimalish](./arth-base.decimalish.md) |  |
+|  amount | [Decimalish](./arth-base.decimalish.md) | Amount of ARTH to be redeemed. |
+|  maxRedemptionRate | [Decimalish](./arth-base.decimalish.md) | Maximum acceptable [redemption rate](./arth-base.fees.redemptionrate.md)<!-- -->. |
 |  overrides | [EthersTransactionOverrides](./arth-ethers.etherstransactionoverrides.md) |  |
 
 <b>Returns:</b>
 
 Promise&lt;[SentEthersARTHTransaction](./arth-ethers.sentethersarthtransaction.md)<!-- -->&lt;[RedemptionDetails](./arth-base.redemptiondetails.md)<!-- -->&gt;&gt;
+
+## Remarks
+
+If `maxRedemptionRate` is omitted, the current redemption rate (based on `amount`<!-- -->) plus 0.1% is used as maximum acceptable rate.
 

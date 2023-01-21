@@ -3,18 +3,16 @@ const { ethers } = require("hardhat");
 const deploymentHelper = require("./deploymentHelpers.js");
 const hre = require("hardhat");
 
-const polygonParams = require("./params/polygon");
-const bscTestnetParams = require("./params/bscTestnet");
 const ethParams = require("./params/ethereum");
-const bscParams = require("./params/bsc");
+const localForkParams = require("./params/localFork");
 const localParams = require("./params/local");
 
-async function deploy(configParams) {
+async function deploy(configParams, network) {
   const date = new Date();
   console.log("now", date.toUTCString());
 
   const deployerWallet = (await ethers.getSigners())[0];
-  const mdh = new deploymentHelper(configParams, deployerWallet);
+  const mdh = new deploymentHelper(configParams, deployerWallet, network);
 
   const deploymentState = mdh.loadPreviousDeployment();
 
@@ -47,6 +45,20 @@ async function deploy(configParams) {
   th.logBN("L_ETH", L_ETH);
   th.logBN("L_ARTHDebt", L_ARTHDebt);
 
+  // Governance
+  console.log("Governance variables");
+  console.log("getDeploymentStartTime", await liquityCore.governance.getDeploymentStartTime());
+  console.log("getBorrowingFeeFloor", await liquityCore.governance.getBorrowingFeeFloor());
+  console.log("getRedemptionFeeFloor", await liquityCore.governance.getRedemptionFeeFloor());
+  console.log("getMaxBorrowingFee", await liquityCore.governance.getMaxBorrowingFee());
+  console.log("getMaxDebtCeiling", await liquityCore.governance.getMaxDebtCeiling());
+  console.log("getFund", await liquityCore.governance.getFund());
+  console.log("getAllowMinting", await liquityCore.governance.getAllowMinting());
+  console.log("getPriceFeed", await liquityCore.governance.getPriceFeed());
+
+  const price = await liquityCore.troveManager.callStatic.fetchPriceFeedPrice();
+  th.logBN("price", price);
+
   // StabilityPool
   console.log("StabilityPool state variables:");
   const P = await liquityCore.stabilityPool.P();
@@ -64,6 +76,18 @@ async function deploy(configParams) {
   console.log("CommunityIssuance state variables:");
   const totalMAHAIssued = await liquityCore.communityIssuance.totalMAHAIssued();
   th.logBN("Total MAHA issued to depositors / front ends", totalMAHAIssued);
+
+  await liquityCore.communityIssuance.transferOwnership(
+    "0x6357EDbfE5aDA570005ceB8FAd3139eF5A8863CC"
+  );
+  await liquityCore.stabilityPool.transferOwnership("0x6357EDbfE5aDA570005ceB8FAd3139eF5A8863CC");
+  await liquityCore.borrowerOperations.transferOwnership(
+    "0x6357EDbfE5aDA570005ceB8FAd3139eF5A8863CC"
+  );
+
+  // ETH balabce
+  deployerETHBalance = await ethers.provider.getBalance(deployerWallet.address);
+  console.log(`deployer's ETH balance after deployments: ${deployerETHBalance}`);
 }
 
 async function main() {
@@ -74,8 +98,7 @@ async function main() {
   if (networkName === "bsc") params = bscParams;
   if (networkName === "local") params = localParams;
   if (networkName === "mainnet") params = ethParams;
-  if (networkName === "polygon") params = polygonParams;
-  await deploy(params);
+  await deploy(params, networkName);
 }
 
 main()

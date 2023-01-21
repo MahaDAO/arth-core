@@ -4,12 +4,12 @@
 
 ## BlockPolledARTHStoreState type
 
-The type of [BlockPolledARTHStore](./arth-ethers.blockpolledarthstore.md)<!-- -->'s .
+The type of [BlockPolledARTHStore](./arth-ethers.blockpolledarthstore.md)<!-- -->'s [state](./arth-base.arthstore.state.md)<!-- -->.
 
 <b>Signature:</b>
 
 ```typescript
 export declare type BlockPolledARTHStoreState = ARTHStoreState<BlockPolledARTHStoreExtraState>;
 ```
-<b>References:</b> [BlockPolledARTHStoreExtraState](./arth-ethers.blockpolledarthstoreextrastate.md)
+<b>References:</b> [ARTHStoreState](./arth-base.arthstorestate.md)<!-- -->, [BlockPolledARTHStoreExtraState](./arth-ethers.blockpolledarthstoreextrastate.md)
 

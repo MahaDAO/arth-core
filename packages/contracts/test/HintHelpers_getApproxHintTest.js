@@ -106,7 +106,7 @@ contract("HintHelpers", async accounts => {
 
     let hintAddress;
 
-      // const hintAddress_250 = await functionCaller.troveManager_getApproxHint(CR_250, sqrtLength * 10)
+    // const hintAddress_250 = await functionCaller.troveManager_getApproxHint(CR_250, sqrtLength * 10)
     ({ hintAddress, latestRandomSeed } = await hintHelpers.getApproxHint(
       CR_250,
       sqrtLength * 10,
@@ -207,7 +207,7 @@ contract("HintHelpers", async accounts => {
 
     let hintAddress;
 
-      // const hintAddress_Max = await functionCaller.troveManager_getApproxHint(CR_Max, sqrtLength * 10)
+    // const hintAddress_Max = await functionCaller.troveManager_getApproxHint(CR_Max, sqrtLength * 10)
     ({ hintAddress, latestRandomSeed } = await hintHelpers.getApproxHint(
       CR_Max,
       sqrtLength * 10,
@@ -235,7 +235,7 @@ contract("HintHelpers", async accounts => {
 
     let hintAddress;
 
-      //  const hintAddress_Min = await functionCaller.troveManager_getApproxHint(CR_Min, sqrtLength * 10)
+    //  const hintAddress_Min = await functionCaller.troveManager_getApproxHint(CR_Min, sqrtLength * 10)
     ({ hintAddress, latestRandomSeed } = await hintHelpers.getApproxHint(
       CR_Min,
       sqrtLength * 10,

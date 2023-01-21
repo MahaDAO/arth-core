@@ -4,6 +4,8 @@
 
 ## SentEthersARTHTransaction.waitForReceipt() method
 
+Wait for the transaction to be mined, and check whether it was successful.
+
 <b>Signature:</b>
 
 ```typescript
@@ -12,6 +14,8 @@ waitForReceipt(): Promise<MinedReceipt<EthersTransactionReceipt, T>>;
 <b>Returns:</b>
 
 Promise&lt;[MinedReceipt](./arth-base.minedreceipt.md)<!-- -->&lt;[EthersTransactionReceipt](./arth-ethers.etherstransactionreceipt.md)<!-- -->, T&gt;&gt;
+
+Either a [FailedReceipt](./arth-base.failedreceipt.md) or a [SuccessfulReceipt](./arth-base.successfulreceipt.md)<!-- -->.
 
 ## Exceptions
 

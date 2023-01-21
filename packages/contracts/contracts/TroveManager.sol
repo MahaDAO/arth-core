@@ -10,7 +10,6 @@ import "./Interfaces/ISortedTroves.sol";
 import "./Dependencies/LiquityBase.sol";
 import "./Dependencies/Ownable.sol";
 import "./Dependencies/CheckContract.sol";
-import "./Dependencies/console.sol";
 
 contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
     string public constant NAME = "TroveManager";
@@ -288,7 +287,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         singleLiquidation.collGasCompensation = _getCollGasCompensation(
             singleLiquidation.entireTroveColl
         );
-        singleLiquidation.ARTHGasCompensation = ARTH_GAS_COMPENSATION;
+        singleLiquidation.ARTHGasCompensation = ARTH_GAS_COMPENSATION();
         uint256 collToLiquidate = singleLiquidation.entireTroveColl.sub(
             singleLiquidation.collGasCompensation
         );
@@ -339,7 +338,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         singleLiquidation.collGasCompensation = _getCollGasCompensation(
             singleLiquidation.entireTroveColl
         );
-        singleLiquidation.ARTHGasCompensation = ARTH_GAS_COMPENSATION;
+        singleLiquidation.ARTHGasCompensation = ARTH_GAS_COMPENSATION();
         vars.collToLiquidate = singleLiquidation.entireTroveColl.sub(
             singleLiquidation.collGasCompensation
         );
@@ -495,7 +494,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         uint256 cappedCollPortion = _entireTroveDebt.mul(MCR).div(_price);
 
         singleLiquidation.collGasCompensation = _getCollGasCompensation(cappedCollPortion);
-        singleLiquidation.ARTHGasCompensation = ARTH_GAS_COMPENSATION;
+        singleLiquidation.ARTHGasCompensation = ARTH_GAS_COMPENSATION();
 
         singleLiquidation.debtToOffset = _entireTroveDebt;
         singleLiquidation.collToSendToSP = cappedCollPortion.sub(
@@ -984,7 +983,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         // Determine the remaining amount (lot) to be redeemed, capped by the entire debt of the Trove minus the liquidation reserve
         singleRedemption.ARTHLot = LiquityMath._min(
             _maxARTHamount,
-            Troves[_borrower].debt.sub(ARTH_GAS_COMPENSATION)
+            Troves[_borrower].debt.sub(ARTH_GAS_COMPENSATION())
         );
 
         // Get the ETHLot of equivalent value in USD
@@ -994,11 +993,11 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         uint256 newDebt = (Troves[_borrower].debt).sub(singleRedemption.ARTHLot);
         uint256 newColl = (Troves[_borrower].coll).sub(singleRedemption.ETHLot);
 
-        if (newDebt == ARTH_GAS_COMPENSATION) {
+        if (newDebt == ARTH_GAS_COMPENSATION()) {
             // No debt left in the Trove (except for the liquidation reserve), therefore the trove gets closed
             _removeStake(_borrower);
             _closeTrove(_borrower, Status.closedByRedemption);
-            _redeemCloseTrove(_contractsCache, _borrower, ARTH_GAS_COMPENSATION, newColl);
+            _redeemCloseTrove(_contractsCache, _borrower, ARTH_GAS_COMPENSATION(), newColl);
             emit TroveUpdated(_borrower, 0, 0, 0, TroveManagerOperation.redeemCollateral);
         } else {
             uint256 newNICR = LiquityMath._computeNominalCR(newColl, newDebt);
@@ -1009,7 +1008,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
              *
              * If the resultant net debt of the partial is less than the minimum, net debt we bail.
              */
-            if (newNICR != _partialRedemptionHintNICR || _getNetDebt(newDebt) < MIN_NET_DEBT) {
+            if (newNICR != _partialRedemptionHintNICR || _getNetDebt(newDebt) < MIN_NET_DEBT()) {
                 singleRedemption.cancelledPartial = true;
                 return singleRedemption;
             }
@@ -1208,8 +1207,6 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
         // Update Active Pool ARTH, and send ETH to account
         contractsCache.activePool.decreaseARTHDebt(totals.totalARTHToRedeem);
         contractsCache.activePool.sendETH(msg.sender, totals.ETHToSendToRedeemer);
-        // Charge stability fee.
-        contractsCache.governance.chargeStabilityFee(msg.sender, _ARTHamount);
     }
 
     // --- Helper functions ---
@@ -1648,7 +1645,7 @@ contract TroveManager is LiquityBase, Ownable, CheckContract, ITroveManager {
     }
 
     function _calcBorrowingRate(uint256 _baseRate) internal view returns (uint256) {
-        return LiquityMath._min(getMaxBorrowingFee().add(_baseRate), getMaxBorrowingFee());
+        return LiquityMath._min(getBorrowingFeeFloor().add(_baseRate), getMaxBorrowingFee());
     }
 
     function getBorrowingFee(uint256 _ARTHDebt) external view override returns (uint256) {

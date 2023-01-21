@@ -4,6 +4,7 @@
 
 ## SendableEthersARTH.claimCollateralSurplus() method
 
+Claim leftover collateral after a liquidation or redemption.
 
 <b>Signature:</b>
 
@@ -20,4 +21,8 @@ claimCollateralSurplus(overrides?: EthersTransactionOverrides): Promise<SentEthe
 <b>Returns:</b>
 
 Promise&lt;[SentEthersARTHTransaction](./arth-ethers.sentethersarthtransaction.md)<!-- -->&lt;void&gt;&gt;
+
+## Remarks
+
+Use [getCollateralSurplusBalance()](./arth-base.readablearth.getcollateralsurplusbalance.md) to check the amount of collateral available for withdrawal.
 

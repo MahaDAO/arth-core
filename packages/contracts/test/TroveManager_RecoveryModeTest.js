@@ -81,6 +81,7 @@ contract("TroveManager - in Recovery Mode", async accounts => {
     contracts = await deploymentHelper.deployLiquityCore(owner, fund);
     contracts.troveManager = await TroveManagerTester.new();
     contracts.governance = await Governance.new(
+        contracts.mahaToken.address,
         owner,                   // timelock address
         contracts.troveManager.address,
         contracts.borrowerOperations.address,

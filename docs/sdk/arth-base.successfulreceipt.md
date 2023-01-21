@@ -20,7 +20,7 @@ export declare type SuccessfulReceipt<R = unknown, D = unknown> = {
 
 The `rawReceipt` property is an implementation-specific transaction receipt object.
 
-The `details` property may contain more information about the transaction. See the return types of [TransactableLiquity](./arth-base.transactableliquity.md) functions for the exact contents of `details` for each type of Liquity transaction.
+The `details` property may contain more information about the transaction. See the return types of [TransactableARTH](./arth-base.transactablearth.md) functions for the exact contents of `details` for each type of ARTH transaction.
 
-Returned by [SentLiquityTransaction.getReceipt()](./arth-base.sentliquitytransaction.getreceipt.md) and [SentLiquityTransaction.waitForReceipt()](./arth-base.sentliquitytransaction.waitforreceipt.md)<!-- -->.
+Returned by [SentARTHTransaction.getReceipt()](./arth-base.sentarthtransaction.getreceipt.md) and [SentARTHTransaction.waitForReceipt()](./arth-base.sentarthtransaction.waitforreceipt.md)<!-- -->.
 

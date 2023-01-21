@@ -4,7 +4,7 @@
 
 ## StabilityPoolGainsWithdrawalDetails interface
 
-Details of a [withdrawGainsFromStabilityPool()](./arth-base.transactableliquity.withdrawgainsfromstabilitypool.md) transaction.
+Details of a [withdrawGainsFromStabilityPool()](./arth-base.transactablearth.withdrawgainsfromstabilitypool.md) transaction.
 
 <b>Signature:</b>
 

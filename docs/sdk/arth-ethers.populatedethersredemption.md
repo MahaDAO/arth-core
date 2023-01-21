@@ -17,9 +17,9 @@ export declare class PopulatedEthersRedemption extends PopulatedEthersARTHTransa
 
 ## Remarks
 
-The Liquity protocol fulfills redemptions by repaying the debt of Troves in ascending order of their collateralization ratio, and taking a portion of their collateral in exchange. Due to the [minimum debt](./arth-base.arth_minimum_debt.md) requirement that Troves must fulfill, some ARTH amounts are not possible to redeem exactly.
+The ARTH protocol fulfills redemptions by repaying the debt of Troves in ascending order of their collateralization ratio, and taking a portion of their collateral in exchange. Due to the [minimum debt](./arth-base.arth_minimum_debt.md) requirement that Troves must fulfill, some ARTH amounts are not possible to redeem exactly.
 
-When [redeemARTH()](./arth-base.populatableliquity.redeemarth.md) is called with an amount that can't be fully redeemed, the amount will be truncated (see the `redeemableARTHAmount` property). When this happens, the redeemer can either redeem the truncated amount by sending the transaction unchanged, or prepare a new transaction by [increasing the amount](./arth-base.populatedredemption.increaseamountbyminimumnetdebt.md) to the next lowest possible value, which is the sum of the truncated amount and [ARTH\_MINIMUM\_NET\_DEBT](./arth-base.arth_minimum_net_debt.md)<!-- -->.
+When [redeemARTH()](./arth-base.populatablearth.redeemarth.md) is called with an amount that can't be fully redeemed, the amount will be truncated (see the `redeemableARTHAmount` property). When this happens, the redeemer can either redeem the truncated amount by sending the transaction unchanged, or prepare a new transaction by [increasing the amount](./arth-base.populatedredemption.increaseamountbyminimumnetdebt.md) to the next lowest possible value, which is the sum of the truncated amount and [ARTH\_MINIMUM\_NET\_DEBT](./arth-base.arth_minimum_net_debt.md)<!-- -->.
 
 ## Properties
 

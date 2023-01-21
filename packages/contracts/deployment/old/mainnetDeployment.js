@@ -470,18 +470,14 @@ async function mainnetDeploy(configParams) {
   // console.log("CHECK BENEFICIARY ATTEMPTING WITHDRAWAL FROM LC")
 
   // // connect Acct2 wallet to the LC they are beneficiary of
-  // let account2LockupContract = await lockupContracts["ACCOUNT_2"].connect(account2Wallet)
 
   // // Deployer funds LC with 10 LQTY
-  // // await mdh.sendAndWaitForTransaction(LQTYContracts.lqtyToken.transfer(account2LockupContract.address, dec(10, 18), { gasPrice }))
 
   // // account2 LQTY bal
   // let account2bal = await LQTYContracts.lqtyToken.balanceOf(account2Wallet.address)
   // th.logBN("account2 LQTY bal before withdrawal attempt", account2bal)
 
   // // Check LC LQTY bal
-  // let account2LockupContractBal = await LQTYContracts.lqtyToken.balanceOf(account2LockupContract.address)
-  // th.logBN("account2's LC LQTY bal before withdrawal attempt", account2LockupContractBal)
 
   // // Acct2 attempts withdrawal from  LC
   // await mdh.sendAndWaitForTransaction(account2LockupContract.withdrawLQTY({ gasPrice, gasLimit: 1000000 }))
@@ -491,8 +487,6 @@ async function mainnetDeploy(configParams) {
   // th.logBN("account2's LQTY bal after LC withdrawal attempt", account2bal)
 
   // // Check LC bal
-  // account2LockupContractBal = await LQTYContracts.lqtyToken.balanceOf(account2LockupContract.address)
-  // th.logBN("account2's LC LQTY bal LC withdrawal attempt", account2LockupContractBal)
 
   // // --- Stake LQTY ---
   // console.log("CHECK DEPLOYER STAKING LQTY")
@@ -500,7 +494,7 @@ async function mainnetDeploy(configParams) {
   // // Log deployer LQTY bal and stake before staking
   // deployerLQTYBal = await LQTYContracts.lqtyToken.balanceOf(deployerWallet.address)
   // th.logBN("deployer LQTY bal before staking", deployerLQTYBal)
-  // let deployerLQTYStake = await LQTYContracts.lqtyStaking.stakes(deployerWallet.address)
+  // let deployerLQTYStake = await LQTYContracts.lqtyStakingxdeployerWallet.address)
   // th.logBN("deployer stake before staking", deployerLQTYStake)
 
   // // stake 13 LQTY

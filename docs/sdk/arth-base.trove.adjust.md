@@ -4,12 +4,12 @@
 
 ## Trove.adjust() method
 
-Calculate the result of an [adjustTrove()](./arth-base.transactableliquity.adjusttrove.md) transaction on this Trove.
+Calculate the result of an [adjustTrove()](./arth-base.transactablearth.adjusttrove.md) transaction on this Trove.
 
 <b>Signature:</b>
 
 ```typescript
-adjust(params: TroveAdjustmentParams<Decimalish>, borrowingRate?: Decimalish): Trove;
+adjust(params: TroveAdjustmentParams<Decimalish>, borrowingRate?: Decimalish): Promise<Trove>;
 ```
 
 ## Parameters
@@ -21,5 +21,5 @@ adjust(params: TroveAdjustmentParams<Decimalish>, borrowingRate?: Decimalish): T
 
 <b>Returns:</b>
 
-[Trove](./arth-base.trove.md)
+Promise&lt;[Trove](./arth-base.trove.md)<!-- -->&gt;
 

@@ -105,6 +105,7 @@ class DeploymentHelper {
     );
 
     const governance = await Governance.new(
+      mahaToken.address,
       deployWallet,                   // timelock address
       troveManager.address,
       borrowerOperations.address,
@@ -252,6 +253,7 @@ class DeploymentHelper {
     const arthToken = await ARTHValuecoin.new(
       deployWallet
     );
+    const mahaToken = await MAHAToken.new("MahaDAO", "MAHA");
     const coreContracts = {
       governance,
       arthToken,
@@ -265,7 +267,8 @@ class DeploymentHelper {
       functionCaller,
       borrowerOperations,
       hintHelpers,
-      priceFeed
+      priceFeed,
+      mahaToken
     };
     return coreContracts;
   }
@@ -450,7 +453,8 @@ class DeploymentHelper {
     // set contracts in HintHelpers
     await contracts.hintHelpers.setAddresses(
       contracts.sortedTroves.address,
-      contracts.troveManager.address
+      contracts.troveManager.address,
+      contracts.governance.address
     );
 
     await contracts.arthToken.toggleTroveManager(
