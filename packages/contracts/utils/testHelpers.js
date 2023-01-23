@@ -753,7 +753,7 @@ class TestHelper {
 
     const MIN_DEBT = (
       await this.getNetBorrowingAmount(contracts, await contracts.borrowerOperations.MIN_NET_DEBT())
-    )
+    ).add(this.toBN(1))
     const arthAmount = MIN_DEBT.add(extraARTHAmount);
     if (!ICR && !extraParams.value) ICR = this.toBN(this.dec(15, 17));
     // 150%
@@ -1447,6 +1447,7 @@ class TestHelper {
       const tx = await txPromise;
       assert.isFalse(tx.receipt.status); // when this assert fails, the expected revert didn't occur, i.e. the tx succeeded
     } catch (err) {
+      console.log("**dev----------------",err.message)
       assert.include(err.message, "invalid opcode");
     }
   }

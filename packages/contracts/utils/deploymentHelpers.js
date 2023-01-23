@@ -175,6 +175,7 @@ class DeploymentHelper {
       5 * 24 * 60 * 60
     );
     testerContracts.governance = await Governance.new(
+      testerContracts.mahaToken.address,
       deployWallet,                   // timelock address
       testerContracts.troveManager.address,
       testerContracts.borrowerOperations.address,
@@ -183,7 +184,11 @@ class DeploymentHelper {
       "0"
     );
     testerContracts.arthToken = await ArthTokenTester.new(
-      deployWallet
+      deployWallet,
+      testerContracts.borrowerOperations.address,
+      testerContracts.stabilityPool.address,
+      testerContracts.troveManager.address,
+      
     );
     return testerContracts;
   }
@@ -307,7 +312,10 @@ class DeploymentHelper {
 
   static async deployARTHTokenTester(contracts, deployWallet) {
     contracts.arthToken = await ArthTokenTester.new(
-      deployWallet
+      deployWallet,
+      contracts.borrowerOperations.address,
+      contracts.stabilityPool.address,
+      contracts.troveManager.address
     );
     return contracts;
   }
