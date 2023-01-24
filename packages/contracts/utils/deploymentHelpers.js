@@ -98,11 +98,6 @@ class DeploymentHelper {
     const hintHelpers = await HintHelpers.new();
     const priceFeed = await PriceFeed.new();
     const mahaToken = await MAHAToken.new("MahaDAO", "MAHA");
-    const communityIssuance = await CommunityIssuance.new(
-      mahaToken.address,
-      stabilityPool.address,
-      5 * 24 * 60 * 60
-    );
 
     const governance = await Governance.new(
       mahaToken.address,
@@ -113,6 +108,13 @@ class DeploymentHelper {
       fundWallet,
       "0"
     );
+
+    const communityIssuance = await CommunityIssuance.new(
+      governance.address,
+      stabilityPool.address,
+      5 * 24 * 60 * 60
+    );
+
     const arthToken = await ARTHValuecoin.new(
       deployWallet
     );
