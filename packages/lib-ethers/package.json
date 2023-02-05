@@ -1,6 +1,6 @@
 {
   "name": "@mahadao/arth-ethers",
-  "version": "0.0.0-semantic-release",
+  "version": "1.0.0",
   "description": "ARTH SDK Ethers-based implementation",
   "keywords": [
     "ARTH",
