@@ -10,13 +10,6 @@ import "./Interfaces/IOracle.sol";
 import "./Interfaces/IBurnableERC20.sol";
 import "./Interfaces/IGovernance.sol";
 
-/*
- * The Default Pool holds the ETH and LUSD debt (but not LUSD tokens) from liquidations that have been redistributed
- * to active troves but not yet "applied", i.e. not yet recorded on a recipient active trove's struct.
- *
- * When a trove makes an operation that applies its pending ETH and LUSD debt, its pending ETH and LUSD debt is moved
- * from the Default Pool to the Active Pool.
- */
 contract Governance is BaseMath, Ownable, IGovernance {
     using SafeMath for uint256;
 

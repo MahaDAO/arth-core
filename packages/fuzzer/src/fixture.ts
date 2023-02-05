@@ -119,8 +119,8 @@ export class Fixture {
           ? 1.51
           : Decimal.max(trove.collateralRatio(this.price).add(0.00001), 1.11);
 
-      let newTrove = trove.isEmpty ? Trove.create({ depositCollateral: 1, borrowLUSD: 0 }) : trove;
-      newTrove = newTrove.adjust({ borrowLUSD: amount.sub(lusdBalance).mul(2) });
+      let newTrove = trove.isEmpty ? Trove.create({ depositCollateral: 1, borrowARTH: 0 }) : trove;
+      newTrove = newTrove.adjust({ borrowARTH: amount.sub(lusdBalance).mul(2) });
 
       if (newTrove.debt.lt(LUSD_MINIMUM_DEBT)) {
         newTrove = newTrove.setDebt(LUSD_MINIMUM_DEBT);
@@ -262,7 +262,7 @@ export class Fixture {
       const adjusted = trove.adjust(params, fees.borrowingRate());
 
       return (
-        (params.withdrawCollateral?.nonZero || params.borrowLUSD?.nonZero) &&
+        (params.withdrawCollateral?.nonZero || params.borrowARTH?.nonZero) &&
         (adjusted.collateralRatioIsBelowMinimum(this.price) ||
           (total.collateralRatioIsBelowCritical(this.price)
             ? adjusted._nominalCollateralRatio.lt(trove._nominalCollateralRatio)

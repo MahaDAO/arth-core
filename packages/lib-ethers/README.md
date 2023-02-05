@@ -23,7 +23,7 @@ async function example() {
 
   const { newTrove } = await arth.openTrove({
     depositCollateral: 5, // ETH
-    borrowLUSD: 2000
+    borrowARTH: 2000
   });
 
   console.log(`Successfully opened a ARTH Loan (${newTrove})!`);
