@@ -61,6 +61,7 @@ export interface ActivePool
 
 interface BorrowerOperationsCalls {
   ARTH_GAS_COMPENSATION(_overrides?: CallOverrides): Promise<BigNumber>;
+  BORROWING_FEE_FLOOR(_overrides?: CallOverrides): Promise<BigNumber>;
   CCR(_overrides?: CallOverrides): Promise<BigNumber>;
   DECIMAL_PRECISION(_overrides?: CallOverrides): Promise<BigNumber>;
   MCR(_overrides?: CallOverrides): Promise<BigNumber>;
@@ -91,8 +92,10 @@ interface BorrowerOperationsTransactions {
   adjustTrove(_maxFeePercentage: BigNumberish, _collWithdrawal: BigNumberish, _ARTHChange: BigNumberish, _isDebtIncrease: boolean, _upperHint: string, _lowerHint: string, _overrides?: PayableOverrides): Promise<void>;
   claimCollateral(_overrides?: Overrides): Promise<void>;
   closeTrove(_overrides?: Overrides): Promise<void>;
+  fetchPriceFeedPrice(_overrides?: Overrides): Promise<BigNumber>;
   moveETHGainToTrove(_borrower: string, _upperHint: string, _lowerHint: string, _overrides?: PayableOverrides): Promise<void>;
   openTrove(_maxFeePercentage: BigNumberish, _ARTHAmount: BigNumberish, _upperHint: string, _lowerHint: string, _frontEndTag: string, _overrides?: PayableOverrides): Promise<void>;
+  openTroveFor(_who: string, _maxFeePercentage: BigNumberish, _ARTHAmount: BigNumberish, _upperHint: string, _lowerHint: string, _frontEndTag: string, _overrides?: PayableOverrides): Promise<void>;
   registerFrontEnd(_overrides?: Overrides): Promise<void>;
   repayARTH(_ARTHAmount: BigNumberish, _upperHint: string, _lowerHint: string, _overrides?: Overrides): Promise<void>;
   setAddresses(_troveManagerAddress: string, _activePoolAddress: string, _defaultPoolAddress: string, _stabilityPoolAddress: string, _gasPoolAddress: string, _collSurplusPoolAddress: string, _governanceAddress: string, _sortedTrovesAddress: string, _arthTokenAddress: string, _overrides?: Overrides): Promise<void>;
@@ -179,10 +182,10 @@ interface CommunityIssuanceCalls {
   DECIMAL_PRECISION(_overrides?: CallOverrides): Promise<BigNumber>;
   NAME(_overrides?: CallOverrides): Promise<string>;
   deploymentTime(_overrides?: CallOverrides): Promise<BigNumber>;
+  governance(_overrides?: CallOverrides): Promise<string>;
   isOwner(_overrides?: CallOverrides): Promise<boolean>;
   lastTimeRewardApplicable(_overrides?: CallOverrides): Promise<BigNumber>;
   lastUpdateTime(_overrides?: CallOverrides): Promise<BigNumber>;
-  mahaToken(_overrides?: CallOverrides): Promise<string>;
   owner(_overrides?: CallOverrides): Promise<string>;
   periodFinish(_overrides?: CallOverrides): Promise<BigNumber>;
   rewardRate(_overrides?: CallOverrides): Promise<BigNumber>;
@@ -325,7 +328,8 @@ interface HintHelpersCalls {
 }
 
 interface HintHelpersTransactions {
-  setAddresses(_sortedTrovesAddress: string, _troveManagerAddress: string, _overrides?: Overrides): Promise<void>;
+  fetchPriceFeedPrice(_overrides?: Overrides): Promise<BigNumber>;
+  setAddresses(_sortedTrovesAddress: string, _troveManagerAddress: string, _governance: string, _overrides?: Overrides): Promise<void>;
   transferOwnership(newOwner: string, _overrides?: Overrides): Promise<void>;
 }
 
@@ -570,8 +574,10 @@ interface StabilityPoolCalls {
 }
 
 interface StabilityPoolTransactions {
+  fetchPriceFeedPrice(_overrides?: Overrides): Promise<BigNumber>;
   offset(_debtToOffset: BigNumberish, _collToAdd: BigNumberish, _overrides?: Overrides): Promise<void>;
   provideToSP(_amount: BigNumberish, _frontEndTag: string, _overrides?: Overrides): Promise<void>;
+  provideToSPFor(_who: string, _amount: BigNumberish, _frontEndTag: string, _overrides?: Overrides): Promise<void>;
   registerFrontEnd(_kickbackRate: BigNumberish, _overrides?: Overrides): Promise<void>;
   setAddresses(_borrowerOperationsAddress: string, _troveManagerAddress: string, _activePoolAddress: string, _arthTokenAddress: string, _sortedTrovesAddress: string, _governanceAddress: string, _communityIssuanceAddress: string, _overrides?: Overrides): Promise<void>;
   transferOwnership(newOwner: string, _overrides?: Overrides): Promise<void>;
@@ -709,6 +715,7 @@ interface TroveManagerTransactions {
   decayBaseRateFromBorrowing(_overrides?: Overrides): Promise<void>;
   decreaseTroveColl(_borrower: string, _collDecrease: BigNumberish, _overrides?: Overrides): Promise<BigNumber>;
   decreaseTroveDebt(_borrower: string, _debtDecrease: BigNumberish, _overrides?: Overrides): Promise<BigNumber>;
+  fetchPriceFeedPrice(_overrides?: Overrides): Promise<BigNumber>;
   increaseTroveColl(_borrower: string, _collIncrease: BigNumberish, _overrides?: Overrides): Promise<BigNumber>;
   increaseTroveDebt(_borrower: string, _debtIncrease: BigNumberish, _overrides?: Overrides): Promise<BigNumber>;
   liquidate(_borrower: string, _overrides?: Overrides): Promise<void>;
@@ -786,29 +793,27 @@ interface GovernanceCalls {
   getBorrowingFeeFloor(_overrides?: CallOverrides): Promise<BigNumber>;
   getDeploymentStartTime(_overrides?: CallOverrides): Promise<BigNumber>;
   getFund(_overrides?: CallOverrides): Promise<string>;
+  getGasCompensation(_overrides?: CallOverrides): Promise<BigNumber>;
+  getMAHA(_overrides?: CallOverrides): Promise<string>;
   getMaxBorrowingFee(_overrides?: CallOverrides): Promise<BigNumber>;
   getMaxDebtCeiling(_overrides?: CallOverrides): Promise<BigNumber>;
+  getMinNetDebt(_overrides?: CallOverrides): Promise<BigNumber>;
   getPriceFeed(_overrides?: CallOverrides): Promise<string>;
   getRedemptionFeeFloor(_overrides?: CallOverrides): Promise<BigNumber>;
-  getStabilityFee(_overrides?: CallOverrides): Promise<BigNumber>;
-  getStabilityFeeToken(_overrides?: CallOverrides): Promise<string>;
-  getStabilityTokenPairOracle(_overrides?: CallOverrides): Promise<string>;
   isOwner(_overrides?: CallOverrides): Promise<boolean>;
   owner(_overrides?: CallOverrides): Promise<string>;
   troveManagerAddress(_overrides?: CallOverrides): Promise<string>;
 }
 
 interface GovernanceTransactions {
-  chargeStabilityFee(who: string, LUSDAmount: BigNumberish, _overrides?: Overrides): Promise<void>;
   setAllowMinting(_value: boolean, _overrides?: Overrides): Promise<void>;
   setBorrowingFeeFloor(_value: BigNumberish, _overrides?: Overrides): Promise<void>;
   setFund(_newFund: string, _overrides?: Overrides): Promise<void>;
+  setMAHA(_maha: string, _overrides?: Overrides): Promise<void>;
   setMaxBorrowingFee(_value: BigNumberish, _overrides?: Overrides): Promise<void>;
   setMaxDebtCeiling(_value: BigNumberish, _overrides?: Overrides): Promise<void>;
   setPriceFeed(_feed: string, _overrides?: Overrides): Promise<void>;
   setRedemptionFeeFloor(_value: BigNumberish, _overrides?: Overrides): Promise<void>;
-  setStabilityFee(_value: BigNumberish, _overrides?: Overrides): Promise<void>;
-  setStabilityFeeToken(token: string, oracle: string, _overrides?: Overrides): Promise<void>;
   transferOwnership(newOwner: string, _overrides?: Overrides): Promise<void>;
 }
 
@@ -818,28 +823,22 @@ export interface Governance
     AllowMintingChanged(oldFlag?: null, newFlag?: null, timestamp?: null): EventFilter;
     BorrowingFeeFloorChanged(oldValue?: null, newValue?: null, timestamp?: null): EventFilter;
     FundAddressChanged(oldAddress?: null, newAddress?: null, timestamp?: null): EventFilter;
+    MAHAChanged(oldAddress?: null, newAddress?: null, timestamp?: null): EventFilter;
     MaxBorrowingFeeChanged(oldValue?: null, newValue?: null, timestamp?: null): EventFilter;
     MaxDebtCeilingChanged(oldValue?: null, newValue?: null, timestamp?: null): EventFilter;
     OwnershipTransferred(previousOwner?: string | null, newOwner?: string | null): EventFilter;
     PriceFeedChanged(oldAddress?: null, newAddress?: null, timestamp?: null): EventFilter;
     RedemptionFeeFloorChanged(oldValue?: null, newValue?: null, timestamp?: null): EventFilter;
     SentToFund(token?: null, amount?: null, timestamp?: null, reason?: null): EventFilter;
-    StabilityFeeChanged(oldValue?: null, newValue?: null, timestamp?: null): EventFilter;
-    StabilityFeeCharged(LUSDAmount?: null, feeAmount?: null, timestamp?: null): EventFilter;
-    StabilityFeeTokenChanged(oldAddress?: null, newAddress?: null, timestamp?: null): EventFilter;
-    StabilityTokenPairOracleChanged(oldAddress?: null, newAddress?: null, timestamp?: null): EventFilter;
   };
   extractEvents(logs: Log[], name: "AllowMintingChanged"): _TypedLogDescription<{ oldFlag: boolean; newFlag: boolean; timestamp: BigNumber }>[];
   extractEvents(logs: Log[], name: "BorrowingFeeFloorChanged"): _TypedLogDescription<{ oldValue: BigNumber; newValue: BigNumber; timestamp: BigNumber }>[];
   extractEvents(logs: Log[], name: "FundAddressChanged"): _TypedLogDescription<{ oldAddress: string; newAddress: string; timestamp: BigNumber }>[];
+  extractEvents(logs: Log[], name: "MAHAChanged"): _TypedLogDescription<{ oldAddress: string; newAddress: string; timestamp: BigNumber }>[];
   extractEvents(logs: Log[], name: "MaxBorrowingFeeChanged"): _TypedLogDescription<{ oldValue: BigNumber; newValue: BigNumber; timestamp: BigNumber }>[];
   extractEvents(logs: Log[], name: "MaxDebtCeilingChanged"): _TypedLogDescription<{ oldValue: BigNumber; newValue: BigNumber; timestamp: BigNumber }>[];
   extractEvents(logs: Log[], name: "OwnershipTransferred"): _TypedLogDescription<{ previousOwner: string; newOwner: string }>[];
   extractEvents(logs: Log[], name: "PriceFeedChanged"): _TypedLogDescription<{ oldAddress: string; newAddress: string; timestamp: BigNumber }>[];
   extractEvents(logs: Log[], name: "RedemptionFeeFloorChanged"): _TypedLogDescription<{ oldValue: BigNumber; newValue: BigNumber; timestamp: BigNumber }>[];
   extractEvents(logs: Log[], name: "SentToFund"): _TypedLogDescription<{ token: string; amount: BigNumber; timestamp: BigNumber; reason: string }>[];
-  extractEvents(logs: Log[], name: "StabilityFeeChanged"): _TypedLogDescription<{ oldValue: BigNumber; newValue: BigNumber; timestamp: BigNumber }>[];
-  extractEvents(logs: Log[], name: "StabilityFeeCharged"): _TypedLogDescription<{ LUSDAmount: BigNumber; feeAmount: BigNumber; timestamp: BigNumber }>[];
-  extractEvents(logs: Log[], name: "StabilityFeeTokenChanged"): _TypedLogDescription<{ oldAddress: string; newAddress: string; timestamp: BigNumber }>[];
-  extractEvents(logs: Log[], name: "StabilityTokenPairOracleChanged"): _TypedLogDescription<{ oldAddress: string; newAddress: string; timestamp: BigNumber }>[];
 }

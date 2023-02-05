@@ -521,13 +521,14 @@ export class PopulatableEthersARTH
         const [newTrove] = borrowerOperations
           .extractEvents(logs, "TroveUpdated")
           .map(({ args: { _coll, _debt } }) => {
-            return new Trove(decimalify(_coll), decimalify(_debt))
+            return new Trove(decimalify(_coll), decimalify(_debt));
           });
 
         const [fee] = borrowerOperations
           .extractEvents(logs, "ARTHBorrowingFeePaid")
           .map(({ args: { _ARTHFee } }) => {
-            return decimalify(_ARTHFee)});
+            return decimalify(_ARTHFee);
+          });
         return {
           params,
           newTrove,
@@ -818,7 +819,7 @@ export class PopulatableEthersARTH
     const { borrowerOperations, governance } = _getContracts(this._readable.connection);
     const normalizedParams = _normalizeTroveCreation(params);
     const { depositCollateral, borrowARTH } = normalizedParams;
-    
+
     const [fees, blockTimestamp, total, price] = await Promise.all([
       this._readable._getFeesFactory(),
       this._readable._getBlockTimestamp(),
@@ -827,10 +828,14 @@ export class PopulatableEthersARTH
     ]);
 
     const recoveryMode = total.collateralRatioIsBelowCritical(price);
-    const decayBorrowingRate = async(seconds: number) => await fees(blockTimestamp + seconds, recoveryMode).borrowingRate(governance.address, _getProvider(this._readable.connection));
+    const decayBorrowingRate = async (seconds: number) =>
+      await fees(blockTimestamp + seconds, recoveryMode).borrowingRate(
+        governance.address,
+        _getProvider(this._readable.connection)
+      );
 
     const currentBorrowingRate = await decayBorrowingRate(0);
-    
+
     const newTrove = await Trove.create(normalizedParams, currentBorrowingRate);
     const hints = await this._findHints(newTrove);
 
@@ -845,6 +850,7 @@ export class PopulatableEthersARTH
       borrowARTH.hex,
       ...hints,
       AddressZero,
+
       { value: depositCollateral.hex, ...overrides }
     ];
     let gasHeadroom: number | undefined;
@@ -866,11 +872,11 @@ export class PopulatableEthersARTH
         borrowerOperations.estimateGas.openTrove(...txParams(borrowARTH)),
         borrowerOperations.estimateGas.openTrove(...txParams(borrowARTHSimulatingDecay))
       ]);
-      
+
       const gasLimit = addGasForBaseRateUpdate(borrowingFeeDecayToleranceMinutes)(
         bigNumberMax(addGasForPotentialListTraversal(gasNow), gasLater)
       );
-      
+
       gasHeadroom = gasLimit.sub(gasNow).toNumber();
       overrides = { ...overrides, gasLimit };
     }
@@ -949,7 +955,8 @@ export class PopulatableEthersARTH
         })
     ]);
 
-    const decayBorrowingRate = async (seconds: number) => await feeVars
+    const decayBorrowingRate = async (seconds: number) =>
+      await feeVars
         ?.fees(
           feeVars.blockTimestamp + seconds,
           feeVars.total.collateralRatioIsBelowCritical(feeVars.price)
@@ -1219,7 +1226,13 @@ export class PopulatableEthersARTH
 
     const defaultMaxRedemptionRate = async (amount: Decimal) =>
       Decimal.min(
-        (await fees.redemptionRate(governance.address,_getProvider(this._readable.connection), amount.div(total.debt))).add(defaultRedemptionRateSlippageTolerance),
+        (
+          await fees.redemptionRate(
+            governance.address,
+            _getProvider(this._readable.connection),
+            amount.div(total.debt)
+          )
+        ).add(defaultRedemptionRateSlippageTolerance),
         Decimal.ONE
       );
 
